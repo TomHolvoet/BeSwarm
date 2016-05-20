@@ -1,0 +1,20 @@
+.idea/
+*.iml
+*.iws
+.DS_Store
+.RData
+.Rhistory
+target/
+map/
+*.pdf
+FinalResults.txt
+*.tmp
+*.log
+
+### Gradle ###
+.gradle
+build/
+gradle/
+gradlew
+gradlew.bat
+settings.gradle
