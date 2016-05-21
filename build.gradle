@@ -1,7 +1,11 @@
 group 'io.github.hoangtungdinh'
 version '1.0-SNAPSHOT'
 
-apply plugin: 'java'
+apply {
+    plugin 'java'
+    plugin 'idea'
+}
+
 
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
@@ -17,4 +21,11 @@ repositories {
 dependencies {
     compile 'org.ros.rosjava_core:rosjava:[0.2,0.3)'
     compile 'org.ros.rosjava_messages:geometry_msgs:[1.11,1.12)'
+}
+
+idea{
+    module {
+        downloadJavadoc = true // defaults to false
+        downloadSources = true
+    }
 }
