@@ -23,7 +23,7 @@ dependencies {
     compile 'org.ros.rosjava_messages:geometry_msgs:[1.11,1.12)'
 }
 
-idea{
+idea {
     module {
         downloadJavadoc = true // defaults to false
         downloadSources = true
