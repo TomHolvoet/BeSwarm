@@ -35,41 +35,33 @@ public class BebopPlusPattern extends AbstractNodeMain {
         final Publisher<Empty> landPublisher = connectedNode.newPublisher("/bebop/land", Empty._TYPE);
         final Publisher<Twist> pilotingPublisher = connectedNode.newPublisher("/bebop/cmd_vel", Twist._TYPE);
 
-        connectedNode.executeCancellableLoop(new CancellableLoop() {
-            private List<Command> commands;
+        final List<Command> commands = new ArrayList<>();
+        final Command takeOff = Takeoff.create(takeoffPublisher);
+        commands.add(takeOff);
+        final Command hoverOneSecond = Hover.create(pilotingPublisher, 1);
+        commands.add(hoverOneSecond);
+        final Command moveForwardOneSecond = MoveForward.create(pilotingPublisher, 0.5, 1);
+        commands.add(moveForwardOneSecond);
+        commands.add(hoverOneSecond);
+        final Command moveBackwardTwoSeconds = MoveBackward.create(pilotingPublisher, 0.5, 2);
+        commands.add(moveBackwardTwoSeconds);
+        commands.add(hoverOneSecond);
+        commands.add(moveForwardOneSecond);
+        final Command moveLeftOneSecond = MoveLeft.create(pilotingPublisher, 0.5, 1);
+        commands.add(moveLeftOneSecond);
+        commands.add(hoverOneSecond);
+        final Command moveRightTwoSeconds = MoveRight.create(pilotingPublisher, 0.5, 2);
+        commands.add(moveRightTwoSeconds);
+        commands.add(hoverOneSecond);
+        commands.add(moveLeftOneSecond);
+        commands.add(hoverOneSecond);
+        final Command land = Land.create(landPublisher);
+        commands.add(land);
 
-            @Override
-            protected void setup() {
-                commands = new ArrayList<>();
-                final Command takeOff = Takeoff.create(takeoffPublisher);
-                commands.add(takeOff);
-                final Command hoverOneSecond = Hover.create(pilotingPublisher, 1);
-                commands.add(hoverOneSecond);
-                final Command moveForwardOneSecond = MoveForward.create(pilotingPublisher, 0.5, 1);
-                commands.add(moveForwardOneSecond);
-                commands.add(hoverOneSecond);
-                final Command moveBackwardTwoSeconds = MoveBackward.create(pilotingPublisher, 0.5, 2);
-                commands.add(moveBackwardTwoSeconds);
-                commands.add(hoverOneSecond);
-                commands.add(moveForwardOneSecond);
-                final Command moveLeftOneSecond = MoveLeft.create(pilotingPublisher, 0.5, 1);
-                commands.add(moveLeftOneSecond);
-                commands.add(hoverOneSecond);
-                final Command moveRightTwoSeconds = MoveRight.create(pilotingPublisher, 0.5, 2);
-                commands.add(moveRightTwoSeconds);
-                commands.add(hoverOneSecond);
-                commands.add(moveLeftOneSecond);
-                commands.add(hoverOneSecond);
-                final Command land = Land.create(landPublisher);
-                commands.add(land);
-            }
+        for (final Command command : commands) {
+            command.execute();
+        }
 
-            @Override
-            protected void loop() {
-                for (final Command command : commands) {
-                    command.execute();
-                }
-            }
-        });
+        connectedNode.shutdown();
     }
 }

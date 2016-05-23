@@ -32,29 +32,21 @@ public class BebopCirclePattern extends AbstractNodeMain {
         final Publisher<Empty> landPublisher = connectedNode.newPublisher("/bebop/land", Empty._TYPE);
         final Publisher<Twist> pilotingPublisher = connectedNode.newPublisher("/bebop/cmd_vel", Twist._TYPE);
 
-        connectedNode.executeCancellableLoop(new CancellableLoop() {
-            private List<Command> commands;
+        final List<Command> commands = new ArrayList<>();
+        final Command takeOff = Takeoff.create(takeoffPublisher);
+        commands.add(takeOff);
+        final Command hoverOneSecond = Hover.create(pilotingPublisher, 1);
+        commands.add(hoverOneSecond);
+        final Command moveCircle = MoveCircleClockwise.create(pilotingPublisher, 0.5, 0.5, 3);
+        commands.add(moveCircle);
+        commands.add(hoverOneSecond);
+        final Command land = Land.create(landPublisher);
+        commands.add(land);
 
-            @Override
-            protected void setup() {
-                commands = new ArrayList<>();
-                final Command takeOff = Takeoff.create(takeoffPublisher);
-                commands.add(takeOff);
-                final Command hoverOneSecond = Hover.create(pilotingPublisher, 1);
-                commands.add(hoverOneSecond);
-                final Command moveCircle = MoveCircleClockwise.create(pilotingPublisher, 0.5, 0.5, 3);
-                commands.add(moveCircle);
-                commands.add(hoverOneSecond);
-                final Command land = Land.create(landPublisher);
-                commands.add(land);
-            }
+        for (final Command command : commands) {
+            command.execute();
+        }
 
-            @Override
-            protected void loop() {
-                for (final Command command : commands) {
-                    command.execute();
-                }
-            }
-        });
+        connectedNode.shutdown();
     }
 }
