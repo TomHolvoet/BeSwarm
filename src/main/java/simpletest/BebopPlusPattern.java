@@ -35,6 +35,12 @@ public class BebopPlusPattern extends AbstractNodeMain {
         final Publisher<Empty> landPublisher = connectedNode.newPublisher("/bebop/land", Empty._TYPE);
         final Publisher<Twist> pilotingPublisher = connectedNode.newPublisher("/bebop/cmd_vel", Twist._TYPE);
 
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            // TODO write to log
+        }
+
         final List<Command> commands = new ArrayList<>();
         final Command takeOff = Takeoff.create(takeoffPublisher);
         commands.add(takeOff);

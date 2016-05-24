@@ -36,11 +36,20 @@ public final class Move implements Command {
         twist.getLinear().setY(velocity.linearY());
         twist.getLinear().setZ(velocity.linearZ());
 
-        publisher.publish(twist);
-        try {
-            Thread.sleep(durationInMilliSeconds);
-        } catch (InterruptedException e) {
-            // TODO write to log
+        final long startTime = System.currentTimeMillis();
+
+        while (true) {
+            publisher.publish(twist);
+            try {
+                Thread.sleep(300);
+            } catch (InterruptedException e) {
+                // TODO write to log
+            }
+
+            final long duration = System.currentTimeMillis() - startTime;
+            if (duration >= durationInMilliSeconds) {
+                break;
+            }
         }
 
         final Command stopMoving = StopMoving.create(publisher);
