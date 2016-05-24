@@ -41,7 +41,7 @@ public final class Move implements Command {
         while (true) {
             publisher.publish(twist);
             try {
-                Thread.sleep(300);
+                Thread.sleep(90);
             } catch (InterruptedException e) {
                 // TODO write to log
             }
