@@ -21,6 +21,7 @@ repositories {
 dependencies {
     compile 'org.ros.rosjava_core:rosjava:[0.2,0.3)'
     compile 'org.ros.rosjava_messages:geometry_msgs:[1.11,1.12)'
+    compile group: 'com.google.truth', name: 'truth', version: '0.28'
 }
 
 idea {

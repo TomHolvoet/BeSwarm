@@ -1,11 +1,12 @@
 package bebopcontrol;
 
-import static com.google.common.base.Preconditions.checkArgument;
+import com.google.common.base.MoreObjects;
+import com.google.common.base.Objects;
 
 /**
  * @author Hoang Tung Dinh
  */
-public class Velocity {
+public final class Velocity {
     private final double linearX;
     private final double linearY;
     private final double linearZ;
@@ -38,6 +39,36 @@ public class Velocity {
         return angularZ;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Velocity velocity = (Velocity) o;
+        return Double.compare(velocity.linearX, linearX) == 0 &&
+                Double.compare(velocity.linearY, linearY) == 0 &&
+                Double.compare(velocity.linearZ, linearZ) == 0 &&
+                Double.compare(velocity.angularZ, angularZ) == 0;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(linearX, linearY, linearZ, angularZ);
+    }
+
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                .add("linearX", linearX)
+                .add("linearY", linearY)
+                .add("linearZ", linearZ)
+                .add("angularZ", angularZ)
+                .toString();
+    }
+
     /**
      * {@code Velocity} builder static inner class.
      */
@@ -46,8 +77,6 @@ public class Velocity {
         private double linearY = 0;
         private double linearZ = 0;
         private double angularZ = 0;
-
-        private static final String errorMessage = "Input must be in range [-1..1]";
 
         private Builder() {}
 
@@ -58,7 +87,6 @@ public class Velocity {
          * @return a reference to this Builder
          */
         public Builder linearX(double val) {
-            checkArgument(val >= -1 && val <= 1, errorMessage);
             linearX = val;
             return this;
         }
@@ -70,7 +98,6 @@ public class Velocity {
          * @return a reference to this Builder
          */
         public Builder linearY(double val) {
-            checkArgument(val >= -1 && val <= 1, errorMessage);
             linearY = val;
             return this;
         }
@@ -82,7 +109,6 @@ public class Velocity {
          * @return a reference to this Builder
          */
         public Builder linearZ(double val) {
-            checkArgument(val >= -1 && val <= 1, errorMessage);
             linearZ = val;
             return this;
         }
@@ -95,7 +121,6 @@ public class Velocity {
          * @return a reference to this Builder
          */
         public Builder angularZ(double val) {
-            checkArgument(val >= -1 && val <= 1, errorMessage);
             angularZ = val;
             return this;
         }
