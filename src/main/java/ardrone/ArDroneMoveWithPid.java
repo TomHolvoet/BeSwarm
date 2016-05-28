@@ -15,6 +15,7 @@ import org.ros.node.AbstractNodeMain;
 import org.ros.node.ConnectedNode;
 import org.ros.node.topic.Publisher;
 import org.ros.node.topic.Subscriber;
+import pidcontroller.CoordinateTransformer;
 import pidcontroller.PidController4D;
 import pidcontroller.PidParameters;
 import std_msgs.Empty;
@@ -55,7 +56,7 @@ public class ArDroneMoveWithPid extends AbstractNodeMain {
 
         final PidParameters pidParameters = PidParameters.builder()
                 .kp(0.1)
-                .kd(0)
+                .kd(1)
                 .ki(0)
                 .minVelocity(-1)
                 .maxVelocity(1)
@@ -79,6 +80,8 @@ public class ArDroneMoveWithPid extends AbstractNodeMain {
                 ModelStates._TYPE);
 
         subscriber.addMessageListener(new MessageListener<ModelStates>() {
+            private long lastTime = 0;
+
             @Override
             public void onNewMessage(ModelStates modelStates) {
                 final String name = "quadrotor";
@@ -88,6 +91,12 @@ public class ArDroneMoveWithPid extends AbstractNodeMain {
                 final geometry_msgs.Pose currentPose = modelStates.getPose().get(index);
                 final Twist currentTwist = modelStates.getTwist().get(index);
 
+                if (System.currentTimeMillis() - lastTime < 50) {
+                    return;
+                } else {
+                    lastTime = System.currentTimeMillis();
+                }
+
                 final Point currentPoint = currentPose.getPosition();
                 final Quaternion currentOrientation = currentPose.getOrientation();
                 final Pose pose = Pose.builder()
@@ -96,6 +105,7 @@ public class ArDroneMoveWithPid extends AbstractNodeMain {
                         .z(currentPoint.getZ())
                         .yaw(currentOrientation.getZ())
                         .build();
+
                 final Velocity velocity = Velocity.builder()
                         .linearX(currentTwist.getLinear().getX())
                         .linearY(currentTwist.getLinear().getY())
@@ -103,18 +113,17 @@ public class ArDroneMoveWithPid extends AbstractNodeMain {
                         .angularZ(currentTwist.getAngular().getZ())
                         .build();
 
-                final Velocity nextVelocity = pidController4D.compute(pose, velocity);
+                final Velocity nextGlobalVelocity = pidController4D.compute(pose, velocity);
+                final Velocity nextLocalVelocity = CoordinateTransformer.globalToLocalVelocity(nextGlobalVelocity);
 
                 final Twist nextTwist = pilotingPublisher.newMessage();
-                nextTwist.getAngular().setZ(nextVelocity.angularZ());
-                nextTwist.getLinear().setX(nextVelocity.linearX());
-                nextTwist.getLinear().setY(nextVelocity.linearY());
-                nextTwist.getLinear().setZ(nextVelocity.linearZ());
+                nextTwist.getAngular().setZ(nextLocalVelocity.angularZ());
+                nextTwist.getLinear().setX(nextLocalVelocity.linearX());
+                nextTwist.getLinear().setY(nextLocalVelocity.linearY());
+                nextTwist.getLinear().setZ(nextLocalVelocity.linearZ());
 
                 pilotingPublisher.publish(nextTwist);
             }
         });
-
-        connectedNode.shutdown();
     }
 }
