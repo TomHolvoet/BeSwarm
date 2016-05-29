@@ -1,9 +1,6 @@
 package bebopcontrol;
 
-import org.ros.node.topic.Publisher;
-import std_msgs.Empty;
-
-import static com.google.common.base.Preconditions.checkArgument;
+import comm.LandPublisher;
 
 /**
  * Command for landing
@@ -12,21 +9,18 @@ import static com.google.common.base.Preconditions.checkArgument;
  */
 public final class Land implements Command {
 
-    private final Publisher<Empty> publisher;
+    private final LandPublisher landPublisher;
 
-    private Land(Publisher<Empty> publisher) {
-        this.publisher = publisher;
+    private Land(LandPublisher landPublisher) {
+        this.landPublisher = landPublisher;
     }
 
-    public static Land create(Publisher<Empty> publisher) {
-        checkArgument(publisher.getTopicName().toString().endsWith("/land"),
-                "Topic name must be [namespace]/land");
-        return new Land(publisher);
+    public static Land create(LandPublisher landPublisher) {
+        return new Land(landPublisher);
     }
 
     @Override
     public void execute() {
-        final Empty empty = publisher.newMessage();
-        publisher.publish(empty);
+        landPublisher.publishLandCommand();
     }
 }

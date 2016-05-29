@@ -5,6 +5,8 @@ import bebopcontrol.Hover;
 import bebopcontrol.Pose;
 import bebopcontrol.Takeoff;
 import bebopcontrol.Velocity;
+import comm.TakeoffPublisher;
+import comm.VelocityPublisher;
 import gazebo_msgs.ModelStates;
 import geometry_msgs.Point;
 import geometry_msgs.Quaternion;
@@ -13,11 +15,10 @@ import org.ros.message.MessageListener;
 import org.ros.namespace.GraphName;
 import org.ros.node.AbstractNodeMain;
 import org.ros.node.ConnectedNode;
-import org.ros.node.topic.Publisher;
 import org.ros.node.topic.Subscriber;
-import pidcontroller.CoordinateTransformer;
 import pidcontroller.PidController4D;
 import pidcontroller.PidParameters;
+import pidcontroller.Transformations;
 import std_msgs.Empty;
 
 import java.util.ArrayList;
@@ -35,8 +36,19 @@ public class ArDroneMoveWithPid extends AbstractNodeMain {
 
     @Override
     public void onStart(final ConnectedNode connectedNode) {
-        final Publisher<Empty> takeoffPublisher = connectedNode.newPublisher("/ardrone/takeoff", Empty._TYPE);
-        final Publisher<Twist> pilotingPublisher = connectedNode.newPublisher("/cmd_vel", Twist._TYPE);
+        final TakeoffPublisher takeoffPublisher = TakeoffPublisher.create(
+                connectedNode.<Empty>newPublisher("/ardrone/publishTakeoffCommand", Empty._TYPE));
+        final VelocityPublisher velocityPublisher = VelocityPublisher.builder()
+                .publisher(connectedNode.<Twist>newPublisher("/cmd_vel", Twist._TYPE))
+                .minLinearX(-1)
+                .minLinearY(-1)
+                .minLinearZ(-1)
+                .minAngularZ(-1)
+                .maxLinearX(1)
+                .maxLinearY(1)
+                .maxLinearZ(1)
+                .maxAngularZ(1)
+                .build();
 
         try {
             Thread.sleep(5000);
@@ -47,32 +59,15 @@ public class ArDroneMoveWithPid extends AbstractNodeMain {
         final List<Command> commands = new ArrayList<>();
         final Command takeOff = Takeoff.create(takeoffPublisher);
         commands.add(takeOff);
-        final Command hoverFiveSecond = Hover.create(pilotingPublisher, 5);
+        final Command hoverFiveSecond = Hover.create(velocityPublisher, 5);
         commands.add(hoverFiveSecond);
 
         for (final Command command : commands) {
             command.execute();
         }
 
-        final PidParameters pidLinearParameters = PidParameters.builder()
-                .kp(0.5)
-                .kd(1)
-                .ki(0)
-                .minVelocity(-9999999)
-                .maxVelocity(9999999)
-                .minIntegralError(-5)
-                .maxIntegralError(5)
-                .build();
-
-        final PidParameters pidAngularParameters = PidParameters.builder()
-                .kp(0.1)
-                .kd(0.5)
-                .ki(0)
-                .minVelocity(-9999999)
-                .maxVelocity(9999999)
-                .minIntegralError(-5)
-                .maxIntegralError(5)
-                .build();
+        final PidParameters pidLinearParameters = PidParameters.builder().kp(0.5).kd(1).ki(0).build();
+        final PidParameters pidAngularParameters = PidParameters.builder().kp(0.1).kd(0.5).ki(0).build();
 
         final Pose goalPose = Pose.builder().x(3).y(-3).z(3).yaw(1).build();
         final Velocity goalVelocity = Velocity.builder().linearX(0).linearY(0).linearZ(0).angularZ(0).build();
@@ -127,29 +122,11 @@ public class ArDroneMoveWithPid extends AbstractNodeMain {
                         .build();
 
                 final Velocity nextGlobalVelocity = pidController4D.compute(pose, velocity);
-                final Velocity nextLocalVelocity = CoordinateTransformer.globalToLocalVelocity(nextGlobalVelocity,
+                final Velocity nextLocalVelocity = Transformations.globalToLocalVelocity(nextGlobalVelocity,
                         currentYaw);
-
-                final Twist nextTwist = pilotingPublisher.newMessage();
-                nextTwist.getLinear().setX(getRefinedVelocity(nextLocalVelocity.linearX()));
-                nextTwist.getLinear().setY(getRefinedVelocity(nextLocalVelocity.linearY()));
-                nextTwist.getLinear().setZ(getRefinedVelocity(nextLocalVelocity.linearZ()));
-                nextTwist.getAngular().setZ(getRefinedVelocity(nextLocalVelocity.angularZ()));
-
-                pilotingPublisher.publish(nextTwist);
+                velocityPublisher.publishVelocityCommand(nextLocalVelocity);
             }
         });
-    }
-
-    private static double getRefinedVelocity(double initialVelocity) {
-        double refinedVelocity = initialVelocity;
-        if (refinedVelocity > 1) {
-            refinedVelocity = 1;
-        } else if (refinedVelocity < -1) {
-            refinedVelocity = -1;
-        }
-
-        return refinedVelocity;
     }
 
     private static double computeYawFromQuaternion(Quaternion quaternion) {

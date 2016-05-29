@@ -1,7 +1,6 @@
 package bebopcontrol;
 
-import geometry_msgs.Twist;
-import org.ros.node.topic.Publisher;
+import comm.VelocityPublisher;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
@@ -10,42 +9,28 @@ import static com.google.common.base.Preconditions.checkArgument;
  */
 public final class Move implements Command {
 
-    private final Publisher<Twist> publisher;
+    private final VelocityPublisher velocityPublisher;
     private final Velocity velocity;
     private final double durationInSeconds;
 
-    private static final String errorMessage = "Input must be in range [-1..1]";
-
-    private Move(Publisher<Twist> publisher, Velocity velocity, double durationInSeconds) {
-        this.publisher = publisher;
+    private Move(VelocityPublisher velocityPublisher, Velocity velocity, double durationInSeconds) {
+        this.velocityPublisher = velocityPublisher;
         this.velocity = velocity;
         this.durationInSeconds = durationInSeconds;
     }
 
-    public static Move create(Publisher<Twist> publisher, Velocity velocity, double durationInSeconds) {
-        checkArgument(publisher.getTopicName().toString().endsWith("/cmd_vel"),
-                "Topic name must be [namespace]/cmd_vel");
+    public static Move create(VelocityPublisher velocityPublisher, Velocity velocity, double durationInSeconds) {
         checkArgument(durationInSeconds > 0, "Duration must be a positive value");
-        checkArgument(velocity.linearX() >= -1 && velocity.linearX() <= 1, errorMessage);
-        checkArgument(velocity.linearY() >= -1 && velocity.linearY() <= 1, errorMessage);
-        checkArgument(velocity.linearZ() >= -1 && velocity.linearZ() <= 1, errorMessage);
-        checkArgument(velocity.angularZ() >= -1 && velocity.angularZ() <= 1, errorMessage);
-        return new Move(publisher, velocity, durationInSeconds);
+        return new Move(velocityPublisher, velocity, durationInSeconds);
     }
 
     @Override
     public void execute() {
         final long durationInMilliSeconds = (long) (durationInSeconds * 1000);
-        final Twist twist = publisher.newMessage();
-        twist.getAngular().setZ(velocity.angularZ());
-        twist.getLinear().setX(velocity.linearX());
-        twist.getLinear().setY(velocity.linearY());
-        twist.getLinear().setZ(velocity.linearZ());
-
         final long startTime = System.currentTimeMillis();
 
         while (true) {
-            publisher.publish(twist);
+            velocityPublisher.publishVelocityCommand(velocity);
             try {
                 Thread.sleep(90);
             } catch (InterruptedException e) {
@@ -58,7 +43,7 @@ public final class Move implements Command {
             }
         }
 
-        final Command stopMoving = StopMoving.create(publisher);
+        final Command stopMoving = StopMoving.create(velocityPublisher);
         stopMoving.execute();
     }
 }

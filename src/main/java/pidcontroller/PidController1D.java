@@ -5,7 +5,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 /**
  * @author Hoang Tung Dinh
  */
-public final class PidController1D {
+final class PidController1D {
 
     private final PidParameters parameters;
     private final double goalPoint;
@@ -26,7 +26,7 @@ public final class PidController1D {
         return new Builder();
     }
 
-    public double compute(double currentPoint, double currentVelocity) {
+    double compute(double currentPoint, double currentVelocity) {
         final double error = goalPoint - currentPoint;
 
         updateAccumulatedError(error);
@@ -107,6 +107,8 @@ public final class PidController1D {
          *
          * @return a {@code PidController1D} built with parameters of this {@code PidController1D.Builder}
          */
-        public PidController1D build() {return new PidController1D(this);}
+        public PidController1D build() {
+            return new PidController1D(this);
+        }
     }
 }

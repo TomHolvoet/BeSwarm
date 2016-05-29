@@ -7,8 +7,6 @@ import bebopcontrol.Velocity;
  * @author Hoang Tung Dinh
  */
 public final class PidController4D {
-    private final Pose goalPose;
-    private final Velocity goalVelocity;
 
     private final PidController1D pidLinearX;
     private final PidController1D pidLinearY;
@@ -16,8 +14,8 @@ public final class PidController4D {
     private final PidController1D pidAngularZ;
 
     private PidController4D(Builder builder) {
-        goalPose = builder.goalPose;
-        goalVelocity = builder.goalVelocity;
+        final Pose goalPose = builder.goalPose;
+        final Velocity goalVelocity = builder.goalVelocity;
 
         pidLinearX = PidController1D.builder()
                 .goalPoint(goalPose.x())

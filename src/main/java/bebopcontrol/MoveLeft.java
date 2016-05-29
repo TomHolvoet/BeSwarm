@@ -1,7 +1,6 @@
 package bebopcontrol;
 
-import geometry_msgs.Twist;
-import org.ros.node.topic.Publisher;
+import comm.VelocityPublisher;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
@@ -10,28 +9,25 @@ import static com.google.common.base.Preconditions.checkArgument;
  */
 public final class MoveLeft implements Command {
 
-    private final Publisher<Twist> publisher;
+    private final VelocityPublisher velocityPublisher;
     private final double speed;
     private final double durationInSeconds;
 
-    private MoveLeft(Publisher<Twist> publisher, double speed, double durationInSeconds) {
-        this.publisher = publisher;
+    private MoveLeft(VelocityPublisher velocityPublisher, double speed, double durationInSeconds) {
+        this.velocityPublisher = velocityPublisher;
         this.speed = speed;
         this.durationInSeconds = durationInSeconds;
     }
 
-    public static MoveLeft create(Publisher<Twist> publisher, double speed, double durationInSeconds) {
-        checkArgument(publisher.getTopicName().toString().endsWith("/cmd_vel"),
-                "Topic name must be [namespace]/cmd_vel");
-        checkArgument(speed > 0 && speed <= 1, "speed must be in range (0, 1]");
+    public static MoveLeft create(VelocityPublisher velocityPublisher, double speed, double durationInSeconds) {
         checkArgument(durationInSeconds > 0, "Duration must be a positive value");
-        return new MoveLeft(publisher, speed, durationInSeconds);
+        return new MoveLeft(velocityPublisher, speed, durationInSeconds);
     }
 
     @Override
     public void execute() {
         final Velocity velocity = Velocity.builder().linearY(speed).build();
-        final Command move = Move.create(publisher, velocity, durationInSeconds);
+        final Command move = Move.create(velocityPublisher, velocity, durationInSeconds);
         move.execute();
     }
 }

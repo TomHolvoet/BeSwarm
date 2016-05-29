@@ -1,7 +1,6 @@
 package bebopcontrol;
 
-import geometry_msgs.Twist;
-import org.ros.node.topic.Publisher;
+import comm.VelocityPublisher;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
@@ -10,24 +9,22 @@ import static com.google.common.base.Preconditions.checkArgument;
  */
 public final class Hover implements Command {
 
-    private final Publisher<Twist> publisher;
+    private final VelocityPublisher velocityPublisher;
     private final double durationInSeconds;
 
-    private Hover(Publisher<Twist> publisher, double durationInSeconds) {
-        this.publisher = publisher;
+    private Hover(VelocityPublisher velocityPublisher, double durationInSeconds) {
+        this.velocityPublisher = velocityPublisher;
         this.durationInSeconds = durationInSeconds;
     }
 
-    public static Hover create(Publisher<Twist> publisher, double durationInSeconds) {
-        checkArgument(publisher.getTopicName().toString().endsWith("/cmd_vel"),
-                "Topic name must be [namespace]/cmd_vel");
+    public static Hover create(VelocityPublisher velocityPublisher, double durationInSeconds) {
         checkArgument(durationInSeconds > 0, "Duration must be a positive value");
-        return new Hover(publisher, durationInSeconds);
+        return new Hover(velocityPublisher, durationInSeconds);
     }
 
     @Override
     public void execute() {
-        final Command stopMoving = StopMoving.create(publisher);
+        final Command stopMoving = StopMoving.create(velocityPublisher);
         stopMoving.execute();
         final long durationInMilliSeconds = (long) (durationInSeconds * 1000);
         try {

@@ -64,10 +64,10 @@ public final class PidParameters {
         private double kp;
         private double kd;
         private double ki;
-        private double minVelocity;
-        private double maxVelocity;
-        private double minIntegralError;
-        private double maxIntegralError;
+        private double minVelocity = Double.MIN_VALUE;
+        private double maxVelocity = Double.MAX_VALUE;
+        private double minIntegralError = Double.MIN_VALUE;
+        private double maxIntegralError = Double.MAX_VALUE;
 
         private Builder() {}
 

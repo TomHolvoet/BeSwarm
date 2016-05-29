@@ -1,32 +1,26 @@
 package bebopcontrol;
 
-import org.ros.node.topic.Publisher;
-import std_msgs.UInt8;
-
-import static com.google.common.base.Preconditions.checkArgument;
+import comm.FlipPublisher;
 
 /**
  * @author Hoang Tung Dinh
  */
 public final class Flip implements Command {
 
-    private final Publisher<UInt8> publisher;
+    private final FlipPublisher flipPublisher;
     private final Direction direction;
 
-    private Flip(Publisher<UInt8> publisher, Direction direction) {
-        this.publisher = publisher;
+    private Flip(FlipPublisher flipPublisher, Direction direction) {
+        this.flipPublisher = flipPublisher;
         this.direction = direction;
     }
 
-    public static Flip create(Publisher<UInt8> publisher, Direction direction) {
-        checkArgument(publisher.getTopicName().toString().endsWith("/flip"), "Topic name must be [namespace]/flip");
-        return new Flip(publisher, direction);
+    public static Flip create(FlipPublisher flipPublisher, Direction direction) {
+        return new Flip(flipPublisher, direction);
     }
 
     @Override
     public void execute() {
-        final UInt8 message = publisher.newMessage();
-        message.setData(direction.getCode());
-        publisher.publish(message);
+        flipPublisher.publishFlipCommand(direction);
     }
 }

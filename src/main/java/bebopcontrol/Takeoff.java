@@ -1,9 +1,6 @@
 package bebopcontrol;
 
-import org.ros.node.topic.Publisher;
-import std_msgs.Empty;
-
-import static com.google.common.base.Preconditions.checkArgument;
+import comm.TakeoffPublisher;
 
 /**
  * Command for taking off.
@@ -12,21 +9,18 @@ import static com.google.common.base.Preconditions.checkArgument;
  */
 public final class Takeoff implements Command {
 
-    private final Publisher<Empty> publisher;
+    private final TakeoffPublisher takeoffPublisher;
 
-    private Takeoff(Publisher<Empty> publisher) {
-        this.publisher = publisher;
+    private Takeoff(TakeoffPublisher takeoffPublisher) {
+        this.takeoffPublisher = takeoffPublisher;
     }
 
-    public static Takeoff create(Publisher<Empty> publisher) {
-        checkArgument(publisher.getTopicName().toString().endsWith("/takeoff"),
-                "Topic name must be [namespace]/takeoff");
-        return new Takeoff(publisher);
+    public static Takeoff create(TakeoffPublisher takeoffPublisher) {
+        return new Takeoff(takeoffPublisher);
     }
 
     @Override
     public void execute() {
-        final Empty empty = publisher.newMessage();
-        publisher.publish(empty);
+        takeoffPublisher.publishTakeoffCommand();
     }
 }

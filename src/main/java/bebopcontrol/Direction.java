@@ -15,7 +15,7 @@ public enum Direction {
         this.code = code;
     }
 
-    byte getCode() {
+    public byte getCode() {
         return code;
     }
 }

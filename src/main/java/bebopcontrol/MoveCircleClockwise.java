@@ -1,7 +1,6 @@
 package bebopcontrol;
 
-import geometry_msgs.Twist;
-import org.ros.node.topic.Publisher;
+import comm.VelocityPublisher;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
@@ -10,33 +9,29 @@ import static com.google.common.base.Preconditions.checkArgument;
  */
 public final class MoveCircleClockwise implements Command {
 
-    private final Publisher<Twist> publisher;
+    private final VelocityPublisher velocityPublisher;
     private final double forwardSpeed;
     private final double rotationSpeed;
     private final double durationInSeconds;
 
-    private MoveCircleClockwise(Publisher<Twist> publisher, double forwardSpeed, double rotationSpeed,
+    private MoveCircleClockwise(VelocityPublisher velocityPublisher, double forwardSpeed, double rotationSpeed,
             double durationInSeconds) {
-        this.publisher = publisher;
+        this.velocityPublisher = velocityPublisher;
         this.forwardSpeed = forwardSpeed;
         this.rotationSpeed = rotationSpeed;
         this.durationInSeconds = durationInSeconds;
     }
 
-    public static MoveCircleClockwise create(Publisher<Twist> publisher, double forwardSpeed, double rotationSpeed,
-            double durationInSeconds) {
-        checkArgument(publisher.getTopicName().toString().endsWith("/cmd_vel"),
-                "Topic name must be [namespace]/cmd_vel");
-        checkArgument(forwardSpeed > 0 && forwardSpeed <= 1, "forwardSpeed must be in range (0, 1]");
-        checkArgument(rotationSpeed > 0 && rotationSpeed <= 1, "rotationSpeed must be in range (0, 1]");
+    public static MoveCircleClockwise create(VelocityPublisher velocityPublisher, double forwardSpeed,
+            double rotationSpeed, double durationInSeconds) {
         checkArgument(durationInSeconds > 0, "Duration must be a positive value");
-        return new MoveCircleClockwise(publisher, forwardSpeed, rotationSpeed, durationInSeconds);
+        return new MoveCircleClockwise(velocityPublisher, forwardSpeed, rotationSpeed, durationInSeconds);
     }
 
     @Override
     public void execute() {
         final Velocity velocity = Velocity.builder().linearX(forwardSpeed).angularZ(-rotationSpeed).build();
-        final Command move = Move.create(publisher, velocity, durationInSeconds);
+        final Command move = Move.create(velocityPublisher, velocity, durationInSeconds);
         move.execute();
     }
 }

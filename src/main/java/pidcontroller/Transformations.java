@@ -5,9 +5,9 @@ import bebopcontrol.Velocity;
 /**
  * @author Hoang Tung Dinh
  */
-public final class CoordinateTransformer {
+public final class Transformations {
 
-    private CoordinateTransformer() {}
+    private Transformations() {}
 
     /**
      * Convert velocity in global coordinate frame to velocity in local coordinate frame
