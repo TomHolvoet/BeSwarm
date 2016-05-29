@@ -32,7 +32,7 @@ public class BebopCirclePattern extends AbstractNodeMain {
     @Override
     public void onStart(final ConnectedNode connectedNode) {
         final TakeoffPublisher takeoffPublisher = TakeoffPublisher.create(
-                connectedNode.<Empty>newPublisher("/bebop/publishTakeoffCommand", Empty._TYPE));
+                connectedNode.<Empty>newPublisher("/bebop/takeoff", Empty._TYPE));
         final LandPublisher landPublisher = LandPublisher.create(
                 connectedNode.<Empty>newPublisher("/bebop/land", Empty._TYPE));
         final VelocityPublisher velocityPublisher = VelocityPublisher.builder()
