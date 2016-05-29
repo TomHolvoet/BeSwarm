@@ -8,6 +8,7 @@ import bebopcontrol.Velocity;
 import comm.TakeoffPublisher;
 import comm.VelocityPublisher;
 import gazebo_msgs.ModelStates;
+import geom.Transformations;
 import geometry_msgs.Point;
 import geometry_msgs.Quaternion;
 import geometry_msgs.Twist;
@@ -18,7 +19,6 @@ import org.ros.node.ConnectedNode;
 import org.ros.node.topic.Subscriber;
 import pidcontroller.PidController4D;
 import pidcontroller.PidParameters;
-import pidcontroller.Transformations;
 import std_msgs.Empty;
 
 import java.util.ArrayList;
@@ -104,7 +104,8 @@ public class ArDroneMoveWithPid extends AbstractNodeMain {
 
                 final Point currentPoint = currentPose.getPosition();
                 final Quaternion currentOrientation = currentPose.getOrientation();
-                final double currentYaw = computeYawFromQuaternion(currentOrientation);
+                final double currentYaw = Transformations.computeEulerAngleFromQuaternionAngle(currentOrientation)
+                        .angleZ();
                 System.out.println("CURRENT YAW: " + currentYaw);
 
                 final Pose pose = Pose.builder()
@@ -122,19 +123,10 @@ public class ArDroneMoveWithPid extends AbstractNodeMain {
                         .build();
 
                 final Velocity nextGlobalVelocity = pidController4D.compute(pose, velocity);
-                final Velocity nextLocalVelocity = Transformations.globalToLocalVelocity(nextGlobalVelocity,
-                        currentYaw);
+                final Velocity nextLocalVelocity = Transformations.computeLocalVelocityFromGlobalVelocity(
+                        nextGlobalVelocity, currentYaw);
                 velocityPublisher.publishVelocityCommand(nextLocalVelocity);
             }
         });
-    }
-
-    private static double computeYawFromQuaternion(Quaternion quaternion) {
-        final double q0 = quaternion.getW();
-        final double q1 = quaternion.getX();
-        final double q2 = quaternion.getY();
-        final double q3 = quaternion.getZ();
-
-        return StrictMath.atan2(2 * (q0 * q3 + q1 * q2), 1 - 2 * (q2 * q2 + q3 * q3));
     }
 }
