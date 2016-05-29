@@ -96,10 +96,10 @@ public final class VelocityPublisher {
     public static final class Builder {
         private Publisher<Twist> publisher;
 
-        private double minLinearX = Double.MIN_VALUE;
-        private double minLinearY = Double.MIN_VALUE;
-        private double minLinearZ = Double.MIN_VALUE;
-        private double minAngularZ = Double.MIN_VALUE;
+        private double minLinearX = -Double.MAX_VALUE;
+        private double minLinearY = -Double.MAX_VALUE;
+        private double minLinearZ = -Double.MAX_VALUE;
+        private double minAngularZ = -Double.MAX_VALUE;
 
         private double maxLinearX = Double.MAX_VALUE;
         private double maxLinearY = Double.MAX_VALUE;
