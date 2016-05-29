@@ -58,8 +58,8 @@ public class ArDroneMoveWithPid extends AbstractNodeMain {
                 .kp(0.1)
                 .kd(1)
                 .ki(0)
-                .minVelocity(-1)
-                .maxVelocity(1)
+                .minVelocity(-9999999)
+                .maxVelocity(9999999)
                 .minIntegralError(-5)
                 .maxIntegralError(5)
                 .build();
@@ -114,16 +114,28 @@ public class ArDroneMoveWithPid extends AbstractNodeMain {
                         .build();
 
                 final Velocity nextGlobalVelocity = pidController4D.compute(pose, velocity);
-                final Velocity nextLocalVelocity = CoordinateTransformer.globalToLocalVelocity(nextGlobalVelocity);
+                final Velocity nextLocalVelocity = CoordinateTransformer.globalToLocalVelocity(nextGlobalVelocity,
+                        pose);
 
                 final Twist nextTwist = pilotingPublisher.newMessage();
-                nextTwist.getAngular().setZ(nextLocalVelocity.angularZ());
-                nextTwist.getLinear().setX(nextLocalVelocity.linearX());
-                nextTwist.getLinear().setY(nextLocalVelocity.linearY());
-                nextTwist.getLinear().setZ(nextLocalVelocity.linearZ());
+                nextTwist.getAngular().setZ(getRefinedVelocity(nextLocalVelocity.angularZ()));
+                nextTwist.getLinear().setX(getRefinedVelocity(nextLocalVelocity.linearX()));
+                nextTwist.getLinear().setY(getRefinedVelocity(nextLocalVelocity.linearY()));
+                nextTwist.getLinear().setZ(getRefinedVelocity(nextLocalVelocity.linearZ()));
 
                 pilotingPublisher.publish(nextTwist);
             }
         });
+    }
+
+    private static double getRefinedVelocity(double initialVelocity) {
+        double refinedVelocity = initialVelocity;
+        if (refinedVelocity > 1) {
+            refinedVelocity = 1;
+        } else if (refinedVelocity < -1) {
+            refinedVelocity = -1;
+        }
+
+        return refinedVelocity;
     }
 }
