@@ -16,8 +16,8 @@ public final class TakeoffPublisher {
     }
 
     public static TakeoffPublisher create(Publisher<Empty> publisher) {
-        checkArgument(publisher.getTopicName().toString().endsWith("/publishTakeoffCommand"),
-                "Topic name must be [namespace]/publishTakeoffCommand");
+        checkArgument(publisher.getTopicName().toString().endsWith("/takeoff"),
+                "Topic name must be [namespace]/takeoff");
         return new TakeoffPublisher(publisher);
     }
 
