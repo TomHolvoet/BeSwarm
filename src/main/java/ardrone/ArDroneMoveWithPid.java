@@ -66,7 +66,7 @@ public class ArDroneMoveWithPid extends AbstractNodeMain {
 
         final PidParameters pidAngularParameters = PidParameters.builder()
                 .kp(0.1)
-                .kd(2)
+                .kd(0.5)
                 .ki(0)
                 .minVelocity(-9999999)
                 .maxVelocity(9999999)
