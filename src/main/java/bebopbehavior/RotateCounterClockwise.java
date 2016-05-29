@@ -28,7 +28,11 @@ public final class RotateCounterClockwise implements Command {
     @Override
     public void execute() {
         final Velocity velocity = Velocity.builder().angularZ(speed).build();
-        final Command move = Move.create(velocityPublisher, velocity, durationInSeconds);
+        final Command move = Move.builder()
+                .velocityPublisher(velocityPublisher)
+                .velocity(velocity)
+                .durationInSeconds(durationInSeconds)
+                .build();
         move.execute();
     }
 }
