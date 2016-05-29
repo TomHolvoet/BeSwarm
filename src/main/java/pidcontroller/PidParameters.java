@@ -1,164 +1,50 @@
 package pidcontroller;
 
+import com.google.auto.value.AutoValue;
+
 /**
  * @author Hoang Tung Dinh
  */
-public final class PidParameters {
+@AutoValue
+public abstract class PidParameters {
 
-    private final double kp;
-    private final double kd;
-    private final double ki;
+    public abstract double kp();
 
-    private final double minVelocity;
-    private final double maxVelocity;
+    public abstract double kd();
 
-    private final double minIntegralError;
-    private final double maxIntegralError;
+    public abstract double ki();
 
-    private PidParameters(Builder builder) {
-        kp = builder.kp;
-        kd = builder.kd;
-        ki = builder.ki;
-        minVelocity = builder.minVelocity;
-        maxVelocity = builder.maxVelocity;
-        minIntegralError = builder.minIntegralError;
-        maxIntegralError = builder.maxIntegralError;
-    }
+    public abstract double minVelocity();
+
+    public abstract double maxVelocity();
+
+    public abstract double minIntegralError();
+
+    public abstract double maxIntegralError();
 
     public static Builder builder() {
-        return new Builder();
+        return new AutoValue_PidParameters.Builder().minVelocity(-Double.MAX_VALUE)
+                .maxVelocity(Double.MAX_VALUE)
+                .minIntegralError(-Double.MAX_VALUE)
+                .maxIntegralError(Double.MAX_VALUE);
     }
 
-    public double kp() {
-        return kp;
-    }
+    @AutoValue.Builder
+    public abstract static class Builder {
+        public abstract Builder kp(double value);
 
-    public double kd() {
-        return kd;
-    }
+        public abstract Builder kd(double value);
 
-    public double ki() {
-        return ki;
-    }
+        public abstract Builder ki(double value);
 
-    public double minVelocity() {
-        return minVelocity;
-    }
+        public abstract Builder minVelocity(double value);
 
-    public double maxVelocity() {
-        return maxVelocity;
-    }
+        public abstract Builder maxVelocity(double value);
 
-    public double minIntegralError() {
-        return minIntegralError;
-    }
+        public abstract Builder minIntegralError(double value);
 
-    public double maxIntegralError() {
-        return maxIntegralError;
-    }
+        public abstract Builder maxIntegralError(double value);
 
-    /**
-     * {@code PidParameters} builder static inner class.
-     */
-    public static final class Builder {
-        private double kp;
-        private double kd;
-        private double ki;
-        private double minVelocity = -Double.MAX_VALUE;
-        private double maxVelocity = Double.MAX_VALUE;
-        private double minIntegralError = -Double.MAX_VALUE;
-        private double maxIntegralError = Double.MAX_VALUE;
-
-        private Builder() {}
-
-        /**
-         * Sets the {@code kp} and returns a reference to this Builder so that the methods can be chained together.
-         *
-         * @param val the {@code kp} to set
-         * @return a reference to this Builder
-         */
-        public Builder kp(double val) {
-            kp = val;
-            return this;
-        }
-
-        /**
-         * Sets the {@code kd} and returns a reference to this Builder so that the methods can be chained together.
-         *
-         * @param val the {@code kd} to set
-         * @return a reference to this Builder
-         */
-        public Builder kd(double val) {
-            kd = val;
-            return this;
-        }
-
-        /**
-         * Sets the {@code ki} and returns a reference to this Builder so that the methods can be chained together.
-         *
-         * @param val the {@code ki} to set
-         * @return a reference to this Builder
-         */
-        public Builder ki(double val) {
-            ki = val;
-            return this;
-        }
-
-        /**
-         * Sets the {@code minVelocity} and returns a reference to this Builder so that the methods can be chained
-         * together.
-         *
-         * @param val the {@code minVelocity} to set
-         * @return a reference to this Builder
-         */
-        public Builder minVelocity(double val) {
-            minVelocity = val;
-            return this;
-        }
-
-        /**
-         * Sets the {@code maxVelocity} and returns a reference to this Builder so that the methods can be chained
-         * together.
-         *
-         * @param val the {@code maxVelocity} to set
-         * @return a reference to this Builder
-         */
-        public Builder maxVelocity(double val) {
-            maxVelocity = val;
-            return this;
-        }
-
-        /**
-         * Sets the {@code minIntegralError} and returns a reference to this Builder so that the methods can be
-         * chained together.
-         *
-         * @param val the {@code minIntegralError} to set
-         * @return a reference to this Builder
-         */
-        public Builder minIntegralError(double val) {
-            minIntegralError = val;
-            return this;
-        }
-
-        /**
-         * Sets the {@code maxIntegralError} and returns a reference to this Builder so that the methods can be
-         * chained together.
-         *
-         * @param val the {@code maxIntegralError} to set
-         * @return a reference to this Builder
-         */
-        public Builder maxIntegralError(double val) {
-            maxIntegralError = val;
-            return this;
-        }
-
-        /**
-         * Returns a {@code PidParameters} built from the parameters previously set.
-         *
-         * @return a {@code PidParameters} built with parameters of this {@code PidParameters.Builder}
-         */
-        public PidParameters build() {
-            return new PidParameters(this);
-        }
+        public abstract PidParameters build();
     }
 }

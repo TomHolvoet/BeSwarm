@@ -9,7 +9,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 /**
  * @author Hoang Tung Dinh
  */
-public class FlipPublisher {
+public final class FlipPublisher {
 
     private final Publisher<UInt8> publisher;
 

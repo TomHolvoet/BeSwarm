@@ -8,7 +8,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 /**
  * @author Hoang Tung Dinh
  */
-public class LandPublisher {
+public final class LandPublisher {
     private final Publisher<Empty> publisher;
 
     private LandPublisher(Publisher<Empty> publisher) {
