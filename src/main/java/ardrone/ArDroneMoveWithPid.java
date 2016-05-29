@@ -54,8 +54,8 @@ public class ArDroneMoveWithPid extends AbstractNodeMain {
             command.execute();
         }
 
-        final PidParameters pidParameters = PidParameters.builder()
-                .kp(0.1)
+        final PidParameters pidLinearParameters = PidParameters.builder()
+                .kp(0.5)
                 .kd(1)
                 .ki(0)
                 .minVelocity(-9999999)
@@ -64,14 +64,24 @@ public class ArDroneMoveWithPid extends AbstractNodeMain {
                 .maxIntegralError(5)
                 .build();
 
-        final Pose goalPose = Pose.builder().x(10).y(-10).z(10).yaw(1).build();
+        final PidParameters pidAngularParameters = PidParameters.builder()
+                .kp(0.1)
+                .kd(2)
+                .ki(0)
+                .minVelocity(-9999999)
+                .maxVelocity(9999999)
+                .minIntegralError(-5)
+                .maxIntegralError(5)
+                .build();
+
+        final Pose goalPose = Pose.builder().x(3).y(-3).z(3).yaw(1).build();
         final Velocity goalVelocity = Velocity.builder().linearX(0).linearY(0).linearZ(0).angularZ(0).build();
 
         final PidController4D pidController4D = PidController4D.builder()
-                .linearXParameters(pidParameters)
-                .linearYParameters(pidParameters)
-                .linearZParameters(pidParameters)
-                .angularZParameters(pidParameters)
+                .linearXParameters(pidLinearParameters)
+                .linearYParameters(pidLinearParameters)
+                .linearZParameters(pidLinearParameters)
+                .angularZParameters(pidAngularParameters)
                 .goalPose(goalPose)
                 .goalVelocity(goalVelocity)
                 .build();
@@ -93,17 +103,19 @@ public class ArDroneMoveWithPid extends AbstractNodeMain {
 
                 if (System.currentTimeMillis() - lastTime < 50) {
                     return;
-                } else {
-                    lastTime = System.currentTimeMillis();
                 }
+
+                lastTime = System.currentTimeMillis();
 
                 final Point currentPoint = currentPose.getPosition();
                 final Quaternion currentOrientation = currentPose.getOrientation();
+                final double currentYaw = computeYawFromQuaternion(currentOrientation);
+
                 final Pose pose = Pose.builder()
                         .x(currentPoint.getX())
                         .y(currentPoint.getY())
                         .z(currentPoint.getZ())
-                        .yaw(currentOrientation.getZ())
+                        .yaw(currentYaw)
                         .build();
 
                 final Velocity velocity = Velocity.builder()
@@ -118,10 +130,10 @@ public class ArDroneMoveWithPid extends AbstractNodeMain {
                         pose);
 
                 final Twist nextTwist = pilotingPublisher.newMessage();
-                nextTwist.getAngular().setZ(getRefinedVelocity(nextLocalVelocity.angularZ()));
                 nextTwist.getLinear().setX(getRefinedVelocity(nextLocalVelocity.linearX()));
                 nextTwist.getLinear().setY(getRefinedVelocity(nextLocalVelocity.linearY()));
                 nextTwist.getLinear().setZ(getRefinedVelocity(nextLocalVelocity.linearZ()));
+                nextTwist.getAngular().setZ(getRefinedVelocity(nextLocalVelocity.angularZ()));
 
                 pilotingPublisher.publish(nextTwist);
             }
@@ -137,5 +149,14 @@ public class ArDroneMoveWithPid extends AbstractNodeMain {
         }
 
         return refinedVelocity;
+    }
+
+    private static double computeYawFromQuaternion(Quaternion quaternion) {
+        final double q0 = quaternion.getW();
+        final double q1 = quaternion.getX();
+        final double q2 = quaternion.getY();
+        final double q3 = quaternion.getZ();
+
+        return StrictMath.atan2(2 * (q0 * q3 + q1 * q2), 1 - 2 * (q2 * q2 + q3 * q3));
     }
 }
