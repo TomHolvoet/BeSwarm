@@ -110,6 +110,7 @@ public class ArDroneMoveWithPid extends AbstractNodeMain {
                 final Point currentPoint = currentPose.getPosition();
                 final Quaternion currentOrientation = currentPose.getOrientation();
                 final double currentYaw = computeYawFromQuaternion(currentOrientation);
+                System.out.println("CURRENT YAW: " + currentYaw);
 
                 final Pose pose = Pose.builder()
                         .x(currentPoint.getX())
@@ -127,7 +128,7 @@ public class ArDroneMoveWithPid extends AbstractNodeMain {
 
                 final Velocity nextGlobalVelocity = pidController4D.compute(pose, velocity);
                 final Velocity nextLocalVelocity = CoordinateTransformer.globalToLocalVelocity(nextGlobalVelocity,
-                        pose);
+                        currentYaw);
 
                 final Twist nextTwist = pilotingPublisher.newMessage();
                 nextTwist.getLinear().setX(getRefinedVelocity(nextLocalVelocity.linearX()));
