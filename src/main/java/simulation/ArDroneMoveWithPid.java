@@ -37,7 +37,7 @@ public class ArDroneMoveWithPid extends AbstractNodeMain {
     @Override
     public void onStart(final ConnectedNode connectedNode) {
         final TakeoffPublisher takeoffPublisher = TakeoffPublisher.create(
-                connectedNode.<Empty>newPublisher("/simulation/takeoff", Empty._TYPE));
+                connectedNode.<Empty>newPublisher("/ardrone/takeoff", Empty._TYPE));
         final VelocityPublisher velocityPublisher = VelocityPublisher.builder()
                 .publisher(connectedNode.<Twist>newPublisher("/cmd_vel", Twist._TYPE))
                 .minLinearX(-1)
