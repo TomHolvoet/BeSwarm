@@ -1,4 +1,4 @@
-package bebopcontrol;
+package bebopbehavior;
 
 /**
  * @author Hoang Tung Dinh

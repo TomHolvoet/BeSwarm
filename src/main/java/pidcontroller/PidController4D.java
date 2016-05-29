@@ -1,7 +1,7 @@
 package pidcontroller;
 
-import bebopcontrol.Pose;
-import bebopcontrol.Velocity;
+import bebopbehavior.Pose;
+import bebopbehavior.Velocity;
 
 /**
  * @author Hoang Tung Dinh

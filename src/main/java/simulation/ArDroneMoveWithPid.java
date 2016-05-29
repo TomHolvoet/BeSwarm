@@ -1,10 +1,10 @@
-package ardrone;
+package simulation;
 
-import bebopcontrol.Command;
-import bebopcontrol.Hover;
-import bebopcontrol.Pose;
-import bebopcontrol.Takeoff;
-import bebopcontrol.Velocity;
+import bebopbehavior.Command;
+import bebopbehavior.Hover;
+import bebopbehavior.Pose;
+import bebopbehavior.Takeoff;
+import bebopbehavior.Velocity;
 import comm.TakeoffPublisher;
 import comm.VelocityPublisher;
 import gazebo_msgs.ModelStates;
@@ -37,7 +37,7 @@ public class ArDroneMoveWithPid extends AbstractNodeMain {
     @Override
     public void onStart(final ConnectedNode connectedNode) {
         final TakeoffPublisher takeoffPublisher = TakeoffPublisher.create(
-                connectedNode.<Empty>newPublisher("/ardrone/takeoff", Empty._TYPE));
+                connectedNode.<Empty>newPublisher("/simulation/takeoff", Empty._TYPE));
         final VelocityPublisher velocityPublisher = VelocityPublisher.builder()
                 .publisher(connectedNode.<Twist>newPublisher("/cmd_vel", Twist._TYPE))
                 .minLinearX(-1)

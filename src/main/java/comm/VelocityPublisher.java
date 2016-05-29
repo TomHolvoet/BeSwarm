@@ -1,6 +1,6 @@
 package comm;
 
-import bebopcontrol.Velocity;
+import bebopbehavior.Velocity;
 import geometry_msgs.Twist;
 import org.ros.node.topic.Publisher;
 

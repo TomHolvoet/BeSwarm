@@ -1,4 +1,4 @@
-package bebopcontrol;
+package bebopbehavior;
 
 import comm.LandPublisher;
 

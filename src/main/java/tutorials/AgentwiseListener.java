@@ -1,4 +1,4 @@
-package simpletest;
+package tutorials;
 
 import org.apache.commons.logging.Log;
 import org.ros.message.MessageListener;

@@ -1,4 +1,4 @@
-package simpletest;
+package tutorials;
 
 import geometry_msgs.Twist;
 import org.ros.concurrent.CancellableLoop;

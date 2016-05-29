@@ -1,6 +1,6 @@
 package comm;
 
-import bebopcontrol.Direction;
+import bebopbehavior.Direction;
 import org.ros.node.topic.Publisher;
 import std_msgs.UInt8;
 

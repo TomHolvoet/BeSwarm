@@ -1,6 +1,6 @@
 package geom;
 
-import bebopcontrol.Velocity;
+import bebopbehavior.Velocity;
 import geometry_msgs.Quaternion;
 
 /**
