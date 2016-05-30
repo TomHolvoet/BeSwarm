@@ -1,6 +1,9 @@
 group 'io.github.hoangtungdinh'
 version '1.0-SNAPSHOT'
 
+apply plugin: 'application'
+mainClassName = 'org.ros.RosRun'
+
 apply {
     plugin 'java'
     plugin 'idea'
