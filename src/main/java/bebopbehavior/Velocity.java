@@ -3,6 +3,8 @@ package bebopbehavior;
 import com.google.auto.value.AutoValue;
 
 /**
+ * A value class which stores the velocity of the drone.
+ *
  * @author Hoang Tung Dinh
  */
 @AutoValue

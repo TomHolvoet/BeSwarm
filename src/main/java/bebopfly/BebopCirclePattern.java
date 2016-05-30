@@ -1,4 +1,4 @@
-package bebopcontrol;
+package bebopfly;
 
 import bebopbehavior.Command;
 import bebopbehavior.Hover;
@@ -18,6 +18,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * This node controls the drone flying as a circle.
+ *
  * @author Hoang Tung Dinh
  */
 public class BebopCirclePattern extends AbstractNodeMain {

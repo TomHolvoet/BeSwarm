@@ -25,7 +25,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * This class is for running the simulation with the AR drone.
+ *
  * @author Hoang Tung Dinh
+ * @see <a href="https://github.com/dougvk/tum_simulator">The simulator</a>
  */
 public class ArDroneMoveWithPid extends AbstractNodeMain {
 
@@ -36,6 +39,7 @@ public class ArDroneMoveWithPid extends AbstractNodeMain {
 
     @Override
     public void onStart(final ConnectedNode connectedNode) {
+        // FIXME refactor this code to separate concern, use atomic data structure.
         final TakeoffPublisher takeoffPublisher = TakeoffPublisher.create(
                 connectedNode.<Empty>newPublisher("/ardrone/takeoff", Empty._TYPE));
         final VelocityPublisher velocityPublisher = VelocityPublisher.builder()

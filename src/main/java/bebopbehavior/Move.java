@@ -11,6 +11,9 @@ import java.util.concurrent.TimeoutException;
 import static com.google.common.base.Preconditions.checkArgument;
 
 /**
+ * Command for moving. This command sends velocity message to the drone at a fixed rate in a fixed duration. (e.g.,
+ * send message after each 50 milliseconds (20Hz) in 10 seconds).
+ *
  * @author Hoang Tung Dinh
  */
 public final class Move implements Command {
@@ -27,10 +30,18 @@ public final class Move implements Command {
         velocity = builder.velocity;
         durationInSeconds = builder.durationInSeconds;
         sendingRateInMilliSeconds = builder.sendingRateInMilliSeconds;
-        checkArgument(durationInSeconds > 0, "Duration must be a positive value");
-        checkArgument(sendingRateInMilliSeconds > 0, "Sending rate must be a positive value");
+        checkArgument(durationInSeconds > 0,
+                String.format("Duration must be a positive value, but it is %f", durationInSeconds));
+        checkArgument(sendingRateInMilliSeconds > 0,
+                String.format("Sending rate must be a positive value, but it is %f", sendingRateInMilliSeconds));
     }
 
+    /**
+     * {@link Builder#sendingRateInMilliSeconds} is optional. By default, the rate is set at 50ms (20Hz). All
+     * other fields are mandatory.
+     *
+     * @return the builder
+     */
     public static Builder builder() {
         return new Builder().sendingRateInMilliSeconds(DEFAULT_SENDING_RATE_IN_MILLISECONDS);
     }
@@ -44,6 +55,7 @@ public final class Move implements Command {
             }
         };
 
+        // TODO refactor this part
         final long durationInMilliSeconds = (long) (durationInSeconds * 1000);
         final Future<?> task = Executors.newSingleThreadScheduledExecutor()
                 .scheduleAtFixedRate(publishCommand, 0, sendingRateInMilliSeconds, TimeUnit.MILLISECONDS);

@@ -3,6 +3,8 @@ package bebopbehavior;
 import comm.VelocityPublisher;
 
 /**
+ * Command for stopping moving. It publishes a velocity message.
+ *
  * @author Hoang Tung Dinh
  */
 public final class StopMoving implements Command {
@@ -13,7 +15,9 @@ public final class StopMoving implements Command {
         this.velocityPublisher = velocityPublisher;
     }
 
-    public static StopMoving create(VelocityPublisher velocityPublisher) {return new StopMoving(velocityPublisher);}
+    public static StopMoving create(VelocityPublisher velocityPublisher) {
+        return new StopMoving(velocityPublisher);
+    }
 
     @Override
     public void execute() {

@@ -8,6 +8,7 @@ import org.ros.node.ConnectedNode;
 import org.ros.node.topic.Publisher;
 
 /**
+ * A simple node to control the turtle bot
  * @author Hoang Tung Dinh
  */
 public class TurtleBot extends AbstractNodeMain {

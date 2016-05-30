@@ -3,6 +3,8 @@ package pidcontroller;
 import com.google.auto.value.AutoValue;
 
 /**
+ * A value class which stores parameters for a pid controller.
+ *
  * @author Hoang Tung Dinh
  */
 @AutoValue
@@ -22,6 +24,11 @@ public abstract class PidParameters {
 
     public abstract double maxIntegralError();
 
+    /**
+     * {@link Builder#kp}, {@link Builder#kd()}, {@link Builder#ki} are mandatory. All other parameters are optional.
+     *
+     * @return a builder
+     */
     public static Builder builder() {
         return new AutoValue_PidParameters.Builder().minVelocity(-Double.MAX_VALUE)
                 .maxVelocity(Double.MAX_VALUE)

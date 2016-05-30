@@ -21,6 +21,6 @@ public final class Takeoff implements Command {
 
     @Override
     public void execute() {
-        takeoffPublisher.publishTakeoffCommand();
+        takeoffPublisher.publishTakingOffMessage();
     }
 }

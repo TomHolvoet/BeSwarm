@@ -4,6 +4,8 @@ import bebopbehavior.Velocity;
 import geometry_msgs.Quaternion;
 
 /**
+ * A utility class which contains transformation methods.
+ *
  * @author Hoang Tung Dinh
  */
 public final class Transformations {
@@ -11,7 +13,7 @@ public final class Transformations {
     private Transformations() {}
 
     /**
-     * Convert velocity in global coordinate frame to velocity in local coordinate frame
+     * Compute velocity in local coordinate frame from velocity in global coordinate frame.
      *
      * @param globalVelocity velocity in global coordinate frame
      * @return velocity in local coordinate frame
@@ -33,6 +35,13 @@ public final class Transformations {
         return Velocity.builder().linearX(linearX).linearY(linearY).linearZ(linearZ).angularZ(angularZ).build();
     }
 
+    /**
+     * Compute euler angle from quarternion angle.
+     *
+     * @param quaternion the angle in quaternion representation
+     * @return the angle in euler representation.
+     * @see <a href="https://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles">Equations</a>
+     */
     public static EulerAngle computeEulerAngleFromQuaternionAngle(Quaternion quaternion) {
         final double q0 = quaternion.getW();
         final double q1 = quaternion.getX();

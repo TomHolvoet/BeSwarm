@@ -5,6 +5,8 @@ import comm.VelocityPublisher;
 import static com.google.common.base.Preconditions.checkArgument;
 
 /**
+ * Command for moving clockwise. It is a facade which uses {@link Move}.
+ *
  * @author Hoang Tung Dinh
  */
 public final class MoveCircleClockwise implements Command {
@@ -24,7 +26,12 @@ public final class MoveCircleClockwise implements Command {
 
     public static MoveCircleClockwise create(VelocityPublisher velocityPublisher, double forwardSpeed,
             double rotationSpeed, double durationInSeconds) {
-        checkArgument(durationInSeconds > 0, "Duration must be a positive value");
+        checkArgument(durationInSeconds > 0,
+                String.format("Duration must be a positive value, but it is %f.", durationInSeconds));
+        checkArgument(forwardSpeed > 0,
+                String.format("Forward speed must be a positive value, but it is %f.", forwardSpeed));
+        checkArgument(rotationSpeed > 0,
+                String.format("Rotation speed must be a positive value, but it is %f.", rotationSpeed));
         return new MoveCircleClockwise(velocityPublisher, forwardSpeed, rotationSpeed, durationInSeconds);
     }
 

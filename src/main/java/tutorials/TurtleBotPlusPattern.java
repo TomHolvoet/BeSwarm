@@ -16,6 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * A simple node that control the turtle bot moving with a plus pattern.
+ *
  * @author Hoang Tung Dinh
  */
 public class TurtleBotPlusPattern extends AbstractNodeMain {

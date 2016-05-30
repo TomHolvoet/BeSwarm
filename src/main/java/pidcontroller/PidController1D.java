@@ -3,7 +3,10 @@ package pidcontroller;
 import static com.google.common.base.Preconditions.checkArgument;
 
 /**
+ * The one-dimensional PID controller.
+ *
  * @author Hoang Tung Dinh
+ * @see <a href="https://en.wikipedia.org/wiki/PID_controller">Equation</a>
  */
 final class PidController1D {
 
@@ -19,13 +22,22 @@ final class PidController1D {
         goalVelocity = builder.goalVelocity;
 
         checkArgument(goalVelocity <= parameters.maxVelocity() && goalVelocity >= parameters.minVelocity(),
-                "goal velocity must be in velocity range.");
+                String.format("goal velocity must be in velocity range [%f, %f], but it is", parameters.minVelocity(),
+                        parameters.maxVelocity(), goalPoint));
     }
 
     public static Builder builder() {
         return new Builder();
     }
 
+    /**
+     * Compute the next velocity (response) of the control loop.
+     *
+     * @param currentPoint    the current position of the drone
+     * @param currentVelocity the current velocity of the drone
+     * @return the next velocity (response) of the drone
+     * @see <a href="https://en.wikipedia.org/wiki/PID_controller">Equation</a>
+     */
     double compute(double currentPoint, double currentVelocity) {
         final double error = goalPoint - currentPoint;
 

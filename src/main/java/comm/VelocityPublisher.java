@@ -7,6 +7,10 @@ import org.ros.node.topic.Publisher;
 import static com.google.common.base.Preconditions.checkArgument;
 
 /**
+ * A facade which provides an interface to publish velocity (a.k.a. piloting) message. There are minimum and maximum
+ * values for each dimension of the velocity. If the input in one dimension of the velocity is out of the min/max
+ * range, the dimension will be set to the min/max value.
+ *
  * @author Hoang Tung Dinh
  */
 public final class VelocityPublisher {
@@ -39,10 +43,28 @@ public final class VelocityPublisher {
         checkArgument(minLinearZ <= maxLinearZ);
     }
 
+    /**
+     * The {@link Builder#publisher(Publisher)} is mandatory.
+     * All min and max values are optional.
+     *
+     * @return a builder instance of this facade
+     */
     public static Builder builder() {
-        return new Builder();
+        return new Builder().minLinearX(-Double.MAX_VALUE)
+                .minLinearY(-Double.MAX_VALUE)
+                .minLinearZ(-Double.MAX_VALUE)
+                .minAngularZ(-Double.MAX_VALUE)
+                .maxLinearX(Double.MAX_VALUE)
+                .maxLinearY(Double.MAX_VALUE)
+                .maxLinearZ(Double.MAX_VALUE)
+                .maxAngularZ(Double.MAX_VALUE);
     }
 
+    /**
+     * Publish a velocity message.
+     *
+     * @param velocity the velocity to be published
+     */
     public void publishVelocityCommand(Velocity velocity) {
         final Velocity refinedVelocity = getRefinedVelocity(velocity);
         final Twist twist = publisher.newMessage();
@@ -96,15 +118,15 @@ public final class VelocityPublisher {
     public static final class Builder {
         private Publisher<Twist> publisher;
 
-        private double minLinearX = -Double.MAX_VALUE;
-        private double minLinearY = -Double.MAX_VALUE;
-        private double minLinearZ = -Double.MAX_VALUE;
-        private double minAngularZ = -Double.MAX_VALUE;
+        private double minLinearX;
+        private double minLinearY;
+        private double minLinearZ;
+        private double minAngularZ;
 
-        private double maxLinearX = Double.MAX_VALUE;
-        private double maxLinearY = Double.MAX_VALUE;
-        private double maxLinearZ = Double.MAX_VALUE;
-        private double maxAngularZ = Double.MAX_VALUE;
+        private double maxLinearX;
+        private double maxLinearY;
+        private double maxLinearZ;
+        private double maxAngularZ;
 
         private Builder() {}
 

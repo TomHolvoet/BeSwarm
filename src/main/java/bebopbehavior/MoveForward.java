@@ -5,6 +5,8 @@ import comm.VelocityPublisher;
 import static com.google.common.base.Preconditions.checkArgument;
 
 /**
+ * Command for moving forward. It is a facade which uses {@link Move}.
+ *
  * @author Hoang Tung Dinh
  */
 public final class MoveForward implements Command {
@@ -20,7 +22,9 @@ public final class MoveForward implements Command {
     }
 
     public static MoveForward create(VelocityPublisher velocityPublisher, double speed, double durationInSeconds) {
-        checkArgument(durationInSeconds > 0, "Duration must be a positive value");
+        checkArgument(durationInSeconds > 0,
+                String.format("Duration must be a positive value, but it is %f", durationInSeconds));
+        checkArgument(speed > 0, String.format("Speed must be a positive value, but it is %f", speed));
         return new MoveForward(velocityPublisher, speed, durationInSeconds);
     }
 

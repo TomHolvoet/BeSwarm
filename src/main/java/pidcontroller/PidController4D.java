@@ -4,6 +4,9 @@ import bebopbehavior.Pose;
 import bebopbehavior.Velocity;
 
 /**
+ * A four-dimensional PID controller for the drone. It is the composition of 4 one-dimensional PID controller
+ * {@link PidController1D} (three controllers for the three linear velocities, one controller for the angular velocity).
+ *
  * @author Hoang Tung Dinh
  */
 public final class PidController4D {
@@ -46,6 +49,13 @@ public final class PidController4D {
         return new Builder();
     }
 
+    /**
+     * Compute the next velocity (response) of the control loop.
+     *
+     * @param currentPose     the current pose of the drone
+     * @param currentVelocity the current velocity of the drone
+     * @return the next velocity (response) of the drone
+     */
     public Velocity compute(Pose currentPose, Velocity currentVelocity) {
         final double linearX = pidLinearX.compute(currentPose.x(), currentVelocity.linearX());
         final double linearY = pidLinearY.compute(currentPose.y(), currentVelocity.linearY());

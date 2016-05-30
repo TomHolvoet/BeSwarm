@@ -3,6 +3,8 @@ package bebopbehavior;
 import comm.FlipPublisher;
 
 /**
+ * Command for flipping.
+ *
  * @author Hoang Tung Dinh
  */
 public final class Flip implements Command {
@@ -15,12 +17,19 @@ public final class Flip implements Command {
         this.direction = direction;
     }
 
+    /**
+     * Create a flipping command.
+     *
+     * @param flipPublisher the flip publisher
+     * @param direction  the flipping direction
+     * @return an instance of the flipping command
+     */
     public static Flip create(FlipPublisher flipPublisher, Direction direction) {
         return new Flip(flipPublisher, direction);
     }
 
     @Override
     public void execute() {
-        flipPublisher.publishFlipCommand(direction);
+        flipPublisher.publishFlipMessage(direction);
     }
 }

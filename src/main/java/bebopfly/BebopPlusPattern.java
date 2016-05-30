@@ -1,4 +1,4 @@
-package bebopcontrol;
+package bebopfly;
 
 import bebopbehavior.Command;
 import bebopbehavior.Hover;
@@ -21,6 +21,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * This node controls the drone flying with a plus "+" patter.
+ *
  * @author Hoang Tung Dinh
  */
 public class BebopPlusPattern extends AbstractNodeMain {
