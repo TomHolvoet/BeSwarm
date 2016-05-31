@@ -14,7 +14,6 @@ FinalResults.txt
 ### Gradle ###
 .gradle
 build/
-gradle/
 settings.gradle
 generated/
 generated_tests/
