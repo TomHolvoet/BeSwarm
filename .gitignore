@@ -15,8 +15,6 @@ FinalResults.txt
 .gradle
 build/
 gradle/
-gradlew
-gradlew.bat
 settings.gradle
 generated/
 generated_tests/
