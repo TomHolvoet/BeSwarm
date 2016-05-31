@@ -48,6 +48,7 @@ public final class Transformations {
         final double q2 = quaternion.getY();
         final double q3 = quaternion.getZ();
 
+        // TODO improve precision
         final double eulerX = StrictMath.atan2(2 * (q0 * q1 + q2 * q3), 1 - 2 * (q1 * q1 + q2 * q2));
         final double eulerY = StrictMath.asin(2 * (q0 * q2 - q3 * q1));
         final double eulerZ = StrictMath.atan2(2 * (q0 * q3 + q1 * q2), 1 - 2 * (q2 * q2 + q3 * q3));
