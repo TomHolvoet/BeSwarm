@@ -14,7 +14,11 @@ final class PidController1D {
     private final double goalPoint;
     private final double goalVelocity;
 
+    private double dtInSeconds = 0;
+    private double lastTimeInSeconds = -1;
     private double accumulatedError = 0;
+
+    private static final double NANO_SECOND_TO_SECOND = 1000000000.0;
 
     private PidController1D(Builder builder) {
         parameters = builder.parameters;
@@ -59,7 +63,17 @@ final class PidController1D {
     }
 
     private void updateAccumulatedError(double error) {
-        accumulatedError += error;
+        // TODO how to test PID with non-negative ki?
+        if (lastTimeInSeconds < 0) {
+            lastTimeInSeconds = System.nanoTime() / NANO_SECOND_TO_SECOND;
+            dtInSeconds = 0;
+        } else {
+            final double currentTimeInSeconds = System.nanoTime() / NANO_SECOND_TO_SECOND;
+            dtInSeconds = currentTimeInSeconds - lastTimeInSeconds;
+            lastTimeInSeconds = currentTimeInSeconds;
+        }
+
+        accumulatedError += error * dtInSeconds;
 
         if (accumulatedError > parameters.maxIntegralError()) {
             accumulatedError = parameters.maxIntegralError();

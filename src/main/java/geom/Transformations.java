@@ -43,12 +43,12 @@ public final class Transformations {
      * @see <a href="https://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles">Equations</a>
      */
     public static EulerAngle computeEulerAngleFromQuaternionAngle(Quaternion quaternion) {
+        // TODO improve this method to avoid ambiguity
         final double q0 = quaternion.getW();
         final double q1 = quaternion.getX();
         final double q2 = quaternion.getY();
         final double q3 = quaternion.getZ();
 
-        // TODO improve precision
         final double eulerX = StrictMath.atan2(2 * (q0 * q1 + q2 * q3), 1 - 2 * (q1 * q1 + q2 * q2));
         final double eulerY = StrictMath.asin(2 * (q0 * q2 - q3 * q1));
         final double eulerZ = StrictMath.atan2(2 * (q0 * q3 + q1 * q2), 1 - 2 * (q2 * q2 + q3 * q3));

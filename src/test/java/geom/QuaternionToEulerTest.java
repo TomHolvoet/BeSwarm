@@ -41,13 +41,16 @@ public class QuaternionToEulerTest {
 
     @Parameterized.Parameters
     public static Collection<Object[]> data() {
-        // TODO add more parameters
-        // http://www.euclideanspace.com/maths/geometry/rotations/conversions/eulerToQuaternion/steps/index.htm
-        return asList(new Object[][]{{1, 0, 0, 0, 0, 0, 0}, {0.7071, 0, 0.7071, 0, 0, 1.5707963267948966, 0}});
+        // (w x y z) (x y z)
+        return asList(new Object[][]{{1, 0, 0, 0, 0, 0, 0},
+                {0.7071, 0, 0.7071, 0, 0, 1.5707963267948966, 0},
+                {0, 0, 1, 0, 0, 3.141592653589793, 0},
+                {0.7071, 0, -0.7071, 0, 0, -1.5707963267948966, 0}});
     }
 
     @Test
     public void testComputeEulerAngleFromQuaternionAngle() {
+        // TODO improve this test
         final Quaternion mockQuaternion = mock(Quaternion.class);
         when(mockQuaternion.getW()).thenReturn(quaternionW);
         when(mockQuaternion.getX()).thenReturn(quaternionX);

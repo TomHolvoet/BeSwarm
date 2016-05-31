@@ -78,7 +78,7 @@ dependencies {
 
 idea {
     module {
-        downloadJavadoc = true // defaults to false
+        downloadJavadoc = true
         downloadSources = true
     }
 }
