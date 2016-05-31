@@ -1,16 +1,3 @@
-plugins {
-    id "jacoco"
-    id "org.sonarqube" version "1.2"
-}
-
-sonarqube {
-    properties {
-        property "sonar.projectName", "Java :: Simple Project :: SonarQube Scanner for Gradle"
-        property "sonar.projectKey", "org.sonarqube:java-gradle-simple"
-        property "sonar.jacoco.reportPath", "${project.buildDir}/jacoco/test.exec"
-    }
-}
-
 group 'io.github.hoangtungdinh'
 version '1.0-SNAPSHOT'
 
