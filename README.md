@@ -1,4 +1,4 @@
-BebopRosJava is the pure Java implementation to control or simulate the Bebop drone using ROS.
+BebopRosJava is a pure Java implementation to control and simulate the Bebop drone using ROS/Gazebo.
 This implementation has worked for ROS Indigo.
 
 #  Installation
@@ -22,6 +22,6 @@ For simulation (this simulator uses the AR.Drone model, which has almost the sam
         - Go to your workspace and run `catkin_make`
         - For more information on building a RosJava project, see [this page, section 2](http://wiki.ros.org/rosjava_build_tools/Tutorials/indigo/WritingPublisherSubscriber%28Java%29)
 
-- Run your rosnode(s): 
+- Run your ros node(s): 
     - Go to `your_package/BebopRosJava/build/install/BebopRosJava/bin`
     - Run `./BebopRosJava your_rosnode_class_directory`
