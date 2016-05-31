@@ -1,4 +1,4 @@
-package pidcontroller;
+package control;
 
 import static com.google.common.base.Preconditions.checkArgument;
 

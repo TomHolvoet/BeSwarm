@@ -1,4 +1,4 @@
-package pidcontroller;
+package control;
 
 import com.google.auto.value.AutoValue;
 

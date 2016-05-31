@@ -1,4 +1,4 @@
-package pidcontroller;
+package control;
 
 import bebopbehavior.Pose;
 import bebopbehavior.Velocity;
