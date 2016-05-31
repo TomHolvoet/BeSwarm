@@ -9,7 +9,7 @@ apply plugin: 'application'
 mainClassName = 'org.ros.RosRun'
 
 jacoco {
-    toolVersion = "0.7.6.201602180812"
+    toolVersion = "0.7.1.201405082137"
     reportsDir = file("$buildDir/customJacocoReportDir")
 }
 
@@ -39,7 +39,6 @@ jacocoTestReport {
         }
     }
     additionalSourceDirs = files(sourceSets.main.allJava.srcDirs)
-    //additionalSourceDirs = files([sourceSets.main.allJava.srcDirs, xxxx, 'xxxxyyyy' ])
 }
 
 sourceCompatibility = 1.7
