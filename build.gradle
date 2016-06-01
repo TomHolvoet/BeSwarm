@@ -53,7 +53,7 @@ repositories {
         url "https://jitpack.io"
     }
 
-    mavenLocal()
+//    mavenLocal()
     mavenCentral()
     repositories {
         maven {

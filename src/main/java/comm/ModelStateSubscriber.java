@@ -1,69 +1,59 @@
 package comm;
 
-import bebopbehavior.Pose;
-import control.PoseUpdater;
+import com.google.common.base.Optional;
 import gazebo_msgs.ModelStates;
-import geom.Transformations;
-import geometry_msgs.Point;
-import geometry_msgs.Quaternion;
-import geometry_msgs.Twist;
 import org.ros.message.MessageListener;
 import org.ros.node.topic.Subscriber;
 
-import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * @author Hoang Tung Dinh
  */
 public final class ModelStateSubscriber {
-    private final PoseUpdater poseUpdater;
     private final Subscriber<ModelStates> subscriber;
+    private final ModelStateListener modelStateListener = ModelStateListener.create();
+    private boolean startedListeningToModelStates = false;
 
-    private ModelStateSubscriber(PoseUpdater poseUpdater, Subscriber<ModelStates> subscriber) {
-        this.poseUpdater = poseUpdater;
+    private ModelStateSubscriber(Subscriber<ModelStates> subscriber) {
         this.subscriber = subscriber;
     }
 
-    public static ModelStateSubscriber create(PoseUpdater poseUpdater, Subscriber<ModelStates> subscriber) {
-        return new ModelStateSubscriber(poseUpdater, subscriber);
+    public static ModelStateSubscriber create(Subscriber<ModelStates> subscriber) {
+        return new ModelStateSubscriber(subscriber);
     }
 
-    public void startListeningToModelState() {
-        subscriber.addMessageListener(ModelStatesMessageListener.create(poseUpdater));
-    }
-
-    private static final class ModelStatesMessageListener implements MessageListener<ModelStates> {
-        private final PoseUpdater poseUpdater;
-
-        private ModelStatesMessageListener(PoseUpdater poseUpdater) {
-            this.poseUpdater = poseUpdater;
+    public void startListeningToModelStates() {
+        if (!startedListeningToModelStates) {
+            subscriber.addMessageListener(modelStateListener);
+            startedListeningToModelStates = true;
         }
+    }
 
-        public static ModelStatesMessageListener create(PoseUpdater poseUpdater) {
-            return new ModelStatesMessageListener(poseUpdater);
+    public Optional<ModelStates> getMostRecentModelStates() {
+        return modelStateListener.getMostRecentModelStates();
+    }
+
+    private static final class ModelStateListener implements MessageListener<ModelStates> {
+        private final AtomicReference<ModelStates> modelStates = new AtomicReference<>();
+
+        private ModelStateListener() {}
+
+        public static ModelStateListener create() {
+            return new ModelStateListener();
         }
 
         @Override
-        public void onNewMessage(ModelStates modelStates) {
-            final String name = "quadrotor";
-            final List<String> names = modelStates.getName();
-            final int index = names.indexOf(name);
+        public void onNewMessage(ModelStates t) {
+            modelStates.set(t);
+        }
 
-            final geometry_msgs.Pose newPoseMessage = modelStates.getPose().get(index);
-            final Twist newTwist = modelStates.getTwist().get(index);
-
-            final Point newPoint = newPoseMessage.getPosition();
-            final Quaternion newOrientation = newPoseMessage.getOrientation();
-            final double newYaw = Transformations.computeEulerAngleFromQuaternionAngle(newOrientation).angleZ();
-
-            final Pose newPose = Pose.builder()
-                    .x(newPoint.getX())
-                    .y(newPoint.getY())
-                    .z(newPoint.getZ())
-                    .yaw(newYaw)
-                    .build();
-
-            poseUpdater.updatePose(newPose);
+        Optional<ModelStates> getMostRecentModelStates() {
+            if (modelStates.get() == null) {
+                return Optional.absent();
+            } else {
+                return Optional.of(modelStates.get());
+            }
         }
     }
 }

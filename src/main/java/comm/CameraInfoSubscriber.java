@@ -1,10 +1,10 @@
 package comm;
 
+import com.google.common.base.Optional;
 import org.ros.message.MessageListener;
 import org.ros.node.topic.Subscriber;
 import sensor_msgs.CameraInfo;
 
-import javax.annotation.Nullable;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
@@ -32,8 +32,7 @@ public final class CameraInfoSubscriber {
         }
     }
 
-    @Nullable
-    public CameraInfo getCameraInfo() {
+    public Optional<CameraInfo> getCameraInfo() {
         return cameraInfoListener.getCameraInfo();
     }
 
@@ -53,9 +52,12 @@ public final class CameraInfoSubscriber {
             }
         }
 
-        @Nullable
-        CameraInfo getCameraInfo() {
-            return cameraInfo.get();
+        Optional<CameraInfo> getCameraInfo() {
+            if (cameraInfo.get() == null) {
+                return Optional.absent();
+            } else {
+                return Optional.of(cameraInfo.get());
+            }
         }
     }
 }

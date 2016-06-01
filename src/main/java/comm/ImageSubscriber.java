@@ -1,10 +1,10 @@
 package comm;
 
+import com.google.common.base.Optional;
 import org.ros.message.MessageListener;
 import org.ros.node.topic.Subscriber;
 import sensor_msgs.Image;
 
-import javax.annotation.Nullable;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
@@ -26,11 +26,11 @@ public final class ImageSubscriber {
     public void startListeningToImage() {
         if (!startedListening) {
             subscriber.addMessageListener(imageListener);
+            startedListening = true;
         }
     }
 
-    @Nullable
-    public Image getMostRecentImage() {
+    public Optional<Image> getMostRecentImage() {
         return imageListener.getMostRecentImage();
     }
 
@@ -48,9 +48,12 @@ public final class ImageSubscriber {
             mostRecentImage.set(image);
         }
 
-        @Nullable
-        Image getMostRecentImage() {
-            return mostRecentImage.get();
+        Optional<Image> getMostRecentImage() {
+            if (mostRecentImage.get() == null) {
+                return Optional.absent();
+            } else {
+                return Optional.of(mostRecentImage.get());
+            }
         }
     }
 }
