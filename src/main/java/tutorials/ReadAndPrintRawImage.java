@@ -1,30 +1,31 @@
 package tutorials;
 
-import comm.CameraInfoSubscriber;
+import comm.ImageSubscriber;
 import org.ros.namespace.GraphName;
 import org.ros.node.AbstractNodeMain;
 import org.ros.node.ConnectedNode;
 import org.ros.node.topic.Subscriber;
 import sensor_msgs.CameraInfo;
+import sensor_msgs.Image;
 
 /**
  * @author Hoang Tung Dinh
  */
-public class ReadAndPrintCameraInfo extends AbstractNodeMain {
+public class ReadAndPrintRawImage extends AbstractNodeMain {
     @Override
     public GraphName getDefaultNodeName() {
-        return GraphName.of("ReadAndPrintCameraInfo");
+        return GraphName.of("ReadAndPrintRawImage");
     }
 
     @Override
     public void onStart(ConnectedNode connectedNode) {
-        final Subscriber<CameraInfo> subscriber = connectedNode.newSubscriber("/bebop/camera_info", CameraInfo._TYPE);
-        final CameraInfoSubscriber cameraInfoSubscriber = CameraInfoSubscriber.create(subscriber);
-        cameraInfoSubscriber.startListeningToCameraInfo();
+        final Subscriber<Image> subscriber = connectedNode.newSubscriber("/bebop/image_raw", CameraInfo._TYPE);
+        final ImageSubscriber imageSubscriber = ImageSubscriber.create(subscriber);
+        imageSubscriber.startListeningToImage();
         while (true) {
             try {
                 Thread.sleep(50);
-                System.out.println(cameraInfoSubscriber.getCameraInfo());
+                System.out.println(imageSubscriber.getMostRecentImage());
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
