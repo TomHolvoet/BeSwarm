@@ -8,7 +8,7 @@ import java.util.concurrent.atomic.AtomicReference;
 /**
  * @author Hoang Tung Dinh
  */
-public final class AtomicPose {
+public final class AtomicPose implements PoseUpdater, PoseProvider {
     private final AtomicReference<Pose> pose = new AtomicReference<>();
 
     private AtomicPose() {}
@@ -22,6 +22,7 @@ public final class AtomicPose {
      *
      * @param newPose the new pose of the drone
      */
+    @Override
     public void updatePose(Pose newPose) {
         pose.set(newPose);
     }
@@ -29,6 +30,7 @@ public final class AtomicPose {
     /**
      * @return the most recent pose of the drone
      */
+    @Override
     public Pose getMostRecentPose() {
         return pose.get();
     }

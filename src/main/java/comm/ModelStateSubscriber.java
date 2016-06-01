@@ -1,6 +1,7 @@
 package comm;
 
 import bebopbehavior.Pose;
+import control.PoseUpdater;
 import gazebo_msgs.ModelStates;
 import geom.Transformations;
 import geometry_msgs.Point;
@@ -10,37 +11,36 @@ import org.ros.message.MessageListener;
 import org.ros.node.topic.Subscriber;
 
 import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * @author Hoang Tung Dinh
  */
 public final class ModelStateSubscriber {
-    private final AtomicReference<Pose> atomicPose;
+    private final PoseUpdater poseUpdater;
     private final Subscriber<ModelStates> subscriber;
 
-    private ModelStateSubscriber(AtomicReference<Pose> atomicPose, Subscriber<ModelStates> subscriber) {
-        this.atomicPose = atomicPose;
+    private ModelStateSubscriber(PoseUpdater poseUpdater, Subscriber<ModelStates> subscriber) {
+        this.poseUpdater = poseUpdater;
         this.subscriber = subscriber;
     }
 
-    public static ModelStateSubscriber create(AtomicReference<Pose> pose, Subscriber<ModelStates> subscriber) {
-        return new ModelStateSubscriber(pose, subscriber);
+    public static ModelStateSubscriber create(PoseUpdater poseUpdater, Subscriber<ModelStates> subscriber) {
+        return new ModelStateSubscriber(poseUpdater, subscriber);
     }
 
     public void startListeningToModelState() {
-        subscriber.addMessageListener(ModelStatesMessageListener.create(atomicPose));
+        subscriber.addMessageListener(ModelStatesMessageListener.create(poseUpdater));
     }
 
     private static final class ModelStatesMessageListener implements MessageListener<ModelStates> {
-        private final AtomicReference<Pose> atomicPose;
+        private final PoseUpdater poseUpdater;
 
-        private ModelStatesMessageListener(AtomicReference<Pose> atomicPose) {
-            this.atomicPose = atomicPose;
+        private ModelStatesMessageListener(PoseUpdater poseUpdater) {
+            this.poseUpdater = poseUpdater;
         }
 
-        public static ModelStatesMessageListener create(AtomicReference<Pose> pose) {
-            return new ModelStatesMessageListener(pose);
+        public static ModelStatesMessageListener create(PoseUpdater poseUpdater) {
+            return new ModelStatesMessageListener(poseUpdater);
         }
 
         @Override
@@ -63,7 +63,7 @@ public final class ModelStateSubscriber {
                     .yaw(newYaw)
                     .build();
 
-            atomicPose.set(newPose);
+            poseUpdater.updatePose(newPose);
         }
     }
 }
