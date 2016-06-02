@@ -21,6 +21,29 @@ public abstract class Velocity {
         return new AutoValue_Velocity.Builder();
     }
 
+    /**
+     * Compute velocity in local coordinate frame from velocity in global coordinate frame.
+     *
+     * @param globalVelocity velocity in global coordinate frame
+     * @return velocity in local coordinate frame
+     */
+    public static Velocity createLocalVelocityFromGlobalVelocity(Velocity globalVelocity, double currentYaw) {
+        // TODO test me
+        // same linearZ
+        final double linearZ = globalVelocity.linearZ();
+        // same angularZ
+        final double angularZ = globalVelocity.angularZ();
+
+        final double theta = -currentYaw;
+        final double sin = StrictMath.sin(theta);
+        final double cos = StrictMath.cos(theta);
+
+        final double linearX = globalVelocity.linearX() * cos - globalVelocity.linearY() * sin;
+        final double linearY = globalVelocity.linearX() * sin + globalVelocity.linearY() * cos;
+
+        return builder().linearX(linearX).linearY(linearY).linearZ(linearZ).angularZ(angularZ).build();
+    }
+
     @AutoValue.Builder
     public abstract static class Builder {
         public abstract Builder linearX(double value);

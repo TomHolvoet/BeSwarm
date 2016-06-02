@@ -16,7 +16,7 @@ import static org.mockito.Mockito.when;
  * @author Hoang Tung Dinh
  */
 @RunWith(Parameterized.class)
-public class QuaternionToEulerTest {
+public class EulerAngleTest {
     private final double quaternionW;
     private final double quaternionX;
     private final double quaternionY;
@@ -28,8 +28,8 @@ public class QuaternionToEulerTest {
 
     private static final double DELTA = 0.01;
 
-    public QuaternionToEulerTest(double quaternionW, double quaternionX, double quaternionY, double quaternionZ,
-            double eulerX, double eulerY, double eulerZ) {
+    public EulerAngleTest(double quaternionW, double quaternionX, double quaternionY, double quaternionZ, double eulerX,
+            double eulerY, double eulerZ) {
         this.quaternionW = quaternionW;
         this.quaternionX = quaternionX;
         this.quaternionY = quaternionY;
@@ -57,11 +57,10 @@ public class QuaternionToEulerTest {
         when(mockQuaternion.getY()).thenReturn(quaternionY);
         when(mockQuaternion.getZ()).thenReturn(quaternionZ);
 
-        final EulerAngle eulerAngle = Transformations.computeEulerAngleFromQuaternionAngle(mockQuaternion);
+        final EulerAngle eulerAngle = EulerAngle.createFromQuaternion(mockQuaternion);
 
         assertThat(eulerAngle.angleX()).isWithin(DELTA).of(eulerX);
         assertThat(eulerAngle.angleY()).isWithin(DELTA).of(eulerY);
         assertThat(eulerAngle.angleZ()).isWithin(DELTA).of(eulerZ);
     }
-
 }

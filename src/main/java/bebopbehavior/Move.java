@@ -2,12 +2,6 @@ package bebopbehavior;
 
 import comm.VelocityPublisher;
 
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
-
 import static com.google.common.base.Preconditions.checkArgument;
 
 /**
@@ -21,58 +15,45 @@ public final class Move implements Command {
     private final VelocityPublisher velocityPublisher;
     private final Velocity velocity;
     private final double durationInSeconds;
-    private final long sendingRateInMilliSeconds;
+    private final double sendingRateInSeconds;
 
-    private static final long DEFAULT_SENDING_RATE_IN_MILLISECONDS = 50;
+    private static final double DEFAULT_SENDING_RATE_IN_SECONDS = 0.05;
 
     private Move(Builder builder) {
         velocityPublisher = builder.velocityPublisher;
         velocity = builder.velocity;
         durationInSeconds = builder.durationInSeconds;
-        sendingRateInMilliSeconds = builder.sendingRateInMilliSeconds;
+        sendingRateInSeconds = builder.sendingRateInSeconds;
         checkArgument(durationInSeconds > 0,
                 String.format("Duration must be a positive value, but it is %f", durationInSeconds));
-        checkArgument(sendingRateInMilliSeconds > 0,
-                String.format("Sending rate must be a positive value, but it is %f", sendingRateInMilliSeconds));
+        checkArgument(sendingRateInSeconds > 0,
+                String.format("Sending rate must be a positive value, but it is %f", sendingRateInSeconds));
     }
 
     /**
-     * {@link Builder#sendingRateInMilliSeconds} is optional. By default, the rate is set at 50ms (20Hz). All
-     * other fields are mandatory.
+     * {@link Builder#sendingRateInSeconds(double)} is optional. All other parameters are mandatory.
      *
-     * @return the builder
+     * @return
      */
     public static Builder builder() {
-        return new Builder().sendingRateInMilliSeconds(DEFAULT_SENDING_RATE_IN_MILLISECONDS);
+        return new Builder().sendingRateInSeconds(DEFAULT_SENDING_RATE_IN_SECONDS);
     }
 
     @Override
     public void execute() {
-        final Runnable publishCommand = new Runnable() {
-            @Override
-            public void run() {
-                velocityPublisher.publishVelocityCommand(velocity);
-            }
-        };
-
-        // TODO refactor this part
-        final long durationInMilliSeconds = (long) (durationInSeconds * 1000);
-        final Future<?> task = Executors.newSingleThreadScheduledExecutor()
-                .scheduleAtFixedRate(publishCommand, 0, sendingRateInMilliSeconds, TimeUnit.MILLISECONDS);
-
-        try {
-            task.get(durationInMilliSeconds, TimeUnit.MILLISECONDS);
-        } catch (InterruptedException e) {
-            // TODO add log
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (TimeoutException e) {
-            task.cancel(true);
-        }
-
+        final Runnable sendCommand = new SendCommand();
+        PeriodicTaskRunner.run(sendCommand, sendingRateInSeconds, durationInSeconds);
         final Command stopMoving = StopMoving.create(velocityPublisher);
         stopMoving.execute();
+    }
+
+    private final class SendCommand implements Runnable {
+        private SendCommand() {}
+
+        @Override
+        public void run() {
+            velocityPublisher.publishVelocityCommand(velocity);
+        }
     }
 
     /**
@@ -82,7 +63,7 @@ public final class Move implements Command {
         private VelocityPublisher velocityPublisher;
         private Velocity velocity;
         private double durationInSeconds;
-        private long sendingRateInMilliSeconds;
+        private double sendingRateInSeconds;
 
         private Builder() {}
 
@@ -123,14 +104,14 @@ public final class Move implements Command {
         }
 
         /**
-         * Sets the {@code sendingRateInMilliSeconds} and returns a reference to this Builder so that the methods can
-         * be chained together.
+         * Sets the {@code sendingRateInSeconds} and returns a reference to this Builder so that the methods can be
+         * chained together.
          *
-         * @param val the {@code sendingRateInMilliSeconds} to set
+         * @param val the {@code sendingRateInSeconds} to set
          * @return a reference to this Builder
          */
-        public Builder sendingRateInMilliSeconds(long val) {
-            sendingRateInMilliSeconds = val;
+        public Builder sendingRateInSeconds(double val) {
+            sendingRateInSeconds = val;
             return this;
         }
 
