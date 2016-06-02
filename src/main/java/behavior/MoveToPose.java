@@ -1,4 +1,4 @@
-package bebopbehavior;
+package behavior;
 
 /**
  * @author Hoang Tung Dinh

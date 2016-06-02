@@ -1,4 +1,4 @@
-package bebopbehavior;
+package behavior;
 
 /**
  * Command interface for the behaviors of the drone.

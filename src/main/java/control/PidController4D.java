@@ -1,7 +1,7 @@
 package control;
 
-import bebopbehavior.Pose;
-import bebopbehavior.Velocity;
+import behavior.Pose;
+import behavior.Velocity;
 
 /**
  * A four-dimensional PID controller for the drone. It is the composition of 4 one-dimensional PID controller

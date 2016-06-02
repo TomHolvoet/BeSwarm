@@ -1,10 +1,13 @@
-package bebopfly;
+package flywithbebop;
 
-import bebopbehavior.Command;
-import bebopbehavior.Hover;
-import bebopbehavior.Land;
-import bebopbehavior.MoveCircleClockwise;
-import bebopbehavior.Takeoff;
+import behavior.Command;
+import behavior.Hover;
+import behavior.Land;
+import behavior.MoveBackward;
+import behavior.MoveForward;
+import behavior.MoveLeft;
+import behavior.MoveRight;
+import behavior.Takeoff;
 import comm.LandPublisher;
 import comm.TakeoffPublisher;
 import comm.VelocityPublisher;
@@ -18,11 +21,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * This node controls the drone flying as a circle.
+ * This node controls the drone flying with a plus "+" patter.
  *
  * @author Hoang Tung Dinh
  */
-public class BebopCirclePattern extends AbstractNodeMain {
+public class BebopPlusPattern extends AbstractNodeMain {
 
     @Override
     public GraphName getDefaultNodeName() {
@@ -58,8 +61,20 @@ public class BebopCirclePattern extends AbstractNodeMain {
         commands.add(takeOff);
         final Command hoverOneSecond = Hover.create(velocityPublisher, 1);
         commands.add(hoverOneSecond);
-        final Command moveCircle = MoveCircleClockwise.create(velocityPublisher, 0.5, 0.5, 3);
-        commands.add(moveCircle);
+        final Command moveForwardOneSecond = MoveForward.create(velocityPublisher, 0.5, 1);
+        commands.add(moveForwardOneSecond);
+        commands.add(hoverOneSecond);
+        final Command moveBackwardTwoSeconds = MoveBackward.create(velocityPublisher, 0.5, 2);
+        commands.add(moveBackwardTwoSeconds);
+        commands.add(hoverOneSecond);
+        commands.add(moveForwardOneSecond);
+        final Command moveLeftOneSecond = MoveLeft.create(velocityPublisher, 0.5, 1);
+        commands.add(moveLeftOneSecond);
+        commands.add(hoverOneSecond);
+        final Command moveRightTwoSeconds = MoveRight.create(velocityPublisher, 0.5, 2);
+        commands.add(moveRightTwoSeconds);
+        commands.add(hoverOneSecond);
+        commands.add(moveLeftOneSecond);
         commands.add(hoverOneSecond);
         final Command land = Land.create(landPublisher);
         commands.add(land);

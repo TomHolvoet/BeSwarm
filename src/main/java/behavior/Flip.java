@@ -1,4 +1,4 @@
-package bebopbehavior;
+package behavior;
 
 import comm.FlipPublisher;
 

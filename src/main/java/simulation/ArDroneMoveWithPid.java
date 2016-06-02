@@ -1,11 +1,11 @@
 package simulation;
 
-import bebopbehavior.Command;
-import bebopbehavior.Hover;
-import bebopbehavior.MoveToPose;
-import bebopbehavior.Pose;
-import bebopbehavior.Takeoff;
-import bebopbehavior.Velocity;
+import behavior.Command;
+import behavior.Hover;
+import behavior.MoveToPose;
+import behavior.Pose;
+import behavior.Takeoff;
+import behavior.Velocity;
 import comm.ModelStateSubscriber;
 import comm.TakeoffPublisher;
 import comm.VelocityPublisher;

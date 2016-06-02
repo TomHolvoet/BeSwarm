@@ -1,11 +1,11 @@
 package tutorials;
 
-import bebopbehavior.Command;
-import bebopbehavior.Hover;
-import bebopbehavior.MoveBackward;
-import bebopbehavior.MoveForward;
-import bebopbehavior.MoveLeft;
-import bebopbehavior.MoveRight;
+import behavior.Command;
+import behavior.Hover;
+import behavior.MoveBackward;
+import behavior.MoveForward;
+import behavior.MoveLeft;
+import behavior.MoveRight;
 import comm.VelocityPublisher;
 import geometry_msgs.Twist;
 import org.ros.namespace.GraphName;

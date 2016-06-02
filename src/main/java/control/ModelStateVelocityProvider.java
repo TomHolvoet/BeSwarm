@@ -1,6 +1,6 @@
 package control;
 
-import bebopbehavior.Velocity;
+import behavior.Velocity;
 import com.google.common.base.Optional;
 import comm.ModelStateSubscriber;
 import gazebo_msgs.ModelStates;

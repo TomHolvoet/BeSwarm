@@ -1,6 +1,6 @@
 package control;
 
-import bebopbehavior.Pose;
+import behavior.Pose;
 import com.google.common.base.Optional;
 
 /**

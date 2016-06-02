@@ -1,4 +1,4 @@
-package bebopbehavior;
+package behavior;
 
 /**
  * Direction for flipping.
