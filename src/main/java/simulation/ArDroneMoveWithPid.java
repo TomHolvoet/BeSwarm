@@ -2,10 +2,13 @@ package simulation;
 
 import behavior.Command;
 import behavior.Hover;
+import behavior.Land;
 import behavior.MoveToPose;
 import behavior.Pose;
 import behavior.Takeoff;
 import behavior.Velocity;
+import com.google.common.collect.ImmutableList;
+import comm.LandPublisher;
 import comm.ModelStateSubscriber;
 import comm.TakeoffPublisher;
 import comm.VelocityPublisher;
@@ -19,6 +22,11 @@ import org.ros.namespace.GraphName;
 import org.ros.node.AbstractNodeMain;
 import org.ros.node.ConnectedNode;
 import std_msgs.Empty;
+import taskexecutor.SimpleEmergencyAfterOneMinute;
+import taskexecutor.Task;
+import taskexecutor.TaskExecutor;
+import taskexecutor.TaskExecutorService;
+import taskexecutor.TaskType;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -54,6 +62,8 @@ public final class ArDroneMoveWithPid extends AbstractNodeMain {
                 .build();
         final ModelStateSubscriber modelStateSubscriber = ModelStateSubscriber.create(
                 connectedNode.<ModelStates>newSubscriber("/gazebo/model_states", ModelStates._TYPE));
+        final LandPublisher landPublisher = LandPublisher.create(
+                connectedNode.<Empty>newPublisher("/ardrone/land", Empty._TYPE));
 
         try {
             Thread.sleep(5000);
@@ -84,9 +94,14 @@ public final class ArDroneMoveWithPid extends AbstractNodeMain {
                 .build();
         commands.add(moveToPose);
 
-        for (final Command command : commands) {
-            command.execute();
-        }
+        final Task flyTask = Task.create(ImmutableList.copyOf(commands), TaskType.NORMAL_TASK);
+        final TaskExecutor taskExecutor = TaskExecutorService.create();
 
+        final Command land = Land.create(landPublisher);
+        final Task emergencyTask = Task.create(ImmutableList.<Command>of(land), TaskType.FIRST_ORDER_EMERGENCY);
+        final SimpleEmergencyAfterOneMinute emergencySubject = SimpleEmergencyAfterOneMinute.create(emergencyTask, taskExecutor);
+
+        taskExecutor.submitTask(flyTask);
+        emergencySubject.run();
     }
 }

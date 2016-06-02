@@ -24,13 +24,12 @@ public final class PeriodicTaskRunner {
 
         try {
             future.get(durationInMilliSeconds, TimeUnit.MILLISECONDS);
-        } catch (InterruptedException e) {
+        } catch (InterruptedException | TimeoutException e) {
             // TODO add log
-            e.printStackTrace();
+            // the task is cancelled if time ran out or the current thread is interrupted while waiting.
+            future.cancel(true);
         } catch (ExecutionException e) {
             e.printStackTrace();
-        } catch (TimeoutException e) {
-            future.cancel(true);
         }
     }
 }
