@@ -83,6 +83,7 @@ public final class ArDroneMoveWithPid extends AbstractNodeMain {
                 .pidController4D(pidController4D)
                 .durationInSeconds(60)
                 .build();
+        commands.add(moveToPose);
 
         for (final Command command : commands) {
             command.execute();

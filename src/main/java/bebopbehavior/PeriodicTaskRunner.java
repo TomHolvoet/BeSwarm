@@ -15,7 +15,7 @@ public final class PeriodicTaskRunner {
 
     public static void run(Runnable task, double rateInSeconds, double durationInSeconds) {
         final long initialDelay = 0;
-        final long rateInMilliSeconds = (long) (durationInSeconds * 1000);
+        final long rateInMilliSeconds = (long) (rateInSeconds * 1000);
 
         final Future<?> future = Executors.newSingleThreadScheduledExecutor()
                 .scheduleAtFixedRate(task, initialDelay, rateInMilliSeconds, TimeUnit.MILLISECONDS);
