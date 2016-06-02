@@ -11,8 +11,6 @@ import comm.TakeoffPublisher;
 import comm.VelocityPublisher;
 import control.ModelStatePoseProvider;
 import control.ModelStateVelocityProvider;
-import control.PidController4D;
-import control.PidParameters;
 import control.PoseProvider;
 import control.VelocityProvider;
 import gazebo_msgs.ModelStates;
@@ -56,7 +54,6 @@ public final class ArDroneMoveWithPid extends AbstractNodeMain {
                 .build();
         final ModelStateSubscriber modelStateSubscriber = ModelStateSubscriber.create(
                 connectedNode.<ModelStates>newSubscriber("/gazebo/model_states", ModelStates._TYPE));
-        final String modelName = "quadrotor";
 
         try {
             Thread.sleep(5000);
@@ -72,15 +69,17 @@ public final class ArDroneMoveWithPid extends AbstractNodeMain {
         final Command hoverFiveSecond = Hover.create(velocityPublisher, 5);
         commands.add(hoverFiveSecond);
 
-        final PidController4D pidController4D = createPidController();
+        final String modelName = "quadrotor";
         final PoseProvider poseProvider = ModelStatePoseProvider.create(modelStateSubscriber, modelName);
         final VelocityProvider velocityProvider = ModelStateVelocityProvider.create(modelStateSubscriber, modelName);
-        // TODO: 02/06/16 MoveToPose needs to create pid controller inside
+        final Pose goalPose = Pose.builder().x(3).y(-3).z(3).yaw(1).build();
+        final Velocity goalVelocity = Velocity.builder().linearX(0).linearY(0).linearZ(0).angularZ(0).build();
         final Command moveToPose = MoveToPose.builder()
                 .poseProvider(poseProvider)
                 .velocityProvider(velocityProvider)
                 .velocityPublisher(velocityPublisher)
-                .pidController4D(pidController4D)
+                .goalPose(goalPose)
+                .goalVelocity(goalVelocity)
                 .durationInSeconds(60)
                 .build();
         commands.add(moveToPose);
@@ -89,22 +88,5 @@ public final class ArDroneMoveWithPid extends AbstractNodeMain {
             command.execute();
         }
 
-    }
-
-    private static PidController4D createPidController() {
-        final PidParameters pidLinearParameters = PidParameters.builder().kp(0.5).kd(1).ki(0).build();
-        final PidParameters pidAngularParameters = PidParameters.builder().kp(0.1).kd(0.5).ki(0).build();
-
-        final Pose goalPose = Pose.builder().x(3).y(-3).z(3).yaw(1).build();
-        final Velocity goalVelocity = Velocity.builder().linearX(0).linearY(0).linearZ(0).angularZ(0).build();
-
-        return PidController4D.builder()
-                .linearXParameters(pidLinearParameters)
-                .linearYParameters(pidLinearParameters)
-                .linearZParameters(pidLinearParameters)
-                .angularZParameters(pidAngularParameters)
-                .goalPose(goalPose)
-                .goalVelocity(goalVelocity)
-                .build();
     }
 }

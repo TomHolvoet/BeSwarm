@@ -7,6 +7,7 @@ package bebopbehavior;
 import com.google.common.base.Optional;
 import comm.VelocityPublisher;
 import control.PidController4D;
+import control.PidParameters;
 import control.PoseProvider;
 import control.VelocityProvider;
 
@@ -19,38 +20,70 @@ public final class MoveToPose implements Command {
     private final VelocityPublisher velocityPublisher;
     private final PoseProvider poseProvider;
     private final VelocityProvider velocityProvider;
-    private final PidController4D pidController4D;
+    private final PidParameters pidLinearParameters;
+    private final PidParameters pidAngularParameters;
+    private final Pose goalPose;
+    private final Velocity goalVelocity;
     private final double durationInSeconds;
     private final double controlRateInSeconds;
 
     private static final double DEFAULT_CONTROL_RATE_IN_SECONDS = 0.05;
+    private static final PidParameters DEFAULT_PID_LINEAR_PARAMETERS = PidParameters.builder()
+            .kp(0.5)
+            .kd(1)
+            .ki(0)
+            .build();
+    private static final PidParameters DEFAULT_PID_ANGULAR_PARAMETERS = PidParameters.builder()
+            .kp(0.1)
+            .kd(0.5)
+            .ki(0)
+            .build();
 
     private MoveToPose(Builder builder) {
         velocityPublisher = builder.velocityPublisher;
         poseProvider = builder.poseProvider;
         velocityProvider = builder.velocityProvider;
-        pidController4D = builder.pidController4D;
+        pidLinearParameters = builder.pidLinearParameters;
+        pidAngularParameters = builder.pidAngularParameters;
+        goalPose = builder.goalPose;
+        goalVelocity = builder.goalVelocity;
         durationInSeconds = builder.durationInSeconds;
         controlRateInSeconds = builder.controlRateInSeconds;
     }
 
     /**
-     * {@link Builder#controlRateInSeconds(double)} is optional. All other parameters are mandatory.
+     * {@link Builder#controlRateInSeconds(double)}, {@link Builder#pidLinearParameters(PidParameters)} and
+     * {@link Builder#pidLinearParameters(PidParameters)} are optional. All other parameters are mandatory.
      *
      * @return a builder
      */
     public static Builder builder() {
-        return new Builder().controlRateInSeconds(DEFAULT_CONTROL_RATE_IN_SECONDS);
+        return new Builder().controlRateInSeconds(DEFAULT_CONTROL_RATE_IN_SECONDS)
+                .pidLinearParameters(DEFAULT_PID_LINEAR_PARAMETERS)
+                .pidAngularParameters(DEFAULT_PID_ANGULAR_PARAMETERS);
     }
 
     @Override
     public void execute() {
-        final Runnable computeNextResponse = new ComputeNextResponse();
+        final PidController4D pidController4D = PidController4D.builder()
+                .linearXParameters(pidLinearParameters)
+                .linearYParameters(pidLinearParameters)
+                .linearZParameters(pidLinearParameters)
+                .angularZParameters(pidAngularParameters)
+                .goalPose(goalPose)
+                .goalVelocity(goalVelocity)
+                .build();
+
+        final Runnable computeNextResponse = new ComputeNextResponse(pidController4D);
         PeriodicTaskRunner.run(computeNextResponse, controlRateInSeconds, durationInSeconds);
     }
 
     private final class ComputeNextResponse implements Runnable {
-        private ComputeNextResponse() {}
+        private final PidController4D pidController4D;
+
+        private ComputeNextResponse(PidController4D pidController4D) {
+            this.pidController4D = pidController4D;
+        }
 
         @Override
         public void run() {
@@ -79,7 +112,10 @@ public final class MoveToPose implements Command {
         private VelocityPublisher velocityPublisher;
         private PoseProvider poseProvider;
         private VelocityProvider velocityProvider;
-        private PidController4D pidController4D;
+        private PidParameters pidLinearParameters;
+        private PidParameters pidAngularParameters;
+        private Pose goalPose;
+        private Velocity goalVelocity;
         private double durationInSeconds;
         private double controlRateInSeconds;
 
@@ -122,14 +158,50 @@ public final class MoveToPose implements Command {
         }
 
         /**
-         * Sets the {@code pidController4D} and returns a reference to this Builder so that the methods can be
+         * Sets the {@code pidLinearParameters} and returns a reference to this Builder so that the methods can be
          * chained together.
          *
-         * @param val the {@code pidController4D} to set
+         * @param val the {@code pidLinearParameters} to set
          * @return a reference to this Builder
          */
-        public Builder pidController4D(PidController4D val) {
-            pidController4D = val;
+        public Builder pidLinearParameters(PidParameters val) {
+            pidLinearParameters = val;
+            return this;
+        }
+
+        /**
+         * Sets the {@code pidAngularParameters} and returns a reference to this Builder so that the methods can be
+         * chained together.
+         *
+         * @param val the {@code pidAngularParameters} to set
+         * @return a reference to this Builder
+         */
+        public Builder pidAngularParameters(PidParameters val) {
+            pidAngularParameters = val;
+            return this;
+        }
+
+        /**
+         * Sets the {@code goalPose} and returns a reference to this Builder so that the methods can be chained
+         * together.
+         *
+         * @param val the {@code goalPose} to set
+         * @return a reference to this Builder
+         */
+        public Builder goalPose(Pose val) {
+            goalPose = val;
+            return this;
+        }
+
+        /**
+         * Sets the {@code goalVelocity} and returns a reference to this Builder so that the methods can be chained
+         * together.
+         *
+         * @param val the {@code goalVelocity} to set
+         * @return a reference to this Builder
+         */
+        public Builder goalVelocity(Velocity val) {
+            goalVelocity = val;
             return this;
         }
 
