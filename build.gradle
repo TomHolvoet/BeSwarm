@@ -77,7 +77,7 @@ dependencies {
     compile 'com.github.jabrena:NyARToolkit-4.1.1:v4.1.1'
     compile 'com.google.code.findbugs:jsr305:[3.0.0,4.0.0)'
     compile 'org.slf4j:slf4j-api:1.7.20'
-    compile 'org.slf4j:slf4j-simple:1.7.20'
+    compile 'ch.qos.logback:logback-classic:1.1.7'
     compile 'pl.pragmatists:JUnitParams:1.0.5'
 }
 
