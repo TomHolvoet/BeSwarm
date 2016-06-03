@@ -8,6 +8,7 @@ import behavior.Pose;
 import behavior.Takeoff;
 import behavior.Velocity;
 import com.google.common.collect.ImmutableList;
+import comm.KeyboardSubscriber;
 import comm.LandPublisher;
 import comm.ModelStateSubscriber;
 import comm.TakeoffPublisher;
@@ -18,11 +19,11 @@ import control.PoseProvider;
 import control.VelocityProvider;
 import gazebo_msgs.ModelStates;
 import geometry_msgs.Twist;
+import keyboard.Key;
 import org.ros.namespace.GraphName;
 import org.ros.node.AbstractNodeMain;
 import org.ros.node.ConnectedNode;
 import std_msgs.Empty;
-import taskexecutor.EmergencyNotifier;
 import taskexecutor.KeyboardEmergency;
 import taskexecutor.SimpleEmergencyAfterOneMinute;
 import taskexecutor.Task;
@@ -103,7 +104,12 @@ public final class ArDroneMoveWithPid extends AbstractNodeMain {
         final Task emergencyTask = Task.create(ImmutableList.of(land), TaskType.FIRST_ORDER_EMERGENCY);
         final SimpleEmergencyAfterOneMinute emergencySubject = SimpleEmergencyAfterOneMinute.create(emergencyTask,
                 taskExecutor);
-        final EmergencyNotifier keyboardEmergency = KeyboardEmergency.create(emergencyTask);
+
+        final KeyboardEmergency keyboardEmergency = KeyboardEmergency.create(emergencyTask);
+        final KeyboardSubscriber keyboardSubscriber = KeyboardSubscriber.create(
+                connectedNode.<Key>newSubscriber("/keyboard/keydown", Key._TYPE));
+        keyboardSubscriber.startListeningToKeyboard();
+        keyboardSubscriber.registerObserver(keyboardEmergency);
         keyboardEmergency.registerTaskExecutor(taskExecutor);
         taskExecutor.submitTask(flyTask);
         emergencySubject.run();
