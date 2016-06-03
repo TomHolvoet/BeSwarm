@@ -4,8 +4,12 @@ appender("STDOUT", ConsoleAppender) {
     }
 }
 
+def USER_HOME = System.getProperty("user.home")
+def bySecond = timestamp("yyyy-MM-dd-HH-mm-ss")
+def DIR = USER_HOME + "/logs/" + bySecond
+
 appender("FILE", FileAppender) {
-    file = "beboprosjava.log"
+    file = "${DIR}/beboprosjava.log"
     encoder(PatternLayoutEncoder) {
         pattern = "%-4relative [%thread] %-5level %logger{35} - %msg %n"
     }

@@ -79,6 +79,7 @@ dependencies {
     compile 'org.slf4j:slf4j-api:1.7.20'
     compile 'ch.qos.logback:logback-classic:1.1.7'
     compile 'pl.pragmatists:JUnitParams:1.0.5'
+    compile 'org.codehaus.groovy:groovy-all:2.4.6'
 }
 
 idea {
