@@ -10,7 +10,7 @@ import java.util.concurrent.atomic.AtomicReference;
 /**
  * @author Hoang Tung Dinh
  */
-public final class ImageSubscriber {
+public final class ImageSubscriber implements SubscriberFacade {
     private final Subscriber<Image> subscriber;
     private final ImageListener imageListener = ImageListener.create();
     private boolean startedListening = false;
@@ -23,7 +23,8 @@ public final class ImageSubscriber {
         return new ImageSubscriber(subscriber);
     }
 
-    public void startListeningToImage() {
+    @Override
+    public void startListeningToMessages() {
         if (!startedListening) {
             subscriber.addMessageListener(imageListener);
             startedListening = true;

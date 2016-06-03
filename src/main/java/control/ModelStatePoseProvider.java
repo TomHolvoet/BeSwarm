@@ -18,7 +18,7 @@ public final class ModelStatePoseProvider implements PoseProvider {
     private ModelStatePoseProvider(ModelStateSubscriber modelStateSubscriber, String modelName) {
         this.modelStateSubscriber = modelStateSubscriber;
         this.modelName = modelName;
-        this.modelStateSubscriber.startListeningToModelStates();
+        this.modelStateSubscriber.startListeningToMessages();
     }
 
     public static ModelStatePoseProvider create(ModelStateSubscriber modelStateSubscriber, String modelName) {

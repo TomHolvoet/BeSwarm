@@ -21,7 +21,7 @@ public class ReadAndPrintRawImage extends AbstractNodeMain {
     public void onStart(ConnectedNode connectedNode) {
         final Subscriber<Image> subscriber = connectedNode.newSubscriber("/bebop/image_raw", CameraInfo._TYPE);
         final ImageSubscriber imageSubscriber = ImageSubscriber.create(subscriber);
-        imageSubscriber.startListeningToImage();
+        imageSubscriber.startListeningToMessages();
         while (true) {
             try {
                 Thread.sleep(50);

@@ -33,6 +33,7 @@ import taskexecutor.TaskType;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.concurrent.TimeUnit;
 
 /**
  * This class is for running the simulation with the AR drone.
@@ -41,6 +42,11 @@ import java.util.Collection;
  * @see <a href="https://github.com/dougvk/tum_simulator">The simulator</a>
  */
 public final class ArDroneMoveWithPid extends AbstractNodeMain {
+    private TakeoffPublisher takeoffPublisher;
+    private LandPublisher landPublisher;
+    private VelocityPublisher velocityPublisher;
+    private ModelStateSubscriber modelStateSubscriber;
+    private KeyboardSubscriber keyboardSubscriber;
 
     @Override
     public GraphName getDefaultNodeName() {
@@ -49,31 +55,37 @@ public final class ArDroneMoveWithPid extends AbstractNodeMain {
 
     @Override
     public void onStart(final ConnectedNode connectedNode) {
-        // FIXME refactor this code to separate concern, use atomic data structure.
-        final TakeoffPublisher takeoffPublisher = TakeoffPublisher.create(
-                connectedNode.<Empty>newPublisher("/ardrone/takeoff", Empty._TYPE));
-        final VelocityPublisher velocityPublisher = VelocityPublisher.builder()
-                .publisher(connectedNode.<Twist>newPublisher("/cmd_vel", Twist._TYPE))
-                .minLinearX(-1)
-                .minLinearY(-1)
-                .minLinearZ(-1)
-                .minAngularZ(-1)
-                .maxLinearX(1)
-                .maxLinearY(1)
-                .maxLinearZ(1)
-                .maxAngularZ(1)
-                .build();
-        final ModelStateSubscriber modelStateSubscriber = ModelStateSubscriber.create(
-                connectedNode.<ModelStates>newSubscriber("/gazebo/model_states", ModelStates._TYPE));
-        final LandPublisher landPublisher = LandPublisher.create(
-                connectedNode.<Empty>newPublisher("/ardrone/land", Empty._TYPE));
+        initializeComm(connectedNode);
+        warmUp();
 
-        try {
-            Thread.sleep(5000);
-        } catch (InterruptedException e) {
-            // TODO write to log
-        }
+        final Task flyTask = createFlyTask();
+        final Task emergencyTask = createEmergencyTask();
 
+        final TaskExecutor taskExecutor = TaskExecutorService.create();
+
+        final SimpleEmergencyAfterOneMinute oneMinuteEmergencyNotifier = SimpleEmergencyAfterOneMinute.create(emergencyTask);
+        oneMinuteEmergencyNotifier.run();
+        final KeyboardEmergency keyboardEmergencyNotifier = createKeyboardEmergencyNotifier(emergencyTask);
+
+        oneMinuteEmergencyNotifier.registerTaskExecutor(taskExecutor);
+        keyboardEmergencyNotifier.registerTaskExecutor(taskExecutor);
+
+        taskExecutor.submitTask(flyTask);
+    }
+
+    private KeyboardEmergency createKeyboardEmergencyNotifier(Task emergencyTask) {
+        final KeyboardEmergency keyboardEmergency = KeyboardEmergency.create(emergencyTask);
+        keyboardSubscriber.startListeningToMessages();
+        keyboardSubscriber.registerObserver(keyboardEmergency);
+        return keyboardEmergency;
+    }
+
+    private Task createEmergencyTask() {
+        final Command land = Land.create(landPublisher);
+        return Task.create(ImmutableList.of(land), TaskType.FIRST_ORDER_EMERGENCY);
+    }
+
+    private Task createFlyTask() {
         final Collection<Command> commands = new ArrayList<>();
 
         final Command takeOff = Takeoff.create(takeoffPublisher);
@@ -96,22 +108,34 @@ public final class ArDroneMoveWithPid extends AbstractNodeMain {
                 .durationInSeconds(60)
                 .build();
         commands.add(moveToPose);
+        return Task.create(ImmutableList.copyOf(commands), TaskType.NORMAL_TASK);
+    }
 
-        final Task flyTask = Task.create(ImmutableList.copyOf(commands), TaskType.NORMAL_TASK);
-        final TaskExecutor taskExecutor = TaskExecutorService.create();
+    private static void warmUp() {
+        try {
+            TimeUnit.SECONDS.sleep(5);
+        } catch (InterruptedException e) {
+            // TODO write to log
+        }
+    }
 
-        final Command land = Land.create(landPublisher);
-        final Task emergencyTask = Task.create(ImmutableList.of(land), TaskType.FIRST_ORDER_EMERGENCY);
-        final SimpleEmergencyAfterOneMinute emergencySubject = SimpleEmergencyAfterOneMinute.create(emergencyTask,
-                taskExecutor);
-
-        final KeyboardEmergency keyboardEmergency = KeyboardEmergency.create(emergencyTask);
-        final KeyboardSubscriber keyboardSubscriber = KeyboardSubscriber.create(
+    private void initializeComm(ConnectedNode connectedNode) {
+        takeoffPublisher = TakeoffPublisher.create(connectedNode.<Empty>newPublisher("/ardrone/takeoff", Empty._TYPE));
+        velocityPublisher = VelocityPublisher.builder()
+                .publisher(connectedNode.<Twist>newPublisher("/cmd_vel", Twist._TYPE))
+                .minLinearX(-1)
+                .minLinearY(-1)
+                .minLinearZ(-1)
+                .minAngularZ(-1)
+                .maxLinearX(1)
+                .maxLinearY(1)
+                .maxLinearZ(1)
+                .maxAngularZ(1)
+                .build();
+        modelStateSubscriber = ModelStateSubscriber.create(
+                connectedNode.<ModelStates>newSubscriber("/gazebo/model_states", ModelStates._TYPE));
+        landPublisher = LandPublisher.create(connectedNode.<Empty>newPublisher("/ardrone/land", Empty._TYPE));
+        keyboardSubscriber = KeyboardSubscriber.create(
                 connectedNode.<Key>newSubscriber("/keyboard/keydown", Key._TYPE));
-        keyboardSubscriber.startListeningToKeyboard();
-        keyboardSubscriber.registerObserver(keyboardEmergency);
-        keyboardEmergency.registerTaskExecutor(taskExecutor);
-        taskExecutor.submitTask(flyTask);
-        emergencySubject.run();
     }
 }

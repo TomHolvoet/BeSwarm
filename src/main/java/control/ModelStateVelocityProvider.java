@@ -16,7 +16,7 @@ public final class ModelStateVelocityProvider implements VelocityProvider {
     private ModelStateVelocityProvider(ModelStateSubscriber modelStateSubscriber, String modelName) {
         this.modelStateSubscriber = modelStateSubscriber;
         this.modelName = modelName;
-        this.modelStateSubscriber.startListeningToModelStates();
+        this.modelStateSubscriber.startListeningToMessages();
     }
 
     public static ModelStateVelocityProvider create(ModelStateSubscriber modelStateSubscriber, String modelName) {

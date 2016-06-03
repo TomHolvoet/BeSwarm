@@ -10,7 +10,7 @@ import java.util.concurrent.atomic.AtomicReference;
 /**
  * @author Hoang Tung Dinh
  */
-public final class ModelStateSubscriber {
+public final class ModelStateSubscriber implements SubscriberFacade {
     private final Subscriber<ModelStates> subscriber;
     private final ModelStateListener modelStateListener = ModelStateListener.create();
     private boolean startedListeningToModelStates = false;
@@ -23,7 +23,8 @@ public final class ModelStateSubscriber {
         return new ModelStateSubscriber(subscriber);
     }
 
-    public void startListeningToModelStates() {
+    @Override
+    public void startListeningToMessages() {
         if (!startedListeningToModelStates) {
             subscriber.addMessageListener(modelStateListener);
             startedListeningToModelStates = true;

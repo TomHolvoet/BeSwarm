@@ -12,7 +12,7 @@ import java.util.concurrent.atomic.AtomicReference;
  *
  * @author Hoang Tung Dinh
  */
-public final class CameraInfoSubscriber {
+public final class CameraInfoSubscriber implements SubscriberFacade {
     private final Subscriber<CameraInfo> subscriber;
     private final CameraInfoListener cameraInfoListener = CameraInfoListener.create();
     private boolean startedListening = false;
@@ -25,7 +25,8 @@ public final class CameraInfoSubscriber {
         return new CameraInfoSubscriber(subscriber);
     }
 
-    public void startListeningToCameraInfo() {
+    @Override
+    public void startListeningToMessages() {
         if (!startedListening) {
             subscriber.addMessageListener(cameraInfoListener);
             startedListening = true;

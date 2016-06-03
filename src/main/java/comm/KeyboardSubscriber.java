@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * @author Hoang Tung Dinh
  */
-public final class KeyboardSubscriber implements RosKeySubject {
+public final class KeyboardSubscriber implements SubscriberFacade, RosKeySubject {
     private final Subscriber<Key> subscriber;
     private final Collection<RosKeyObserver> rosKeyObservers = new ArrayList<>();
     private final MessageListener<Key> rosKeyListener = new RosKeyListener();
@@ -25,7 +25,8 @@ public final class KeyboardSubscriber implements RosKeySubject {
         return new KeyboardSubscriber(subscriber);
     }
 
-    public void startListeningToKeyboard() {
+    @Override
+    public void startListeningToMessages() {
         if (!startedListening) {
             subscriber.addMessageListener(rosKeyListener);
             startedListening = true;
