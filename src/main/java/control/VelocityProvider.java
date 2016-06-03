@@ -1,6 +1,6 @@
 package control;
 
-import behavior.Velocity;
+import commands.Velocity;
 import com.google.common.base.Optional;
 
 /**

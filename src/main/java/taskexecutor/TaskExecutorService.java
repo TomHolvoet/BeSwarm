@@ -1,6 +1,6 @@
 package taskexecutor;
 
-import behavior.Command;
+import commands.Command;
 
 import javax.annotation.Nullable;
 import java.util.concurrent.ExecutorService;
@@ -27,39 +27,39 @@ public final class TaskExecutorService implements TaskExecutor {
     private void runTask() {
         checkNotNull(task, "Task must not be null when this method is called");
         final ExecutorService executorService = Executors.newSingleThreadExecutor();
-        final Runnable runnable = RunBehaviors.create(task.getBehaviors());
+        final Runnable runnable = RunCommands.create(task.getCommands());
         future = executorService.submit(runnable);
     }
 
     @Override
-    public boolean submitTask(Task newTask) {
+    public Status submitTask(Task newTask) {
         if (task == null || newTask.hasHigherPriority(task)) {
             if (future != null) {
                 future.cancel(true);
             }
             task = newTask;
             runTask();
-            return true;
+            return Status.ACCEPTED;
         }
 
-        return false;
+        return Status.REJECTED;
     }
 
-    private static final class RunBehaviors implements Runnable {
-        private final Iterable<Command> behaviors;
+    private static final class RunCommands implements Runnable {
+        private final Iterable<Command> commands;
 
-        private RunBehaviors(Iterable<Command> behaviors) {
-            this.behaviors = behaviors;
+        private RunCommands(Iterable<Command> commands) {
+            this.commands = commands;
         }
 
-        public static RunBehaviors create(Iterable<Command> behaviors) {
-            return new RunBehaviors(behaviors);
+        public static RunCommands create(Iterable<Command> commands) {
+            return new RunCommands(commands);
         }
 
         @Override
         public void run() {
-            for (final Command behavior : behaviors) {
-                behavior.execute();
+            for (final Command command : commands) {
+                command.execute();
             }
         }
     }

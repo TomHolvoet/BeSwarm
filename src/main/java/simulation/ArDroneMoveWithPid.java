@@ -1,12 +1,12 @@
 package simulation;
 
-import behavior.Command;
-import behavior.Hover;
-import behavior.Land;
-import behavior.MoveToPose;
-import behavior.Pose;
-import behavior.Takeoff;
-import behavior.Velocity;
+import commands.Command;
+import commands.Hover;
+import commands.Land;
+import commands.MoveToPose;
+import commands.Pose;
+import commands.Takeoff;
+import commands.Velocity;
 import com.google.common.collect.ImmutableList;
 import comm.KeyboardSubscriber;
 import comm.LandPublisher;

@@ -1,6 +1,6 @@
 package comm;
 
-import behavior.Velocity;
+import commands.Velocity;
 import geometry_msgs.Twist;
 import org.ros.node.topic.Publisher;
 

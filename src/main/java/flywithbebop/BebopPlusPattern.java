@@ -1,13 +1,13 @@
 package flywithbebop;
 
-import behavior.Command;
-import behavior.Hover;
-import behavior.Land;
-import behavior.MoveBackward;
-import behavior.MoveForward;
-import behavior.MoveLeft;
-import behavior.MoveRight;
-import behavior.Takeoff;
+import commands.Command;
+import commands.Hover;
+import commands.Land;
+import commands.MoveBackward;
+import commands.MoveForward;
+import commands.MoveLeft;
+import commands.MoveRight;
+import commands.Takeoff;
 import comm.LandPublisher;
 import comm.TakeoffPublisher;
 import comm.VelocityPublisher;

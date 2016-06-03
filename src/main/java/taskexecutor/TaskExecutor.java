@@ -4,5 +4,9 @@ package taskexecutor;
  * @author Hoang Tung Dinh
  */
 public interface TaskExecutor {
-    boolean submitTask(Task newTask);
+    Status submitTask(Task newTask);
+
+    enum Status {
+        ACCEPTED, REJECTED
+    }
 }

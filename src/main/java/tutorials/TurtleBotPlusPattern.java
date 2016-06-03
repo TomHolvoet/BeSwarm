@@ -1,11 +1,11 @@
 package tutorials;
 
-import behavior.Command;
-import behavior.Hover;
-import behavior.MoveBackward;
-import behavior.MoveForward;
-import behavior.MoveLeft;
-import behavior.MoveRight;
+import commands.Command;
+import commands.Hover;
+import commands.MoveBackward;
+import commands.MoveForward;
+import commands.MoveLeft;
+import commands.MoveRight;
 import comm.VelocityPublisher;
 import geometry_msgs.Twist;
 import org.ros.namespace.GraphName;

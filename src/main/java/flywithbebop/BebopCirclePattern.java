@@ -1,10 +1,10 @@
 package flywithbebop;
 
-import behavior.Command;
-import behavior.Hover;
-import behavior.Land;
-import behavior.MoveCircleClockwise;
-import behavior.Takeoff;
+import commands.Command;
+import commands.Hover;
+import commands.Land;
+import commands.MoveCircleClockwise;
+import commands.Takeoff;
 import comm.LandPublisher;
 import comm.TakeoffPublisher;
 import comm.VelocityPublisher;

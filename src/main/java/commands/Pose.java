@@ -1,4 +1,4 @@
-package behavior;
+package commands;
 
 import com.google.auto.value.AutoValue;
 

@@ -1,4 +1,4 @@
-package behavior;
+package commands;
 
 /**
  * Direction for flipping.

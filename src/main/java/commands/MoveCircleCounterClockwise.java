@@ -1,4 +1,4 @@
-package behavior;
+package commands;
 
 import comm.VelocityPublisher;
 

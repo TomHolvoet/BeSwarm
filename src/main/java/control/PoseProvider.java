@@ -1,6 +1,6 @@
 package control;
 
-import behavior.Pose;
+import commands.Pose;
 import com.google.common.base.Optional;
 
 /**

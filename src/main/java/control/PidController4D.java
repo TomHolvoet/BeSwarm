@@ -1,7 +1,7 @@
 package control;
 
-import behavior.Pose;
-import behavior.Velocity;
+import commands.Pose;
+import commands.Velocity;
 
 /**
  * A four-dimensional PID controller for the drone. It is the composition of 4 one-dimensional PID controller
