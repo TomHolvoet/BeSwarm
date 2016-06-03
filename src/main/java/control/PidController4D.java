@@ -2,6 +2,9 @@ package control;
 
 import commands.Pose;
 import commands.Velocity;
+import geom.EulerAngle;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A four-dimensional PID controller for the drone. It is the composition of 4 one-dimensional PID controller
@@ -11,13 +14,16 @@ import commands.Velocity;
  */
 public final class PidController4D {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(PidController4D.class);
+
     private final PidController1D pidLinearX;
     private final PidController1D pidLinearY;
     private final PidController1D pidLinearZ;
     private final PidController1D pidAngularZ;
+    private final Pose goalPose;
 
     private PidController4D(Builder builder) {
-        final Pose goalPose = builder.goalPose;
+        goalPose = builder.goalPose;
         final Velocity goalVelocity = builder.goalVelocity;
 
         pidLinearX = PidController1D.builder()
@@ -60,7 +66,13 @@ public final class PidController4D {
         final double linearX = pidLinearX.compute(currentPose.x(), currentVelocity.linearX());
         final double linearY = pidLinearY.compute(currentPose.y(), currentVelocity.linearY());
         final double linearZ = pidLinearZ.compute(currentPose.z(), currentVelocity.linearZ());
-        final double angularZ = pidAngularZ.compute(currentPose.yaw(), currentVelocity.angularZ());
+
+        final double angularError = EulerAngle.computeAngleDistance(currentPose.yaw(), goalPose.yaw());
+        final double adaptedCurrentYaw = goalPose.yaw() - angularError;
+        final double angularZ = pidAngularZ.compute(adaptedCurrentYaw, currentVelocity.angularZ());
+
+        LOGGER.debug("Current pose: {} \nCurrent velocity: {}, Current angular error: {}", currentPose, currentVelocity,
+                angularError);
 
         return Velocity.builder().linearX(linearX).linearY(linearY).linearZ(linearZ).angularZ(angularZ).build();
     }

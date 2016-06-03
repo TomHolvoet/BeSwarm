@@ -10,6 +10,9 @@ import geometry_msgs.Quaternion;
  */
 @AutoValue
 public abstract class EulerAngle {
+
+    EulerAngle() {}
+
     public abstract double angleX();
 
     public abstract double angleY();
@@ -21,14 +24,13 @@ public abstract class EulerAngle {
     }
 
     /**
-     * Compute euler angle from quarternion angle.
+     * Compute euler angle from quarternion angle. The resulting angles are always in range [-pi, pi]
      *
      * @param quaternion the angle in quaternion representation
      * @return the angle in euler representation.
      * @see <a href="https://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles">Equations</a>
      */
     public static EulerAngle createFromQuaternion(Quaternion quaternion) {
-        // TODO improve this method to avoid ambiguity
         final double q0 = quaternion.getW();
         final double q1 = quaternion.getX();
         final double q2 = quaternion.getY();
@@ -39,6 +41,20 @@ public abstract class EulerAngle {
         final double eulerZ = StrictMath.atan2(2 * (q0 * q3 + q1 * q2), 1 - 2 * (q2 * q2 + q3 * q3));
 
         return builder().angleX(eulerX).angleY(eulerY).angleZ(eulerZ).build();
+    }
+
+    public static double computeAngleDistance(double firstAngle, double secondAngle) {
+        double distance = secondAngle - firstAngle;
+
+        while (distance < -Math.PI) {
+            distance += 2 * Math.PI;
+        }
+
+        while (distance > Math.PI) {
+            distance -= 2 * Math.PI;
+        }
+
+        return distance;
     }
 
     @AutoValue.Builder
