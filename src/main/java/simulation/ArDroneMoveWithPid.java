@@ -22,6 +22,8 @@ import org.ros.namespace.GraphName;
 import org.ros.node.AbstractNodeMain;
 import org.ros.node.ConnectedNode;
 import std_msgs.Empty;
+import taskexecutor.EmergencyNotifier;
+import taskexecutor.KeyboardEmergency;
 import taskexecutor.SimpleEmergencyAfterOneMinute;
 import taskexecutor.Task;
 import taskexecutor.TaskExecutor;
@@ -98,9 +100,11 @@ public final class ArDroneMoveWithPid extends AbstractNodeMain {
         final TaskExecutor taskExecutor = TaskExecutorService.create();
 
         final Command land = Land.create(landPublisher);
-        final Task emergencyTask = Task.create(ImmutableList.<Command>of(land), TaskType.FIRST_ORDER_EMERGENCY);
-        final SimpleEmergencyAfterOneMinute emergencySubject = SimpleEmergencyAfterOneMinute.create(emergencyTask, taskExecutor);
-
+        final Task emergencyTask = Task.create(ImmutableList.of(land), TaskType.FIRST_ORDER_EMERGENCY);
+        final SimpleEmergencyAfterOneMinute emergencySubject = SimpleEmergencyAfterOneMinute.create(emergencyTask,
+                taskExecutor);
+        final EmergencyNotifier keyboardEmergency = KeyboardEmergency.create(emergencyTask);
+        keyboardEmergency.registerTaskExecutor(taskExecutor);
         taskExecutor.submitTask(flyTask);
         emergencySubject.run();
     }
