@@ -64,13 +64,13 @@ public final class ArDroneMoveWithPid extends AbstractNodeMain {
         final TaskExecutor taskExecutor = TaskExecutorService.create();
 
         final SimpleEmergencyAfterOneMinute oneMinuteEmergencyNotifier = SimpleEmergencyAfterOneMinute.create(emergencyTask);
-        oneMinuteEmergencyNotifier.run();
         final KeyboardEmergency keyboardEmergencyNotifier = createKeyboardEmergencyNotifier(emergencyTask);
 
         oneMinuteEmergencyNotifier.registerTaskExecutor(taskExecutor);
         keyboardEmergencyNotifier.registerTaskExecutor(taskExecutor);
 
         taskExecutor.submitTask(flyTask);
+        oneMinuteEmergencyNotifier.run();
     }
 
     private KeyboardEmergency createKeyboardEmergencyNotifier(Task emergencyTask) {
