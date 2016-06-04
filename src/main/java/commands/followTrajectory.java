@@ -1,9 +1,10 @@
 package commands;
 
+import com.google.common.base.Optional;
 import comm.VelocityPublisher;
+import control.PidController4d;
 import control.PidParameters;
 import control.PoseEstimator;
-import control.SinglePointTrajectory4d;
 import control.Trajectory4d;
 import control.VelocityEstimator;
 
@@ -12,8 +13,15 @@ import control.VelocityEstimator;
  *
  * @author Hoang Tung Dinh
  */
-public final class MoveToPose implements Command {
-    private final Command followTrajectory;
+public final class FollowTrajectory implements Command {
+    private final VelocityPublisher velocityPublisher;
+    private final PoseEstimator poseEstimator;
+    private final VelocityEstimator velocityEstimator;
+    private final PidParameters pidLinearParameters;
+    private final PidParameters pidAngularParameters;
+    private final Trajectory4d trajectory4d;
+    private final double durationInSeconds;
+    private final double controlRateInSeconds;
 
     private static final double DEFAULT_CONTROL_RATE_IN_SECONDS = 0.05;
     private static final PidParameters DEFAULT_PID_LINEAR_PARAMETERS = PidParameters.builder()
@@ -27,18 +35,15 @@ public final class MoveToPose implements Command {
             .ki(0)
             .build();
 
-    private MoveToPose(Builder builder) {
-        final Trajectory4d trajectory4d = SinglePointTrajectory4d.create(builder.goalPose, builder.goalVelocity);
-        followTrajectory = FollowTrajectory.builder()
-                .velocityPublisher(builder.velocityPublisher)
-                .poseEstimator(builder.poseEstimator)
-                .velocityEstimator(builder.velocityEstimator)
-                .pidLinearParameters(builder.pidLinearParameters)
-                .pidAngularParameters(builder.pidAngularParameters)
-                .trajectory4d(trajectory4d)
-                .durationInSeconds(builder.durationInSeconds)
-                .controlRateInSeconds(builder.controlRateInSeconds)
-                .build();
+    private FollowTrajectory(Builder builder) {
+        velocityPublisher = builder.velocityPublisher;
+        poseEstimator = builder.poseEstimator;
+        velocityEstimator = builder.velocityEstimator;
+        pidLinearParameters = builder.pidLinearParameters;
+        pidAngularParameters = builder.pidAngularParameters;
+        trajectory4d = builder.trajectory4d;
+        durationInSeconds = builder.durationInSeconds;
+        controlRateInSeconds = builder.controlRateInSeconds;
     }
 
     /**
@@ -55,11 +60,47 @@ public final class MoveToPose implements Command {
 
     @Override
     public void execute() {
-        followTrajectory.execute();
+        final PidController4d pidController4d = PidController4d.builder()
+                .linearXParameters(pidLinearParameters)
+                .linearYParameters(pidLinearParameters)
+                .linearZParameters(pidLinearParameters)
+                .angularZParameters(pidAngularParameters)
+                .trajectory4d(trajectory4d)
+                .build();
+
+        final Runnable computeNextResponse = new ComputeNextResponse(pidController4d);
+        PeriodicTaskRunner.run(computeNextResponse, controlRateInSeconds, durationInSeconds);
+    }
+
+    private final class ComputeNextResponse implements Runnable {
+        private final PidController4d pidController4d;
+
+        private ComputeNextResponse(PidController4d pidController4d) {
+            this.pidController4d = pidController4d;
+        }
+
+        @Override
+        public void run() {
+            final Optional<Pose> currentPose = poseEstimator.getCurrentPose();
+            if (!currentPose.isPresent()) {
+                return;
+            }
+
+            final Optional<Velocity> currentVelocityInGlobalFrame = velocityEstimator.getCurrentVelocity();
+            if (!currentVelocityInGlobalFrame.isPresent()) {
+                return;
+            }
+
+            final Velocity nextVelocityInGlobalFrame = pidController4d.compute(currentPose.get(),
+                    currentVelocityInGlobalFrame.get());
+            final Velocity nextVelocityInLocalFrame = Velocity.createLocalVelocityFromGlobalVelocity(
+                    nextVelocityInGlobalFrame, currentPose.get().yaw());
+            velocityPublisher.publishVelocityCommand(nextVelocityInLocalFrame);
+        }
     }
 
     /**
-     * {@code MoveToPose} builder static inner class.
+     * {@code FollowTrajectory} builder static inner class.
      */
     public static final class Builder {
         private VelocityPublisher velocityPublisher;
@@ -67,8 +108,7 @@ public final class MoveToPose implements Command {
         private VelocityEstimator velocityEstimator;
         private PidParameters pidLinearParameters;
         private PidParameters pidAngularParameters;
-        private Pose goalPose;
-        private Velocity goalVelocity;
+        private Trajectory4d trajectory4d;
         private double durationInSeconds;
         private double controlRateInSeconds;
 
@@ -135,26 +175,14 @@ public final class MoveToPose implements Command {
         }
 
         /**
-         * Sets the {@code goalPose} and returns a reference to this Builder so that the methods can be chained
+         * Sets the {@code trajectory4d} and returns a reference to this Builder so that the methods can be chained
          * together.
          *
-         * @param val the {@code goalPose} to set
+         * @param val the {@code trajectory4d} to set
          * @return a reference to this Builder
          */
-        public Builder goalPose(Pose val) {
-            goalPose = val;
-            return this;
-        }
-
-        /**
-         * Sets the {@code goalVelocity} and returns a reference to this Builder so that the methods can be chained
-         * together.
-         *
-         * @param val the {@code goalVelocity} to set
-         * @return a reference to this Builder
-         */
-        public Builder goalVelocity(Velocity val) {
-            goalVelocity = val;
+        public Builder trajectory4d(Trajectory4d val) {
+            trajectory4d = val;
             return this;
         }
 
@@ -183,10 +211,10 @@ public final class MoveToPose implements Command {
         }
 
         /**
-         * Returns a {@code MoveToPose} built from the parameters previously set.
+         * Returns a {@code FollowTrajectory} built from the parameters previously set.
          *
-         * @return a {@code MoveToPose} built with parameters of this {@code MoveToPose.Builder}
+         * @return a {@code FollowTrajectory} built with parameters of this {@code FollowTrajectory.Builder}
          */
-        public MoveToPose build() {return new MoveToPose(this);}
+        public FollowTrajectory build() {return new FollowTrajectory(this);}
     }
 }

@@ -5,7 +5,7 @@ package control;
  *
  * @author Hoang Tung Dinh
  */
-public interface OneDimensionalTrajectory {
+public interface Trajectory1d {
     double getDesiredPosition(double timeInSeconds);
 
     double getDesiredVelocity(double timeInSeconds);

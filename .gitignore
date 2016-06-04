@@ -17,3 +17,4 @@ build/
 settings.gradle
 generated/
 generated_tests/
+out/
