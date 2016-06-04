@@ -6,6 +6,6 @@ import com.google.common.base.Optional;
 /**
  * @author Hoang Tung Dinh
  */
-public interface PoseProvider {
+public interface PoseEstimator {
     Optional<Pose> getCurrentPose();
 }

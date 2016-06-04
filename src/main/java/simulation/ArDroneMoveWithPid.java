@@ -13,10 +13,10 @@ import comm.LandPublisher;
 import comm.ModelStateSubscriber;
 import comm.TakeoffPublisher;
 import comm.VelocityPublisher;
-import control.ModelStatePoseProvider;
-import control.ModelStateVelocityProvider;
-import control.PoseProvider;
-import control.VelocityProvider;
+import control.ModelStatePoseEstimator;
+import control.ModelStateVelocityEstimator;
+import control.PoseEstimator;
+import control.VelocityEstimator;
 import gazebo_msgs.ModelStates;
 import geometry_msgs.Twist;
 import keyboard.Key;
@@ -95,13 +95,13 @@ public final class ArDroneMoveWithPid extends AbstractNodeMain {
         commands.add(hoverFiveSecond);
 
         final String modelName = "quadrotor";
-        final PoseProvider poseProvider = ModelStatePoseProvider.create(modelStateSubscriber, modelName);
-        final VelocityProvider velocityProvider = ModelStateVelocityProvider.create(modelStateSubscriber, modelName);
+        final PoseEstimator poseEstimator = ModelStatePoseEstimator.create(modelStateSubscriber, modelName);
+        final VelocityEstimator velocityEstimator = ModelStateVelocityEstimator.create(modelStateSubscriber, modelName);
         final Pose goalPose = Pose.builder().x(3).y(-3).z(3).yaw(1).build();
         final Velocity goalVelocity = Velocity.builder().linearX(0).linearY(0).linearZ(0).angularZ(0).build();
         final Command moveToPose = MoveToPose.builder()
-                .poseProvider(poseProvider)
-                .velocityProvider(velocityProvider)
+                .poseEstimator(poseEstimator)
+                .velocityEstimator(velocityEstimator)
                 .velocityPublisher(velocityPublisher)
                 .goalPose(goalPose)
                 .goalVelocity(goalVelocity)

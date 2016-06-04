@@ -8,43 +8,44 @@ import org.slf4j.LoggerFactory;
 
 /**
  * A four-dimensional PID controller for the drone. It is the composition of 4 one-dimensional PID controller
- * {@link PidController1D} (three controllers for the three linear velocities, one controller for the angular velocity).
+ * {@link OneDimensionalPidController} (three controllers for the three linear velocities, one controller for the
+ * angular velocity).
  *
  * @author Hoang Tung Dinh
  */
-public final class PidController4D {
+public final class FourDimensionalPidController {
 
-    private static final Logger logger = LoggerFactory.getLogger(PidController4D.class);
+    private static final Logger logger = LoggerFactory.getLogger(FourDimensionalPidController.class);
 
-    private final PidController1D pidLinearX;
-    private final PidController1D pidLinearY;
-    private final PidController1D pidLinearZ;
-    private final PidController1D pidAngularZ;
+    private final OneDimensionalPidController pidLinearX;
+    private final OneDimensionalPidController pidLinearY;
+    private final OneDimensionalPidController pidLinearZ;
+    private final OneDimensionalPidController pidAngularZ;
     private final Pose goalPose;
 
-    private PidController4D(Builder builder) {
+    private FourDimensionalPidController(Builder builder) {
         goalPose = builder.goalPose;
         final Velocity goalVelocity = builder.goalVelocity;
 
-        pidLinearX = PidController1D.builder()
+        pidLinearX = OneDimensionalPidController.builder()
                 .goalPoint(goalPose.x())
                 .goalVelocity(goalVelocity.linearX())
                 .parameters(builder.linearXParameters)
                 .build();
 
-        pidLinearY = PidController1D.builder()
+        pidLinearY = OneDimensionalPidController.builder()
                 .goalPoint(goalPose.y())
                 .goalVelocity(goalVelocity.linearY())
                 .parameters(builder.linearYParameters)
                 .build();
 
-        pidLinearZ = PidController1D.builder()
+        pidLinearZ = OneDimensionalPidController.builder()
                 .goalPoint(goalPose.z())
                 .goalVelocity(goalVelocity.linearZ())
                 .parameters(builder.linearZParameters)
                 .build();
 
-        pidAngularZ = PidController1D.builder()
+        pidAngularZ = OneDimensionalPidController.builder()
                 .goalPoint(goalPose.yaw())
                 .goalVelocity(goalVelocity.angularZ())
                 .parameters(builder.angularZParameters)
@@ -72,14 +73,13 @@ public final class PidController4D {
         final double angularZ = pidAngularZ.compute(adaptedCurrentYaw, currentVelocity.angularZ());
 
         logger.debug("Current pose: {} \nCurrent velocity: {} \nCurrent angular error: {}", currentPose,
-                currentVelocity,
-                angularError);
+                currentVelocity, angularError);
 
         return Velocity.builder().linearX(linearX).linearY(linearY).linearZ(linearZ).angularZ(angularZ).build();
     }
 
     /**
-     * {@code PidController4D} builder static inner class.
+     * {@code FourDimensionalPidController} builder static inner class.
      */
     public static final class Builder {
         private Pose goalPose;
@@ -164,12 +164,12 @@ public final class PidController4D {
         }
 
         /**
-         * Returns a {@code PidController4D} built from the parameters previously set.
+         * Returns a {@code FourDimensionalPidController} built from the parameters previously set.
          *
-         * @return a {@code PidController4D} built with parameters of this {@code PidController4D.Builder}
+         * @return a {@code FourDimensionalPidController} built with parameters of this {@code FourDimensionalPidController.Builder}
          */
-        public PidController4D build() {
-            return new PidController4D(this);
+        public FourDimensionalPidController build() {
+            return new FourDimensionalPidController(this);
         }
     }
 }

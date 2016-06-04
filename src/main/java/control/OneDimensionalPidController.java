@@ -8,7 +8,7 @@ import static com.google.common.base.Preconditions.checkArgument;
  * @author Hoang Tung Dinh
  * @see <a href="https://en.wikipedia.org/wiki/PID_controller">Equation</a>
  */
-final class PidController1D {
+final class OneDimensionalPidController {
 
     private final PidParameters parameters;
     private final double goalPoint;
@@ -20,7 +20,7 @@ final class PidController1D {
 
     private static final double NANO_SECOND_TO_SECOND = 1000000000.0;
 
-    private PidController1D(Builder builder) {
+    private OneDimensionalPidController(Builder builder) {
         parameters = builder.parameters;
         goalPoint = builder.goalPoint;
         goalVelocity = builder.goalVelocity;
@@ -83,7 +83,7 @@ final class PidController1D {
     }
 
     /**
-     * {@code PidController1D} builder static inner class.
+     * {@code OneDimensionalPidController} builder static inner class.
      */
     public static final class Builder {
         private PidParameters parameters;
@@ -129,12 +129,12 @@ final class PidController1D {
         }
 
         /**
-         * Returns a {@code PidController1D} built from the parameters previously set.
+         * Returns a {@code OneDimensionalPidController} built from the parameters previously set.
          *
-         * @return a {@code PidController1D} built with parameters of this {@code PidController1D.Builder}
+         * @return a {@code OneDimensionalPidController} built with parameters of this {@code OneDimensionalPidController.Builder}
          */
-        public PidController1D build() {
-            return new PidController1D(this);
+        public OneDimensionalPidController build() {
+            return new OneDimensionalPidController(this);
         }
     }
 }

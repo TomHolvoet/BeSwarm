@@ -6,10 +6,10 @@ package commands;
 
 import com.google.common.base.Optional;
 import comm.VelocityPublisher;
-import control.PidController4D;
+import control.FourDimensionalPidController;
 import control.PidParameters;
-import control.PoseProvider;
-import control.VelocityProvider;
+import control.PoseEstimator;
+import control.VelocityEstimator;
 
 /**
  * Command for moving to a predefined pose. It is a facade which uses {@link Move}.
@@ -18,8 +18,8 @@ import control.VelocityProvider;
  */
 public final class MoveToPose implements Command {
     private final VelocityPublisher velocityPublisher;
-    private final PoseProvider poseProvider;
-    private final VelocityProvider velocityProvider;
+    private final PoseEstimator poseEstimator;
+    private final VelocityEstimator velocityEstimator;
     private final PidParameters pidLinearParameters;
     private final PidParameters pidAngularParameters;
     private final Pose goalPose;
@@ -41,8 +41,8 @@ public final class MoveToPose implements Command {
 
     private MoveToPose(Builder builder) {
         velocityPublisher = builder.velocityPublisher;
-        poseProvider = builder.poseProvider;
-        velocityProvider = builder.velocityProvider;
+        poseEstimator = builder.poseEstimator;
+        velocityEstimator = builder.velocityEstimator;
         pidLinearParameters = builder.pidLinearParameters;
         pidAngularParameters = builder.pidAngularParameters;
         goalPose = builder.goalPose;
@@ -65,7 +65,7 @@ public final class MoveToPose implements Command {
 
     @Override
     public void execute() {
-        final PidController4D pidController4D = PidController4D.builder()
+        final FourDimensionalPidController fourDimensionalPidController = FourDimensionalPidController.builder()
                 .linearXParameters(pidLinearParameters)
                 .linearYParameters(pidLinearParameters)
                 .linearZParameters(pidLinearParameters)
@@ -74,30 +74,30 @@ public final class MoveToPose implements Command {
                 .goalVelocity(goalVelocity)
                 .build();
 
-        final Runnable computeNextResponse = new ComputeNextResponse(pidController4D);
+        final Runnable computeNextResponse = new ComputeNextResponse(fourDimensionalPidController);
         PeriodicTaskRunner.run(computeNextResponse, controlRateInSeconds, durationInSeconds);
     }
 
     private final class ComputeNextResponse implements Runnable {
-        private final PidController4D pidController4D;
+        private final FourDimensionalPidController fourDimensionalPidController;
 
-        private ComputeNextResponse(PidController4D pidController4D) {
-            this.pidController4D = pidController4D;
+        private ComputeNextResponse(FourDimensionalPidController fourDimensionalPidController) {
+            this.fourDimensionalPidController = fourDimensionalPidController;
         }
 
         @Override
         public void run() {
-            final Optional<Pose> currentPose = poseProvider.getCurrentPose();
+            final Optional<Pose> currentPose = poseEstimator.getCurrentPose();
             if (!currentPose.isPresent()) {
                 return;
             }
 
-            final Optional<Velocity> currentVelocityInGlobalFrame = velocityProvider.getCurrentVelocity();
+            final Optional<Velocity> currentVelocityInGlobalFrame = velocityEstimator.getCurrentVelocity();
             if (!currentVelocityInGlobalFrame.isPresent()) {
                 return;
             }
 
-            final Velocity nextVelocityInGlobalFrame = pidController4D.compute(currentPose.get(),
+            final Velocity nextVelocityInGlobalFrame = fourDimensionalPidController.compute(currentPose.get(),
                     currentVelocityInGlobalFrame.get());
             final Velocity nextVelocityInLocalFrame = Velocity.createLocalVelocityFromGlobalVelocity(
                     nextVelocityInGlobalFrame, currentPose.get().yaw());
@@ -110,8 +110,8 @@ public final class MoveToPose implements Command {
      */
     public static final class Builder {
         private VelocityPublisher velocityPublisher;
-        private PoseProvider poseProvider;
-        private VelocityProvider velocityProvider;
+        private PoseEstimator poseEstimator;
+        private VelocityEstimator velocityEstimator;
         private PidParameters pidLinearParameters;
         private PidParameters pidAngularParameters;
         private Pose goalPose;
@@ -134,26 +134,26 @@ public final class MoveToPose implements Command {
         }
 
         /**
-         * Sets the {@code poseProvider} and returns a reference to this Builder so that the methods can be chained
+         * Sets the {@code poseEstimator} and returns a reference to this Builder so that the methods can be chained
          * together.
          *
-         * @param val the {@code poseProvider} to set
+         * @param val the {@code poseEstimator} to set
          * @return a reference to this Builder
          */
-        public Builder poseProvider(PoseProvider val) {
-            poseProvider = val;
+        public Builder poseEstimator(PoseEstimator val) {
+            poseEstimator = val;
             return this;
         }
 
         /**
-         * Sets the {@code velocityProvider} and returns a reference to this Builder so that the methods can be
+         * Sets the {@code velocityEstimator} and returns a reference to this Builder so that the methods can be
          * chained together.
          *
-         * @param val the {@code velocityProvider} to set
+         * @param val the {@code velocityEstimator} to set
          * @return a reference to this Builder
          */
-        public Builder velocityProvider(VelocityProvider val) {
-            velocityProvider = val;
+        public Builder velocityEstimator(VelocityEstimator val) {
+            velocityEstimator = val;
             return this;
         }
 

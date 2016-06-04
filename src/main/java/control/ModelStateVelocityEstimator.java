@@ -9,18 +9,18 @@ import geometry_msgs.Twist;
 /**
  * @author Hoang Tung Dinh
  */
-public final class ModelStateVelocityProvider implements VelocityProvider {
+public final class ModelStateVelocityEstimator implements VelocityEstimator {
     private final ModelStateSubscriber modelStateSubscriber;
     private final String modelName;
 
-    private ModelStateVelocityProvider(ModelStateSubscriber modelStateSubscriber, String modelName) {
+    private ModelStateVelocityEstimator(ModelStateSubscriber modelStateSubscriber, String modelName) {
         this.modelStateSubscriber = modelStateSubscriber;
         this.modelName = modelName;
         this.modelStateSubscriber.startListeningToMessages();
     }
 
-    public static ModelStateVelocityProvider create(ModelStateSubscriber modelStateSubscriber, String modelName) {
-        return new ModelStateVelocityProvider(modelStateSubscriber, modelName);
+    public static ModelStateVelocityEstimator create(ModelStateSubscriber modelStateSubscriber, String modelName) {
+        return new ModelStateVelocityEstimator(modelStateSubscriber, modelName);
     }
 
     @Override
