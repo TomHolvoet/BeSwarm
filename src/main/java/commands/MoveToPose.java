@@ -1,6 +1,7 @@
 package commands;
 
 import comm.VelocityPublisher;
+import control.DefaultPidParameters;
 import control.PidParameters;
 import control.PoseEstimator;
 import control.SinglePointTrajectory4d;
@@ -14,18 +15,7 @@ import control.VelocityEstimator;
  */
 public final class MoveToPose implements Command {
     private final Command followTrajectory;
-
     private static final double DEFAULT_CONTROL_RATE_IN_SECONDS = 0.05;
-    private static final PidParameters DEFAULT_PID_LINEAR_PARAMETERS = PidParameters.builder()
-            .kp(2)
-            .kd(1)
-            .ki(0)
-            .build();
-    private static final PidParameters DEFAULT_PID_ANGULAR_PARAMETERS = PidParameters.builder()
-            .kp(0.5)
-            .kd(0.5)
-            .ki(0)
-            .build();
 
     private MoveToPose(Builder builder) {
         final Trajectory4d trajectory4d = SinglePointTrajectory4d.create(builder.goalPose, builder.goalVelocity);
@@ -49,8 +39,8 @@ public final class MoveToPose implements Command {
      */
     public static Builder builder() {
         return new Builder().controlRateInSeconds(DEFAULT_CONTROL_RATE_IN_SECONDS)
-                .pidLinearParameters(DEFAULT_PID_LINEAR_PARAMETERS)
-                .pidAngularParameters(DEFAULT_PID_ANGULAR_PARAMETERS);
+                .pidLinearParameters(DefaultPidParameters.DEFAULT_LINEAR_PARAMETERS.getParameters())
+                .pidAngularParameters(DefaultPidParameters.DEFAULT_ANGULAR_PARAMETERS.getParameters());
     }
 
     @Override
