@@ -1,21 +1,23 @@
 package simulation;
 
-import commands.Command;
-import commands.Hover;
-import commands.Land;
-import commands.MoveToPose;
-import commands.Pose;
-import commands.Takeoff;
-import commands.Velocity;
 import com.google.common.collect.ImmutableList;
 import comm.KeyboardSubscriber;
 import comm.LandPublisher;
 import comm.ModelStateSubscriber;
 import comm.TakeoffPublisher;
 import comm.VelocityPublisher;
+import commands.Command;
+import commands.FollowTrajectory;
+import commands.Hover;
+import commands.Land;
+import commands.MoveToPose;
+import commands.Pose;
+import commands.Takeoff;
+import commands.Velocity;
 import control.ModelStatePoseEstimator;
 import control.ModelStateVelocityEstimator;
 import control.PoseEstimator;
+import control.Trajectory4d;
 import control.VelocityEstimator;
 import gazebo_msgs.ModelStates;
 import geometry_msgs.Twist;
@@ -25,7 +27,6 @@ import org.ros.node.AbstractNodeMain;
 import org.ros.node.ConnectedNode;
 import std_msgs.Empty;
 import taskexecutor.KeyboardEmergency;
-import taskexecutor.SimpleEmergencyAfterOneMinute;
 import taskexecutor.Task;
 import taskexecutor.TaskExecutor;
 import taskexecutor.TaskExecutorService;
@@ -63,14 +64,10 @@ public final class ArDroneMoveWithPid extends AbstractNodeMain {
 
         final TaskExecutor taskExecutor = TaskExecutorService.create();
 
-        final SimpleEmergencyAfterOneMinute oneMinuteEmergencyNotifier = SimpleEmergencyAfterOneMinute.create(emergencyTask);
         final KeyboardEmergency keyboardEmergencyNotifier = createKeyboardEmergencyNotifier(emergencyTask);
-
-        oneMinuteEmergencyNotifier.registerTaskExecutor(taskExecutor);
         keyboardEmergencyNotifier.registerTaskExecutor(taskExecutor);
 
         taskExecutor.submitTask(flyTask);
-        oneMinuteEmergencyNotifier.run();
     }
 
     private KeyboardEmergency createKeyboardEmergencyNotifier(Task emergencyTask) {
@@ -94,12 +91,22 @@ public final class ArDroneMoveWithPid extends AbstractNodeMain {
         final Command hoverFiveSecond = Hover.create(velocityPublisher, 5);
         commands.add(hoverFiveSecond);
 
+//        final Command moveToPose = getMoveToPoseCommand();
+//        commands.add(moveToPose);
+
+        final Command followTrajectory = getFollowTrajectoryCommand();
+        commands.add(followTrajectory);
+
+        return Task.create(ImmutableList.copyOf(commands), TaskType.NORMAL_TASK);
+    }
+
+    private Command getMoveToPoseCommand() {
         final String modelName = "quadrotor";
         final PoseEstimator poseEstimator = ModelStatePoseEstimator.create(modelStateSubscriber, modelName);
         final VelocityEstimator velocityEstimator = ModelStateVelocityEstimator.create(modelStateSubscriber, modelName);
         final Pose goalPose = Pose.builder().x(3).y(-3).z(3).yaw(1).build();
         final Velocity goalVelocity = Velocity.builder().linearX(0).linearY(0).linearZ(0).angularZ(0).build();
-        final Command moveToPose = MoveToPose.builder()
+        return MoveToPose.builder()
                 .poseEstimator(poseEstimator)
                 .velocityEstimator(velocityEstimator)
                 .velocityPublisher(velocityPublisher)
@@ -107,8 +114,20 @@ public final class ArDroneMoveWithPid extends AbstractNodeMain {
                 .goalVelocity(goalVelocity)
                 .durationInSeconds(60)
                 .build();
-        commands.add(moveToPose);
-        return Task.create(ImmutableList.copyOf(commands), TaskType.NORMAL_TASK);
+    }
+
+    private Command getFollowTrajectoryCommand() {
+        final String modelName = "quadrotor";
+        final PoseEstimator poseEstimator = ModelStatePoseEstimator.create(modelStateSubscriber, modelName);
+        final VelocityEstimator velocityEstimator = ModelStateVelocityEstimator.create(modelStateSubscriber, modelName);
+        final Trajectory4d trajectory = ExampleTrajectory.create();
+        return FollowTrajectory.builder()
+                .poseEstimator(poseEstimator)
+                .velocityEstimator(velocityEstimator)
+                .velocityPublisher(velocityPublisher)
+                .trajectory4d(trajectory)
+                .durationInSeconds(60)
+                .build();
     }
 
     private static void warmUp() {

@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 public final class PidController4d {
 
     private static final Logger logger = LoggerFactory.getLogger(PidController4d.class);
+
     private static final double NANO_SECOND_TO_SECOND = 1000000000.0;
 
     private final PidController1d pidLinearX;
@@ -57,8 +58,7 @@ public final class PidController4d {
         final double angularZ = pidAngularZ.compute(adaptedCurrentYaw, currentVelocity.angularZ(),
                 currentTimeInSeconds);
 
-        logger.debug("Current pose: {} \nCurrent velocity: {} \nCurrent angular error: {}", currentPose,
-                currentVelocity, angularError);
+        logger.trace("Current time: {}\nCurrent pose: {}", currentTimeInSeconds, currentPose);
 
         return Velocity.builder().linearX(linearX).linearY(linearY).linearZ(linearZ).angularZ(angularZ).build();
     }

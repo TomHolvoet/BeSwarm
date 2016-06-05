@@ -14,6 +14,7 @@ import control.VelocityEstimator;
  * @author Hoang Tung Dinh
  */
 public final class FollowTrajectory implements Command {
+
     private final VelocityPublisher velocityPublisher;
     private final PoseEstimator poseEstimator;
     private final VelocityEstimator velocityEstimator;
