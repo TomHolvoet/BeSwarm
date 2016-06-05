@@ -14,7 +14,7 @@ public enum DefaultPidParameters {
     DEFAULT_ANGULAR_PARAMETERS {
         @Override
         public PidParameters getParameters() {
-            return PidParameters.builder().kp(0.5).kd(0.5).ki(0).lagTimeInSeconds(0.2).build();
+            return PidParameters.builder().kp(1.5).kd(0.75).ki(0).lagTimeInSeconds(0.2).build();
         }
     };
 
