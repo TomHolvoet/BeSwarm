@@ -17,12 +17,12 @@ public final class MoveToPose implements Command {
 
     private static final double DEFAULT_CONTROL_RATE_IN_SECONDS = 0.05;
     private static final PidParameters DEFAULT_PID_LINEAR_PARAMETERS = PidParameters.builder()
-            .kp(0.5)
+            .kp(2)
             .kd(1)
             .ki(0)
             .build();
     private static final PidParameters DEFAULT_PID_ANGULAR_PARAMETERS = PidParameters.builder()
-            .kp(0.1)
+            .kp(0.5)
             .kd(0.5)
             .ki(0)
             .build();
