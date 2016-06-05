@@ -120,7 +120,7 @@ public final class ArDroneMoveWithPid extends AbstractNodeMain {
         final String modelName = "quadrotor";
         final PoseEstimator poseEstimator = ModelStatePoseEstimator.create(modelStateSubscriber, modelName);
         final VelocityEstimator velocityEstimator = ModelStateVelocityEstimator.create(modelStateSubscriber, modelName);
-        final Trajectory4d trajectory = ExampleTrajectory.create();
+        final Trajectory4d trajectory = ExampleTrajectory2.create();
         return FollowTrajectory.builder()
                 .poseEstimator(poseEstimator)
                 .velocityEstimator(velocityEstimator)
