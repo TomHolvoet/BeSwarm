@@ -9,9 +9,9 @@ import control.Trajectory4d;
  */
 public final class ExampleTrajectory implements Trajectory4d {
 
-    private final Trajectory1d trajectoryLinearX = new CosineTrajectory();
-    private final Trajectory1d trajectoryLinearY = new SineTrajectory();
-    private final Trajectory1d trajectoryLinearZ = new SineTrajectory();
+    private final Trajectory1d trajectoryLinearX = new TrajectoryLinearX();
+    private final Trajectory1d trajectoryLinearY = new TrajectoryLinearY();
+    private final Trajectory1d trajectoryLinearZ = new TrajectoryLinearZ();
 
     private final Trajectory1d trajectoryAngularZ = SinglePointTrajectory1d.create(0, 0);
 
@@ -43,9 +43,34 @@ public final class ExampleTrajectory implements Trajectory4d {
         return trajectoryAngularZ;
     }
 
-    private final class SineTrajectory implements Trajectory1d {
+    private final class TrajectoryLinearX implements Trajectory1d {
 
-        private SineTrajectory() {}
+        private TrajectoryLinearX() {}
+
+        @Override
+        public double getDesiredPosition(double timeInSeconds) {
+            if (startTime < 0) {
+                startTime = timeInSeconds;
+            }
+
+            final double currentTime = timeInSeconds - startTime;
+            return 2 * StrictMath.cos(0.25 * currentTime);
+        }
+
+        @Override
+        public double getDesiredVelocity(double timeInSeconds) {
+            if (startTime < 0) {
+                startTime = timeInSeconds;
+            }
+
+            final double currentTime = timeInSeconds - startTime;
+            return -0.5 * StrictMath.sin(0.25 * currentTime);
+        }
+    }
+
+    private final class TrajectoryLinearY implements Trajectory1d {
+
+        private TrajectoryLinearY() {}
 
         @Override
         public double getDesiredPosition(double timeInSeconds) {
@@ -68,11 +93,9 @@ public final class ExampleTrajectory implements Trajectory4d {
         }
     }
 
-    private final class CosineTrajectory implements Trajectory1d {
+    private final class TrajectoryLinearZ implements Trajectory1d {
 
-        private CosineTrajectory() {}
-
-        ;
+        private TrajectoryLinearZ() {}
 
         @Override
         public double getDesiredPosition(double timeInSeconds) {
@@ -81,7 +104,7 @@ public final class ExampleTrajectory implements Trajectory4d {
             }
 
             final double currentTime = timeInSeconds - startTime;
-            return 2 * StrictMath.cos(0.25 * currentTime);
+            return 4 + 2 * StrictMath.cos(0.25 * currentTime);
         }
 
         @Override
