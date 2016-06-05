@@ -16,6 +16,8 @@ public abstract class PidParameters {
 
     public abstract double ki();
 
+    public abstract double lagTimeInSeconds();
+
     public abstract double minVelocity();
 
     public abstract double maxVelocity();
@@ -30,7 +32,8 @@ public abstract class PidParameters {
      * @return a builder
      */
     public static Builder builder() {
-        return new AutoValue_PidParameters.Builder().minVelocity(-Double.MAX_VALUE)
+        return new AutoValue_PidParameters.Builder().lagTimeInSeconds(0)
+                .minVelocity(-Double.MAX_VALUE)
                 .maxVelocity(Double.MAX_VALUE)
                 .minIntegralError(-Double.MAX_VALUE)
                 .maxIntegralError(Double.MAX_VALUE);
@@ -43,6 +46,8 @@ public abstract class PidParameters {
         public abstract Builder kd(double value);
 
         public abstract Builder ki(double value);
+
+        public abstract Builder lagTimeInSeconds(double value);
 
         public abstract Builder minVelocity(double value);
 

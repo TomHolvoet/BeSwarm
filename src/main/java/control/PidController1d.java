@@ -33,12 +33,13 @@ final class PidController1d {
      * @see <a href="https://en.wikipedia.org/wiki/PID_controller">Equation</a>
      */
     double compute(double currentPoint, double currentVelocity, double currentTimeInSeconds) {
-        final double error = trajectory.getDesiredPosition(currentTimeInSeconds) - currentPoint;
+        final double desiredTimeInSeconds = currentTimeInSeconds + parameters.lagTimeInSeconds();
+        final double error = trajectory.getDesiredPosition(desiredTimeInSeconds) - currentPoint;
 
-        updateAccumulatedError(currentTimeInSeconds, error);
+        updateAccumulatedError(desiredTimeInSeconds, error);
 
         final double pTerm = parameters.kp() * error;
-        final double dTerm = parameters.kd() * (trajectory.getDesiredVelocity(currentTimeInSeconds) - currentVelocity);
+        final double dTerm = parameters.kd() * (trajectory.getDesiredVelocity(desiredTimeInSeconds) - currentVelocity);
         final double iTerm = parameters.ki() * accumulatedError;
 
         double outVelocity = pTerm + dTerm + iTerm;
