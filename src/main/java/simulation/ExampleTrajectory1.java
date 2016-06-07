@@ -13,14 +13,22 @@ public final class ExampleTrajectory1 implements Trajectory4d {
     private final Trajectory1d trajectoryLinearY = new TrajectoryLinearY();
     private final Trajectory1d trajectoryLinearZ = new TrajectoryLinearZ();
 
-    private final Trajectory1d trajectoryAngularZ = SinglePointTrajectory1d.create(0, 0);
+    private final Trajectory1d trajectoryAngularZ = SinglePointTrajectory1d
+            .create(0, 0);
 
     private double startTime = -1;
 
-    private ExampleTrajectory1() {}
+    private ExampleTrajectory1() {
+    }
 
     public static ExampleTrajectory1 create() {
         return new ExampleTrajectory1();
+    }
+
+    private void setStartTime(double timeInSeconds) {
+        if (startTime < 0) {
+            startTime = timeInSeconds;
+        }
     }
 
     @Override
@@ -45,13 +53,12 @@ public final class ExampleTrajectory1 implements Trajectory4d {
 
     private final class TrajectoryLinearX implements Trajectory1d {
 
-        private TrajectoryLinearX() {}
+        private TrajectoryLinearX() {
+        }
 
         @Override
         public double getDesiredPosition(double timeInSeconds) {
-            if (startTime < 0) {
-                startTime = timeInSeconds;
-            }
+            setStartTime(timeInSeconds);
 
             final double currentTime = timeInSeconds - startTime;
             return 2 * StrictMath.cos(0.25 * currentTime);
@@ -59,9 +66,7 @@ public final class ExampleTrajectory1 implements Trajectory4d {
 
         @Override
         public double getDesiredVelocity(double timeInSeconds) {
-            if (startTime < 0) {
-                startTime = timeInSeconds;
-            }
+            setStartTime(timeInSeconds);
 
             final double currentTime = timeInSeconds - startTime;
             return -0.5 * StrictMath.sin(0.25 * currentTime);
@@ -70,13 +75,12 @@ public final class ExampleTrajectory1 implements Trajectory4d {
 
     private final class TrajectoryLinearY implements Trajectory1d {
 
-        private TrajectoryLinearY() {}
+        private TrajectoryLinearY() {
+        }
 
         @Override
         public double getDesiredPosition(double timeInSeconds) {
-            if (startTime < 0) {
-                startTime = timeInSeconds;
-            }
+            setStartTime(timeInSeconds);
 
             final double currentTime = timeInSeconds - startTime;
             return 2 * StrictMath.sin(0.25 * currentTime);
@@ -84,9 +88,7 @@ public final class ExampleTrajectory1 implements Trajectory4d {
 
         @Override
         public double getDesiredVelocity(double timeInSeconds) {
-            if (startTime < 0) {
-                startTime = timeInSeconds;
-            }
+            setStartTime(timeInSeconds);
 
             final double currentTime = timeInSeconds - startTime;
             return 0.5 * StrictMath.cos(0.25 * currentTime);
@@ -95,13 +97,12 @@ public final class ExampleTrajectory1 implements Trajectory4d {
 
     private final class TrajectoryLinearZ implements Trajectory1d {
 
-        private TrajectoryLinearZ() {}
+        private TrajectoryLinearZ() {
+        }
 
         @Override
         public double getDesiredPosition(double timeInSeconds) {
-            if (startTime < 0) {
-                startTime = timeInSeconds;
-            }
+            setStartTime(timeInSeconds);
 
             final double currentTime = timeInSeconds - startTime;
             return 4 + 2 * StrictMath.cos(0.25 * currentTime);
@@ -109,9 +110,7 @@ public final class ExampleTrajectory1 implements Trajectory4d {
 
         @Override
         public double getDesiredVelocity(double timeInSeconds) {
-            if (startTime < 0) {
-                startTime = timeInSeconds;
-            }
+            setStartTime(timeInSeconds);
 
             final double currentTime = timeInSeconds - startTime;
             return -0.5 * StrictMath.sin(0.25 * currentTime);
