@@ -27,14 +27,14 @@ public class CircleTrajectory2DTest {
         for (double i = 0; i < 3;
              i += 0.66) {
             Assert.assertEquals(radius,
-                    highFrequencyCircle.getTrajectoryLinearX()
+                    highFrequencyCircle.getTrajectoryLinearAbscissa()
                             .getDesiredPosition(i), 0.01);
         }
 
         for (double i = 0; i < 30;
              i += 10) {
             Assert.assertEquals(radius,
-                    lowFrequencyCircle.getTrajectoryLinearX()
+                    lowFrequencyCircle.getTrajectoryLinearAbscissa()
                             .getDesiredPosition(i), 0.01);
         }
 
@@ -42,7 +42,7 @@ public class CircleTrajectory2DTest {
              i += 2) {
 
             Assert.assertTrue(
-                    Math.abs(highFrequencyCircle.getTrajectoryLinearX()
+                    Math.abs(highFrequencyCircle.getTrajectoryLinearAbscissa()
                             .getDesiredVelocity(i)) < 1);
         }
 
@@ -50,7 +50,7 @@ public class CircleTrajectory2DTest {
              i += 2) {
 
             Assert.assertTrue(
-                    Math.abs(lowFrequencyCircle.getTrajectoryLinearX()
+                    Math.abs(lowFrequencyCircle.getTrajectoryLinearAbscissa()
                             .getDesiredVelocity(i)) < 1);
         }
     }
@@ -60,14 +60,14 @@ public class CircleTrajectory2DTest {
         for (double i = 0; i < 1;
              i += 0.33) {
             Assert.assertEquals(0,
-                    highFrequencyCircle.getTrajectoryLinearY()
+                    highFrequencyCircle.getTrajectoryLinearOrdinate()
                             .getDesiredPosition(i), 0.01);
         }
 
         for (double i = 0; i < 30;
              i += 10) {
             Assert.assertEquals(0,
-                    lowFrequencyCircle.getTrajectoryLinearY()
+                    lowFrequencyCircle.getTrajectoryLinearOrdinate()
                             .getDesiredPosition(i), 0.01);
         }
 
@@ -75,7 +75,7 @@ public class CircleTrajectory2DTest {
              i += 2) {
 
             Assert.assertTrue(
-                    Math.abs(highFrequencyCircle.getTrajectoryLinearY()
+                    Math.abs(highFrequencyCircle.getTrajectoryLinearOrdinate()
                             .getDesiredVelocity(i)) < 1);
         }
 
@@ -83,7 +83,7 @@ public class CircleTrajectory2DTest {
              i += 2) {
 
             Assert.assertTrue(
-                    Math.abs(lowFrequencyCircle.getTrajectoryLinearY()
+                    Math.abs(lowFrequencyCircle.getTrajectoryLinearOrdinate()
                             .getDesiredVelocity(i)) < 1);
         }
     }

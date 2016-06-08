@@ -8,7 +8,13 @@ package control;
  * @author Kristof Coninx
  */
 public interface Trajectory2d {
-    Trajectory1d getTrajectoryLinearX();
+    /**
+     * @return A 1d trajectory function for the abscissa (or commonly x-axis).
+     */
+    Trajectory1d getTrajectoryLinearAbscissa();
 
-    Trajectory1d getTrajectoryLinearY();
+    /**
+     * @return A 1d trajectory function for the abscissa (or commonly y-axis).
+     */
+    Trajectory1d getTrajectoryLinearOrdinate();
 }

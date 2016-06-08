@@ -50,7 +50,7 @@ public class CircleTrajectory2D implements Trajectory2d {
         return frequency;
     }
 
-    @Override public Trajectory1d getTrajectoryLinearX() {
+    @Override public Trajectory1d getTrajectoryLinearAbscissa() {
         return new Trajectory1d() {
             @Override
             public double getDesiredPosition(double timeInSeconds) {
@@ -70,7 +70,7 @@ public class CircleTrajectory2D implements Trajectory2d {
         };
     }
 
-    @Override public Trajectory1d getTrajectoryLinearY() {
+    @Override public Trajectory1d getTrajectoryLinearOrdinate() {
         return new Trajectory1d() {
             @Override
             public double getDesiredPosition(double timeInSeconds) {
