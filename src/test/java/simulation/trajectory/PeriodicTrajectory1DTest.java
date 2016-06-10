@@ -42,7 +42,7 @@ public class PeriodicTrajectory1DTest {
     }
 
     @Test
-    public void getTrajectoryLinearX() throws Exception {
+    public void getTrajectoryPosition() throws Exception {
         for (double i = 0; i < 3;
              i += 0.66) {
             Assert.assertEquals(radius,
@@ -56,7 +56,10 @@ public class PeriodicTrajectory1DTest {
                     lowFrequencyCircle
                             .getDesiredPosition(i), 0.01);
         }
+    }
 
+    @Test
+    public void getTrajectoryVelocity() {
         for (double i = 0; i < 30;
              i += 2) {
 

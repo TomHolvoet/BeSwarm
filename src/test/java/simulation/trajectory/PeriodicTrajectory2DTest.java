@@ -55,7 +55,7 @@ public class PeriodicTrajectory2DTest {
     }
 
     @Test
-    public void getTrajectoryLinearX() throws Exception {
+    public void getTrajectoryLinearAbscissa() throws Exception {
         for (double i = 0; i < 3;
              i += 0.66) {
             Assert.assertEquals(radius,
@@ -90,7 +90,7 @@ public class PeriodicTrajectory2DTest {
     }
 
     @Test
-    public void getTrajectoryLinearY() throws Exception {
+    public void getTrajectoryLinearOrdinate() throws Exception {
         for (double i = 0; i < 1;
              i += 0.33) {
             Assert.assertEquals(0,
