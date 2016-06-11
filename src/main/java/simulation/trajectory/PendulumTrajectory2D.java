@@ -6,48 +6,48 @@ import control.Trajectory2d;
 import static com.google.common.base.Preconditions.checkArgument;
 
 /**
- * A circular trajectory in 2 dimensions of motion specified in a frequency
- * (How many revolutions per second) and a radius.
- * Created by Kristof Coninx.
+ * A Pendulum trajectory in 2 dimensions of motion specified in a frequency
+ * (How many revolutions per second) and a radius
+ * (the length of the virtual pendulum string).
+ * The pendulum trajectory is a half circle but with with modeled transition
+ * from kinetic to potential energy and back.
+ *
+ * @author Kristof Coninx <kristof.coninx AT cs.kuleuven.be>
  */
-public class CircleTrajectory2D extends PeriodicTrajectory
+public class PendulumTrajectory2D extends PeriodicTrajectory
         implements Trajectory2d {
-    public static final double MAX_ABSOLUTE_SPEED = 1;
     private final double radius;
     private final double frequency;
     private final double freq2pi;
-    private final double rfreq2pi;
     private double startTime = -1;
 
     /**
      * Constructor
      *
-     * @param radius    The radius of the circle.
+     * @param radius    The length of the virtual pendulum string (or radius).
      * @param frequency The frequency f (amount of revolutions per second).
      *                  Equals 1/period.
-     * @param clockwise Turn right hand if true;
      */
-    public CircleTrajectory2D(double radius, double frequency,
-            boolean clockwise) {
-        super();
+    public PendulumTrajectory2D(double radius, double frequency) {
+        super(HALFPI * 3);
         this.radius = radius;
         this.frequency = frequency;
-        this.freq2pi = frequency * TWOPI * (clockwise ? 1 : -1);
-        this.rfreq2pi = frequency * radius * TWOPI * (clockwise ? 1 : -1);
-        checkArgument(Math.abs(rfreq2pi) < MAX_ABSOLUTE_SPEED,
+        this.freq2pi = frequency * TWOPI;
+        checkArgument(
+                Math.abs(radius * frequency) < MAX_ABSOLUTE_SPEED / PISQUARED,
                 "Absolute speed should not be larger than MAX_ABSOLUTE_SPEED,"
                         + " which is: "
                         + MAX_ABSOLUTE_SPEED);
-    }
-
-    CircleTrajectory2D(double radius, double frequency) {
-        this(radius, frequency, true);
     }
 
     private void setStartTime(double timeInSeconds) {
         if (startTime < 0) {
             startTime = timeInSeconds;
         }
+    }
+
+    private double getAngleFromT(double currentTime) {
+        return HALFPI * StrictMath.cos(freq2pi * currentTime);
     }
 
     public double getRadius() {
@@ -66,7 +66,8 @@ public class CircleTrajectory2D extends PeriodicTrajectory
 
                 final double currentTime = timeInSeconds - startTime;
                 return getRadius() * StrictMath
-                        .cos(freq2pi * currentTime + getPhaseDisplacement());
+                        .cos(getAngleFromT(currentTime)
+                                + getPhaseDisplacement());
             }
 
             @Override
@@ -74,8 +75,13 @@ public class CircleTrajectory2D extends PeriodicTrajectory
                 setStartTime(timeInSeconds);
 
                 final double currentTime = timeInSeconds - startTime;
-                return -rfreq2pi * StrictMath
-                        .sin(freq2pi * currentTime + getPhaseDisplacement());
+                return
+                        PISQUARED * getFrequency() * getRadius() * StrictMath
+                                .sin(freq2pi * currentTime
+                                        + getPhaseDisplacement()) * StrictMath
+                                .sin(HALFPI * StrictMath
+                                        .cos(freq2pi * currentTime
+                                                + getPhaseDisplacement()));
             }
         };
     }
@@ -87,8 +93,9 @@ public class CircleTrajectory2D extends PeriodicTrajectory
                 setStartTime(timeInSeconds);
 
                 final double currentTime = timeInSeconds - startTime;
-                return getRadius() * StrictMath
-                        .sin(freq2pi * currentTime + getPhaseDisplacement());
+                return -getRadius() * StrictMath
+                        .sin(getAngleFromT(currentTime)
+                                + getPhaseDisplacement());
             }
 
             @Override
@@ -96,8 +103,13 @@ public class CircleTrajectory2D extends PeriodicTrajectory
                 setStartTime(timeInSeconds);
 
                 final double currentTime = timeInSeconds - startTime;
-                return rfreq2pi * StrictMath
-                        .cos(freq2pi * currentTime + getPhaseDisplacement());
+                return
+                        PISQUARED * getFrequency() * getRadius() * StrictMath
+                                .sin(freq2pi * currentTime
+                                        + getPhaseDisplacement()) * StrictMath
+                                .cos(HALFPI * StrictMath
+                                        .cos(freq2pi * currentTime
+                                                + getPhaseDisplacement()));
             }
         };
     }
