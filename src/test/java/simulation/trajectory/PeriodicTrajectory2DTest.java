@@ -51,7 +51,8 @@ public class PeriodicTrajectory2DTest {
     }
 
     @Test
-    public void getTrajectoryLinearAbscissa() throws Exception {
+    public void getTrajectoryLinearAbscissaTestFrequencyAndRadiusRelation()
+            throws Exception {
         for (double i = 0; i < 3;
              i += 0.66) {
             Assert.assertEquals(radius,
@@ -86,7 +87,8 @@ public class PeriodicTrajectory2DTest {
     }
 
     @Test
-    public void getTrajectoryLinearOrdinate() throws Exception {
+    public void getTrajectoryLinearOrdinateTestFrequencyAndRadiusRelation()
+            throws Exception {
         for (double i = 0; i < 1;
              i += 0.33) {
             Assert.assertEquals(0,
@@ -121,18 +123,8 @@ public class PeriodicTrajectory2DTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testConstructorWithHighThanAllowedSpeedRate() {
-        Trajectory2d target = CircleTrajectory2D.builder().setRadius(5)
-                .setFrequency(1).setOrigin(Point4D.origin()).build();
-    }
-
-    @Test(expected = IllegalArgumentException.class)
     public void testParamConstructorWithHighThanAllowedSpeedRate()
             throws Exception {
-        //        Trajectory2d target = CircleTrajectory2D.builder()
-        // .setRadius(5)
-        //                .setFrequency(1).setOrigin(true).builder();
-
         Class[] cArg = new Class[2];
         cArg[0] = double.class;
         cArg[1] = double.class;

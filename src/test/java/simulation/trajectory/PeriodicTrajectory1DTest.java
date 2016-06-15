@@ -46,7 +46,8 @@ public class PeriodicTrajectory1DTest {
     }
 
     @Test
-    public void getTrajectoryPosition() throws Exception {
+    public void getTrajectoryPositionTestFrequencyAndRadiusRelation()
+            throws Exception {
         for (double i = 0; i < 3;
              i += 0.66) {
             Assert.assertEquals(radius,
@@ -63,7 +64,7 @@ public class PeriodicTrajectory1DTest {
     }
 
     @Test
-    public void getTrajectoryVelocity() {
+    public void getTrajectoryVelocityTestFrequencyAndRadiusRelation() {
         for (double i = 0; i < 30;
              i += 2) {
 
@@ -86,10 +87,6 @@ public class PeriodicTrajectory1DTest {
     @Test(expected = IllegalArgumentException.class)
     public void testParamConstructorWithHighThanAllowedSpeedRate()
             throws Exception {
-        //        Trajectory2d target = CircleTrajectory2D.builder()
-        // .setRadius(5)
-        //                .setFrequency(1).setOrigin(true).builder();
-
         Class[] cArg = new Class[2];
         cArg[0] = double.class;
         cArg[1] = double.class;
