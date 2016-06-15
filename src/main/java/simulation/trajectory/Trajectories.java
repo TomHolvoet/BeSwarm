@@ -86,11 +86,42 @@ public final class Trajectories {
                 .setFrequency(frequency).build();
     }
 
-    //    public static Trajectory4d newBasicPendulumSwingTrajectory(){
-    //
-    //    }
-    //
-    //    public static Trajectory4d newBasicConstantswingTrajectory(){
-    //
-    //    }
+    /**
+     * @return An example trajectory4d object representing a pendulum swing
+     * motion
+     * using default radius and frequency.
+     */
+    public static Trajectory4d newExamplePendulumSwingTrajectory() {
+        return SwingTrajectory4D.builder().build();
+    }
+
+    /**
+     * @param origin    the linear displacement in space.
+     * @param radius    the radius of the pendulum motion (or length of
+     *                  virtual string).
+     * @param frequency the frequency in time of completing the motion.
+     * @return A new simple pendulum trajectory in the xz plane.
+     */
+    public static Trajectory4d newSimplePendulumSwingTrajectory(Point4D origin,
+            double radius, double frequency) {
+        return SwingTrajectory4D.builder().setRadius(radius)
+                .setFrequency(frequency).setOrigin(origin).setXzPlaneAngle(0)
+                .build();
+    }
+
+    /**
+     * @param origin     the linear displacement in space.
+     * @param radius     the radius of the pendulum motion (or length of
+     *                   virtual string).
+     * @param frequency  the frequency in time of completing the motion.
+     * @param planeAngle the angle between the plane of motion and the xz plane.
+     * @return A new simple pendulum trajectory in the xz plane.
+     */
+    public static Trajectory4d newPendulumSwingTrajectory(Point4D origin,
+            double radius, double frequency, double planeAngle) {
+        return SwingTrajectory4D.builder().setRadius(radius)
+                .setFrequency(frequency).setOrigin(origin)
+                .setXzPlaneAngle(planeAngle)
+                .build();
+    }
 }
