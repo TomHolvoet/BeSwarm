@@ -1,5 +1,6 @@
 package simulation.trajectory;
 
+import com.google.common.annotations.VisibleForTesting;
 import control.Trajectory1d;
 import control.Trajectory2d;
 
@@ -25,14 +26,11 @@ public class CircleTrajectory2D extends PeriodicTrajectory
      * @param radius    The radius of the circle.
      * @param frequency The frequency f (amount of revolutions per second).
      *                  Equals 1/period.
+     * @param origin    The origin point around which to form the trajectory.
+     *                  Represents a linear displacement.
      * @param clockwise Turn right hand if true;
      */
-    public CircleTrajectory2D(double radius, double frequency,
-            boolean clockwise) {
-        this(radius, frequency, Point4D.origin(), clockwise);
-    }
-
-    public CircleTrajectory2D(double radius, double frequency, Point4D origin,
+    private CircleTrajectory2D(double radius, double frequency, Point4D origin,
             boolean clockwise) {
         super(0, origin);
         this.radius = radius;
@@ -45,12 +43,9 @@ public class CircleTrajectory2D extends PeriodicTrajectory
                         + MAX_ABSOLUTE_SPEED);
     }
 
+    @VisibleForTesting
     CircleTrajectory2D(double radius, double frequency) {
-        this(radius, frequency, true);
-    }
-
-    CircleTrajectory2D(double radius, double frequency, Point4D origin) {
-        this(radius, frequency, origin, true);
+        this(radius, frequency, Point4D.origin(), true);
     }
 
     private void setStartTime(double timeInSeconds) {
@@ -67,7 +62,8 @@ public class CircleTrajectory2D extends PeriodicTrajectory
         return frequency;
     }
 
-    @Override public Trajectory1d getTrajectoryLinearAbscissa() {
+    @Override
+    public Trajectory1d getTrajectoryLinearAbscissa() {
         return new Trajectory1d() {
             @Override
             public double getDesiredPosition(double timeInSeconds) {
@@ -89,7 +85,8 @@ public class CircleTrajectory2D extends PeriodicTrajectory
         };
     }
 
-    @Override public Trajectory1d getTrajectoryLinearOrdinate() {
+    @Override
+    public Trajectory1d getTrajectoryLinearOrdinate() {
         return new Trajectory1d() {
             @Override
             public double getDesiredPosition(double timeInSeconds) {
@@ -109,5 +106,40 @@ public class CircleTrajectory2D extends PeriodicTrajectory
                         .cos(freq2pi * currentTime + getPhaseDisplacement());
             }
         };
+    }
+
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    static class Builder {
+        private double radius = 1;
+        private double frequency = 5;
+        private Point4D origin = Point4D.origin();
+        private boolean clockwise = true;
+
+        public Builder setRadius(double radius) {
+            this.radius = radius;
+            return this;
+        }
+
+        public Builder setFrequency(double frequency) {
+            this.frequency = frequency;
+            return this;
+        }
+
+        public Builder setOrigin(Point4D origin) {
+            this.origin = origin;
+            return this;
+        }
+
+        public Builder setClockwise(boolean clockwise) {
+            this.clockwise = clockwise;
+            return this;
+        }
+
+        public CircleTrajectory2D build() {
+            return new CircleTrajectory2D(radius, frequency, origin, clockwise);
+        }
     }
 }

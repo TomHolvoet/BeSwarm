@@ -4,7 +4,7 @@ import control.Trajectory1d;
 import control.Trajectory4d;
 
 /**
- * A 4D motion primitive for circlemotion in 3 dimensions.
+ * A 4D motion primitive for circle motion in 3 dimensions.
  * This circle is defined by a displacement parameter for relocating the
  * origin, a radius, a frequency and an angle of the circle towards the
  * xy-plane.
@@ -16,35 +16,45 @@ import control.Trajectory4d;
 public class CircleTrajectory4D implements Trajectory4d {
     private Point4D location;
     private CircleTrajectory2D xycircle;
-    private double planeAngle;
     private double scalefactor;
 
-    public CircleTrajectory4D(Point4D location, double radius, double frequency,
+    private CircleTrajectory4D(Point4D location, double radius,
+            double frequency,
             double planeAngle) {
         this.location = location;
-        this.planeAngle = planeAngle;
         this.scalefactor = StrictMath.tan(planeAngle);
-        this.xycircle = new CircleTrajectory2D(radius, frequency, location);
+        this.xycircle = CircleTrajectory2D.builder().setRadius(radius)
+                .setFrequency(frequency).setOrigin(location)
+                .build();
     }
 
-    @Override public Trajectory1d getTrajectoryLinearX() {
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    @Override
+    public Trajectory1d getTrajectoryLinearX() {
         return xycircle.getTrajectoryLinearAbscissa();
     }
 
-    @Override public Trajectory1d getTrajectoryLinearY() {
+    @Override
+    public Trajectory1d getTrajectoryLinearY() {
         return xycircle.getTrajectoryLinearOrdinate();
     }
 
-    @Override public Trajectory1d getTrajectoryLinearZ() {
+    @Override
+    public Trajectory1d getTrajectoryLinearZ() {
         return new Trajectory1d() {
-            @Override public double getDesiredPosition(double timeInSeconds) {
+            @Override
+            public double getDesiredPosition(double timeInSeconds) {
                 return scalefactor * xycircle
                         .getTrajectoryLinearOrdinate()
                         .getDesiredPosition(timeInSeconds) - location.getY()
                         + location.getZ();
             }
 
-            @Override public double getDesiredVelocity(double timeInSeconds) {
+            @Override
+            public double getDesiredVelocity(double timeInSeconds) {
                 return scalefactor * xycircle
                         .getTrajectoryLinearOrdinate()
                         .getDesiredVelocity(timeInSeconds);
@@ -52,7 +62,40 @@ public class CircleTrajectory4D implements Trajectory4d {
         };
     }
 
-    @Override public Trajectory1d getTrajectoryAngularZ() {
+    @Override
+    public Trajectory1d getTrajectoryAngularZ() {
         return null;
+    }
+
+    public static class Builder {
+        private Point4D location = Point4D.origin();
+        private double radius = 1;
+        private double frequency = 5;
+        private double planeAngle = 0;
+
+        public Builder setLocation(Point4D location) {
+            this.location = location;
+            return this;
+        }
+
+        public Builder setRadius(double radius) {
+            this.radius = radius;
+            return this;
+        }
+
+        public Builder setFrequency(double frequency) {
+            this.frequency = frequency;
+            return this;
+        }
+
+        public Builder setPlaneAngle(double planeAngle) {
+            this.planeAngle = planeAngle;
+            return this;
+        }
+
+        public CircleTrajectory4D build() {
+            return new CircleTrajectory4D(location, radius, frequency,
+                    planeAngle);
+        }
     }
 }
