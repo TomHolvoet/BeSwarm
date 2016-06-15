@@ -4,6 +4,13 @@ import control.Trajectory1d;
 import control.Trajectory4d;
 
 /**
+ * A 4D motion primitive for circlemotion in 3 dimensions.
+ * This circle is defined by a displacement parameter for relocating the
+ * origin, a radius, a frequency and an angle of the circle towards the
+ * xy-plane.
+ * This angle represents the angle between the xy-plane and the plane in
+ * which the circle movement is performed.
+ *
  * @author Kristof Coninx <kristof.coninx AT cs.kuleuven.be>
  */
 public class CircleTrajectory4D implements Trajectory4d {
