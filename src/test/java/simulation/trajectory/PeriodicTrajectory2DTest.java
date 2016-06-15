@@ -8,7 +8,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
+
+import static org.junit.Assert.fail;
 
 /**
  * @author Kristof Coninx <kristof.coninx AT cs.kuleuven.be>
@@ -20,17 +23,14 @@ public class PeriodicTrajectory2DTest {
     private final double lowFreq = 1 / 10;
     private final double highFreq = 1.5;
     private final double radius = 0.065;
+    private Class cl;
 
     @Before
     public void setUp() throws Exception {
-        //        highFrequencyCircle = new CircleTrajectory2D(radius,
-        // highFreq, false);
-        //        lowFrequencyCircle = new CircleTrajectory2D(radius,
-        // lowFreq, false);
-
     }
 
     public PeriodicTrajectory2DTest(Class cl) {
+        this.cl = cl;
         Class[] cArg = new Class[2];
         cArg[0] = double.class;
         cArg[1] = double.class;
@@ -42,10 +42,6 @@ public class PeriodicTrajectory2DTest {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        //        highFrequencyCircle = new CircleTrajectory2D(radius, highFreq,
-        //                false);
-        //        lowFrequencyCircle = new CircleTrajectory2D(radius,
-        // lowFreq, false);
     }
 
     @Parameterized.Parameters
@@ -126,7 +122,32 @@ public class PeriodicTrajectory2DTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testConstructorWithHighThanAllowedSpeedRate() {
-        Trajectory2d target = new CircleTrajectory2D(5, 1, true);
+        Trajectory2d target = CircleTrajectory2D.builder().setRadius(5)
+                .setFrequency(1).setOrigin(Point4D.origin()).build();
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testParamConstructorWithHighThanAllowedSpeedRate()
+            throws Exception {
+        //        Trajectory2d target = CircleTrajectory2D.builder()
+        // .setRadius(5)
+        //                .setFrequency(1).setOrigin(true).builder();
+
+        Class[] cArg = new Class[2];
+        cArg[0] = double.class;
+        cArg[1] = double.class;
+        try {
+            Trajectory2d target = (Trajectory2d) this.cl
+                    .getDeclaredConstructor(cArg)
+                    .newInstance(1, 1);
+        } catch (InvocationTargetException e) {
+            if (new Exception(e.getCause()).getMessage()
+                    .contains("MAX_ABSOLUTE_SPEED")) {
+                throw new IllegalArgumentException(e.getCause());
+            }
+        } catch (Exception e) {
+            fail();
+        }
     }
 
 }
