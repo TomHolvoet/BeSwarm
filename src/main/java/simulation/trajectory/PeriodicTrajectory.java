@@ -12,13 +12,19 @@ public abstract class PeriodicTrajectory {
     protected static final double HALFPI = Math.PI / 2;
     protected static final double PISQUARED = Math.PI * Math.PI;
     private double phaseDisplacement;
+    private Point4D linearDisplacement;
 
     protected PeriodicTrajectory() {
-        this.phaseDisplacement = 0;
+        this(0, Point4D.origin());
     }
 
     protected PeriodicTrajectory(double phase) {
+        this(phase, Point4D.origin());
+    }
+
+    protected PeriodicTrajectory(double phase, Point4D displacement) {
         this.phaseDisplacement = phase;
+        this.linearDisplacement = displacement;
     }
 
     /**
@@ -26,5 +32,14 @@ public abstract class PeriodicTrajectory {
      */
     protected double getPhaseDisplacement() {
         return phaseDisplacement;
+    }
+
+    /**
+     * Return the origin point for linear displacement in 4D.
+     *
+     * @return
+     */
+    protected Point4D getLinearDisplacement() {
+        return this.linearDisplacement;
     }
 }

@@ -29,7 +29,12 @@ public class CircleTrajectory2D extends PeriodicTrajectory
      */
     public CircleTrajectory2D(double radius, double frequency,
             boolean clockwise) {
-        super();
+        this(radius, frequency, Point4D.origin(), clockwise);
+    }
+
+    public CircleTrajectory2D(double radius, double frequency, Point4D origin,
+            boolean clockwise) {
+        super(0, origin);
         this.radius = radius;
         this.frequency = frequency;
         this.freq2pi = frequency * TWOPI * (clockwise ? 1 : -1);
@@ -42,6 +47,10 @@ public class CircleTrajectory2D extends PeriodicTrajectory
 
     CircleTrajectory2D(double radius, double frequency) {
         this(radius, frequency, true);
+    }
+
+    CircleTrajectory2D(double radius, double frequency, Point4D origin) {
+        this(radius, frequency, origin, true);
     }
 
     private void setStartTime(double timeInSeconds) {

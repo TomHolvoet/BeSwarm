@@ -65,7 +65,7 @@ public class PendulumTrajectory2D extends PeriodicTrajectory
                 setStartTime(timeInSeconds);
 
                 final double currentTime = timeInSeconds - startTime;
-                return getRadius() * StrictMath
+                return getLinearDisplacement().getX() + getRadius() * StrictMath
                         .cos(getAngleFromT(currentTime)
                                 + getPhaseDisplacement());
             }
@@ -93,7 +93,7 @@ public class PendulumTrajectory2D extends PeriodicTrajectory
                 setStartTime(timeInSeconds);
 
                 final double currentTime = timeInSeconds - startTime;
-                return -getRadius() * StrictMath
+                return getLinearDisplacement().getY() - getRadius() * StrictMath
                         .sin(getAngleFromT(currentTime)
                                 + getPhaseDisplacement());
             }
