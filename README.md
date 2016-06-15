@@ -6,7 +6,7 @@ BebopRosJava requires the following ROS packages to be installed:
 - [RosJava](http://wiki.ros.org/rosjava/Tutorials/indigo/Installation)
 - [bebop_autonomy](http://bebop-autonomy.readthedocs.io/en/latest/installation.html)
 
-For simulation (this simulator uses the AR.Drone model, which has almost the same ROS interface as Bebop drone):
+For simulation (this simulator uses the AR.Drone model, which has almost the same ROS interface as the Bebop drone):
 - [tum_simulator](https://github.com/dougvk/tum_simulator)
 
 # Getting started

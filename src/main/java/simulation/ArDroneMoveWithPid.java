@@ -1,28 +1,40 @@
 package simulation;
 
-import bebopbehavior.Command;
-import bebopbehavior.Hover;
-import bebopbehavior.Pose;
-import bebopbehavior.Takeoff;
-import bebopbehavior.Velocity;
+import com.google.common.collect.ImmutableList;
+import comm.KeyboardSubscriber;
+import comm.LandPublisher;
+import comm.ModelStateSubscriber;
 import comm.TakeoffPublisher;
 import comm.VelocityPublisher;
+import commands.Command;
+import commands.FollowTrajectory;
+import commands.Hover;
+import commands.Land;
+import commands.MoveToPose;
+import commands.Pose;
+import commands.Takeoff;
+import commands.Velocity;
+import control.ModelStatePoseEstimator;
+import control.ModelStateVelocityEstimator;
+import control.PoseEstimator;
+import control.Trajectory4d;
+import control.VelocityEstimator;
 import gazebo_msgs.ModelStates;
-import geom.Transformations;
-import geometry_msgs.Point;
-import geometry_msgs.Quaternion;
 import geometry_msgs.Twist;
-import org.ros.message.MessageListener;
+import keyboard.Key;
 import org.ros.namespace.GraphName;
 import org.ros.node.AbstractNodeMain;
 import org.ros.node.ConnectedNode;
-import org.ros.node.topic.Subscriber;
-import pidcontroller.PidController4D;
-import pidcontroller.PidParameters;
 import std_msgs.Empty;
+import taskexecutor.KeyboardEmergency;
+import taskexecutor.Task;
+import taskexecutor.TaskExecutor;
+import taskexecutor.TaskExecutorService;
+import taskexecutor.TaskType;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
+import java.util.concurrent.TimeUnit;
 
 /**
  * This class is for running the simulation with the AR drone.
@@ -30,7 +42,12 @@ import java.util.List;
  * @author Hoang Tung Dinh
  * @see <a href="https://github.com/dougvk/tum_simulator">The simulator</a>
  */
-public class ArDroneMoveWithPid extends AbstractNodeMain {
+public final class ArDroneMoveWithPid extends AbstractNodeMain {
+    private TakeoffPublisher takeoffPublisher;
+    private LandPublisher landPublisher;
+    private VelocityPublisher velocityPublisher;
+    private ModelStateSubscriber modelStateSubscriber;
+    private KeyboardSubscriber keyboardSubscriber;
 
     @Override
     public GraphName getDefaultNodeName() {
@@ -39,10 +56,91 @@ public class ArDroneMoveWithPid extends AbstractNodeMain {
 
     @Override
     public void onStart(final ConnectedNode connectedNode) {
-        // FIXME refactor this code to separate concern, use atomic data structure.
-        final TakeoffPublisher takeoffPublisher = TakeoffPublisher.create(
-                connectedNode.<Empty>newPublisher("/ardrone/takeoff", Empty._TYPE));
-        final VelocityPublisher velocityPublisher = VelocityPublisher.builder()
+        initializeComm(connectedNode);
+        warmUp();
+
+        final Task flyTask = createFlyTask();
+        final Task emergencyTask = createEmergencyTask();
+
+        final TaskExecutor taskExecutor = TaskExecutorService.create();
+
+        final KeyboardEmergency keyboardEmergencyNotifier = createKeyboardEmergencyNotifier(emergencyTask);
+        keyboardEmergencyNotifier.registerTaskExecutor(taskExecutor);
+
+        taskExecutor.submitTask(flyTask);
+    }
+
+    private KeyboardEmergency createKeyboardEmergencyNotifier(Task emergencyTask) {
+        final KeyboardEmergency keyboardEmergency = KeyboardEmergency.create(emergencyTask);
+        keyboardSubscriber.startListeningToMessages();
+        keyboardSubscriber.registerObserver(keyboardEmergency);
+        return keyboardEmergency;
+    }
+
+    private Task createEmergencyTask() {
+        final Command land = Land.create(landPublisher);
+        return Task.create(ImmutableList.of(land), TaskType.FIRST_ORDER_EMERGENCY);
+    }
+
+    private Task createFlyTask() {
+        final Collection<Command> commands = new ArrayList<>();
+
+        final Command takeOff = Takeoff.create(takeoffPublisher);
+        commands.add(takeOff);
+
+        final Command hoverFiveSecond = Hover.create(velocityPublisher, 5);
+        commands.add(hoverFiveSecond);
+
+//        final Command moveToPose = getMoveToPoseCommand();
+//        commands.add(moveToPose);
+
+        final Command followTrajectory = getFollowTrajectoryCommand();
+        commands.add(followTrajectory);
+
+        return Task.create(ImmutableList.copyOf(commands), TaskType.NORMAL_TASK);
+    }
+
+    private Command getMoveToPoseCommand() {
+        final String modelName = "quadrotor";
+        final PoseEstimator poseEstimator = ModelStatePoseEstimator.create(modelStateSubscriber, modelName);
+        final VelocityEstimator velocityEstimator = ModelStateVelocityEstimator.create(modelStateSubscriber, modelName);
+        final Pose goalPose = Pose.builder().x(3).y(-3).z(3).yaw(1).build();
+        final Velocity goalVelocity = Velocity.builder().linearX(0).linearY(0).linearZ(0).angularZ(0).build();
+        return MoveToPose.builder()
+                .poseEstimator(poseEstimator)
+                .velocityEstimator(velocityEstimator)
+                .velocityPublisher(velocityPublisher)
+                .goalPose(goalPose)
+                .goalVelocity(goalVelocity)
+                .durationInSeconds(60)
+                .build();
+    }
+
+    private Command getFollowTrajectoryCommand() {
+        final String modelName = "quadrotor";
+        final PoseEstimator poseEstimator = ModelStatePoseEstimator.create(modelStateSubscriber, modelName);
+        final VelocityEstimator velocityEstimator = ModelStateVelocityEstimator.create(modelStateSubscriber, modelName);
+        final Trajectory4d trajectory = ExampleTrajectory2.create();
+        return FollowTrajectory.builder()
+                .poseEstimator(poseEstimator)
+                .velocityEstimator(velocityEstimator)
+                .velocityPublisher(velocityPublisher)
+                .trajectory4d(trajectory)
+                .durationInSeconds(60)
+                .build();
+    }
+
+    private static void warmUp() {
+        try {
+            TimeUnit.SECONDS.sleep(5);
+        } catch (InterruptedException e) {
+            // TODO write to log
+        }
+    }
+
+    private void initializeComm(ConnectedNode connectedNode) {
+        takeoffPublisher = TakeoffPublisher.create(connectedNode.<Empty>newPublisher("/ardrone/takeoff", Empty._TYPE));
+        velocityPublisher = VelocityPublisher.builder()
                 .publisher(connectedNode.<Twist>newPublisher("/cmd_vel", Twist._TYPE))
                 .minLinearX(-1)
                 .minLinearY(-1)
@@ -53,84 +151,10 @@ public class ArDroneMoveWithPid extends AbstractNodeMain {
                 .maxLinearZ(1)
                 .maxAngularZ(1)
                 .build();
-
-        try {
-            Thread.sleep(5000);
-        } catch (InterruptedException e) {
-            // TODO write to log
-        }
-
-        final List<Command> commands = new ArrayList<>();
-        final Command takeOff = Takeoff.create(takeoffPublisher);
-        commands.add(takeOff);
-        final Command hoverFiveSecond = Hover.create(velocityPublisher, 5);
-        commands.add(hoverFiveSecond);
-
-        for (final Command command : commands) {
-            command.execute();
-        }
-
-        final PidParameters pidLinearParameters = PidParameters.builder().kp(0.5).kd(1).ki(0).build();
-        final PidParameters pidAngularParameters = PidParameters.builder().kp(0.1).kd(0.5).ki(0).build();
-
-        final Pose goalPose = Pose.builder().x(3).y(-3).z(3).yaw(1).build();
-        final Velocity goalVelocity = Velocity.builder().linearX(0).linearY(0).linearZ(0).angularZ(0).build();
-
-        final PidController4D pidController4D = PidController4D.builder()
-                .linearXParameters(pidLinearParameters)
-                .linearYParameters(pidLinearParameters)
-                .linearZParameters(pidLinearParameters)
-                .angularZParameters(pidAngularParameters)
-                .goalPose(goalPose)
-                .goalVelocity(goalVelocity)
-                .build();
-
-        final Subscriber<ModelStates> subscriber = connectedNode.newSubscriber("/gazebo/model_states",
-                ModelStates._TYPE);
-
-        subscriber.addMessageListener(new MessageListener<ModelStates>() {
-            private long lastTime = 0;
-
-            @Override
-            public void onNewMessage(ModelStates modelStates) {
-                final String name = "quadrotor";
-                final List<String> names = modelStates.getName();
-                final int index = names.indexOf(name);
-
-                final geometry_msgs.Pose currentPose = modelStates.getPose().get(index);
-                final Twist currentTwist = modelStates.getTwist().get(index);
-
-                if (System.currentTimeMillis() - lastTime < 50) {
-                    return;
-                }
-
-                lastTime = System.currentTimeMillis();
-
-                final Point currentPoint = currentPose.getPosition();
-                final Quaternion currentOrientation = currentPose.getOrientation();
-                final double currentYaw = Transformations.computeEulerAngleFromQuaternionAngle(currentOrientation)
-                        .angleZ();
-                System.out.println("CURRENT YAW: " + currentYaw);
-
-                final Pose pose = Pose.builder()
-                        .x(currentPoint.getX())
-                        .y(currentPoint.getY())
-                        .z(currentPoint.getZ())
-                        .yaw(currentYaw)
-                        .build();
-
-                final Velocity velocity = Velocity.builder()
-                        .linearX(currentTwist.getLinear().getX())
-                        .linearY(currentTwist.getLinear().getY())
-                        .linearZ(currentTwist.getLinear().getZ())
-                        .angularZ(currentTwist.getAngular().getZ())
-                        .build();
-
-                final Velocity nextGlobalVelocity = pidController4D.compute(pose, velocity);
-                final Velocity nextLocalVelocity = Transformations.computeLocalVelocityFromGlobalVelocity(
-                        nextGlobalVelocity, currentYaw);
-                velocityPublisher.publishVelocityCommand(nextLocalVelocity);
-            }
-        });
+        modelStateSubscriber = ModelStateSubscriber.create(
+                connectedNode.<ModelStates>newSubscriber("/gazebo/model_states", ModelStates._TYPE));
+        landPublisher = LandPublisher.create(connectedNode.<Empty>newPublisher("/ardrone/land", Empty._TYPE));
+        keyboardSubscriber = KeyboardSubscriber.create(
+                connectedNode.<Key>newSubscriber("/keyboard/keydown", Key._TYPE));
     }
 }

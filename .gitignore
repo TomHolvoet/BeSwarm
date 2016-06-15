@@ -18,3 +18,4 @@ settings.gradle
 generated/
 generated_tests/
 /bin/
+out/
