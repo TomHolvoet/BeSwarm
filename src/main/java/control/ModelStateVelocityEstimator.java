@@ -1,10 +1,11 @@
 package control;
 
-import commands.Velocity;
 import com.google.common.base.Optional;
-import comm.ModelStateSubscriber;
+
+import control.dto.Velocity;
 import gazebo_msgs.ModelStates;
 import geometry_msgs.Twist;
+import services.ros_subscribers.ModelStateSubscriber;
 
 /**
  * @author Hoang Tung Dinh

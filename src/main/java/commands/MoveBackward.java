@@ -1,8 +1,9 @@
 package commands;
 
-import comm.VelocityPublisher;
-
 import static com.google.common.base.Preconditions.checkArgument;
+
+import control.dto.Velocity;
+import services.VelocityService;
 
 /**
  * Command for moving backward. It is a facade which uses {@link Move}.
@@ -11,11 +12,11 @@ import static com.google.common.base.Preconditions.checkArgument;
  */
 public final class MoveBackward implements Command {
 
-    private final VelocityPublisher velocityPublisher;
+    private final VelocityService velocityPublisher;
     private final double speed;
     private final double durationInSeconds;
 
-    private MoveBackward(VelocityPublisher velocityPublisher, double speed, double durationInSeconds) {
+    private MoveBackward(VelocityService velocityPublisher, double speed, double durationInSeconds) {
         this.velocityPublisher = velocityPublisher;
         this.speed = speed;
         this.durationInSeconds = durationInSeconds;
@@ -27,7 +28,7 @@ public final class MoveBackward implements Command {
      * @param durationInSeconds the duration for moving backward
      * @return an instance of the moving backward command
      */
-    public static MoveBackward create(VelocityPublisher velocityPublisher, double speed, double durationInSeconds) {
+    public static MoveBackward create(VelocityService velocityPublisher, double speed, double durationInSeconds) {
         checkArgument(durationInSeconds > 0,
                 String.format("Duration must be a positive value, but it is %f", durationInSeconds));
         checkArgument(speed > 0, String.format("Speed must be a positive value, but it is %f", speed));

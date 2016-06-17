@@ -3,6 +3,8 @@ package geom;
 import geometry_msgs.Quaternion;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
+import utils.math.EulerAngle;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
