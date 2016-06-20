@@ -21,8 +21,7 @@ public class ConstantVelocityAngularTrajectory1D extends PeriodicTrajectory
      *
      * @param frequency The frequency f (amount of revolutions per second).
      *                  Equals 1/period.
-     * @param frequency The frequency f (amount of revolutions per second).
-     *                  Equals 1/period.
+     * @param phase     The phase shift phi.
      */
     public ConstantVelocityAngularTrajectory1D(
             double frequency, double phase) {
@@ -39,31 +38,18 @@ public class ConstantVelocityAngularTrajectory1D extends PeriodicTrajectory
                         + MAX_ABSOLUTE_SPEED);
     }
 
-    public double getRadius() {
-        return radius;
-    }
-
-    public double getFrequency() {
-        return frequency;
-    }
-
     @Override
     public double getDesiredPosition(double timeInSeconds) {
         setStartTime(timeInSeconds);
 
         final double currentTime = timeInSeconds - getStartTime();
-        return Math.PI * StrictMath
-                .sin(TWOPI * getFrequency() * currentTime
-                        + getPhaseDisplacement());
+
+        return (TWOPI * getFrequency() * currentTime + getPhaseDisplacement())
+                % TWOPI;
     }
 
     @Override
     public double getDesiredVelocity(double timeInSeconds) {
-        setStartTime(timeInSeconds);
-        //d(omega)/dt = |v|*sin(pi/2)/|r| =
-        final double currentTime = timeInSeconds - getStartTime();
-        return TWOPISQUARED * getFrequency() * StrictMath
-                .cos(TWOPI * getFrequency() * currentTime
-                        + getPhaseDisplacement());
+        return TWOPI * getFrequency();
     }
 }

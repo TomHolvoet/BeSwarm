@@ -29,9 +29,8 @@ public class CircleTrajectory4D extends PeriodicTrajectory
         this.xycircle = CircleTrajectory2D.builder().setRadius(radius)
                 .setFrequency(frequency).setOrigin(location).setPhase(phase)
                 .build();
-        //TODO finish implementation
-        this.angularMotion = new ConstantVelocityAngularTrajectory1D(0,
-                0);
+        this.angularMotion = new ConstantVelocityAngularTrajectory1D(frequency,
+                phase);
     }
 
     public static Builder builder() {

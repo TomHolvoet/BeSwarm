@@ -24,8 +24,7 @@ public class SwingTrajectory4D extends PeriodicTrajectory
         yFactor = StrictMath.sin(xzPlaneAngle);
         this.swing = new PendulumTrajectory2D.Builder().setRadius(radius)
                 .setFrequency(frequency).setOrigin(origin).build();
-        //TODO finish implementation
-        this.angularMotion = new ConstantVelocityAngularTrajectory1D(0,
+        this.angularMotion = new ConstantVelocityAngularTrajectory1D(frequency,
                 phase);
     }
 
