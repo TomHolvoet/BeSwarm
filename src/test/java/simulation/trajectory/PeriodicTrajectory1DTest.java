@@ -44,8 +44,9 @@ public class PeriodicTrajectory1DTest {
     @Parameterized.Parameters
     public static Collection<? extends Class> getParams() {
         return Lists.newArrayList(ConstantSwingTrajectory1D.class,
-                PendulumSwingTrajectory1D.class,
-                );
+                PendulumSwingTrajectory1D.class
+
+        );
     }
 
     @Test
