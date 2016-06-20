@@ -24,7 +24,6 @@ public class PendulumSwingTrajectory1D extends PeriodicTrajectory
     private final double radius;
     private final double frequency;
     private final double freq2pi;
-    private double startTime = -1;
 
     /**
      * Constructor
@@ -34,7 +33,12 @@ public class PendulumSwingTrajectory1D extends PeriodicTrajectory
      *                  Equals 1/period.
      */
     public PendulumSwingTrajectory1D(double radius, double frequency) {
-        super(HALFPI * 3);
+        this(radius, frequency, 0);
+    }
+
+    public PendulumSwingTrajectory1D(double radius, double frequency,
+            double phase) {
+        super((HALFPI * 3) + phase);
         this.radius = radius;
         this.frequency = frequency;
         this.freq2pi = frequency * TWOPI;
@@ -43,12 +47,6 @@ public class PendulumSwingTrajectory1D extends PeriodicTrajectory
                 "Absolute speed should not be larger than MAX_ABSOLUTE_SPEED,"
                         + " which is: "
                         + MAX_ABSOLUTE_SPEED);
-    }
-
-    private void setStartTime(double timeInSeconds) {
-        if (startTime < 0) {
-            startTime = timeInSeconds;
-        }
     }
 
     private double getAngleFromT(double currentTime) {
@@ -67,7 +65,7 @@ public class PendulumSwingTrajectory1D extends PeriodicTrajectory
     public double getDesiredPosition(double timeInSeconds) {
         setStartTime(timeInSeconds);
 
-        final double currentTime = timeInSeconds - startTime;
+        final double currentTime = timeInSeconds - getStartTime();
         return getRadius() * StrictMath
                 .cos(getAngleFromT(currentTime)
                         + getPhaseDisplacement());
@@ -77,7 +75,7 @@ public class PendulumSwingTrajectory1D extends PeriodicTrajectory
     public double getDesiredVelocity(double timeInSeconds) {
         setStartTime(timeInSeconds);
 
-        final double currentTime = timeInSeconds - startTime;
+        final double currentTime = timeInSeconds - getStartTime();
         return
                 PISQUARED * getFrequency() * getRadius() * StrictMath
                         .sin(freq2pi * currentTime + getPhaseDisplacement())

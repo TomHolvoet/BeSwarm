@@ -13,19 +13,25 @@ import control.Trajectory4d;
  *
  * @author Kristof Coninx <kristof.coninx AT cs.kuleuven.be>
  */
-public class CircleTrajectory4D implements Trajectory4d {
+public class CircleTrajectory4D extends PeriodicTrajectory
+        implements Trajectory4d {
     private Point4D location;
     private CircleTrajectory2D xycircle;
     private double scalefactor;
+    private Trajectory1d angularMotion;
 
-    private CircleTrajectory4D(Point4D location, double radius,
+    private CircleTrajectory4D(Point4D location, double phase, double radius,
             double frequency,
             double planeAngle) {
+        super(phase, location, radius, frequency);
         this.location = location;
         this.scalefactor = StrictMath.tan(planeAngle);
         this.xycircle = CircleTrajectory2D.builder().setRadius(radius)
-                .setFrequency(frequency).setOrigin(location)
+                .setFrequency(frequency).setOrigin(location).setPhase(phase)
                 .build();
+        //TODO finish implementation
+        this.angularMotion = new ConstantVelocityAngularTrajectory1D(0,
+                0);
     }
 
     public static Builder builder() {
@@ -64,7 +70,17 @@ public class CircleTrajectory4D implements Trajectory4d {
 
     @Override
     public Trajectory1d getTrajectoryAngularZ() {
-        return null;
+        return new Trajectory1d() {
+            @Override
+            public double getDesiredPosition(double timeInSeconds) {
+                return angularMotion.getDesiredPosition(timeInSeconds);
+            }
+
+            @Override
+            public double getDesiredVelocity(double timeInSeconds) {
+                return angularMotion.getDesiredVelocity(timeInSeconds);
+            }
+        };
     }
 
     public static class Builder {
@@ -72,6 +88,7 @@ public class CircleTrajectory4D implements Trajectory4d {
         private double radius = 1;
         private double frequency = 5;
         private double planeAngle = 0;
+        private double phase = 0;
 
         public Builder setLocation(Point4D location) {
             this.location = location;
@@ -93,8 +110,13 @@ public class CircleTrajectory4D implements Trajectory4d {
             return this;
         }
 
+        public Builder setPhase(double phase) {
+            this.phase = phase;
+            return this;
+        }
+
         public CircleTrajectory4D build() {
-            return new CircleTrajectory4D(location, radius, frequency,
+            return new CircleTrajectory4D(location, phase, radius, frequency,
                     planeAngle);
         }
     }

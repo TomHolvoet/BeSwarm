@@ -17,11 +17,8 @@ public class ConstantSwingTrajectory1D extends PeriodicTrajectory
         implements Trajectory1d {
     public static final double MAX_ABSOLUTE_SPEED = 1;
     private static final double TWOPI = Math.PI * 2;
-    private final double radius;
-    private final double frequency;
     private final double freq2pi;
     private final double rfreq2pi;
-    private double startTime = -1;
 
     /**
      * Constructor
@@ -31,9 +28,12 @@ public class ConstantSwingTrajectory1D extends PeriodicTrajectory
      *                  Equals 1/period.
      */
     public ConstantSwingTrajectory1D(double radius, double frequency) {
-        super();
-        this.radius = radius;
-        this.frequency = frequency;
+        this(radius, frequency, 0);
+    }
+
+    public ConstantSwingTrajectory1D(double radius, double frequency,
+            double phase) {
+        super(phase, Point4D.origin(), radius, frequency);
         this.freq2pi = frequency * TWOPI;
         this.rfreq2pi = frequency * radius * TWOPI;
         checkArgument(Math.abs(rfreq2pi) < MAX_ABSOLUTE_SPEED,
@@ -42,25 +42,11 @@ public class ConstantSwingTrajectory1D extends PeriodicTrajectory
                         + MAX_ABSOLUTE_SPEED);
     }
 
-    private void setStartTime(double timeInSeconds) {
-        if (startTime < 0) {
-            startTime = timeInSeconds;
-        }
-    }
-
-    public double getRadius() {
-        return radius;
-    }
-
-    public double getFrequency() {
-        return frequency;
-    }
-
     @Override
     public double getDesiredPosition(double timeInSeconds) {
         setStartTime(timeInSeconds);
 
-        final double currentTime = timeInSeconds - startTime;
+        final double currentTime = timeInSeconds - getStartTime();
         return getRadius() * StrictMath
                 .cos(freq2pi * currentTime + getPhaseDisplacement());
     }
@@ -69,7 +55,7 @@ public class ConstantSwingTrajectory1D extends PeriodicTrajectory
     public double getDesiredVelocity(double timeInSeconds) {
         setStartTime(timeInSeconds);
 
-        final double currentTime = timeInSeconds - startTime;
+        final double currentTime = timeInSeconds - getStartTime();
         return -rfreq2pi * StrictMath
                 .sin(freq2pi * currentTime + getPhaseDisplacement());
     }

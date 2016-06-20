@@ -17,10 +17,7 @@ import static com.google.common.base.Preconditions.checkArgument;
  */
 public class PendulumTrajectory2D extends PeriodicTrajectory
         implements Trajectory2d {
-    private final double radius;
-    private final double frequency;
     private final double freq2pi;
-    private double startTime = -1;
 
     /**
      * Constructor
@@ -30,10 +27,8 @@ public class PendulumTrajectory2D extends PeriodicTrajectory
      *                  Equals 1/period.
      */
     public PendulumTrajectory2D(double radius, double frequency,
-            Point4D origin) {
-        super(HALFPI * 3);
-        this.radius = radius;
-        this.frequency = frequency;
+            Point4D origin, double phase) {
+        super(HALFPI * 3 + phase, origin, radius, frequency);
         this.freq2pi = frequency * TWOPI;
         checkArgument(
                 Math.abs(radius * frequency) < MAX_ABSOLUTE_SPEED / PISQUARED,
@@ -44,13 +39,7 @@ public class PendulumTrajectory2D extends PeriodicTrajectory
 
     @VisibleForTesting
     PendulumTrajectory2D(double radius, double frequency) {
-        this(radius, frequency, Point4D.origin());
-    }
-
-    private void setStartTime(double timeInSeconds) {
-        if (startTime < 0) {
-            startTime = timeInSeconds;
-        }
+        this(radius, frequency, Point4D.origin(), 0);
     }
 
     private double getAngleFromT(double currentTime) {
@@ -72,7 +61,7 @@ public class PendulumTrajectory2D extends PeriodicTrajectory
             public double getDesiredPosition(double timeInSeconds) {
                 setStartTime(timeInSeconds);
 
-                final double currentTime = timeInSeconds - startTime;
+                final double currentTime = timeInSeconds - getStartTime();
                 return getLinearDisplacement().getX() + getRadius() * StrictMath
                         .cos(getAngleFromT(currentTime)
                                 + getPhaseDisplacement());
@@ -82,7 +71,7 @@ public class PendulumTrajectory2D extends PeriodicTrajectory
             public double getDesiredVelocity(double timeInSeconds) {
                 setStartTime(timeInSeconds);
 
-                final double currentTime = timeInSeconds - startTime;
+                final double currentTime = timeInSeconds - getStartTime();
                 return
                         PISQUARED * getFrequency() * getRadius() * StrictMath
                                 .sin(freq2pi * currentTime
@@ -101,7 +90,7 @@ public class PendulumTrajectory2D extends PeriodicTrajectory
             public double getDesiredPosition(double timeInSeconds) {
                 setStartTime(timeInSeconds);
 
-                final double currentTime = timeInSeconds - startTime;
+                final double currentTime = timeInSeconds - getStartTime();
                 return getLinearDisplacement().getZ() - getRadius() * StrictMath
                         .sin(getAngleFromT(currentTime)
                                 + getPhaseDisplacement());
@@ -111,7 +100,7 @@ public class PendulumTrajectory2D extends PeriodicTrajectory
             public double getDesiredVelocity(double timeInSeconds) {
                 setStartTime(timeInSeconds);
 
-                final double currentTime = timeInSeconds - startTime;
+                final double currentTime = timeInSeconds - getStartTime();
                 return
                         PISQUARED * getFrequency() * getRadius() * StrictMath
                                 .sin(freq2pi * currentTime
@@ -131,6 +120,7 @@ public class PendulumTrajectory2D extends PeriodicTrajectory
         private double radius = 1;
         private double frequency = 5;
         private Point4D origin = Point4D.origin();
+        private double phase = 0;
 
         public Builder setRadius(double radius) {
             this.radius = radius;
@@ -147,8 +137,13 @@ public class PendulumTrajectory2D extends PeriodicTrajectory
             return this;
         }
 
+        public Builder setPhase(double phase) {
+            this.phase = phase;
+            return this;
+        }
+
         public PendulumTrajectory2D build() {
-            return new PendulumTrajectory2D(radius, frequency, origin);
+            return new PendulumTrajectory2D(radius, frequency, origin, phase);
         }
     }
 }

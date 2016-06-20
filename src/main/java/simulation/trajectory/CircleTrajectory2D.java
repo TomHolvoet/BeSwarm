@@ -14,11 +14,8 @@ import static com.google.common.base.Preconditions.checkArgument;
 public class CircleTrajectory2D extends PeriodicTrajectory
         implements Trajectory2d {
     public static final double MAX_ABSOLUTE_SPEED = 1;
-    private final double radius;
-    private final double frequency;
     private final double freq2pi;
     private final double rfreq2pi;
-    private double startTime = -1;
 
     /**
      * Constructor
@@ -31,10 +28,9 @@ public class CircleTrajectory2D extends PeriodicTrajectory
      * @param clockwise Turn right hand if true;
      */
     private CircleTrajectory2D(double radius, double frequency, Point4D origin,
+            double phase,
             boolean clockwise) {
-        super(0, origin);
-        this.radius = radius;
-        this.frequency = frequency;
+        super(phase, origin, radius, frequency);
         this.freq2pi = frequency * TWOPI * (clockwise ? 1 : -1);
         this.rfreq2pi = frequency * radius * TWOPI * (clockwise ? 1 : -1);
         checkArgument(Math.abs(rfreq2pi) < MAX_ABSOLUTE_SPEED,
@@ -45,21 +41,7 @@ public class CircleTrajectory2D extends PeriodicTrajectory
 
     @VisibleForTesting
     CircleTrajectory2D(double radius, double frequency) {
-        this(radius, frequency, Point4D.origin(), true);
-    }
-
-    private void setStartTime(double timeInSeconds) {
-        if (startTime < 0) {
-            startTime = timeInSeconds;
-        }
-    }
-
-    public double getRadius() {
-        return radius;
-    }
-
-    public double getFrequency() {
-        return frequency;
+        this(radius, frequency, Point4D.origin(), 0, true);
     }
 
     @Override
@@ -69,7 +51,7 @@ public class CircleTrajectory2D extends PeriodicTrajectory
             public double getDesiredPosition(double timeInSeconds) {
                 setStartTime(timeInSeconds);
 
-                final double currentTime = timeInSeconds - startTime;
+                final double currentTime = timeInSeconds - getStartTime();
                 return getRadius() * StrictMath
                         .cos(freq2pi * currentTime + getPhaseDisplacement());
             }
@@ -78,7 +60,7 @@ public class CircleTrajectory2D extends PeriodicTrajectory
             public double getDesiredVelocity(double timeInSeconds) {
                 setStartTime(timeInSeconds);
 
-                final double currentTime = timeInSeconds - startTime;
+                final double currentTime = timeInSeconds - getStartTime();
                 return -rfreq2pi * StrictMath
                         .sin(freq2pi * currentTime + getPhaseDisplacement());
             }
@@ -92,7 +74,7 @@ public class CircleTrajectory2D extends PeriodicTrajectory
             public double getDesiredPosition(double timeInSeconds) {
                 setStartTime(timeInSeconds);
 
-                final double currentTime = timeInSeconds - startTime;
+                final double currentTime = timeInSeconds - getStartTime();
                 return getRadius() * StrictMath
                         .sin(freq2pi * currentTime + getPhaseDisplacement());
             }
@@ -101,7 +83,7 @@ public class CircleTrajectory2D extends PeriodicTrajectory
             public double getDesiredVelocity(double timeInSeconds) {
                 setStartTime(timeInSeconds);
 
-                final double currentTime = timeInSeconds - startTime;
+                final double currentTime = timeInSeconds - getStartTime();
                 return rfreq2pi * StrictMath
                         .cos(freq2pi * currentTime + getPhaseDisplacement());
             }
@@ -117,6 +99,7 @@ public class CircleTrajectory2D extends PeriodicTrajectory
         private double frequency = 5;
         private Point4D origin = Point4D.origin();
         private boolean clockwise = true;
+        private double phase = 0;
 
         public Builder setRadius(double radius) {
             this.radius = radius;
@@ -138,8 +121,14 @@ public class CircleTrajectory2D extends PeriodicTrajectory
             return this;
         }
 
+        public Builder setPhase(double phase) {
+            this.phase = phase;
+            return this;
+        }
+
         public CircleTrajectory2D build() {
-            return new CircleTrajectory2D(radius, frequency, origin, clockwise);
+            return new CircleTrajectory2D(radius, frequency, origin, phase,
+                    clockwise);
         }
     }
 }

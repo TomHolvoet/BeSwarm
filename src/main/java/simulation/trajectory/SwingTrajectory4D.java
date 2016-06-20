@@ -9,17 +9,24 @@ import control.Trajectory4d;
  *
  * @author Kristof Coninx <kristof.coninx AT cs.kuleuven.be>
  */
-public class SwingTrajectory4D implements Trajectory4d {
+public class SwingTrajectory4D extends PeriodicTrajectory
+        implements Trajectory4d {
     private Trajectory2d swing;
     private double yFactor;
     private double xFactor;
+    private Trajectory1d angularMotion;
 
-    SwingTrajectory4D(Point4D origin, double xzPlaneAngle, double radius,
+    SwingTrajectory4D(Point4D origin, double phase, double xzPlaneAngle,
+            double radius,
             double frequency) {
+        super(phase, origin, radius, frequency);
         xFactor = StrictMath.cos(xzPlaneAngle);
         yFactor = StrictMath.sin(xzPlaneAngle);
         this.swing = new PendulumTrajectory2D.Builder().setRadius(radius)
                 .setFrequency(frequency).setOrigin(origin).build();
+        //TODO finish implementation
+        this.angularMotion = new ConstantVelocityAngularTrajectory1D(0,
+                phase);
     }
 
     @Override
@@ -63,7 +70,17 @@ public class SwingTrajectory4D implements Trajectory4d {
 
     @Override
     public Trajectory1d getTrajectoryAngularZ() {
-        return null;
+        return new Trajectory1d() {
+            @Override
+            public double getDesiredPosition(double timeInSeconds) {
+                return angularMotion.getDesiredPosition(timeInSeconds);
+            }
+
+            @Override
+            public double getDesiredVelocity(double timeInSeconds) {
+                return angularMotion.getDesiredVelocity(timeInSeconds);
+            }
+        };
     }
 
     public static Builder builder() {
@@ -75,6 +92,7 @@ public class SwingTrajectory4D implements Trajectory4d {
         private double xzPlaneAngle = 0;
         private double radius = 0;
         private double frequency = 0;
+        private double phase = 0;
 
         public Builder setOrigin(Point4D origin) {
             this.origin = origin;
@@ -96,8 +114,13 @@ public class SwingTrajectory4D implements Trajectory4d {
             return this;
         }
 
+        public Builder setPhase(double phase) {
+            this.phase = phase;
+            return this;
+        }
+
         public SwingTrajectory4D build() {
-            return new SwingTrajectory4D(origin, xzPlaneAngle, radius,
+            return new SwingTrajectory4D(origin, phase, xzPlaneAngle, radius,
                     frequency
             );
         }

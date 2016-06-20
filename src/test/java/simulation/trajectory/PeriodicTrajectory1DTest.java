@@ -22,18 +22,20 @@ public class PeriodicTrajectory1DTest {
     private final double lowFreq = 1 / 10;
     private final double highFreq = 1.5;
     private final double radius = 0.065;
+    private final double phase = 0;
     private Class cl;
 
     public PeriodicTrajectory1DTest(Class cl) {
         this.cl = cl;
-        Class[] cArg = new Class[2];
+        Class[] cArg = new Class[3];
         cArg[0] = double.class;
         cArg[1] = double.class;
+        cArg[2] = double.class;
         try {
             highFrequencyCircle = (Trajectory1d) cl.getDeclaredConstructor(cArg)
-                    .newInstance(radius, highFreq);
+                    .newInstance(radius, highFreq, phase);
             lowFrequencyCircle = (Trajectory1d) cl.getDeclaredConstructor(cArg)
-                    .newInstance(radius, lowFreq);
+                    .newInstance(radius, lowFreq, phase);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -42,7 +44,8 @@ public class PeriodicTrajectory1DTest {
     @Parameterized.Parameters
     public static Collection<? extends Class> getParams() {
         return Lists.newArrayList(ConstantSwingTrajectory1D.class,
-                PendulumSwingTrajectory1D.class);
+                PendulumSwingTrajectory1D.class,
+                );
     }
 
     @Test
@@ -87,13 +90,14 @@ public class PeriodicTrajectory1DTest {
     @Test(expected = IllegalArgumentException.class)
     public void testParamConstructorWithHighThanAllowedSpeedRate()
             throws Exception {
-        Class[] cArg = new Class[2];
+        Class[] cArg = new Class[3];
         cArg[0] = double.class;
         cArg[1] = double.class;
+        cArg[2] = double.class;
         try {
             Trajectory1d target = (Trajectory1d) this.cl
                     .getDeclaredConstructor(cArg)
-                    .newInstance(1, 1);
+                    .newInstance(1, 1, 0);
         } catch (InvocationTargetException e) {
             if (new Exception(e.getCause()).getMessage()
                     .contains("MAX_ABSOLUTE_SPEED")) {
