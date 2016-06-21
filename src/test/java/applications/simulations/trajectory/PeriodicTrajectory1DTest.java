@@ -1,19 +1,20 @@
-package simulation.trajectory;
+package applications.simulations.trajectory;
 
 import com.google.common.collect.Lists;
 
-import applications.simulation.trajectory.CircleTrajectory2D;
-import applications.simulation.trajectory.ConstantSwingTrajectory1D;
-import applications.simulation.trajectory.PendulumSwingTrajectory1D;
-import applications.simulation.trajectory.PeriodicTrajectory;
+import applications.simulations.trajectory.ConstantSwingTrajectory1D;
+import applications.simulations.trajectory.PendulumSwingTrajectory1D;
+import applications.simulations.trajectory.PeriodicTrajectory;
 import control.Trajectory1d;
-import control.Trajectory2d;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
+
+import static org.junit.Assert.fail;
 
 /**
  * @author Kristof Coninx <kristof.coninx AT cs.kuleuven.be>
@@ -25,16 +26,20 @@ public class PeriodicTrajectory1DTest {
     private final double lowFreq = 1 / 10;
     private final double highFreq = 1.5;
     private final double radius = 0.065;
+    private final double phase = 0;
+    private Class cl;
 
     public PeriodicTrajectory1DTest(Class cl) {
-        Class[] cArg = new Class[2];
+        this.cl = cl;
+        Class[] cArg = new Class[3];
         cArg[0] = double.class;
         cArg[1] = double.class;
+        cArg[2] = double.class;
         try {
             highFrequencyCircle = (Trajectory1d) cl.getDeclaredConstructor(cArg)
-                    .newInstance(radius, highFreq);
+                    .newInstance(radius, highFreq, phase);
             lowFrequencyCircle = (Trajectory1d) cl.getDeclaredConstructor(cArg)
-                    .newInstance(radius, lowFreq);
+                    .newInstance(radius, lowFreq, phase);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -43,11 +48,14 @@ public class PeriodicTrajectory1DTest {
     @Parameterized.Parameters
     public static Collection<? extends Class> getParams() {
         return Lists.newArrayList(ConstantSwingTrajectory1D.class,
-                PendulumSwingTrajectory1D.class);
+                PendulumSwingTrajectory1D.class
+
+        );
     }
 
     @Test
-    public void getTrajectoryPosition() throws Exception {
+    public void getTrajectoryPositionTestFrequencyAndRadiusRelation()
+            throws Exception {
         for (double i = 0; i < 3;
              i += 0.66) {
             Assert.assertEquals(radius,
@@ -64,7 +72,7 @@ public class PeriodicTrajectory1DTest {
     }
 
     @Test
-    public void getTrajectoryVelocity() {
+    public void getTrajectoryVelocityTestFrequencyAndRadiusRelation() {
         for (double i = 0; i < 30;
              i += 2) {
 
@@ -85,8 +93,23 @@ public class PeriodicTrajectory1DTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testConstructorWithHighThanAllowedSpeedRate() {
-        Trajectory2d target = new CircleTrajectory2D(5, 1, true);
+    public void testParamConstructorWithHighThanAllowedSpeedRate()
+            throws Exception {
+        Class[] cArg = new Class[3];
+        cArg[0] = double.class;
+        cArg[1] = double.class;
+        cArg[2] = double.class;
+        try {
+            Trajectory1d target = (Trajectory1d) this.cl
+                    .getDeclaredConstructor(cArg)
+                    .newInstance(1, 1, 0);
+        } catch (InvocationTargetException e) {
+            if (new Exception(e.getCause()).getMessage()
+                    .contains("MAX_ABSOLUTE_SPEED")) {
+                throw new IllegalArgumentException(e.getCause());
+            }
+        } catch (Exception e) {
+            fail();
+        }
     }
-
 }

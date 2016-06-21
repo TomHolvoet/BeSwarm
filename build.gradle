@@ -80,6 +80,7 @@ dependencies {
     compile 'org.slf4j:slf4j-api:1.7.20'
     compile 'ch.qos.logback:logback-classic:1.1.7'
     compile 'org.codehaus.groovy:groovy-all:2.4.6'
+    compile 'com.google.guava:guava:11.0.2'
 	compile fileTree(dir: 'libs', include: '*.jar')
     compile files('dir/bebop_msgs-0.5.1.jar')
 }
