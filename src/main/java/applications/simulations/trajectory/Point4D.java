@@ -1,4 +1,4 @@
-package simulation.trajectory;
+package applications.simulations.trajectory;
 
 import com.google.auto.value.AutoValue;
 

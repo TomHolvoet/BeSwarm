@@ -1,4 +1,4 @@
-package applications.simulation.trajectory;
+package applications.simulations.trajectory;
 
 /**
  * Abstract class for periodic trajectory commonalities.

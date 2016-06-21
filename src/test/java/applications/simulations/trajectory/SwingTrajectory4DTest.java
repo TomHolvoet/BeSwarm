@@ -1,5 +1,7 @@
-package simulation.trajectory;
+package applications.simulations.trajectory;
 
+import applications.simulations.trajectory.Point4D;
+import applications.simulations.trajectory.Trajectories;
 import com.google.common.collect.Lists;
 import control.Trajectory4d;
 import org.junit.Assert;

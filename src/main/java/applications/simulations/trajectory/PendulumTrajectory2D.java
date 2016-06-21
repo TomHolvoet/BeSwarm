@@ -1,4 +1,4 @@
-package applications.simulation.trajectory;
+package applications.simulations.trajectory;
 
 import com.google.common.annotations.VisibleForTesting;
 import control.Trajectory1d;
