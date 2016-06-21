@@ -1,5 +1,6 @@
 package services;
 
+import org.ros.node.ConnectedNode;
 import org.ros.node.topic.Publisher;
 import std_msgs.Empty;
 
@@ -29,6 +30,10 @@ public final class LandService {
         return new LandService(publisher);
     }
 
+    public static LandService createService(String droneName, ConnectedNode connectedNode) {
+    	return LandService.create(connectedNode.<Empty>newPublisher(droneName + "/land", Empty._TYPE));
+    }
+    
     /**
      * Publish a landing message.
      */
