@@ -1,13 +1,17 @@
 package commands;
 
 import com.google.common.base.Optional;
-import comm.VelocityPublisher;
+
+import commands.schedulers.PeriodicTaskRunner;
 import control.DefaultPidParameters;
 import control.PidController4d;
 import control.PidParameters;
 import control.PoseEstimator;
 import control.Trajectory4d;
 import control.VelocityEstimator;
+import control.dto.Pose;
+import control.dto.Velocity;
+import services.VelocityService;
 
 /**
  * Command for moving to a predefined pose. It is a facade which uses {@link Move}.
@@ -16,7 +20,7 @@ import control.VelocityEstimator;
  */
 public final class FollowTrajectory implements Command {
 
-    private final VelocityPublisher velocityPublisher;
+    private final VelocityService velocityPublisher;
     private final PoseEstimator poseEstimator;
     private final VelocityEstimator velocityEstimator;
     private final PidParameters pidLinearParameters;
@@ -87,7 +91,7 @@ public final class FollowTrajectory implements Command {
                     currentVelocityInGlobalFrame.get());
             final Velocity nextVelocityInLocalFrame = Velocity.createLocalVelocityFromGlobalVelocity(
                     nextVelocityInGlobalFrame, currentPose.get().yaw());
-            velocityPublisher.publishVelocityCommand(nextVelocityInLocalFrame);
+            velocityPublisher.publishVelocityMessage(nextVelocityInLocalFrame);
         }
     }
 
@@ -95,7 +99,7 @@ public final class FollowTrajectory implements Command {
      * {@code FollowTrajectory} builder static inner class.
      */
     public static final class Builder {
-        private VelocityPublisher velocityPublisher;
+        private VelocityService velocityPublisher;
         private PoseEstimator poseEstimator;
         private VelocityEstimator velocityEstimator;
         private PidParameters pidLinearParameters;
@@ -113,7 +117,7 @@ public final class FollowTrajectory implements Command {
          * @param val the {@code velocityPublisher} to set
          * @return a reference to this Builder
          */
-        public Builder velocityPublisher(VelocityPublisher val) {
+        public Builder velocityPublisher(VelocityService val) {
             velocityPublisher = val;
             return this;
         }
