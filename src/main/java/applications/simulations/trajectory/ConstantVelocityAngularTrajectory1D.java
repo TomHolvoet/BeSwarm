@@ -23,12 +23,12 @@ public class ConstantVelocityAngularTrajectory1D extends PeriodicTrajectory
      *                  Equals 1/period.
      * @param phase     The phase shift phi.
      */
-    public ConstantVelocityAngularTrajectory1D(
+    @VisibleForTesting
+    ConstantVelocityAngularTrajectory1D(
             double frequency, double phase) {
         this(Math.PI, frequency, phase);
     }
 
-    @VisibleForTesting
     ConstantVelocityAngularTrajectory1D(double radius, double frequency,
             double phase) {
         super(phase, Point4D.origin(), radius, frequency);

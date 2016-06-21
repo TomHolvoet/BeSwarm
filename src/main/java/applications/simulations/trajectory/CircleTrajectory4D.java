@@ -33,7 +33,7 @@ public class CircleTrajectory4D extends PeriodicTrajectory
                 phase);
     }
 
-    public static Builder builder() {
+    static Builder builder() {
         return new Builder();
     }
 

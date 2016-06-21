@@ -32,11 +32,11 @@ public class PendulumSwingTrajectory1D extends PeriodicTrajectory
      * @param frequency The frequency f (amount of revolutions per second).
      *                  Equals 1/period.
      */
-    public PendulumSwingTrajectory1D(double radius, double frequency) {
+    PendulumSwingTrajectory1D(double radius, double frequency) {
         this(radius, frequency, 0);
     }
 
-    public PendulumSwingTrajectory1D(double radius, double frequency,
+     PendulumSwingTrajectory1D(double radius, double frequency,
             double phase) {
         super((HALFPI * 3) + phase);
         this.radius = radius;

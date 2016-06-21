@@ -31,6 +31,10 @@ public class SwingTrajectory4D extends PeriodicTrajectory
                 0);
     }
 
+    static Builder builder() {
+        return new Builder();
+    }
+
     @Override
     public Trajectory1d getTrajectoryLinearX() {
         return new Trajectory1d() {
@@ -83,10 +87,6 @@ public class SwingTrajectory4D extends PeriodicTrajectory
                 return angularMotion.getDesiredVelocity(timeInSeconds);
             }
         };
-    }
-
-    public static Builder builder() {
-        return new Builder();
     }
 
     public static class Builder {

@@ -90,7 +90,7 @@ public class CircleTrajectory2D extends PeriodicTrajectory
         };
     }
 
-    public static Builder builder() {
+    static Builder builder() {
         return new Builder();
     }
 

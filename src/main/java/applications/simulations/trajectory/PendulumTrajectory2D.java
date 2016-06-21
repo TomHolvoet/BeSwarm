@@ -26,7 +26,7 @@ public class PendulumTrajectory2D extends PeriodicTrajectory
      * @param frequency The frequency f (amount of revolutions per second).
      *                  Equals 1/period.
      */
-    public PendulumTrajectory2D(double radius, double frequency,
+    PendulumTrajectory2D(double radius, double frequency,
             Point4D origin, double phase) {
         super(HALFPI * 3 + phase, origin, radius, frequency);
         this.freq2pi = frequency * TWOPI;

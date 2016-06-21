@@ -27,11 +27,11 @@ public class ConstantSwingTrajectory1D extends PeriodicTrajectory
      * @param frequency The frequency f (amount of revolutions per second).
      *                  Equals 1/period.
      */
-    public ConstantSwingTrajectory1D(double radius, double frequency) {
+    ConstantSwingTrajectory1D(double radius, double frequency) {
         this(radius, frequency, 0);
     }
 
-    public ConstantSwingTrajectory1D(double radius, double frequency,
+    ConstantSwingTrajectory1D(double radius, double frequency,
             double phase) {
         super(phase, Point4D.origin(), radius, frequency);
         this.freq2pi = frequency * TWOPI;
