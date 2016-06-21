@@ -1,8 +1,9 @@
 package commands;
 
-import comm.VelocityPublisher;
-
 import static com.google.common.base.Preconditions.checkArgument;
+
+import control.dto.Velocity;
+import services.VelocityService;
 
 /**
  * Command for rotating counterclockwise. It is a facade which uses {@link Move}.
@@ -11,17 +12,17 @@ import static com.google.common.base.Preconditions.checkArgument;
  */
 public final class RotateCounterClockwise implements Command {
 
-    private final VelocityPublisher velocityPublisher;
+    private final VelocityService velocityPublisher;
     private final double speed;
     private final double durationInSeconds;
 
-    private RotateCounterClockwise(VelocityPublisher velocityPublisher, double speed, double durationInSeconds) {
+    private RotateCounterClockwise(VelocityService velocityPublisher, double speed, double durationInSeconds) {
         this.velocityPublisher = velocityPublisher;
         this.speed = speed;
         this.durationInSeconds = durationInSeconds;
     }
 
-    public static RotateCounterClockwise create(VelocityPublisher velocityPublisher, double speed,
+    public static RotateCounterClockwise create(VelocityService velocityPublisher, double speed,
             double durationInSeconds) {
         checkArgument(durationInSeconds > 0,
                 String.format("Duration must be a positive value, but it is %f", durationInSeconds));

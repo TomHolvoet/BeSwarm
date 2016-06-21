@@ -1,12 +1,14 @@
 package commands;
 
-import comm.VelocityPublisher;
 import control.DefaultPidParameters;
 import control.PidParameters;
 import control.PoseEstimator;
 import control.SinglePointTrajectory4d;
 import control.Trajectory4d;
 import control.VelocityEstimator;
+import control.dto.Pose;
+import control.dto.Velocity;
+import services.VelocityService;
 
 /**
  * Command for moving to a predefined pose. It is a facade which uses {@link Move}.
@@ -31,6 +33,11 @@ public final class MoveToPose implements Command {
                 .build();
     }
 
+    @Override
+    public void execute() {
+    	followTrajectory.execute();
+    }
+
     /**
      * {@link Builder#controlRateInSeconds(double)}, {@link Builder#pidLinearParameters(PidParameters)} and
      * {@link Builder#pidLinearParameters(PidParameters)} are optional. All other parameters are mandatory.
@@ -43,16 +50,12 @@ public final class MoveToPose implements Command {
                 .pidAngularParameters(DefaultPidParameters.DEFAULT_ANGULAR_PARAMETERS.getParameters());
     }
 
-    @Override
-    public void execute() {
-        followTrajectory.execute();
-    }
 
     /**
      * {@code MoveToPose} builder static inner class.
      */
     public static final class Builder {
-        private VelocityPublisher velocityPublisher;
+        private VelocityService velocityPublisher;
         private PoseEstimator poseEstimator;
         private VelocityEstimator velocityEstimator;
         private PidParameters pidLinearParameters;
@@ -71,7 +74,7 @@ public final class MoveToPose implements Command {
          * @param val the {@code velocityPublisher} to set
          * @return a reference to this Builder
          */
-        public Builder velocityPublisher(VelocityPublisher val) {
+        public Builder velocityPublisher(VelocityService val) {
             velocityPublisher = val;
             return this;
         }

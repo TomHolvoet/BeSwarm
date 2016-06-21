@@ -1,6 +1,11 @@
 package simulation.trajectory;
 
 import com.google.common.collect.Lists;
+
+import applications.simulation.trajectory.CircleTrajectory2D;
+import applications.simulation.trajectory.ConstantSwingTrajectory1D;
+import applications.simulation.trajectory.PendulumSwingTrajectory1D;
+import applications.simulation.trajectory.PeriodicTrajectory;
 import control.Trajectory1d;
 import control.Trajectory2d;
 import org.junit.Assert;

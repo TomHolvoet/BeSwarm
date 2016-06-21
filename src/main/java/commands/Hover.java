@@ -1,9 +1,9 @@
 package commands;
 
-import comm.VelocityPublisher;
-
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
+
+import services.VelocityService;
 
 /**
  * Command for hovering. This command requests the drone to hover by publishing a zero velocity and wait for a
@@ -13,10 +13,10 @@ import static java.util.concurrent.TimeUnit.MILLISECONDS;
  */
 public final class Hover implements Command {
 
-    private final VelocityPublisher velocityPublisher;
+    private final VelocityService velocityPublisher;
     private final double durationInSeconds;
 
-    private Hover(VelocityPublisher velocityPublisher, double durationInSeconds) {
+    private Hover(VelocityService velocityPublisher, double durationInSeconds) {
         this.velocityPublisher = velocityPublisher;
         this.durationInSeconds = durationInSeconds;
     }
@@ -26,7 +26,7 @@ public final class Hover implements Command {
      * @param durationInSeconds the duration that the drone hovers
      * @return an instance of the hovering command
      */
-    public static Hover create(VelocityPublisher velocityPublisher, double durationInSeconds) {
+    public static Hover create(VelocityService velocityPublisher, double durationInSeconds) {
         checkArgument(durationInSeconds > 0,
                 String.format("Duration must be a positive value, but it is %f", durationInSeconds));
         return new Hover(velocityPublisher, durationInSeconds);

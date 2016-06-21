@@ -1,6 +1,6 @@
 package commands;
 
-import comm.LandPublisher;
+import services.LandService;
 
 /**
  * Command for landing.
@@ -9,9 +9,9 @@ import comm.LandPublisher;
  */
 public final class Land implements Command {
 
-    private final LandPublisher landPublisher;
+    private final LandService landPublisher;
 
-    private Land(LandPublisher landPublisher) {
+    private Land(LandService landPublisher) {
         this.landPublisher = landPublisher;
     }
 
@@ -19,7 +19,7 @@ public final class Land implements Command {
      * @param landPublisher the land publisher
      * @return an instance of the landing command
      */
-    public static Land create(LandPublisher landPublisher) {
+    public static Land create(LandService landPublisher) {
         return new Land(landPublisher);
     }
 

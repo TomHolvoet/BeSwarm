@@ -1,7 +1,7 @@
 package control;
 
-import commands.Pose;
-import commands.Velocity;
+import control.dto.Pose;
+import control.dto.Velocity;
 
 /**
  * @author Hoang Tung Dinh

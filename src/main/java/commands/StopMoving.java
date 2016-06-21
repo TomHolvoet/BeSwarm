@@ -1,6 +1,7 @@
 package commands;
 
-import comm.VelocityPublisher;
+import control.dto.Velocity;
+import services.VelocityService;
 
 /**
  * Command for stopping moving. It publishes a velocity message.
@@ -9,19 +10,19 @@ import comm.VelocityPublisher;
  */
 public final class StopMoving implements Command {
 
-    private final VelocityPublisher velocityPublisher;
+    private final VelocityService velocityPublisher;
 
-    private StopMoving(VelocityPublisher velocityPublisher) {
+    private StopMoving(VelocityService velocityPublisher) {
         this.velocityPublisher = velocityPublisher;
     }
 
-    public static StopMoving create(VelocityPublisher velocityPublisher) {
+    public static StopMoving create(VelocityService velocityPublisher) {
         return new StopMoving(velocityPublisher);
     }
 
     @Override
     public void execute() {
         final Velocity velocity = Velocity.builder().linearX(0).linearY(0).linearZ(0).angularZ(0).build();
-        velocityPublisher.publishVelocityCommand(velocity);
+        velocityPublisher.publishVelocityMessage(velocity);
     }
 }
