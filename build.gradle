@@ -45,23 +45,25 @@ sourceCompatibility = 1.7
 targetCompatibility = 1.7
 
 repositories {
+    mavenCentral()
+
     maven {
         url "https://github.com/rosjava/rosjava_mvn_repo/raw/master"
+    }
+
+    maven {
+        url "https://github.com/hoangtungdinh/mvn-repo/raw/master"
     }
 
     maven {
         url "https://jitpack.io"
     }
 
-//    mavenLocal()
-    mavenCentral()
-    repositories {
-        maven {
-            url "http://repo1.maven.org/maven2/"
-        }
-        maven {
-            url "https://plugins.gradle.org/m2/"
-        }
+    maven {
+        url "http://repo1.maven.org/maven2/"
+    }
+    maven {
+        url "https://plugins.gradle.org/m2/"
     }
 }
 
@@ -83,6 +85,15 @@ dependencies {
     compile 'com.google.guava:guava:11.0.2'
 	compile fileTree(dir: 'libs', include: '*.jar')
     compile files('dir/bebop_msgs-0.5.1.jar')
+    // crates messages
+    compile 'io.github.hoangtungdinh:hal:0.1.0'
+    compile 'io.github.hoangtungdinh:hal_quadrotor:0.1.0'
+    compile 'io.github.hoangtungdinh:hal_sensor_altimeter:0.1.0'
+    compile 'io.github.hoangtungdinh:hal_sensor_compass:0.1.0'
+    compile 'io.github.hoangtungdinh:hal_sensor_gnss:0.1.0'
+    compile 'io.github.hoangtungdinh:hal_sensor_imu:0.1.0'
+    compile 'io.github.hoangtungdinh:hal_sensor_orientation:0.1.0'
+    compile 'io.github.hoangtungdinh:sim:0.1.0'
 }
 
 idea {
