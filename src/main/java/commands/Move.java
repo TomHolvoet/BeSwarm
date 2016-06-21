@@ -1,8 +1,10 @@
 package commands;
 
-import comm.VelocityPublisher;
-
 import static com.google.common.base.Preconditions.checkArgument;
+
+import commands.schedulers.PeriodicTaskRunner;
+import control.dto.Velocity;
+import services.VelocityService;
 
 /**
  * Command for moving. This command sends velocity message to the drone at a fixed rate in a fixed duration. (e.g.,
@@ -12,7 +14,7 @@ import static com.google.common.base.Preconditions.checkArgument;
  */
 public final class Move implements Command {
 
-    private final VelocityPublisher velocityPublisher;
+    private final VelocityService velocityPublisher;
     private final Velocity velocity;
     private final double durationInSeconds;
     private final double sendingRateInSeconds;
@@ -52,7 +54,7 @@ public final class Move implements Command {
 
         @Override
         public void run() {
-            velocityPublisher.publishVelocityCommand(velocity);
+            velocityPublisher.publishVelocityMessage(velocity);
         }
     }
 
@@ -60,7 +62,7 @@ public final class Move implements Command {
      * {@code Move} builder static inner class.
      */
     public static final class Builder {
-        private VelocityPublisher velocityPublisher;
+        private VelocityService velocityPublisher;
         private Velocity velocity;
         private double durationInSeconds;
         private double sendingRateInSeconds;
@@ -74,7 +76,7 @@ public final class Move implements Command {
          * @param val the {@code velocityPublisher} to set
          * @return a reference to this Builder
          */
-        public Builder velocityPublisher(VelocityPublisher val) {
+        public Builder velocityPublisher(VelocityService val) {
             velocityPublisher = val;
             return this;
         }

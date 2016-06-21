@@ -1,7 +1,8 @@
 package control;
 
-import commands.Pose;
 import com.google.common.base.Optional;
+
+import control.dto.Pose;
 
 /**
  * @author Hoang Tung Dinh

@@ -1,8 +1,9 @@
 package control;
 
-import commands.Pose;
-import commands.Velocity;
-import geom.EulerAngle;
+import control.dto.Pose;
+import control.dto.Velocity;
+import utils.math.EulerAngle;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
