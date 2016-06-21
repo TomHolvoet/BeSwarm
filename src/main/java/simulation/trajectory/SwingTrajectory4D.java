@@ -26,6 +26,9 @@ public class SwingTrajectory4D extends PeriodicTrajectory
                 .setFrequency(frequency).setOrigin(origin).build();
         this.angularMotion = new ConstantVelocityAngularTrajectory1D(frequency,
                 origin.getAngle() + phase);
+        //keep constant yaw:
+        this.angularMotion = new ConstantVelocityAngularTrajectory1D(0,
+                0);
     }
 
     @Override

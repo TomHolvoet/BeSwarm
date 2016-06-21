@@ -46,14 +46,6 @@ public class PendulumTrajectory2D extends PeriodicTrajectory
         return HALFPI * StrictMath.cos(freq2pi * currentTime);
     }
 
-    public double getRadius() {
-        return radius;
-    }
-
-    public double getFrequency() {
-        return frequency;
-    }
-
     @Override
     public Trajectory1d getTrajectoryLinearAbscissa() {
         return new Trajectory1d() {
@@ -91,7 +83,7 @@ public class PendulumTrajectory2D extends PeriodicTrajectory
                 setStartTime(timeInSeconds);
 
                 final double currentTime = timeInSeconds - getStartTime();
-                return getLinearDisplacement().getZ() - getRadius() * StrictMath
+                return getLinearDisplacement().getZ() + getRadius() * StrictMath
                         .sin(getAngleFromT(currentTime)
                                 + getPhaseDisplacement());
             }
@@ -102,7 +94,7 @@ public class PendulumTrajectory2D extends PeriodicTrajectory
 
                 final double currentTime = timeInSeconds - getStartTime();
                 return
-                        PISQUARED * getFrequency() * getRadius() * StrictMath
+                        -PISQUARED * getFrequency() * getRadius() * StrictMath
                                 .sin(freq2pi * currentTime
                                         + getPhaseDisplacement()) * StrictMath
                                 .cos(HALFPI * StrictMath
