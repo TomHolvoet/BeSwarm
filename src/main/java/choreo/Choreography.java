@@ -10,6 +10,13 @@ import java.util.List;
 import java.util.Queue;
 
 /**
+ * A choreography represents a sequence of different trajectories to be
+ * executed for set durations.
+ * The choreography is in itself a trajectory4d instance so it can be used as
+ * a single trajectory from the lower level control point-of-view.
+ * Using the builder, one can create choreography instances and configure
+ * them with different trajectories to be executed in sequence.
+ *
  * @author Kristof Coninx <kristof.coninx AT cs.kuleuven.be>
  */
 public class Choreography implements Trajectory4d {
