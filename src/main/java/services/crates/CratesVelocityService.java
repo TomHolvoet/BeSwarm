@@ -1,4 +1,4 @@
-package services.asctec;
+package services.crates;
 
 import control.dto.Velocity;
 import hal_quadrotor.VelocityRequest;
@@ -13,16 +13,16 @@ import services.VelocityService;
 /**
  * @author Hoang Tung Dinh
  */
-public final class AscTecVelocityService implements VelocityService {
-    private static final Logger logger = LoggerFactory.getLogger(AscTecVelocityService.class);
+public final class CratesVelocityService implements VelocityService {
+    private static final Logger logger = LoggerFactory.getLogger(CratesVelocityService.class);
     private final ServiceClient<VelocityRequest, VelocityResponse> srvVelocity;
 
-    private AscTecVelocityService(ServiceClient<VelocityRequest, VelocityResponse> srvVelocity) {
+    private CratesVelocityService(ServiceClient<VelocityRequest, VelocityResponse> srvVelocity) {
         this.srvVelocity = srvVelocity;
     }
 
-    public static AscTecVelocityService create(ServiceClient<VelocityRequest, VelocityResponse> srvVelocity) {
-        return new AscTecVelocityService(srvVelocity);
+    public static CratesVelocityService create(ServiceClient<VelocityRequest, VelocityResponse> srvVelocity) {
+        return new CratesVelocityService(srvVelocity);
     }
 
     @Override

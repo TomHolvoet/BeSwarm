@@ -1,4 +1,4 @@
-package services.asctec;
+package services.crates;
 
 import hal_quadrotor.LandRequest;
 import hal_quadrotor.LandResponse;
@@ -12,16 +12,16 @@ import services.LandService;
 /**
  * @author Hoang Tung Dinh
  */
-public final class AscTecLandService implements LandService {
-    private static final Logger logger = LoggerFactory.getLogger(AscTecLandService.class);
+public final class CratesLandService implements LandService {
+    private static final Logger logger = LoggerFactory.getLogger(CratesLandService.class);
     private final ServiceClient<LandRequest, LandResponse> srvLand;
 
-    private AscTecLandService(ServiceClient<LandRequest, LandResponse> srvLand) {
+    private CratesLandService(ServiceClient<LandRequest, LandResponse> srvLand) {
         this.srvLand = srvLand;
     }
 
-    public static AscTecLandService create(ServiceClient<LandRequest, LandResponse> srvLand) {
-        return new AscTecLandService(srvLand);
+    public static CratesLandService create(ServiceClient<LandRequest, LandResponse> srvLand) {
+        return new CratesLandService(srvLand);
     }
 
     @Override
