@@ -11,10 +11,10 @@ import control.Trajectory4d;
  */
 public class SwingTrajectory4D extends PeriodicTrajectory
         implements Trajectory4d {
-    private Trajectory2d swing;
-    private double yFactor;
-    private double xFactor;
-    private Trajectory1d angularMotion;
+    private final Trajectory2d swing;
+    private final double yFactor;
+    private final double xFactor;
+    private final Trajectory1d angularMotion;
 
     SwingTrajectory4D(Point4D origin, double phase, double xzPlaneAngle,
             double radius,
@@ -24,8 +24,9 @@ public class SwingTrajectory4D extends PeriodicTrajectory
         yFactor = StrictMath.sin(xzPlaneAngle);
         this.swing = new PendulumTrajectory2D.Builder().setRadius(radius)
                 .setFrequency(frequency).setOrigin(origin).build();
-        this.angularMotion = new ConstantVelocityAngularTrajectory1D(frequency,
-                origin.getAngle() + phase);
+        //        this.angularMotion = new
+        // ConstantVelocityAngularTrajectory1D(frequency,
+        //                origin.getAngle() + phase);
         //keep constant yaw:
         this.angularMotion = new ConstantVelocityAngularTrajectory1D(0,
                 0);
