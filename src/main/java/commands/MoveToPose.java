@@ -22,7 +22,7 @@ public final class MoveToPose implements Command {
     private MoveToPose(Builder builder) {
         final Trajectory4d trajectory4d = SinglePointTrajectory4d.create(builder.goalPose, builder.goalVelocity);
         followTrajectory = FollowTrajectory.builder()
-                .velocityPublisher(builder.velocityPublisher)
+                .velocityPublisher(builder.velocityService)
                 .poseEstimator(builder.poseEstimator)
                 .velocityEstimator(builder.velocityEstimator)
                 .pidLinearParameters(builder.pidLinearParameters)
@@ -55,7 +55,7 @@ public final class MoveToPose implements Command {
      * {@code MoveToPose} builder static inner class.
      */
     public static final class Builder {
-        private VelocityService velocityPublisher;
+        private VelocityService velocityService;
         private PoseEstimator poseEstimator;
         private VelocityEstimator velocityEstimator;
         private PidParameters pidLinearParameters;
@@ -68,14 +68,14 @@ public final class MoveToPose implements Command {
         private Builder() {}
 
         /**
-         * Sets the {@code velocityPublisher} and returns a reference to this Builder so that the methods can be
+         * Sets the {@code velocityService} and returns a reference to this Builder so that the methods can be
          * chained together.
          *
-         * @param val the {@code velocityPublisher} to set
+         * @param val the {@code velocityService} to set
          * @return a reference to this Builder
          */
         public Builder velocityPublisher(VelocityService val) {
-            velocityPublisher = val;
+            velocityService = val;
             return this;
         }
 

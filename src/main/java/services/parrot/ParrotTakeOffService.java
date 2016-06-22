@@ -1,7 +1,8 @@
-package services;
+package services.parrot;
 
 import org.ros.node.ConnectedNode;
 import org.ros.node.topic.Publisher;
+import services.TakeOffService;
 import std_msgs.Empty;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -11,11 +12,11 @@ import static com.google.common.base.Preconditions.checkArgument;
  *
  * @author Hoang Tung Dinh
  */
-public final class TakeoffService {
+public final class ParrotTakeOffService implements TakeOffService {
 
     private final Publisher<Empty> publisher;
 
-    private TakeoffService(Publisher<Empty> publisher) {
+    private ParrotTakeOffService(Publisher<Empty> publisher) {
         this.publisher = publisher;
     }
 
@@ -25,21 +26,27 @@ public final class TakeoffService {
      * @see <a href="http://bebop-autonomy.readthedocs.io/en/latest/piloting.html#takeoff">Bebop
      * documentations</a>
      */
-    public static TakeoffService create(Publisher<Empty> publisher) {
+    public static ParrotTakeOffService create(Publisher<Empty> publisher) {
         checkArgument(publisher.getTopicName().toString().endsWith("/takeoff"),
                 "Topic name must be [namespace]/takeoff");
-        return new TakeoffService(publisher);
+        return new ParrotTakeOffService(publisher);
     }
-    
-    public static TakeoffService createService(String droneName, ConnectedNode connectedNode) {
-    	return TakeoffService.create(connectedNode.<Empty>newPublisher(droneName + "/takeoff", Empty._TYPE));
+
+    public static ParrotTakeOffService createService(String droneName, ConnectedNode connectedNode) {
+        return create(connectedNode.<Empty>newPublisher(droneName + "/takeoff", Empty._TYPE));
     }
 
     /**
      * Publish a taking off message.
      */
-    public void publishTakingOffMessage() {
+    @Override
+    public void sendTakingOffMessage() {
         final Empty empty = publisher.newMessage();
         publisher.publish(empty);
+    }
+
+    @Override
+    public void sendTakingOffMessage(double desiredAltitude) {
+        throw new UnsupportedOperationException("Parrot drone does not support this service");
     }
 }

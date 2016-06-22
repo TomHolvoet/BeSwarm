@@ -7,12 +7,15 @@ import commands.MoveCircleClockwise;
 import commands.Takeoff;
 import geometry_msgs.Twist;
 import services.LandService;
-import services.TakeoffService;
-import services.VelocityService;
+import services.parrot.ParrotLandService;
+import services.parrot.ParrotTakeOffService;
+import services.parrot.ParrotVelocityService;
 
 import org.ros.namespace.GraphName;
 import org.ros.node.AbstractNodeMain;
 import org.ros.node.ConnectedNode;
+import services.TakeOffService;
+import services.VelocityService;
 import std_msgs.Empty;
 
 import java.util.ArrayList;
@@ -32,11 +35,11 @@ public class BebopCirclePattern extends AbstractNodeMain {
 
     @Override
     public void onStart(final ConnectedNode connectedNode) {
-        final TakeoffService takeoffPublisher = TakeoffService.create(
+        final TakeOffService takeOffService = ParrotTakeOffService.create(
                 connectedNode.<Empty>newPublisher("/bebop/takeoff", Empty._TYPE));
-        final LandService landPublisher = LandService.create(
+        final LandService landService = ParrotLandService.create(
                 connectedNode.<Empty>newPublisher("/bebop/land", Empty._TYPE));
-        final VelocityService velocityPublisher = VelocityService.builder()
+        final VelocityService velocityService = ParrotVelocityService.builder()
                 .publisher(connectedNode.<Twist>newPublisher("/bebop/cmd_vel", Twist._TYPE))
                 .minLinearX(-1)
                 .minLinearY(-1)
@@ -55,14 +58,14 @@ public class BebopCirclePattern extends AbstractNodeMain {
         }
 
         final List<Command> commands = new ArrayList<>();
-        final Command takeOff = Takeoff.create(takeoffPublisher);
+        final Command takeOff = Takeoff.create(takeOffService);
         commands.add(takeOff);
-        final Command hoverOneSecond = Hover.create(velocityPublisher, 1);
+        final Command hoverOneSecond = Hover.create(velocityService, 1);
         commands.add(hoverOneSecond);
-        final Command moveCircle = MoveCircleClockwise.create(velocityPublisher, 0.5, 0.5, 3);
+        final Command moveCircle = MoveCircleClockwise.create(velocityService, 0.5, 0.5, 3);
         commands.add(moveCircle);
         commands.add(hoverOneSecond);
-        final Command land = Land.create(landPublisher);
+        final Command land = Land.create(landService);
         commands.add(land);
 
         for (final Command command : commands) {

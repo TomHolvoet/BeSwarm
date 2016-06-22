@@ -14,7 +14,7 @@ import services.VelocityService;
  */
 public final class Move implements Command {
 
-    private final VelocityService velocityPublisher;
+    private final VelocityService velocityService;
     private final Velocity velocity;
     private final double durationInSeconds;
     private final double sendingRateInSeconds;
@@ -22,7 +22,7 @@ public final class Move implements Command {
     private static final double DEFAULT_SENDING_RATE_IN_SECONDS = 0.05;
 
     private Move(Builder builder) {
-        velocityPublisher = builder.velocityPublisher;
+        velocityService = builder.velocityService;
         velocity = builder.velocity;
         durationInSeconds = builder.durationInSeconds;
         sendingRateInSeconds = builder.sendingRateInSeconds;
@@ -45,7 +45,7 @@ public final class Move implements Command {
     public void execute() {
         final Runnable sendCommand = new SendCommand();
         PeriodicTaskRunner.run(sendCommand, sendingRateInSeconds, durationInSeconds);
-        final Command stopMoving = StopMoving.create(velocityPublisher);
+        final Command stopMoving = StopMoving.create(velocityService);
         stopMoving.execute();
     }
 
@@ -54,7 +54,7 @@ public final class Move implements Command {
 
         @Override
         public void run() {
-            velocityPublisher.publishVelocityMessage(velocity);
+            velocityService.sendVelocityMessage(velocity);
         }
     }
 
@@ -62,7 +62,7 @@ public final class Move implements Command {
      * {@code Move} builder static inner class.
      */
     public static final class Builder {
-        private VelocityService velocityPublisher;
+        private VelocityService velocityService;
         private Velocity velocity;
         private double durationInSeconds;
         private double sendingRateInSeconds;
@@ -70,14 +70,14 @@ public final class Move implements Command {
         private Builder() {}
 
         /**
-         * Sets the {@code velocityPublisher} and returns a reference to this Builder so that the methods can be
+         * Sets the {@code velocityService} and returns a reference to this Builder so that the methods can be
          * chained together.
          *
-         * @param val the {@code velocityPublisher} to set
+         * @param val the {@code velocityService} to set
          * @return a reference to this Builder
          */
         public Builder velocityPublisher(VelocityService val) {
-            velocityPublisher = val;
+            velocityService = val;
             return this;
         }
 

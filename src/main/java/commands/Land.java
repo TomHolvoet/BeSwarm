@@ -9,22 +9,22 @@ import services.LandService;
  */
 public final class Land implements Command {
 
-    private final LandService landPublisher;
+    private final LandService landService;
 
-    private Land(LandService landPublisher) {
-        this.landPublisher = landPublisher;
+    private Land(LandService landService) {
+        this.landService = landService;
     }
 
     /**
-     * @param landPublisher the land publisher
+     * @param landService the land publisher
      * @return an instance of the landing command
      */
-    public static Land create(LandService landPublisher) {
-        return new Land(landPublisher);
+    public static Land create(LandService landService) {
+        return new Land(landService);
     }
 
     @Override
     public void execute() {
-        landPublisher.publishLandingMessage();
+        landService.sendLandingMessage();
     }
 }
