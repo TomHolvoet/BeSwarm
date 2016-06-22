@@ -1,6 +1,6 @@
 package commands;
 
-import services.TakeoffService;
+import services.ParrotTakeOffService;
 
 /**
  * Command for taking off.
@@ -9,18 +9,18 @@ import services.TakeoffService;
  */
 public final class Takeoff implements Command {
 
-    private final TakeoffService takeoffPublisher;
+    private final ParrotTakeOffService takeoffPublisher;
 
-    private Takeoff(TakeoffService takeoffPublisher) {
+    private Takeoff(ParrotTakeOffService takeoffPublisher) {
         this.takeoffPublisher = takeoffPublisher;
     }
 
-    public static Takeoff create(TakeoffService takeoffPublisher) {
+    public static Takeoff create(ParrotTakeOffService takeoffPublisher) {
         return new Takeoff(takeoffPublisher);
     }
 
     @Override
     public void execute() {
-        takeoffPublisher.publishTakingOffMessage();
+        takeoffPublisher.sendTakingOffMessage();
     }
 }

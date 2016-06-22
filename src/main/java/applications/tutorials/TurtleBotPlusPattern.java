@@ -7,7 +7,7 @@ import commands.MoveForward;
 import commands.MoveLeft;
 import commands.MoveRight;
 import geometry_msgs.Twist;
-import services.VelocityService;
+import services.ParrotVelocityService;
 
 import org.ros.namespace.GraphName;
 import org.ros.node.AbstractNodeMain;
@@ -30,7 +30,7 @@ public class TurtleBotPlusPattern extends AbstractNodeMain {
 
     @Override
     public void onStart(final ConnectedNode connectedNode) {
-        final VelocityService velocityPublisher = VelocityService.builder()
+        final ParrotVelocityService velocityPublisher = ParrotVelocityService.builder()
                 .publisher(connectedNode.<Twist>newPublisher("/turtle1/cmd_vel", Twist._TYPE))
                 .build();
 

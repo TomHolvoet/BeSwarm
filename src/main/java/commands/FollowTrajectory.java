@@ -11,7 +11,7 @@ import control.Trajectory4d;
 import control.VelocityEstimator;
 import control.dto.Pose;
 import control.dto.Velocity;
-import services.VelocityService;
+import services.ParrotVelocityService;
 
 /**
  * Command for moving to a predefined pose. It is a facade which uses {@link Move}.
@@ -20,7 +20,7 @@ import services.VelocityService;
  */
 public final class FollowTrajectory implements Command {
 
-    private final VelocityService velocityPublisher;
+    private final ParrotVelocityService velocityPublisher;
     private final PoseEstimator poseEstimator;
     private final VelocityEstimator velocityEstimator;
     private final PidParameters pidLinearParameters;
@@ -91,7 +91,7 @@ public final class FollowTrajectory implements Command {
                     currentVelocityInGlobalFrame.get());
             final Velocity nextVelocityInLocalFrame = Velocity.createLocalVelocityFromGlobalVelocity(
                     nextVelocityInGlobalFrame, currentPose.get().yaw());
-            velocityPublisher.publishVelocityMessage(nextVelocityInLocalFrame);
+            velocityPublisher.sendVelocityMessage(nextVelocityInLocalFrame);
         }
     }
 
@@ -99,7 +99,7 @@ public final class FollowTrajectory implements Command {
      * {@code FollowTrajectory} builder static inner class.
      */
     public static final class Builder {
-        private VelocityService velocityPublisher;
+        private ParrotVelocityService velocityPublisher;
         private PoseEstimator poseEstimator;
         private VelocityEstimator velocityEstimator;
         private PidParameters pidLinearParameters;
@@ -117,7 +117,7 @@ public final class FollowTrajectory implements Command {
          * @param val the {@code velocityPublisher} to set
          * @return a reference to this Builder
          */
-        public Builder velocityPublisher(VelocityService val) {
+        public Builder velocityPublisher(ParrotVelocityService val) {
             velocityPublisher = val;
             return this;
         }

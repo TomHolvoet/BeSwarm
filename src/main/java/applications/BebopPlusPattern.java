@@ -1,17 +1,13 @@
 package applications;
 
 import commands.Command;
-import commands.Hover;
 import commands.Land;
-import commands.MoveBackward;
 import commands.MoveForward;
-import commands.MoveLeft;
-import commands.MoveRight;
 import commands.Takeoff;
 import geometry_msgs.Twist;
-import services.LandService;
-import services.TakeoffService;
-import services.VelocityService;
+import services.ParrotLandService;
+import services.ParrotTakeOffService;
+import services.ParrotVelocityService;
 
 import org.ros.namespace.GraphName;
 import org.ros.node.AbstractNodeMain;
@@ -35,11 +31,11 @@ public class BebopPlusPattern extends AbstractNodeMain {
 
     @Override
     public void onStart(final ConnectedNode connectedNode) {
-        final TakeoffService takeoffPublisher = TakeoffService.create(
+        final ParrotTakeOffService takeoffPublisher = ParrotTakeOffService.create(
                 connectedNode.<Empty>newPublisher("/bebop/takeoff", Empty._TYPE));
-        final LandService landPublisher = LandService.create(
+        final ParrotLandService landPublisher = ParrotLandService.create(
                 connectedNode.<Empty>newPublisher("/bebop/land", Empty._TYPE));
-        final VelocityService velocityPublisher = VelocityService.builder()
+        final ParrotVelocityService velocityPublisher = ParrotVelocityService.builder()
                 .publisher(connectedNode.<Twist>newPublisher("/bebop/cmd_vel", Twist._TYPE))
                 .minLinearX(-1)
                 .minLinearY(-1)

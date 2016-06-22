@@ -3,7 +3,7 @@ package commands;
 import static com.google.common.base.Preconditions.checkArgument;
 
 import control.dto.Velocity;
-import services.VelocityService;
+import services.ParrotVelocityService;
 
 /**
  * Command for rotating counterclockwise. It is a facade which uses {@link Move}.
@@ -12,17 +12,17 @@ import services.VelocityService;
  */
 public final class RotateCounterClockwise implements Command {
 
-    private final VelocityService velocityPublisher;
+    private final ParrotVelocityService velocityPublisher;
     private final double speed;
     private final double durationInSeconds;
 
-    private RotateCounterClockwise(VelocityService velocityPublisher, double speed, double durationInSeconds) {
+    private RotateCounterClockwise(ParrotVelocityService velocityPublisher, double speed, double durationInSeconds) {
         this.velocityPublisher = velocityPublisher;
         this.speed = speed;
         this.durationInSeconds = durationInSeconds;
     }
 
-    public static RotateCounterClockwise create(VelocityService velocityPublisher, double speed,
+    public static RotateCounterClockwise create(ParrotVelocityService velocityPublisher, double speed,
             double durationInSeconds) {
         checkArgument(durationInSeconds > 0,
                 String.format("Duration must be a positive value, but it is %f", durationInSeconds));

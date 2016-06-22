@@ -18,9 +18,9 @@ import control.dto.Velocity;
 import gazebo_msgs.ModelStates;
 import geometry_msgs.Twist;
 import keyboard.Key;
-import services.LandService;
-import services.TakeoffService;
-import services.VelocityService;
+import services.ParrotLandService;
+import services.ParrotTakeOffService;
+import services.ParrotVelocityService;
 import services.ros_subscribers.KeyboardSubscriber;
 import services.ros_subscribers.ModelStateSubscriber;
 
@@ -45,9 +45,9 @@ import java.util.concurrent.TimeUnit;
  * @see <a href="https://github.com/dougvk/tum_simulator">The simulator</a>
  */
 public final class ArDroneMoveWithPid extends AbstractNodeMain {
-    private TakeoffService takeoffPublisher;
-    private LandService landPublisher;
-    private VelocityService velocityPublisher;
+    private ParrotTakeOffService takeoffPublisher;
+    private ParrotLandService landPublisher;
+    private ParrotVelocityService velocityPublisher;
     private ModelStateSubscriber modelStateSubscriber;
     private KeyboardSubscriber keyboardSubscriber;
 
@@ -141,8 +141,8 @@ public final class ArDroneMoveWithPid extends AbstractNodeMain {
     }
 
     private void initializeComm(ConnectedNode connectedNode) {
-        takeoffPublisher = TakeoffService.create(connectedNode.<Empty>newPublisher("/ardrone/takeoff", Empty._TYPE));
-        velocityPublisher = VelocityService.builder()
+        takeoffPublisher = ParrotTakeOffService.create(connectedNode.<Empty>newPublisher("/ardrone/takeoff", Empty._TYPE));
+        velocityPublisher = ParrotVelocityService.builder()
                 .publisher(connectedNode.<Twist>newPublisher("/cmd_vel", Twist._TYPE))
                 .minLinearX(-1)
                 .minLinearY(-1)
@@ -155,7 +155,7 @@ public final class ArDroneMoveWithPid extends AbstractNodeMain {
                 .build();
         modelStateSubscriber = ModelStateSubscriber.create(
                 connectedNode.<ModelStates>newSubscriber("/gazebo/model_states", ModelStates._TYPE));
-        landPublisher = LandService.create(connectedNode.<Empty>newPublisher("/ardrone/land", Empty._TYPE));
+        landPublisher = ParrotLandService.create(connectedNode.<Empty>newPublisher("/ardrone/land", Empty._TYPE));
         keyboardSubscriber = KeyboardSubscriber.create(
                 connectedNode.<Key>newSubscriber("/keyboard/keydown", Key._TYPE));
     }

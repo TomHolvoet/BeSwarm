@@ -1,7 +1,7 @@
 package commands;
 
 import control.dto.Direction;
-import services.FlipService;
+import services.ParrotFlipService;
 
 /**
  * Command for flipping.
@@ -10,10 +10,10 @@ import services.FlipService;
  */
 public final class Flip implements Command {
 
-    private final FlipService flipPublisher;
+    private final ParrotFlipService flipPublisher;
     private final Direction direction;
 
-    private Flip(FlipService flipPublisher, Direction direction) {
+    private Flip(ParrotFlipService flipPublisher, Direction direction) {
         this.flipPublisher = flipPublisher;
         this.direction = direction;
     }
@@ -25,12 +25,12 @@ public final class Flip implements Command {
      * @param direction  the flipping direction
      * @return an instance of the flipping command
      */
-    public static Flip create(FlipService flipPublisher, Direction direction) {
+    public static Flip create(ParrotFlipService flipPublisher, Direction direction) {
         return new Flip(flipPublisher, direction);
     }
 
     @Override
     public void execute() {
-        flipPublisher.publishFlipMessage(direction);
+        flipPublisher.sendFlipMessage(direction);
     }
 }
