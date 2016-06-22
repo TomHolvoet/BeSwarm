@@ -27,6 +27,9 @@ import nav_msgs.Odometry;
 import services.LandService;
 import services.TakeOffService;
 import services.VelocityService;
+import services.parrot.ParrotLandService;
+import services.parrot.ParrotTakeOffService;
+import services.parrot.ParrotVelocityService;
 import services.ros_subscribers.MessagesSubscriberService;
 import taskexecutor.Task;
 import taskexecutor.TaskExecutor;
@@ -35,17 +38,17 @@ import taskexecutor.TaskType;
 
 /**
  * Application to fly the Bebop drone in a straighline
- * 
+ *
  * @author mhct
  */
 public final class BebopLinePattern extends AbstractNodeMain {
 	private final String droneName = "/bebop";
-	
+
     private TakeOffService takeoffService;
     private VelocityService velocityService;
     private LandService landService;
 
-	
+
     private MessagesSubscriberService<PoseStamped> poseSubscriber;
 	private MessagesSubscriberService<Odometry> odometrySubscriber;
 
@@ -74,23 +77,23 @@ public final class BebopLinePattern extends AbstractNodeMain {
         final Command hoverFiveSeconds = Hover.create(velocityService, 5);
         final Command followTrajectory = getFollowTrajectoryCommand();
         final Command land = Land.create(landService);
-        
+
         commands.add(takeOff);
         commands.add(hoverFiveSeconds);
 //        commands.add(followTrajectory);
         commands.add(land);
-        
+
         return Task.create(ImmutableList.copyOf(commands), TaskType.NORMAL_TASK);
     }
 
     private Command getFollowTrajectoryCommand() {
-        
+
         final PoseEstimator poseEstimator = new PoseEstimator() {
-			
+
         	@Override
 			public Optional<Pose> getCurrentPose() {
 				Optional<PoseStamped> poseStamped = poseSubscriber.getMostRecentMessage();
-				
+
 				if (poseStamped.isPresent()) {
 					return Optional.of(Pose.create(poseStamped.get()));
 				} else {
@@ -98,13 +101,13 @@ public final class BebopLinePattern extends AbstractNodeMain {
 				}
 			}
 		};
-		
+
 		final VelocityEstimator velocityEstimator = new VelocityEstimator() {
-			
+
 			@Override
 			public Optional<Velocity> getCurrentVelocity() {
 				Optional<Odometry> odometry = odometrySubscriber.getMostRecentMessage();
-				
+
 				if (odometry.isPresent()) {
 					return Optional.of(Velocity.createLocalVelocityFrom(odometry.get().getTwist().getTwist()));
 				} else {
@@ -112,7 +115,7 @@ public final class BebopLinePattern extends AbstractNodeMain {
 				}
 			}
 		};
-        		
+
         final Trajectory4d trajectory = LineTrajectory.create(10.0, 2.0);
         return FollowTrajectory.builder()
                 .poseEstimator(poseEstimator)
@@ -132,9 +135,9 @@ public final class BebopLinePattern extends AbstractNodeMain {
     }
 
     private void initializeComm(ConnectedNode connectedNode) {
-    	landService = LandService.createService(droneName, connectedNode);
-    	takeoffService = TakeoffService.createService(droneName, connectedNode);
-        velocityService = VelocityService.builder()
+    	landService = ParrotLandService.createService(droneName, connectedNode);
+    	takeoffService = ParrotTakeOffService.createService(droneName, connectedNode);
+        velocityService = ParrotVelocityService.builder()
                 .publisher(connectedNode.<Twist>newPublisher("/cmd_vel", Twist._TYPE))
                 .minLinearX(-1)
                 .minLinearY(-1)
@@ -145,7 +148,7 @@ public final class BebopLinePattern extends AbstractNodeMain {
                 .maxLinearZ(1)
                 .maxAngularZ(1)
                 .build();
-        
+
         poseSubscriber = MessagesSubscriberService.<PoseStamped>create(connectedNode.<PoseStamped>newSubscriber("/arlocros/pose", PoseStamped._TYPE));
         odometrySubscriber = MessagesSubscriberService.<Odometry>create(connectedNode.<Odometry>newSubscriber(droneName + "/odom", Odometry._TYPE));
     }

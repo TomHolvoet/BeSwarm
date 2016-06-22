@@ -1,5 +1,6 @@
 package services.parrot;
 
+import org.ros.node.ConnectedNode;
 import org.ros.node.topic.Publisher;
 import services.LandService;
 import std_msgs.Empty;
@@ -28,6 +29,10 @@ public final class ParrotLandService implements LandService {
     public static ParrotLandService create(Publisher<Empty> publisher) {
         checkArgument(publisher.getTopicName().toString().endsWith("/land"), "Topic name must be [namespace]/land");
         return new ParrotLandService(publisher);
+    }
+
+    public static ParrotLandService createService(String droneName, ConnectedNode connectedNode) {
+        return create(connectedNode.<Empty>newPublisher(droneName + "/land", Empty._TYPE));
     }
 
     /**
