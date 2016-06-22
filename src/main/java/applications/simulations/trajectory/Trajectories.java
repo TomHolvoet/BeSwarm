@@ -124,4 +124,13 @@ public final class Trajectories {
                 .setXzPlaneAngle(planeAngle)
                 .build();
     }
+
+    /**
+     * @param target The target location to hold as a trajectory;
+     * @return A new trajectory that specifies a constant point in space to
+     * follow.
+     */
+    public static Trajectory4d newHoldPositionTrajectory(Point4D target) {
+        return new HoldPositionTrajectory4D(target);
+    }
 }
