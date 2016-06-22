@@ -28,12 +28,12 @@ public class ConstantSwingTrajectory1D extends PeriodicTrajectory
      *                  Equals 1/period.
      */
     ConstantSwingTrajectory1D(double radius, double frequency) {
-        this(radius, frequency, 0);
+        this(Point4D.origin(), radius, frequency, 0);
     }
 
-    ConstantSwingTrajectory1D(double radius, double frequency,
+    ConstantSwingTrajectory1D(Point4D origin, double radius, double frequency,
             double phase) {
-        super(phase, Point4D.origin(), radius, frequency);
+        super(phase, origin, radius, frequency);
         this.freq2pi = frequency * TWOPI;
         this.rfreq2pi = frequency * radius * TWOPI;
         checkArgument(Math.abs(rfreq2pi) < MAX_ABSOLUTE_SPEED,
@@ -47,7 +47,7 @@ public class ConstantSwingTrajectory1D extends PeriodicTrajectory
         setStartTime(timeInSeconds);
 
         final double currentTime = timeInSeconds - getStartTime();
-        return getRadius() * StrictMath
+        return getLinearDisplacement().getX() + getRadius() * StrictMath
                 .cos(freq2pi * currentTime + getPhaseDisplacement());
     }
 

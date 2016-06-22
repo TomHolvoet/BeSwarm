@@ -1,10 +1,6 @@
 package applications.simulations.trajectory;
 
 import com.google.common.collect.Lists;
-
-import applications.simulations.trajectory.ConstantSwingTrajectory1D;
-import applications.simulations.trajectory.PendulumSwingTrajectory1D;
-import applications.simulations.trajectory.PeriodicTrajectory;
 import control.Trajectory1d;
 import org.junit.Assert;
 import org.junit.Test;
@@ -31,15 +27,16 @@ public class PeriodicTrajectory1DTest {
 
     public PeriodicTrajectory1DTest(Class cl) {
         this.cl = cl;
-        Class[] cArg = new Class[3];
-        cArg[0] = double.class;
+        Class[] cArg = new Class[4];
+        cArg[0] = Point4D.class;
         cArg[1] = double.class;
         cArg[2] = double.class;
+        cArg[3] = double.class;
         try {
             highFrequencyCircle = (Trajectory1d) cl.getDeclaredConstructor(cArg)
-                    .newInstance(radius, highFreq, phase);
+                    .newInstance(Point4D.origin(), radius, highFreq, phase);
             lowFrequencyCircle = (Trajectory1d) cl.getDeclaredConstructor(cArg)
-                    .newInstance(radius, lowFreq, phase);
+                    .newInstance(Point4D.origin(), radius, lowFreq, phase);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -95,14 +92,15 @@ public class PeriodicTrajectory1DTest {
     @Test(expected = IllegalArgumentException.class)
     public void testParamConstructorWithHighThanAllowedSpeedRate()
             throws Exception {
-        Class[] cArg = new Class[3];
-        cArg[0] = double.class;
+        Class[] cArg = new Class[4];
+        cArg[0] = Point4D.class;
         cArg[1] = double.class;
         cArg[2] = double.class;
+        cArg[3] = double.class;
         try {
             Trajectory1d target = (Trajectory1d) this.cl
                     .getDeclaredConstructor(cArg)
-                    .newInstance(1, 1, 0);
+                    .newInstance(Point4D.origin(), 1, 1, 0);
         } catch (InvocationTargetException e) {
             if (new Exception(e.getCause()).getMessage()
                     .contains("MAX_ABSOLUTE_SPEED")) {

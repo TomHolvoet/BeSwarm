@@ -12,8 +12,8 @@ public abstract class PeriodicTrajectory {
     protected static final double HALFPI = Math.PI / 2;
     protected static final double PISQUARED = Math.PI * Math.PI;
     protected static final double TWOPISQUARED = 2 * PISQUARED;
-    protected final double radius;
-    protected final double frequency;
+    private final double radius;
+    private final double frequency;
     private double startTime = -1;
     private double phaseDisplacement;
     private Point4D linearDisplacement;
