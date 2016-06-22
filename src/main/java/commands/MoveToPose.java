@@ -2,10 +2,9 @@ package commands;
 
 import control.DefaultPidParameters;
 import control.PidParameters;
-import control.PoseEstimator;
-import control.SinglePointTrajectory4d;
+import control.localization.PoseEstimator;
 import control.Trajectory4d;
-import control.VelocityEstimator;
+import control.localization.VelocityEstimator;
 import control.dto.Pose;
 import control.dto.Velocity;
 import services.VelocityService;

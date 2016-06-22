@@ -1,4 +1,4 @@
-package control;
+package control.localization;
 
 import com.google.common.base.Optional;
 
