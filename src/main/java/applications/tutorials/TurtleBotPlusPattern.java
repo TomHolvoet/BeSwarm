@@ -7,7 +7,7 @@ import commands.MoveForward;
 import commands.MoveLeft;
 import commands.MoveRight;
 import geometry_msgs.Twist;
-import services.ParrotVelocityService;
+import services.parrot.ParrotVelocityService;
 
 import org.ros.namespace.GraphName;
 import org.ros.node.AbstractNodeMain;

@@ -7,9 +7,9 @@ import commands.MoveCircleClockwise;
 import commands.Takeoff;
 import geometry_msgs.Twist;
 import services.LandService;
-import services.ParrotLandService;
-import services.ParrotTakeOffService;
-import services.ParrotVelocityService;
+import services.parrot.ParrotLandService;
+import services.parrot.ParrotTakeOffService;
+import services.parrot.ParrotVelocityService;
 
 import org.ros.namespace.GraphName;
 import org.ros.node.AbstractNodeMain;

@@ -1,4 +1,4 @@
-package services;
+package services.parrot;
 
 import geometry_msgs.Twist;
 
@@ -6,6 +6,7 @@ import org.ros.node.ConnectedNode;
 import org.ros.node.topic.Publisher;
 
 import control.dto.Velocity;
+import services.VelocityService;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
