@@ -25,7 +25,7 @@ import geometry_msgs.PoseStamped;
 import geometry_msgs.Twist;
 import nav_msgs.Odometry;
 import services.LandService;
-import services.TakeoffService;
+import services.TakeOffService;
 import services.VelocityService;
 import services.ros_subscribers.MessagesSubscriberService;
 import taskexecutor.Task;
@@ -41,7 +41,7 @@ import taskexecutor.TaskType;
 public final class BebopLinePattern extends AbstractNodeMain {
 	private final String droneName = "/bebop";
 	
-    private TakeoffService takeoffService;
+    private TakeOffService takeoffService;
     private VelocityService velocityService;
     private LandService landService;
 

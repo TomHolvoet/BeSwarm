@@ -48,9 +48,9 @@ import java.util.concurrent.TimeUnit;
  * @see <a href="https://github.com/dougvk/tum_simulator">The simulator</a>
  */
 public final class ArDroneMoveWithPid extends AbstractNodeMain {
-    private TakeoffService takeoffPublisher;
-    private LandService landPublisher;
-    private VelocityService velocityPublisher;
+    private TakeOffService takeOffService;
+    private LandService landService;
+    private VelocityService velocityService;
     private MessagesSubscriberService<ModelStates> modelStateSubscriber;
     private KeyboardSubscriber keyboardSubscriber;
 
