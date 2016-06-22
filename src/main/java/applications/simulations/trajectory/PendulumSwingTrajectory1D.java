@@ -16,13 +16,7 @@ import static com.google.common.base.Preconditions.checkArgument;
  */
 public class PendulumSwingTrajectory1D extends PeriodicTrajectory
         implements Trajectory1d {
-    public static final double MAX_ABSOLUTE_SPEED = 1;
-    private static final double TWOPI = Math.PI * 2;
-    private static final double HALFPI = Math.PI / 2;
-    private static final double PISQUARED = Math.PI * Math.PI;
     private static final double MAXRANGE_VELOCITY_PERIODIC_PART = 0.649091;
-    private final double radius;
-    private final double frequency;
     private final double freq2pi;
 
     /**
@@ -33,14 +27,12 @@ public class PendulumSwingTrajectory1D extends PeriodicTrajectory
      *                  Equals 1/period.
      */
     PendulumSwingTrajectory1D(double radius, double frequency) {
-        this(radius, frequency, 0);
+        this(Point4D.origin(), radius, frequency, 0);
     }
 
-     PendulumSwingTrajectory1D(double radius, double frequency,
+    PendulumSwingTrajectory1D(Point4D origin, double radius, double frequency,
             double phase) {
-        super((HALFPI * 3) + phase);
-        this.radius = radius;
-        this.frequency = frequency;
+        super((HALFPI * 3) + phase, origin, radius, frequency);
         this.freq2pi = frequency * TWOPI;
         checkArgument(Math.abs(radius * frequency) < MAX_ABSOLUTE_SPEED / (
                         PISQUARED * MAXRANGE_VELOCITY_PERIODIC_PART),
@@ -49,25 +41,14 @@ public class PendulumSwingTrajectory1D extends PeriodicTrajectory
                         + MAX_ABSOLUTE_SPEED);
     }
 
-    private double getAngleFromT(double currentTime) {
-        return HALFPI * StrictMath.cos(freq2pi * currentTime);
-    }
-
-    public double getRadius() {
-        return radius;
-    }
-
-    public double getFrequency() {
-        return frequency;
-    }
-
     @Override
     public double getDesiredPosition(double timeInSeconds) {
         setStartTime(timeInSeconds);
 
         final double currentTime = timeInSeconds - getStartTime();
-        return getRadius() * StrictMath
-                .cos(getAngleFromT(currentTime)
+        return getLinearDisplacement().getX() + getRadius() * StrictMath
+                .cos(TrajectoryUtils
+                        .pendulumAngleFromTime(currentTime, getFrequency())
                         + getPhaseDisplacement());
     }
 

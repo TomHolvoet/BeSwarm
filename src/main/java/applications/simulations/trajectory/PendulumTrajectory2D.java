@@ -18,6 +18,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 public class PendulumTrajectory2D extends PeriodicTrajectory
         implements Trajectory2d {
     private final double freq2pi;
+    private final Trajectory1d linearMovement;
 
     /**
      * Constructor
@@ -30,6 +31,8 @@ public class PendulumTrajectory2D extends PeriodicTrajectory
             Point4D origin, double phase) {
         super(HALFPI * 3 + phase, origin, radius, frequency);
         this.freq2pi = frequency * TWOPI;
+        this.linearMovement = new PendulumSwingTrajectory1D(origin, radius,
+                frequency, phase);
         checkArgument(
                 Math.abs(radius * frequency) < MAX_ABSOLUTE_SPEED / PISQUARED,
                 "Absolute speed should not be larger than MAX_ABSOLUTE_SPEED,"
@@ -42,37 +45,9 @@ public class PendulumTrajectory2D extends PeriodicTrajectory
         this(radius, frequency, Point4D.origin(), 0);
     }
 
-    private double getAngleFromT(double currentTime) {
-        return HALFPI * StrictMath.cos(freq2pi * currentTime);
-    }
-
     @Override
     public Trajectory1d getTrajectoryLinearAbscissa() {
-        return new Trajectory1d() {
-            @Override
-            public double getDesiredPosition(double timeInSeconds) {
-                setStartTime(timeInSeconds);
-
-                final double currentTime = timeInSeconds - getStartTime();
-                return getLinearDisplacement().getX() + getRadius() * StrictMath
-                        .cos(getAngleFromT(currentTime)
-                                + getPhaseDisplacement());
-            }
-
-            @Override
-            public double getDesiredVelocity(double timeInSeconds) {
-                setStartTime(timeInSeconds);
-
-                final double currentTime = timeInSeconds - getStartTime();
-                return
-                        PISQUARED * getFrequency() * getRadius() * StrictMath
-                                .sin(freq2pi * currentTime
-                                        + getPhaseDisplacement()) * StrictMath
-                                .sin(HALFPI * StrictMath
-                                        .cos(freq2pi * currentTime
-                                                + getPhaseDisplacement()));
-            }
-        };
+        return this.linearMovement;
     }
 
     @Override
@@ -84,7 +59,8 @@ public class PendulumTrajectory2D extends PeriodicTrajectory
 
                 final double currentTime = timeInSeconds - getStartTime();
                 return getLinearDisplacement().getZ() + getRadius() * StrictMath
-                        .sin(getAngleFromT(currentTime)
+                        .sin(TrajectoryUtils.pendulumAngleFromTime(currentTime,
+                                getFrequency())
                                 + getPhaseDisplacement());
             }
 
