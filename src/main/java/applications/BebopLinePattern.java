@@ -14,6 +14,7 @@ import com.google.common.collect.ImmutableList;
 import commands.Command;
 import commands.FollowTrajectory;
 import commands.Hover;
+import commands.Land;
 import commands.Takeoff;
 import control.PoseEstimator;
 import control.Trajectory4d;
@@ -27,7 +28,6 @@ import services.LandService;
 import services.TakeoffService;
 import services.VelocityService;
 import services.ros_subscribers.MessagesSubscriberService;
-import services.ros_subscribers.ModelStateSubscriber;
 import taskexecutor.Task;
 import taskexecutor.TaskExecutor;
 import taskexecutor.TaskExecutorService;
@@ -42,10 +42,11 @@ public final class BebopLinePattern extends AbstractNodeMain {
 	private final String droneName = "/bebop";
 	
     private TakeoffService takeoffService;
-    private LandService landService;
     private VelocityService velocityService;
+    private LandService landService;
 
-	private MessagesSubscriberService<PoseStamped> poseSubscriber;
+	
+    private MessagesSubscriberService<PoseStamped> poseSubscriber;
 	private MessagesSubscriberService<Odometry> odometrySubscriber;
 
 	private double flightDuration = 100; //Want to have a 100 seconds flight
@@ -72,11 +73,13 @@ public final class BebopLinePattern extends AbstractNodeMain {
         final Command takeOff = Takeoff.create(takeoffService);
         final Command hoverFiveSeconds = Hover.create(velocityService, 5);
         final Command followTrajectory = getFollowTrajectoryCommand();
-
+        final Command land = Land.create(landService);
+        
         commands.add(takeOff);
         commands.add(hoverFiveSeconds);
-        commands.add(followTrajectory);
-
+//        commands.add(followTrajectory);
+        commands.add(land);
+        
         return Task.create(ImmutableList.copyOf(commands), TaskType.NORMAL_TASK);
     }
 
@@ -110,7 +113,7 @@ public final class BebopLinePattern extends AbstractNodeMain {
 			}
 		};
         		
-        final Trajectory4d trajectory = LineTrajectory.create();
+        final Trajectory4d trajectory = LineTrajectory.create(10.0, 2.0);
         return FollowTrajectory.builder()
                 .poseEstimator(poseEstimator)
                 .velocityEstimator(velocityEstimator)
@@ -129,7 +132,8 @@ public final class BebopLinePattern extends AbstractNodeMain {
     }
 
     private void initializeComm(ConnectedNode connectedNode) {
-        takeoffService = TakeoffService.createService(droneName, connectedNode);
+    	landService = LandService.createService(droneName, connectedNode);
+    	takeoffService = TakeoffService.createService(droneName, connectedNode);
         velocityService = VelocityService.builder()
                 .publisher(connectedNode.<Twist>newPublisher("/cmd_vel", Twist._TYPE))
                 .minLinearX(-1)
@@ -141,7 +145,6 @@ public final class BebopLinePattern extends AbstractNodeMain {
                 .maxLinearZ(1)
                 .maxAngularZ(1)
                 .build();
-        landService = LandService.createService(droneName, connectedNode);
         
         poseSubscriber = MessagesSubscriberService.<PoseStamped>create(connectedNode.<PoseStamped>newSubscriber("/arlocros/pose", PoseStamped._TYPE));
         odometrySubscriber = MessagesSubscriberService.<Odometry>create(connectedNode.<Odometry>newSubscriber(droneName + "/odom", Odometry._TYPE));

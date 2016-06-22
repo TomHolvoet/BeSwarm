@@ -11,12 +11,12 @@ import com.google.common.base.Optional;
 /**
  * @author mhct
  */
-public final class MessagesSubscriberService<T extends Message> implements SubscriberFacade {
+public class MessagesSubscriberService<T extends Message> implements SubscriberFacade {
     private final Subscriber<T> subscriber;
     private final MessagesListener<T> messagesListener = MessagesListener.<T>create();
     private boolean startedListeningToMessages = false;
 
-    private MessagesSubscriberService(Subscriber<T> subscriber) {
+    protected MessagesSubscriberService(Subscriber<T> subscriber) {
         this.subscriber = subscriber;
     }
 

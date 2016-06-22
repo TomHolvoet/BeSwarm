@@ -1,5 +1,9 @@
 package applications;
 
+import java.util.logging.Logger;
+
+import org.apache.commons.logging.Log;
+
 import control.Trajectory1d;
 import control.Trajectory4d;
 
@@ -16,16 +20,18 @@ public final class LineTrajectory implements Trajectory4d {
 
     private double startTime = -1;
 	private double flightDuration;
+	private double length;
 
-    private LineTrajectory(double flightDuration) {
+    private LineTrajectory(double flightDuration, double length) {
     	this.flightDuration = flightDuration;
-    	this.trajectoryLinearX = new TrajectoryLinearX(flightDuration);
-    	this.trajectoryLinearY = new TrajectoryLinearY(flightDuration);
-    	this.trajectoryLinearZ = new TrajectoryLinearZ(flightDuration);
+    	this.length = length;
+    	this.trajectoryLinearX = new TrajectoryLinearX(flightDuration, length);
+    	this.trajectoryLinearY = new TrajectoryLinearY();
+    	this.trajectoryLinearZ = new TrajectoryLinearZ();
     }
 
-    public static LineTrajectory create(double flightDuration) {
-        return new LineTrajectory(flightDuration);
+    public static LineTrajectory create(double flightDuration, double length) {
+        return new LineTrajectory(flightDuration, length);
     }
 
     @Override
@@ -48,17 +54,28 @@ public final class LineTrajectory implements Trajectory4d {
         return trajectoryAngularZ;
     }
 
+    private static final Logger logger = Logger.getLogger("Trajectory");
+
     private final class TrajectoryLinearX implements Trajectory1d {
 
+    	private final double flightDuration;
+		private double length;
 
+		public TrajectoryLinearX(double flightDuration, double length) {
+    		this.flightDuration = flightDuration;
+    		this.length = length;
+    	}
+    	
         @Override
         public double getDesiredPosition(double timeInSeconds) {
             if (startTime < 0) {
                 startTime = timeInSeconds;
             }
-
             final double currentTime = timeInSeconds - startTime;
-            return ;
+            double position = 0 + (currentTime % flightDuration) * length/flightDuration;
+            logger.info("Desired position" + position);
+            
+            return position;
         }
 
         @Override
@@ -68,7 +85,11 @@ public final class LineTrajectory implements Trajectory4d {
             }
 
             final double currentTime = timeInSeconds - startTime;
-            return -0.5 * StrictMath.sin(0.25 * currentTime);
+            if (currentTime < flightDuration) {
+            	return StrictMath.sin((timeInSeconds % flightDuration)*length/2*flightDuration);
+            } else {
+            	return 0.0;
+            }
         }
     }
 
@@ -78,7 +99,7 @@ public final class LineTrajectory implements Trajectory4d {
 
         @Override
         public double getDesiredPosition(double timeInSeconds) {
-        	return 2.0;
+        	return -2.0;
         }
 
         @Override
