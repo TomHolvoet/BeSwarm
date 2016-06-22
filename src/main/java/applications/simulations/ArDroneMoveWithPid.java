@@ -18,9 +18,12 @@ import control.dto.Velocity;
 import gazebo_msgs.ModelStates;
 import geometry_msgs.Twist;
 import keyboard.Key;
+import services.LandService;
 import services.ParrotLandService;
 import services.ParrotTakeOffService;
 import services.ParrotVelocityService;
+import services.TakeOffService;
+import services.VelocityService;
 import services.ros_subscribers.KeyboardSubscriber;
 import services.ros_subscribers.ModelStateSubscriber;
 
@@ -45,9 +48,9 @@ import java.util.concurrent.TimeUnit;
  * @see <a href="https://github.com/dougvk/tum_simulator">The simulator</a>
  */
 public final class ArDroneMoveWithPid extends AbstractNodeMain {
-    private ParrotTakeOffService takeoffPublisher;
-    private ParrotLandService landPublisher;
-    private ParrotVelocityService velocityPublisher;
+    private TakeOffService takeOffService;
+    private LandService landService;
+    private VelocityService velocityService;
     private ModelStateSubscriber modelStateSubscriber;
     private KeyboardSubscriber keyboardSubscriber;
 
@@ -80,17 +83,17 @@ public final class ArDroneMoveWithPid extends AbstractNodeMain {
     }
 
     private Task createEmergencyTask() {
-        final Command land = Land.create(landPublisher);
+        final Command land = Land.create(landService);
         return Task.create(ImmutableList.of(land), TaskType.FIRST_ORDER_EMERGENCY);
     }
 
     private Task createFlyTask() {
         final Collection<Command> commands = new ArrayList<>();
 
-        final Command takeOff = Takeoff.create(takeoffPublisher);
+        final Command takeOff = Takeoff.create(takeOffService);
         commands.add(takeOff);
 
-        final Command hoverFiveSecond = Hover.create(velocityPublisher, 5);
+        final Command hoverFiveSecond = Hover.create(velocityService, 5);
         commands.add(hoverFiveSecond);
 
 //        final Command moveToPose = getMoveToPoseCommand();
@@ -111,7 +114,7 @@ public final class ArDroneMoveWithPid extends AbstractNodeMain {
         return MoveToPose.builder()
                 .poseEstimator(poseEstimator)
                 .velocityEstimator(velocityEstimator)
-                .velocityPublisher(velocityPublisher)
+                .velocityPublisher(velocityService)
                 .goalPose(goalPose)
                 .goalVelocity(goalVelocity)
                 .durationInSeconds(60)
@@ -126,7 +129,7 @@ public final class ArDroneMoveWithPid extends AbstractNodeMain {
         return FollowTrajectory.builder()
                 .poseEstimator(poseEstimator)
                 .velocityEstimator(velocityEstimator)
-                .velocityPublisher(velocityPublisher)
+                .velocityPublisher(velocityService)
                 .trajectory4d(trajectory)
                 .durationInSeconds(60)
                 .build();
@@ -141,8 +144,8 @@ public final class ArDroneMoveWithPid extends AbstractNodeMain {
     }
 
     private void initializeComm(ConnectedNode connectedNode) {
-        takeoffPublisher = ParrotTakeOffService.create(connectedNode.<Empty>newPublisher("/ardrone/takeoff", Empty._TYPE));
-        velocityPublisher = ParrotVelocityService.builder()
+        takeOffService = ParrotTakeOffService.create(connectedNode.<Empty>newPublisher("/ardrone/takeoff", Empty._TYPE));
+        velocityService = ParrotVelocityService.builder()
                 .publisher(connectedNode.<Twist>newPublisher("/cmd_vel", Twist._TYPE))
                 .minLinearX(-1)
                 .minLinearY(-1)
@@ -155,7 +158,7 @@ public final class ArDroneMoveWithPid extends AbstractNodeMain {
                 .build();
         modelStateSubscriber = ModelStateSubscriber.create(
                 connectedNode.<ModelStates>newSubscriber("/gazebo/model_states", ModelStates._TYPE));
-        landPublisher = ParrotLandService.create(connectedNode.<Empty>newPublisher("/ardrone/land", Empty._TYPE));
+        landService = ParrotLandService.create(connectedNode.<Empty>newPublisher("/ardrone/land", Empty._TYPE));
         keyboardSubscriber = KeyboardSubscriber.create(
                 connectedNode.<Key>newSubscriber("/keyboard/keydown", Key._TYPE));
     }

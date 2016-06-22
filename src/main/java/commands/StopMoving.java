@@ -1,7 +1,7 @@
 package commands;
 
 import control.dto.Velocity;
-import services.ParrotVelocityService;
+import services.VelocityService;
 
 /**
  * Command for stopping moving. It publishes a velocity message.
@@ -10,19 +10,19 @@ import services.ParrotVelocityService;
  */
 public final class StopMoving implements Command {
 
-    private final ParrotVelocityService velocityPublisher;
+    private final VelocityService velocityService;
 
-    private StopMoving(ParrotVelocityService velocityPublisher) {
-        this.velocityPublisher = velocityPublisher;
+    private StopMoving(VelocityService velocityService) {
+        this.velocityService = velocityService;
     }
 
-    public static StopMoving create(ParrotVelocityService velocityPublisher) {
-        return new StopMoving(velocityPublisher);
+    public static StopMoving create(VelocityService velocityService) {
+        return new StopMoving(velocityService);
     }
 
     @Override
     public void execute() {
         final Velocity velocity = Velocity.builder().linearX(0).linearY(0).linearZ(0).angularZ(0).build();
-        velocityPublisher.sendVelocityMessage(velocity);
+        velocityService.sendVelocityMessage(velocity);
     }
 }

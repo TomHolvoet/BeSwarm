@@ -32,7 +32,7 @@ public final class ParrotTakeOffService implements TakeOffService {
     }
 
     public static ParrotTakeOffService createService(String droneName, ConnectedNode connectedNode) {
-        return ParrotTakeOffService.create(connectedNode.<Empty>newPublisher(droneName + "/takeoff", Empty._TYPE));
+        return create(connectedNode.<Empty>newPublisher(droneName + "/takeoff", Empty._TYPE));
     }
 
     /**

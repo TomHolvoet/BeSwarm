@@ -1,9 +1,9 @@
 package commands;
 
+import services.VelocityService;
+
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
-
-import services.ParrotVelocityService;
 
 /**
  * Command for hovering. This command requests the drone to hover by publishing a zero velocity and wait for a
@@ -13,28 +13,28 @@ import services.ParrotVelocityService;
  */
 public final class Hover implements Command {
 
-    private final ParrotVelocityService velocityPublisher;
+    private final VelocityService velocityService;
     private final double durationInSeconds;
 
-    private Hover(ParrotVelocityService velocityPublisher, double durationInSeconds) {
-        this.velocityPublisher = velocityPublisher;
+    private Hover(VelocityService velocityService, double durationInSeconds) {
+        this.velocityService = velocityService;
         this.durationInSeconds = durationInSeconds;
     }
 
     /**
-     * @param velocityPublisher the velocity publisher
+     * @param velocityService the velocity publisher
      * @param durationInSeconds the duration that the drone hovers
      * @return an instance of the hovering command
      */
-    public static Hover create(ParrotVelocityService velocityPublisher, double durationInSeconds) {
+    public static Hover create(VelocityService velocityService, double durationInSeconds) {
         checkArgument(durationInSeconds > 0,
                 String.format("Duration must be a positive value, but it is %f", durationInSeconds));
-        return new Hover(velocityPublisher, durationInSeconds);
+        return new Hover(velocityService, durationInSeconds);
     }
 
     @Override
     public void execute() {
-        final Command stopMoving = StopMoving.create(velocityPublisher);
+        final Command stopMoving = StopMoving.create(velocityService);
         stopMoving.execute();
         final long durationInMilliSeconds = (long) (durationInSeconds * 1000);
         try {

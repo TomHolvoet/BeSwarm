@@ -1,6 +1,6 @@
 package commands;
 
-import services.ParrotLandService;
+import services.LandService;
 
 /**
  * Command for landing.
@@ -9,22 +9,22 @@ import services.ParrotLandService;
  */
 public final class Land implements Command {
 
-    private final ParrotLandService landPublisher;
+    private final LandService landService;
 
-    private Land(ParrotLandService landPublisher) {
-        this.landPublisher = landPublisher;
+    private Land(LandService landService) {
+        this.landService = landService;
     }
 
     /**
-     * @param landPublisher the land publisher
+     * @param landService the land publisher
      * @return an instance of the landing command
      */
-    public static Land create(ParrotLandService landPublisher) {
-        return new Land(landPublisher);
+    public static Land create(LandService landService) {
+        return new Land(landService);
     }
 
     @Override
     public void execute() {
-        landPublisher.sendLandingMessage();
+        landService.sendLandingMessage();
     }
 }

@@ -11,7 +11,7 @@ import control.Trajectory4d;
 import control.VelocityEstimator;
 import control.dto.Pose;
 import control.dto.Velocity;
-import services.ParrotVelocityService;
+import services.VelocityService;
 
 /**
  * Command for moving to a predefined pose. It is a facade which uses {@link Move}.
@@ -20,7 +20,7 @@ import services.ParrotVelocityService;
  */
 public final class FollowTrajectory implements Command {
 
-    private final ParrotVelocityService velocityPublisher;
+    private final VelocityService velocityService;
     private final PoseEstimator poseEstimator;
     private final VelocityEstimator velocityEstimator;
     private final PidParameters pidLinearParameters;
@@ -32,7 +32,7 @@ public final class FollowTrajectory implements Command {
     private static final double DEFAULT_CONTROL_RATE_IN_SECONDS = 0.05;
 
     private FollowTrajectory(Builder builder) {
-        velocityPublisher = builder.velocityPublisher;
+        velocityService = builder.velocityService;
         poseEstimator = builder.poseEstimator;
         velocityEstimator = builder.velocityEstimator;
         pidLinearParameters = builder.pidLinearParameters;
@@ -91,7 +91,7 @@ public final class FollowTrajectory implements Command {
                     currentVelocityInGlobalFrame.get());
             final Velocity nextVelocityInLocalFrame = Velocity.createLocalVelocityFromGlobalVelocity(
                     nextVelocityInGlobalFrame, currentPose.get().yaw());
-            velocityPublisher.sendVelocityMessage(nextVelocityInLocalFrame);
+            velocityService.sendVelocityMessage(nextVelocityInLocalFrame);
         }
     }
 
@@ -99,7 +99,7 @@ public final class FollowTrajectory implements Command {
      * {@code FollowTrajectory} builder static inner class.
      */
     public static final class Builder {
-        private ParrotVelocityService velocityPublisher;
+        private VelocityService velocityService;
         private PoseEstimator poseEstimator;
         private VelocityEstimator velocityEstimator;
         private PidParameters pidLinearParameters;
@@ -111,14 +111,14 @@ public final class FollowTrajectory implements Command {
         private Builder() {}
 
         /**
-         * Sets the {@code velocityPublisher} and returns a reference to this Builder so that the methods can be
+         * Sets the {@code velocityService} and returns a reference to this Builder so that the methods can be
          * chained together.
          *
-         * @param val the {@code velocityPublisher} to set
+         * @param val the {@code velocityService} to set
          * @return a reference to this Builder
          */
-        public Builder velocityPublisher(ParrotVelocityService val) {
-            velocityPublisher = val;
+        public Builder velocityPublisher(VelocityService val) {
+            velocityService = val;
             return this;
         }
 

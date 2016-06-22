@@ -5,13 +5,15 @@ import commands.Land;
 import commands.MoveForward;
 import commands.Takeoff;
 import geometry_msgs.Twist;
-import services.ParrotLandService;
-import services.ParrotTakeOffService;
-import services.ParrotVelocityService;
-
 import org.ros.namespace.GraphName;
 import org.ros.node.AbstractNodeMain;
 import org.ros.node.ConnectedNode;
+import services.LandService;
+import services.ParrotLandService;
+import services.ParrotTakeOffService;
+import services.ParrotVelocityService;
+import services.TakeOffService;
+import services.VelocityService;
 import std_msgs.Empty;
 
 import java.util.ArrayList;
@@ -31,11 +33,11 @@ public class BebopPlusPattern extends AbstractNodeMain {
 
     @Override
     public void onStart(final ConnectedNode connectedNode) {
-        final ParrotTakeOffService takeoffPublisher = ParrotTakeOffService.create(
+        final TakeOffService takeOffService = ParrotTakeOffService.create(
                 connectedNode.<Empty>newPublisher("/bebop/takeoff", Empty._TYPE));
-        final ParrotLandService landPublisher = ParrotLandService.create(
+        final LandService landService = ParrotLandService.create(
                 connectedNode.<Empty>newPublisher("/bebop/land", Empty._TYPE));
-        final ParrotVelocityService velocityPublisher = ParrotVelocityService.builder()
+        final VelocityService velocityService = ParrotVelocityService.builder()
                 .publisher(connectedNode.<Twist>newPublisher("/bebop/cmd_vel", Twist._TYPE))
                 .minLinearX(-1)
                 .minLinearY(-1)
@@ -54,26 +56,26 @@ public class BebopPlusPattern extends AbstractNodeMain {
         }
 
         final List<Command> commands = new ArrayList<>();
-        final Command takeOff = Takeoff.create(takeoffPublisher);
+        final Command takeOff = Takeoff.create(takeOffService);
         commands.add(takeOff);
-//        final Command hoverOneSecond = Hover.create(velocityPublisher, 1);
+//        final Command hoverOneSecond = Hover.create(velocityService, 1);
 //        commands.add(hoverOneSecond);
-        final Command moveForwardOneSecond = MoveForward.create(velocityPublisher, 0.5, 1);
+        final Command moveForwardOneSecond = MoveForward.create(velocityService, 0.5, 1);
         commands.add(moveForwardOneSecond);
 //        commands.add(hoverOneSecond);
-//        final Command moveBackwardTwoSeconds = MoveBackward.create(velocityPublisher, 0.5, 2);
+//        final Command moveBackwardTwoSeconds = MoveBackward.create(velocityService, 0.5, 2);
 //        commands.add(moveBackwardTwoSeconds);
 //        commands.add(hoverOneSecond);
 //        commands.add(moveForwardOneSecond);
-//        final Command moveLeftOneSecond = MoveLeft.create(velocityPublisher, 0.5, 1);
+//        final Command moveLeftOneSecond = MoveLeft.create(velocityService, 0.5, 1);
 //        commands.add(moveLeftOneSecond);
 //        commands.add(hoverOneSecond);
-//        final Command moveRightTwoSeconds = MoveRight.create(velocityPublisher, 0.5, 2);
+//        final Command moveRightTwoSeconds = MoveRight.create(velocityService, 0.5, 2);
 //        commands.add(moveRightTwoSeconds);
 //        commands.add(hoverOneSecond);
 //        commands.add(moveLeftOneSecond);
 //        commands.add(hoverOneSecond);
-        final Command land = Land.create(landPublisher);
+        final Command land = Land.create(landService);
         commands.add(land);
 
         for (final Command command : commands) {
