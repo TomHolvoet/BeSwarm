@@ -2,6 +2,8 @@ package control.dto;
 
 import com.google.auto.value.AutoValue;
 
+import geometry_msgs.Twist;
+
 /**
  * A value class which stores the velocity of the drone.
  *
@@ -44,6 +46,25 @@ public abstract class Velocity {
         return builder().linearX(linearX).linearY(linearY).linearZ(linearZ).angularZ(angularZ).build();
     }
 
+    /**
+     * Converts a Twist velocity (given in NED coordinates) to a local velocity using XYZ frame
+     * TODO fix frame of reference for local velocity
+     * 
+     * @return
+     */
+    public static Velocity createLocalVelocityFrom(Twist twist) {
+    	final double twistX = twist.getLinear().getX();
+    	final double twistY = twist.getLinear().getY();
+    	final double twistZ = twist.getLinear().getZ();
+    	final double twistAngularZ = twist.getAngular().getZ();
+    	
+    	return builder().linearX(twistX)
+    			.linearY(twistY)
+    			.linearZ(twistZ)
+    			.angularZ(twistAngularZ)
+    			.build();
+    }
+    
     @AutoValue.Builder
     public abstract static class Builder {
         public abstract Builder linearX(double value);

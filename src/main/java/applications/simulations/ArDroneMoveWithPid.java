@@ -25,7 +25,7 @@ import services.parrot.ParrotVelocityService;
 import services.TakeOffService;
 import services.VelocityService;
 import services.ros_subscribers.KeyboardSubscriber;
-import services.ros_subscribers.ModelStateSubscriber;
+import services.ros_subscribers.MessagesSubscriberService;
 
 import org.ros.namespace.GraphName;
 import org.ros.node.AbstractNodeMain;
@@ -51,7 +51,7 @@ public final class ArDroneMoveWithPid extends AbstractNodeMain {
     private TakeOffService takeOffService;
     private LandService landService;
     private VelocityService velocityService;
-    private ModelStateSubscriber modelStateSubscriber;
+    private MessagesSubscriberService<ModelStates> modelStateSubscriber;
     private KeyboardSubscriber keyboardSubscriber;
 
     @Override
@@ -156,10 +156,10 @@ public final class ArDroneMoveWithPid extends AbstractNodeMain {
                 .maxLinearZ(1)
                 .maxAngularZ(1)
                 .build();
-        modelStateSubscriber = ModelStateSubscriber.create(
+        modelStateSubscriber = MessagesSubscriberService.<ModelStates>create(
                 connectedNode.<ModelStates>newSubscriber("/gazebo/model_states", ModelStates._TYPE));
         landService = ParrotLandService.create(connectedNode.<Empty>newPublisher("/ardrone/land", Empty._TYPE));
-        keyboardSubscriber = KeyboardSubscriber.create(
-                connectedNode.<Key>newSubscriber("/keyboard/keydown", Key._TYPE));
+        keyboardSubscriber = KeyboardSubscriber.createKeyboardSubscriber(
+        		connectedNode.<Key>newSubscriber("/keyboard/keydown", Key._TYPE));
     }
 }

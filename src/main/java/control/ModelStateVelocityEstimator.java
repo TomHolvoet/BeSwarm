@@ -5,28 +5,28 @@ import com.google.common.base.Optional;
 import control.dto.Velocity;
 import gazebo_msgs.ModelStates;
 import geometry_msgs.Twist;
-import services.ros_subscribers.ModelStateSubscriber;
+import services.ros_subscribers.MessagesSubscriberService;
 
 /**
  * @author Hoang Tung Dinh
  */
 public final class ModelStateVelocityEstimator implements VelocityEstimator {
-    private final ModelStateSubscriber modelStateSubscriber;
+    private final MessagesSubscriberService<ModelStates> modelStateSubscriber;
     private final String modelName;
 
-    private ModelStateVelocityEstimator(ModelStateSubscriber modelStateSubscriber, String modelName) {
+    private ModelStateVelocityEstimator(MessagesSubscriberService<ModelStates> modelStateSubscriber, String modelName) {
         this.modelStateSubscriber = modelStateSubscriber;
         this.modelName = modelName;
         this.modelStateSubscriber.startListeningToMessages();
     }
 
-    public static ModelStateVelocityEstimator create(ModelStateSubscriber modelStateSubscriber, String modelName) {
+    public static ModelStateVelocityEstimator create(MessagesSubscriberService<ModelStates> modelStateSubscriber, String modelName) {
         return new ModelStateVelocityEstimator(modelStateSubscriber, modelName);
     }
 
     @Override
     public Optional<Velocity> getCurrentVelocity() {
-        final Optional<ModelStates> modelStateOptional = modelStateSubscriber.getMostRecentModelStates();
+        final Optional<ModelStates> modelStateOptional = modelStateSubscriber.getMostRecentMessage();
         if (modelStateOptional.isPresent()) {
             final ModelStates modelStates = modelStateOptional.get();
             final int index = modelStates.getName().indexOf(modelName);
