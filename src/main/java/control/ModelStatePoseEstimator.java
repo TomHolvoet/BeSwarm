@@ -6,29 +6,29 @@ import control.dto.Pose;
 import gazebo_msgs.ModelStates;
 import geometry_msgs.Point;
 import geometry_msgs.Quaternion;
-import services.ros_subscribers.ModelStateSubscriber;
+import services.ros_subscribers.MessagesSubscriberService;
 import utils.math.EulerAngle;
 
 /**
  * @author Hoang Tung Dinh
  */
 public final class ModelStatePoseEstimator implements PoseEstimator {
-    private final ModelStateSubscriber modelStateSubscriber;
+    private final MessagesSubscriberService<ModelStates> modelStateSubscriber;
     private final String modelName;
 
-    private ModelStatePoseEstimator(ModelStateSubscriber modelStateSubscriber, String modelName) {
+    private ModelStatePoseEstimator(MessagesSubscriberService<ModelStates> modelStateSubscriber, String modelName) {
         this.modelStateSubscriber = modelStateSubscriber;
         this.modelName = modelName;
         this.modelStateSubscriber.startListeningToMessages();
     }
 
-    public static ModelStatePoseEstimator create(ModelStateSubscriber modelStateSubscriber, String modelName) {
+    public static ModelStatePoseEstimator create(MessagesSubscriberService<ModelStates> modelStateSubscriber, String modelName) {
         return new ModelStatePoseEstimator(modelStateSubscriber, modelName);
     }
 
     @Override
     public Optional<Pose> getCurrentPose() {
-        final Optional<ModelStates> modelStateOptional = modelStateSubscriber.getMostRecentModelStates();
+        final Optional<ModelStates> modelStateOptional = modelStateSubscriber.getMostRecentMessage();
         if (modelStateOptional.isPresent()) {
             final ModelStates modelStates = modelStateOptional.get();
             final int index = modelStates.getName().indexOf(modelName);

@@ -10,27 +10,27 @@ import services.FlipService;
  */
 public final class Flip implements Command {
 
-    private final FlipService flipPublisher;
+    private final FlipService flipService;
     private final Direction direction;
 
-    private Flip(FlipService flipPublisher, Direction direction) {
-        this.flipPublisher = flipPublisher;
+    private Flip(FlipService flipService, Direction direction) {
+        this.flipService = flipService;
         this.direction = direction;
     }
 
     /**
      * Create a flipping command.
      *
-     * @param flipPublisher the flip publisher
+     * @param flipService the flip publisher
      * @param direction  the flipping direction
      * @return an instance of the flipping command
      */
-    public static Flip create(FlipService flipPublisher, Direction direction) {
-        return new Flip(flipPublisher, direction);
+    public static Flip create(FlipService flipService, Direction direction) {
+        return new Flip(flipService, direction);
     }
 
     @Override
     public void execute() {
-        flipPublisher.publishFlipMessage(direction);
+        flipService.sendFlipMessage(direction);
     }
 }
