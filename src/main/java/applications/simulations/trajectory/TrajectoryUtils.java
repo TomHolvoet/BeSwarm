@@ -1,6 +1,8 @@
 package applications.simulations.trajectory;
 
 /**
+ * Utility class for static utilities used in defining trajectories.
+ *
  * @author Kristof Coninx <kristof.coninx AT cs.kuleuven.be>
  */
 public final class TrajectoryUtils {
