@@ -2,10 +2,9 @@ package control;
 
 import control.dto.Pose;
 import control.dto.Velocity;
-import utils.math.EulerAngle;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import utils.math.EulerAngle;
 
 /**
  * A four-dimensional PID controller for the drone. It is the composition of 4 one-dimensional PID controller
@@ -17,6 +16,7 @@ import org.slf4j.LoggerFactory;
 public final class PidController4d {
 
     private static final Logger logger = LoggerFactory.getLogger(PidController4d.class);
+    private static final Logger poseLogger = LoggerFactory.getLogger(PidController4d.class.getName() + ".poselogger");
 
     private static final double NANO_SECOND_TO_SECOND = 1000000000.0;
 
@@ -60,6 +60,12 @@ public final class PidController4d {
                 currentTimeInSeconds);
 
         logger.trace("Current time: {}\nCurrent pose: {}", currentTimeInSeconds, currentPose);
+        poseLogger.trace("{} {} {} {} {} {} {} {} {}", currentTimeInSeconds, currentPose.x(), currentPose.y(),
+                currentPose.z(), currentPose.yaw(),
+                trajectory4d.getTrajectoryLinearX().getDesiredPosition(currentTimeInSeconds),
+                trajectory4d.getTrajectoryLinearY().getDesiredPosition(currentTimeInSeconds),
+                trajectory4d.getTrajectoryLinearZ().getDesiredPosition(currentTimeInSeconds),
+                trajectory4d.getTrajectoryAngularZ().getDesiredPosition(currentTimeInSeconds));
 
         return Velocity.builder().linearX(linearX).linearY(linearY).linearZ(linearZ).angularZ(angularZ).build();
     }
