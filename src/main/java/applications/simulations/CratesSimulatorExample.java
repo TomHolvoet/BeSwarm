@@ -172,6 +172,7 @@ public final class CratesSimulatorExample extends AbstractNodeMain {
         }
         cratesTruthStateSubscriber = MessagesSubscriberService.create(
                 connectedNode.<State>newSubscriber(srvNamePrefix + "Truth", State._TYPE), 2);
+        cratesTruthStateSubscriber.startListeningToMessages();
         keyboardSubscriber = KeyboardSubscriber.createKeyboardSubscriber(
                 connectedNode.<Key>newSubscriber("/keyboard/keydown", Key._TYPE));
     }
