@@ -1,16 +1,15 @@
 package commands;
 
 import com.google.common.base.Optional;
-
 import commands.schedulers.PeriodicTaskRunner;
 import control.DefaultPidParameters;
 import control.PidController4d;
 import control.PidParameters;
-import control.localization.PoseEstimator;
 import control.Trajectory4d;
-import control.localization.VelocityEstimator;
 import control.dto.Pose;
 import control.dto.Velocity;
+import control.localization.PoseEstimator;
+import control.localization.VelocityEstimator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import services.VelocityService;
@@ -60,6 +59,8 @@ public final class FollowTrajectory implements Command {
 
     @Override
     public void execute() {
+        logger.debug("Execute follow trajectory command.");
+
         final PidController4d pidController4d = PidController4d.builder()
                 .linearXParameters(pidLinearParameters)
                 .linearYParameters(pidLinearParameters)
@@ -69,7 +70,6 @@ public final class FollowTrajectory implements Command {
                 .build();
 
         final Runnable computeNextResponse = new ComputeNextResponse(pidController4d);
-        logger.debug("Start following a trajectory.");
         PeriodicTaskRunner.run(computeNextResponse, controlRateInSeconds, durationInSeconds);
     }
 
@@ -82,16 +82,20 @@ public final class FollowTrajectory implements Command {
 
         @Override
         public void run() {
+            logger.debug("Start a control loop.");
             final Optional<Pose> currentPose = poseEstimator.getCurrentPose();
             if (!currentPose.isPresent()) {
+                logger.debug("Cannot get pose.");
                 return;
             }
 
             final Optional<Velocity> currentVelocityInGlobalFrame = velocityEstimator.getCurrentVelocity();
             if (!currentVelocityInGlobalFrame.isPresent()) {
+                logger.debug("Cannot get velocity.");
                 return;
             }
 
+            logger.debug("Got pose and velocity. Start computing the next velocity response.");
             final Velocity nextVelocityInGlobalFrame = pidController4d.compute(currentPose.get(),
                     currentVelocityInGlobalFrame.get());
             final Velocity nextVelocityInLocalFrame = Velocity.createLocalVelocityFromGlobalVelocity(

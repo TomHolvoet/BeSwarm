@@ -38,6 +38,7 @@ public final class Hover implements Command {
 
     @Override
     public void execute() {
+        logger.debug("Execute hover command.");
         final Command stopMoving = StopMoving.create(velocityService);
         stopMoving.execute();
         final long durationInMilliSeconds = (long) (durationInSeconds * 1000);

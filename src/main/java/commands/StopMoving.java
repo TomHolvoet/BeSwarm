@@ -1,6 +1,8 @@
 package commands;
 
 import control.dto.Velocity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import services.VelocityService;
 
 /**
@@ -10,6 +12,7 @@ import services.VelocityService;
  */
 public final class StopMoving implements Command {
 
+    private static final Logger logger = LoggerFactory.getLogger(StopMoving.class);
     private final VelocityService velocityService;
 
     private StopMoving(VelocityService velocityService) {
@@ -22,6 +25,7 @@ public final class StopMoving implements Command {
 
     @Override
     public void execute() {
+        logger.debug("Execute stop moving command.");
         final Velocity velocity = Velocity.builder().linearX(0).linearY(0).linearZ(0).angularZ(0).build();
         velocityService.sendVelocityMessage(velocity);
     }
