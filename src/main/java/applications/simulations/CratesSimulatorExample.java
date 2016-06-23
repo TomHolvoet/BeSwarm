@@ -201,13 +201,13 @@ public final class CratesSimulatorExample extends AbstractNodeMain {
 
         @Override
         public void onSuccess(InsertResponse insertResponse) {
-            logger.info("Successfully landed!!!");
+            logger.info("Successfully inserted the drone model!!!");
             logger.info(insertResponse.getStatusMessage());
         }
 
         @Override
         public void onFailure(RemoteException e) {
-            logger.info("Cannot send landing message!!!", e);
+            logger.info("Cannot insert the drone model!!!", e);
         }
     }
 }
