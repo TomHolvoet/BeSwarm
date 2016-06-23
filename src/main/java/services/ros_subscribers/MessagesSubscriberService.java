@@ -1,27 +1,36 @@
 package services.ros_subscribers;
 
-import java.util.concurrent.atomic.AtomicReference;
-
+import com.google.common.base.Optional;
+import com.google.common.collect.EvictingQueue;
+import com.google.common.collect.Queues;
 import org.ros.internal.message.Message;
 import org.ros.message.MessageListener;
 import org.ros.node.topic.Subscriber;
 
-import com.google.common.base.Optional;
+import java.util.LinkedList;
+import java.util.Queue;
 
 /**
  * @author mhct
  */
 public class MessagesSubscriberService<T extends Message> {
     private final Subscriber<T> subscriber;
-    private final MessagesListener<T> messagesListener = MessagesListener.<T>create();
+    private final MessagesListener<T> messagesListener;
     private boolean startedListeningToMessages = false;
 
-    protected MessagesSubscriberService(Subscriber<T> subscriber) {
+    private static final int DEFAULT_MESSAGE_QUEUE__SIZE = 1;
+
+    protected MessagesSubscriberService(Subscriber<T> subscriber, int maxMessageQueueSize) {
         this.subscriber = subscriber;
+        this.messagesListener = MessagesListener.create(maxMessageQueueSize);
     }
 
     public static <Type extends Message> MessagesSubscriberService<Type> create(Subscriber<Type> subscriber) {
-        return new MessagesSubscriberService<>(subscriber);
+        return new MessagesSubscriberService<>(subscriber, DEFAULT_MESSAGE_QUEUE__SIZE);
+    }
+
+    public static <Type extends Message> MessagesSubscriberService<Type> create(Subscriber<Type> subscriber, int maxMessageQueueSize) {
+        return new MessagesSubscriberService<>(subscriber, maxMessageQueueSize);
     }
 
     public void startListeningToMessages() {
@@ -35,26 +44,36 @@ public class MessagesSubscriberService<T extends Message> {
         return messagesListener.getMostRecentMessage();
     }
 
+    public Queue<T> getMessageQueue() {
+        return messagesListener.getMessageQueue();
+    }
+
     private static final class MessagesListener<K extends Message> implements MessageListener<K> {
-        private final AtomicReference<K> message = new AtomicReference<>();
+        private final Queue<K> messageQueue;
 
-        private MessagesListener() {}
+        private MessagesListener(int maxQueueSize) {
+            messageQueue = Queues.synchronizedQueue(EvictingQueue.<K>create(maxQueueSize));
+        }
 
-        public static <Type extends Message> MessagesListener<Type> create() {
-            return new MessagesListener<>();
+        public static <Type extends Message> MessagesListener<Type> create(int maxQueueSize) {
+            return new MessagesListener<>(maxQueueSize);
         }
 
         @Override
         public void onNewMessage(K t) {
-            message.set(t);
+            messageQueue.add(t);
         }
 
         Optional<K> getMostRecentMessage() {
-            if (message.get() == null) {
+            if (messageQueue.isEmpty()) {
                 return Optional.<K>absent();
             } else {
-                return Optional.<K>of(message.get());
+                return Optional.<K>of(messageQueue.peek());
             }
+        }
+
+        Queue<K> getMessageQueue() {
+            return new LinkedList<>(messageQueue);
         }
     }
 }

@@ -1,9 +1,6 @@
 package services.ros_subscribers;
 
 import keyboard.Key;
-
-import org.ros.internal.message.Message;
-import org.ros.message.MessageListener;
 import org.ros.node.topic.Subscriber;
 
 import java.util.ArrayList;
@@ -14,9 +11,10 @@ import java.util.Collection;
  */
 public final class KeyboardSubscriber extends MessagesSubscriberService<Key> implements RosKeySubject {
     private final Collection<RosKeyObserver> rosKeyObservers = new ArrayList<>();
+    private static final int MESSAGE_QUEUE_SIZE = 1;
 
     private KeyboardSubscriber(Subscriber<Key> subscriber) {
-    	super(subscriber);
+    	super(subscriber, MESSAGE_QUEUE_SIZE);
     }
 
     public static KeyboardSubscriber createKeyboardSubscriber(Subscriber<Key> subscriber) {
