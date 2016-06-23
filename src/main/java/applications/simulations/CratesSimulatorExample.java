@@ -10,13 +10,13 @@ import commands.Takeoff;
 import control.Trajectory4d;
 import control.dto.Pose;
 import control.dto.Velocity;
-import control.localization.ModelStatePoseEstimator;
-import control.localization.ModelStateVelocityEstimator;
+import control.localization.CratesStatePoseEstimator;
+import control.localization.CratesStateVelocityEstimator;
 import control.localization.PoseEstimator;
 import control.localization.VelocityEstimator;
-import gazebo_msgs.ModelStates;
 import hal_quadrotor.LandRequest;
 import hal_quadrotor.LandResponse;
+import hal_quadrotor.State;
 import hal_quadrotor.TakeoffRequest;
 import hal_quadrotor.TakeoffResponse;
 import hal_quadrotor.VelocityRequest;
@@ -63,7 +63,7 @@ public final class CratesSimulatorExample extends AbstractNodeMain {
     private TakeOffService takeOffService;
     private LandService landService;
     private VelocityService velocityService;
-    private MessagesSubscriberService<ModelStates> cratesTruthStateSubscriber;
+    private MessagesSubscriberService<State> cratesTruthStateSubscriber;
     private KeyboardSubscriber keyboardSubscriber;
     private static final String DRONE_NAME = "uav";
 
@@ -120,10 +120,8 @@ public final class CratesSimulatorExample extends AbstractNodeMain {
     }
 
     private Command getMoveToPoseCommand() {
-        final String modelName = "quadrotor";
-        final PoseEstimator poseEstimator = ModelStatePoseEstimator.create(cratesTruthStateSubscriber, modelName);
-        final VelocityEstimator velocityEstimator = ModelStateVelocityEstimator.create(cratesTruthStateSubscriber,
-                modelName);
+        final PoseEstimator poseEstimator = CratesStatePoseEstimator.create(cratesTruthStateSubscriber);
+        final VelocityEstimator velocityEstimator = CratesStateVelocityEstimator.create(cratesTruthStateSubscriber);
         final Pose goalPose = Pose.builder().x(3).y(-3).z(3).yaw(1).build();
         final Velocity goalVelocity = Velocity.builder().linearX(0).linearY(0).linearZ(0).angularZ(0).build();
         return MoveToPose.builder()
@@ -138,9 +136,8 @@ public final class CratesSimulatorExample extends AbstractNodeMain {
 
     private Command getFollowTrajectoryCommand() {
         final String modelName = "quadrotor";
-        final PoseEstimator poseEstimator = ModelStatePoseEstimator.create(cratesTruthStateSubscriber, modelName);
-        final VelocityEstimator velocityEstimator = ModelStateVelocityEstimator.create(cratesTruthStateSubscriber,
-                modelName);
+        final PoseEstimator poseEstimator = CratesStatePoseEstimator.create(cratesTruthStateSubscriber);
+        final VelocityEstimator velocityEstimator = CratesStateVelocityEstimator.create(cratesTruthStateSubscriber);
         final Trajectory4d trajectory = ExampleTrajectory2.create();
         return FollowTrajectory.builder()
                 .poseEstimator(poseEstimator)
@@ -175,7 +172,7 @@ public final class CratesSimulatorExample extends AbstractNodeMain {
             logger.info("Cannot connect to some services.", e);
         }
         cratesTruthStateSubscriber = MessagesSubscriberService.create(
-                connectedNode.<ModelStates>newSubscriber(srvNamePrefix + "Truth", ModelStates._TYPE), 2);
+                connectedNode.<State>newSubscriber(srvNamePrefix + "Truth", State._TYPE), 2);
         keyboardSubscriber = KeyboardSubscriber.createKeyboardSubscriber(
                 connectedNode.<Key>newSubscriber("/keyboard/keydown", Key._TYPE));
     }
