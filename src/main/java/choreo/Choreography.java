@@ -19,7 +19,7 @@ import java.util.Queue;
  *
  * @author Kristof Coninx <kristof.coninx AT cs.kuleuven.be>
  */
-public class Choreography implements Trajectory4d {
+public final class Choreography implements Trajectory4d {
     private final Queue<ChoreoSegment> segments;
     private double timeWindowShift;
 
@@ -87,7 +87,8 @@ public class Choreography implements Trajectory4d {
         return segments.peek();
     }
 
-    private static class TimingHook extends Trajectory4DForwardingDecorator {
+    private static final class TimingHook
+            extends Trajectory4DForwardingDecorator {
         private final List<TimingListener> listeners;
 
         private TimingHook(Trajectory4d target) {
@@ -133,9 +134,15 @@ public class Choreography implements Trajectory4d {
         public abstract double getDuration();
     }
 
+    /**
+     * Builder class for building choreography instances.
+     */
     public static class Builder {
         private final List<ChoreoSegment> segments;
 
+        /**
+         * Creates a new Builder for choreographies.
+         */
         public Builder() {
             this.segments = Lists.newArrayList();
         }
@@ -170,7 +177,11 @@ public class Choreography implements Trajectory4d {
             return choreography;
         }
 
-        public class SegmentBuilder {
+        /**
+         * Builder for adding time duration information to supplied
+         * trajectories.
+         */
+        public final class SegmentBuilder {
 
             private final Trajectory4d target;
 
