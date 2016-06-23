@@ -13,7 +13,6 @@ import control.localization.VelocityEstimator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import services.VelocityService;
-import utils.math.Transformations;
 
 /**
  * Command for moving to a predefined pose. It is a facade which uses {@link Move}.
@@ -27,8 +26,10 @@ public final class FollowTrajectory implements Command {
     private final VelocityService velocityService;
     private final PoseEstimator poseEstimator;
     private final VelocityEstimator velocityEstimator;
-    private final PidParameters pidLinearParameters;
-    private final PidParameters pidAngularParameters;
+    private final PidParameters pidLinearXParameters;
+    private final PidParameters pidLinearYParameters;
+    private final PidParameters pidLinearZParameters;
+    private final PidParameters pidAngularZParameters;
     private final Trajectory4d trajectory4d;
     private final double durationInSeconds;
     private final double controlRateInSeconds;
@@ -39,23 +40,21 @@ public final class FollowTrajectory implements Command {
         velocityService = builder.velocityService;
         poseEstimator = builder.poseEstimator;
         velocityEstimator = builder.velocityEstimator;
-        pidLinearParameters = builder.pidLinearParameters;
-        pidAngularParameters = builder.pidAngularParameters;
+        pidLinearXParameters = builder.pidLinearXParameters;
+        pidLinearYParameters = builder.pidLinearYParameters;
+        pidLinearZParameters = builder.pidLinearZParameters;
+        pidAngularZParameters = builder.pidAngularZParameters;
         trajectory4d = builder.trajectory4d;
         durationInSeconds = builder.durationInSeconds;
         controlRateInSeconds = builder.controlRateInSeconds;
     }
 
-    /**
-     * {@link Builder#controlRateInSeconds(double)}, {@link Builder#pidLinearParameters(PidParameters)} and
-     * {@link Builder#pidLinearParameters(PidParameters)} are optional. All other parameters are mandatory.
-     *
-     * @return a builder
-     */
     public static Builder builder() {
         return new Builder().controlRateInSeconds(DEFAULT_CONTROL_RATE_IN_SECONDS)
-                .pidLinearParameters(DefaultPidParameters.DEFAULT_LINEAR_PARAMETERS.getParameters())
-                .pidAngularParameters(DefaultPidParameters.DEFAULT_ANGULAR_PARAMETERS.getParameters());
+                .pidLinearXParameters(DefaultPidParameters.LINEAR_X.getParameters())
+                .pidLinearYParameters(DefaultPidParameters.LINEAR_Y.getParameters())
+                .pidLinearZParameters(DefaultPidParameters.LINEAR_Z.getParameters())
+                .pidAngularZParameters(DefaultPidParameters.ANGULAR_Z.getParameters());
     }
 
     @Override
@@ -63,10 +62,10 @@ public final class FollowTrajectory implements Command {
         logger.debug("Execute follow trajectory command.");
 
         final PidController4d pidController4d = PidController4d.builder()
-                .linearXParameters(pidLinearParameters)
-                .linearYParameters(pidLinearParameters)
-                .linearZParameters(pidLinearParameters)
-                .angularZParameters(pidAngularParameters)
+                .linearXParameters(pidLinearXParameters)
+                .linearYParameters(pidLinearYParameters)
+                .linearZParameters(pidLinearZParameters)
+                .angularZParameters(pidAngularZParameters)
                 .trajectory4d(trajectory4d)
                 .build();
 
@@ -110,8 +109,10 @@ public final class FollowTrajectory implements Command {
         private VelocityService velocityService;
         private PoseEstimator poseEstimator;
         private VelocityEstimator velocityEstimator;
-        private PidParameters pidLinearParameters;
-        private PidParameters pidAngularParameters;
+        private PidParameters pidLinearXParameters;
+        private PidParameters pidLinearYParameters;
+        private PidParameters pidLinearZParameters;
+        private PidParameters pidAngularZParameters;
         private Trajectory4d trajectory4d;
         private double durationInSeconds;
         private double controlRateInSeconds;
@@ -125,7 +126,7 @@ public final class FollowTrajectory implements Command {
          * @param val the {@code velocityService} to set
          * @return a reference to this Builder
          */
-        public Builder velocityPublisher(VelocityService val) {
+        public Builder velocityService(VelocityService val) {
             velocityService = val;
             return this;
         }
@@ -155,26 +156,50 @@ public final class FollowTrajectory implements Command {
         }
 
         /**
-         * Sets the {@code pidLinearParameters} and returns a reference to this Builder so that the methods can be
+         * Sets the {@code pidLinearXParameters} and returns a reference to this Builder so that the methods can be
          * chained together.
          *
-         * @param val the {@code pidLinearParameters} to set
+         * @param val the {@code pidLinearXParameters} to set
          * @return a reference to this Builder
          */
-        public Builder pidLinearParameters(PidParameters val) {
-            pidLinearParameters = val;
+        public Builder pidLinearXParameters(PidParameters val) {
+            pidLinearXParameters = val;
             return this;
         }
 
         /**
-         * Sets the {@code pidAngularParameters} and returns a reference to this Builder so that the methods can be
+         * Sets the {@code pidLinearYParameters} and returns a reference to this Builder so that the methods can be
          * chained together.
          *
-         * @param val the {@code pidAngularParameters} to set
+         * @param val the {@code pidLinearYParameters} to set
          * @return a reference to this Builder
          */
-        public Builder pidAngularParameters(PidParameters val) {
-            pidAngularParameters = val;
+        public Builder pidLinearYParameters(PidParameters val) {
+            pidLinearYParameters = val;
+            return this;
+        }
+
+        /**
+         * Sets the {@code pidLinearZParameters} and returns a reference to this Builder so that the methods can be
+         * chained together.
+         *
+         * @param val the {@code pidLinearZParameters} to set
+         * @return a reference to this Builder
+         */
+        public Builder pidLinearZParameters(PidParameters val) {
+            pidLinearZParameters = val;
+            return this;
+        }
+
+        /**
+         * Sets the {@code pidAngularZParameters} and returns a reference to this Builder so that the methods can be
+         * chained together.
+         *
+         * @param val the {@code pidAngularZParameters} to set
+         * @return a reference to this Builder
+         */
+        public Builder pidAngularZParameters(PidParameters val) {
+            pidAngularZParameters = val;
             return this;
         }
 

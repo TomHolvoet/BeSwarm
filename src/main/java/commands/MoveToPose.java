@@ -2,11 +2,11 @@ package commands;
 
 import control.DefaultPidParameters;
 import control.PidParameters;
-import control.localization.PoseEstimator;
 import control.Trajectory4d;
-import control.localization.VelocityEstimator;
 import control.dto.Pose;
 import control.dto.Velocity;
+import control.localization.PoseEstimator;
+import control.localization.VelocityEstimator;
 import services.VelocityService;
 
 /**
@@ -21,11 +21,13 @@ public final class MoveToPose implements Command {
     private MoveToPose(Builder builder) {
         final Trajectory4d trajectory4d = SinglePointTrajectory4d.create(builder.goalPose, builder.goalVelocity);
         followTrajectory = FollowTrajectory.builder()
-                .velocityPublisher(builder.velocityService)
+                .velocityService(builder.velocityService)
                 .poseEstimator(builder.poseEstimator)
                 .velocityEstimator(builder.velocityEstimator)
-                .pidLinearParameters(builder.pidLinearParameters)
-                .pidAngularParameters(builder.pidAngularParameters)
+                .pidLinearXParameters(builder.pidLinearXParameters)
+                .pidLinearYParameters(builder.pidLinearYParameters)
+                .pidLinearZParameters(builder.pidLinearZParameters)
+                .pidAngularZParameters(builder.pidAngularZParameters)
                 .trajectory4d(trajectory4d)
                 .durationInSeconds(builder.durationInSeconds)
                 .controlRateInSeconds(builder.controlRateInSeconds)
@@ -34,21 +36,21 @@ public final class MoveToPose implements Command {
 
     @Override
     public void execute() {
-    	followTrajectory.execute();
+        followTrajectory.execute();
     }
 
     /**
-     * {@link Builder#controlRateInSeconds(double)}, {@link Builder#pidLinearParameters(PidParameters)} and
-     * {@link Builder#pidLinearParameters(PidParameters)} are optional. All other parameters are mandatory.
+     * All pid parameters are optional. The other are mandatory.
      *
      * @return a builder
      */
     public static Builder builder() {
         return new Builder().controlRateInSeconds(DEFAULT_CONTROL_RATE_IN_SECONDS)
-                .pidLinearParameters(DefaultPidParameters.DEFAULT_LINEAR_PARAMETERS.getParameters())
-                .pidAngularParameters(DefaultPidParameters.DEFAULT_ANGULAR_PARAMETERS.getParameters());
+                .pidLinearXParameters(DefaultPidParameters.LINEAR_X.getParameters())
+                .pidLinearYParameters(DefaultPidParameters.LINEAR_Y.getParameters())
+                .pidLinearZParameters(DefaultPidParameters.LINEAR_Z.getParameters())
+                .pidAngularZParameters(DefaultPidParameters.ANGULAR_Z.getParameters());
     }
-
 
     /**
      * {@code MoveToPose} builder static inner class.
@@ -57,8 +59,10 @@ public final class MoveToPose implements Command {
         private VelocityService velocityService;
         private PoseEstimator poseEstimator;
         private VelocityEstimator velocityEstimator;
-        private PidParameters pidLinearParameters;
-        private PidParameters pidAngularParameters;
+        private PidParameters pidLinearXParameters;
+        private PidParameters pidLinearYParameters;
+        private PidParameters pidLinearZParameters;
+        private PidParameters pidAngularZParameters;
         private Pose goalPose;
         private Velocity goalVelocity;
         private double durationInSeconds;
@@ -103,26 +107,50 @@ public final class MoveToPose implements Command {
         }
 
         /**
-         * Sets the {@code pidLinearParameters} and returns a reference to this Builder so that the methods can be
+         * Sets the {@code pidLinearXParameters} and returns a reference to this Builder so that the methods can be
          * chained together.
          *
-         * @param val the {@code pidLinearParameters} to set
+         * @param val the {@code pidLinearXParameters} to set
          * @return a reference to this Builder
          */
-        public Builder pidLinearParameters(PidParameters val) {
-            pidLinearParameters = val;
+        public Builder pidLinearXParameters(PidParameters val) {
+            pidLinearXParameters = val;
             return this;
         }
 
         /**
-         * Sets the {@code pidAngularParameters} and returns a reference to this Builder so that the methods can be
+         * Sets the {@code pidLinearYParameters} and returns a reference to this Builder so that the methods can be
          * chained together.
          *
-         * @param val the {@code pidAngularParameters} to set
+         * @param val the {@code pidLinearYParameters} to set
          * @return a reference to this Builder
          */
-        public Builder pidAngularParameters(PidParameters val) {
-            pidAngularParameters = val;
+        public Builder pidLinearYParameters(PidParameters val) {
+            pidLinearYParameters = val;
+            return this;
+        }
+
+        /**
+         * Sets the {@code pidLinearZParameters} and returns a reference to this Builder so that the methods can be
+         * chained together.
+         *
+         * @param val the {@code pidLinearZParameters} to set
+         * @return a reference to this Builder
+         */
+        public Builder pidLinearZParameters(PidParameters val) {
+            pidLinearZParameters = val;
+            return this;
+        }
+
+        /**
+         * Sets the {@code pidAngularZParameters} and returns a reference to this Builder so that the methods can be
+         * chained together.
+         *
+         * @param val the {@code pidAngularZParameters} to set
+         * @return a reference to this Builder
+         */
+        public Builder pidAngularZParameters(PidParameters val) {
+            pidAngularZParameters = val;
             return this;
         }
 

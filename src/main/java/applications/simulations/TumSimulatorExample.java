@@ -129,7 +129,7 @@ public final class TumSimulatorExample extends AbstractNodeMain {
         return FollowTrajectory.builder()
                 .poseEstimator(poseEstimator)
                 .velocityEstimator(velocityEstimator)
-                .velocityPublisher(velocityService)
+                .velocityService(velocityService)
                 .trajectory4d(trajectory)
                 .durationInSeconds(60)
                 .build();

@@ -67,7 +67,13 @@ public final class PidController4d {
                 trajectory4d.getTrajectoryLinearZ().getDesiredPosition(currentTimeInSeconds),
                 trajectory4d.getTrajectoryAngularZ().getDesiredPosition(currentTimeInSeconds));
 
-        return Velocity.builder().linearX(linearX).linearY(linearY).linearZ(linearZ).angularZ(angularZ).build();
+        return Velocity.builder()
+                .linearX(linearX)
+                .linearY(linearY)
+                .linearZ(linearZ)
+                .angularZ(angularZ)
+                .pose(currentPose)
+                .build();
     }
 
     /**
