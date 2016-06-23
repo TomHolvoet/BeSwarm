@@ -63,7 +63,7 @@ public final class ParrotVelocityService implements VelocityService {
         final Velocity velocityInLocalFrame = Transformations.globalVelocityToLocalVelocity(
                 velocity, velocity.pose().yaw());
 
-        final Velocity refinedVelocity = getRefinedVelocity(velocity);
+        final Velocity refinedVelocity = getRefinedVelocity(velocityInLocalFrame);
         
         publisher.publish(newTwistMessage(refinedVelocity));
     }
