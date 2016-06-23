@@ -9,6 +9,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import services.LandService;
 
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+
 /**
  * @author Hoang Tung Dinh
  */
@@ -27,25 +30,37 @@ public final class CratesLandService implements LandService {
     @Override
     public void sendLandingMessage() {
         final LandRequest landRequest = srvLand.newMessage();
-        srvLand.call(landRequest, LandServiceResponseListener.create());
+        final CountDownLatch countDownLatch = new CountDownLatch(1);
+        srvLand.call(landRequest, LandServiceResponseListener.create(countDownLatch));
+        try {
+            countDownLatch.await(5, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            logger.info("Waiting for landing response is interrupted.", e);
+        }
     }
 
     private static final class LandServiceResponseListener implements ServiceResponseListener<LandResponse> {
-        private LandServiceResponseListener() {}
+        private final CountDownLatch countDownLatch;
 
-        public static LandServiceResponseListener create() {
-            return new LandServiceResponseListener();
+        private LandServiceResponseListener(CountDownLatch countDownLatch) {
+            this.countDownLatch = countDownLatch;
+        }
+
+        public static LandServiceResponseListener create(CountDownLatch countDownLatch) {
+            return new LandServiceResponseListener(countDownLatch);
         }
 
         @Override
         public void onSuccess(LandResponse landResponse) {
             logger.info("Successfully landed!!!");
             logger.info(landResponse.getStatus());
+            countDownLatch.countDown();
         }
 
         @Override
         public void onFailure(RemoteException e) {
             logger.info("Cannot send landing message!!!", e);
+            countDownLatch.countDown();
         }
     }
 }
