@@ -14,7 +14,7 @@ import services.TakeOffService;
  */
 public final class CratesTakeOffService implements TakeOffService {
     private static final Logger logger = LoggerFactory.getLogger(CratesTakeOffService.class);
-    private static final double DEFAULT_TAKE_OFF_ALTITUDE = 1;
+    private static final double DEFAULT_TAKE_OFF_ALTITUDE = 5;
     private final ServiceClient<TakeoffRequest, TakeoffResponse> srvTakeOff;
 
     private CratesTakeOffService(ServiceClient<TakeoffRequest, TakeoffResponse> srvTakeOff) {

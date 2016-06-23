@@ -15,5 +15,5 @@ appender("FILE", FileAppender) {
     }
 }
 
-root(INFO, ["STDOUT", "FILE"])
+root(DEBUG, ["STDOUT", "FILE"])
 logger("control.PidController4d", TRACE, ["FILE"], false)
