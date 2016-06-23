@@ -1,6 +1,6 @@
 package applications.simulations;
 
-import control.SinglePointTrajectory1d;
+import commands.SinglePointTrajectory1d;
 import control.Trajectory1d;
 import control.Trajectory4d;
 

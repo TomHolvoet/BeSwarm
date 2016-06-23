@@ -1,5 +1,6 @@
 package control;
 
+import commands.SinglePointTrajectory1d;
 import org.junit.Test;
 
 import static com.google.common.truth.Truth.assertThat;

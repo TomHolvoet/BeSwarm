@@ -8,11 +8,11 @@ import commands.Hover;
 import commands.Land;
 import commands.MoveToPose;
 import commands.Takeoff;
-import control.ModelStatePoseEstimator;
-import control.ModelStateVelocityEstimator;
-import control.PoseEstimator;
+import control.localization.ModelStatePoseEstimator;
+import control.localization.ModelStateVelocityEstimator;
+import control.localization.PoseEstimator;
 import control.Trajectory4d;
-import control.VelocityEstimator;
+import control.localization.VelocityEstimator;
 import control.dto.Pose;
 import control.dto.Velocity;
 import gazebo_msgs.ModelStates;
@@ -42,12 +42,12 @@ import java.util.Collection;
 import java.util.concurrent.TimeUnit;
 
 /**
- * This class is for running the simulation with the AR drone.
+ * This class is for running the simulation with the AR drone in the Tum simulator.
  *
  * @author Hoang Tung Dinh
  * @see <a href="https://github.com/dougvk/tum_simulator">The simulator</a>
  */
-public final class ArDroneMoveWithPid extends AbstractNodeMain {
+public final class TumSimulatorExample extends AbstractNodeMain {
     private TakeOffService takeOffService;
     private LandService landService;
     private VelocityService velocityService;
@@ -56,7 +56,7 @@ public final class ArDroneMoveWithPid extends AbstractNodeMain {
 
     @Override
     public GraphName getDefaultNodeName() {
-        return GraphName.of("ArDroneMoveWithPid");
+        return GraphName.of("TumSimulatorExample");
     }
 
     @Override

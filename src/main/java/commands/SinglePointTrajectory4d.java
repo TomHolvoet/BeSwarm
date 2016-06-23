@@ -1,5 +1,7 @@
-package control;
+package commands;
 
+import control.Trajectory1d;
+import control.Trajectory4d;
 import control.dto.Pose;
 import control.dto.Velocity;
 

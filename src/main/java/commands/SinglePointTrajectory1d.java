@@ -1,7 +1,8 @@
-package control;
+package commands;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
+import control.Trajectory1d;
 
 /**
  * @author Hoang Tung Dinh

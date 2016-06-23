@@ -1,4 +1,4 @@
-package services.asctec;
+package services.crates;
 
 import hal_quadrotor.TakeoffRequest;
 import hal_quadrotor.TakeoffResponse;
@@ -12,17 +12,17 @@ import services.TakeOffService;
 /**
  * @author Hoang Tung Dinh
  */
-public final class AscTecTakeOffService implements TakeOffService {
-    private static final Logger logger = LoggerFactory.getLogger(AscTecTakeOffService.class);
+public final class CratesTakeOffService implements TakeOffService {
+    private static final Logger logger = LoggerFactory.getLogger(CratesTakeOffService.class);
     private static final double DEFAULT_TAKE_OFF_ALTITUDE = 1;
     private final ServiceClient<TakeoffRequest, TakeoffResponse> srvTakeOff;
 
-    private AscTecTakeOffService(ServiceClient<TakeoffRequest, TakeoffResponse> srvTakeOff) {
+    private CratesTakeOffService(ServiceClient<TakeoffRequest, TakeoffResponse> srvTakeOff) {
         this.srvTakeOff = srvTakeOff;
     }
 
-    public static AscTecTakeOffService create(ServiceClient<TakeoffRequest, TakeoffResponse> srvTakeOff) {
-        return new AscTecTakeOffService(srvTakeOff);
+    public static CratesTakeOffService create(ServiceClient<TakeoffRequest, TakeoffResponse> srvTakeOff) {
+        return new CratesTakeOffService(srvTakeOff);
     }
 
     @Override
