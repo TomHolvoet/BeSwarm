@@ -107,12 +107,14 @@ public final class CratesSimulatorExample extends AbstractNodeMain {
         final Command takeOff = Takeoff.create(takeOffService);
         commands.add(takeOff);
 
+        logger.debug("Start hovering.");
         final Command hoverFiveSecond = Hover.create(velocityService, 5);
         commands.add(hoverFiveSecond);
 
 //        final Command moveToPose = getMoveToPoseCommand();
 //        commands.add(moveToPose);
 
+        logger.debug("Start following trajectory.");
         final Command followTrajectory = getFollowTrajectoryCommand();
         commands.add(followTrajectory);
 
@@ -135,7 +137,6 @@ public final class CratesSimulatorExample extends AbstractNodeMain {
     }
 
     private Command getFollowTrajectoryCommand() {
-        final String modelName = "quadrotor";
         final PoseEstimator poseEstimator = CratesStatePoseEstimator.create(cratesTruthStateSubscriber);
         final VelocityEstimator velocityEstimator = CratesStateVelocityEstimator.create(cratesTruthStateSubscriber);
         final Trajectory4d trajectory = ExampleTrajectory2.create();

@@ -1,5 +1,8 @@
 package commands;
 
+import applications.simulations.CratesSimulatorExample;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import services.VelocityService;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -12,6 +15,7 @@ import static java.util.concurrent.TimeUnit.MILLISECONDS;
  * @author Hoang Tung Dinh
  */
 public final class Hover implements Command {
+    private static final Logger logger = LoggerFactory.getLogger(Hover.class);
 
     private final VelocityService velocityService;
     private final double durationInSeconds;
@@ -40,7 +44,7 @@ public final class Hover implements Command {
         try {
             MILLISECONDS.sleep(durationInMilliSeconds);
         } catch (InterruptedException e) {
-            // TODO write to log
+            logger.info("Hovering is interrupted", e);
         }
     }
 }
