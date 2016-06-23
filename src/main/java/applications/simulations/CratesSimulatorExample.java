@@ -74,9 +74,9 @@ public final class CratesSimulatorExample extends AbstractNodeMain {
 
     @Override
     public void onStart(final ConnectedNode connectedNode) {
-        initializeComm(connectedNode);
-        warmUp();
         addDroneModel(connectedNode);
+        warmUp();
+        initializeComm(connectedNode);
 
         final Task flyTask = createFlyTask();
         final Task emergencyTask = createEmergencyTask();
@@ -184,7 +184,7 @@ public final class CratesSimulatorExample extends AbstractNodeMain {
                     Insert._TYPE);
             final InsertRequest insertRequest = insertSrv.newMessage();
             insertRequest.setModelName(DRONE_NAME);
-            insertRequest.setModelType("hummingbird");
+            insertRequest.setModelType("model://hummingbird");
             insertSrv.call(insertRequest, InsertServiceResponseListener.create());
             warmUp();
         } catch (ServiceNotFoundException e) {
