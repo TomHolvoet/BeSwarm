@@ -44,7 +44,7 @@ public abstract class Velocity {
      * Converts a Twist velocity (given in NED coordinates) to a local velocity using XYZ frame
      * TODO fix frame of reference for local velocity
      *
-     * @return
+     * @return the velocity created from a Twist message
      */
     public static Velocity createLocalVelocityFrom(Twist twist) {
         final double twistX = twist.getLinear().getX();

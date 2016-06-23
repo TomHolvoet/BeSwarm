@@ -99,9 +99,7 @@ public final class FollowTrajectory implements Command {
             logger.debug("Got pose and velocity. Start computing the next velocity response.");
             final Velocity nextVelocityInGlobalFrame = pidController4d.compute(currentPose.get(),
                     currentVelocityInGlobalFrame.get());
-            final Velocity nextVelocityInLocalFrame = Transformations.globalVelocityToLocalVelocity(
-                    nextVelocityInGlobalFrame, currentPose.get().yaw());
-            velocityService.sendVelocityMessage(nextVelocityInLocalFrame);
+            velocityService.sendVelocityMessage(nextVelocityInGlobalFrame);
         }
     }
 
