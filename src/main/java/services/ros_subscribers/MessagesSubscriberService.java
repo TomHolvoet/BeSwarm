@@ -11,7 +11,7 @@ import com.google.common.base.Optional;
 /**
  * @author mhct
  */
-public class MessagesSubscriberService<T extends Message> implements SubscriberFacade {
+public class MessagesSubscriberService<T extends Message> {
     private final Subscriber<T> subscriber;
     private final MessagesListener<T> messagesListener = MessagesListener.<T>create();
     private boolean startedListeningToMessages = false;
@@ -24,7 +24,6 @@ public class MessagesSubscriberService<T extends Message> implements SubscriberF
         return new MessagesSubscriberService<>(subscriber);
     }
 
-    @Override
     public void startListeningToMessages() {
         if (!startedListeningToMessages) {
             subscriber.addMessageListener(messagesListener);
