@@ -7,6 +7,7 @@ import commands.Hover;
 import commands.Land;
 import commands.MoveToPose;
 import commands.Takeoff;
+import control.PidParameters;
 import control.Trajectory4d;
 import control.dto.Pose;
 import control.dto.Velocity;
@@ -142,6 +143,10 @@ public final class CratesSimulatorExample extends AbstractNodeMain {
                 .poseEstimator(poseEstimator)
                 .velocityEstimator(velocityEstimator)
                 .velocityService(velocityService)
+                .pidLinearXParameters(PidParameters.builder().kp(1).kd(0.5).ki(0).lagTimeInSeconds(0.2).build())
+                .pidLinearYParameters(PidParameters.builder().kp(1).kd(0.5).ki(0).lagTimeInSeconds(0.2).build())
+                .pidLinearZParameters(PidParameters.builder().kp(1).kd(0.5).ki(0).lagTimeInSeconds(0.2).build())
+                .pidAngularZParameters(PidParameters.builder().kp(1).kd(0.5).ki(0).lagTimeInSeconds(0.2).build())
                 .trajectory4d(trajectory)
                 .durationInSeconds(60)
                 .build();
