@@ -10,7 +10,7 @@ import control.Trajectory4d;
  * @author Kristof Coninx <kristof.coninx AT cs.kuleuven.be>
  */
 abstract class Trajectory4DForwardingDecorator implements Trajectory4d {
-    private Trajectory4d target;
+    private final Trajectory4d target;
 
     Trajectory4DForwardingDecorator(Trajectory4d target) {
         this.target = target;

@@ -52,38 +52,19 @@ public class PendulumTrajectory2D extends PeriodicTrajectory
 
     @Override
     public Trajectory1d getTrajectoryLinearOrdinate() {
-        return new Trajectory1d() {
-            @Override
-            public double getDesiredPosition(double timeInSeconds) {
-                setStartTime(timeInSeconds);
-
-                final double currentTime = timeInSeconds - getStartTime();
-                return getLinearDisplacement().getZ() + getRadius() * StrictMath
-                        .sin(TrajectoryUtils.pendulumAngleFromTime(currentTime,
-                                getFrequency())
-                                + getPhaseDisplacement());
-            }
-
-            @Override
-            public double getDesiredVelocity(double timeInSeconds) {
-                setStartTime(timeInSeconds);
-
-                final double currentTime = timeInSeconds - getStartTime();
-                return
-                        -PISQUARED * getFrequency() * getRadius() * StrictMath
-                                .sin(freq2pi * currentTime
-                                        + getPhaseDisplacement()) * StrictMath
-                                .cos(HALFPI * StrictMath
-                                        .cos(freq2pi * currentTime
-                                                + getPhaseDisplacement()));
-            }
-        };
+        return new PendulumOrdinate();
     }
 
+    /**
+     * @return Builder for 2D pendulum trajectories.
+     */
     public static Builder builder() {
         return new Builder();
     }
 
+    /**
+     * Builder class for 2D pendulum trajectories.
+     */
     public static class Builder {
         private double radius = 1;
         private double frequency = 5;
@@ -112,6 +93,33 @@ public class PendulumTrajectory2D extends PeriodicTrajectory
 
         public PendulumTrajectory2D build() {
             return new PendulumTrajectory2D(radius, frequency, origin, phase);
+        }
+    }
+
+    private class PendulumOrdinate implements Trajectory1d {
+        @Override
+        public double getDesiredPosition(double timeInSeconds) {
+            setStartTime(timeInSeconds);
+
+            final double currentTime = timeInSeconds - getStartTime();
+            return getLinearDisplacement().getZ() + getRadius() * StrictMath
+                    .sin(TrajectoryUtils.pendulumAngleFromTime(currentTime,
+                            getFrequency())
+                            + getPhaseDisplacement());
+        }
+
+        @Override
+        public double getDesiredVelocity(double timeInSeconds) {
+            setStartTime(timeInSeconds);
+
+            final double currentTime = timeInSeconds - getStartTime();
+            return
+                    -PISQUARED * getFrequency() * getRadius() * StrictMath
+                            .sin(freq2pi * currentTime
+                                    + getPhaseDisplacement()) * StrictMath
+                            .cos(HALFPI * StrictMath
+                                    .cos(freq2pi * currentTime
+                                            + getPhaseDisplacement()));
         }
     }
 }

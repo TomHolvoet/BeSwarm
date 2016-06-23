@@ -13,7 +13,7 @@ import control.Trajectory4d;
  *
  * @author Kristof Coninx <kristof.coninx AT cs.kuleuven.be>
  */
-public class CircleTrajectory4D extends PeriodicTrajectory
+public final class CircleTrajectory4D extends PeriodicTrajectory
         implements Trajectory4d {
     private final Point4D location;
     private final CircleTrajectory2D xycircle;
@@ -82,6 +82,9 @@ public class CircleTrajectory4D extends PeriodicTrajectory
         };
     }
 
+    /**
+     * Builder class for 4D circle trajectories.
+     */
     public static class Builder {
         private Point4D location = Point4D.origin();
         private double radius = 1;
