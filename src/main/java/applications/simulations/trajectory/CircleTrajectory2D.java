@@ -126,6 +126,9 @@ public class CircleTrajectory2D extends PeriodicTrajectory
             return this;
         }
 
+        /**
+         * @return an instance of a circle Trajectory in 2 dimensions.
+         */
         public CircleTrajectory2D build() {
             return new CircleTrajectory2D(radius, frequency, origin, phase,
                     clockwise);
