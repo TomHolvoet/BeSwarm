@@ -35,12 +35,12 @@ public final class CratesStateVelocityEstimator implements VelocityEstimator {
         } else {
             final State firstState = messageQueue.poll();
             final State secondState = messageQueue.poll();
-            final double timeDelta = firstState.getT() - secondState.getT();
+            final double timeDelta = secondState.getT() - firstState.getT();
             checkState(timeDelta > 0, String.format("Time delta must be positive, but it is %f", timeDelta));
-            final double velocityX = get1dVelocity(firstState.getX() - secondState.getX(), timeDelta);
-            final double velocityY = get1dVelocity(firstState.getY() - secondState.getY(), timeDelta);
-            final double velocityZ = get1dVelocity(firstState.getZ() - secondState.getZ(), timeDelta);
-            final double velocityYaw = get1dVelocity(firstState.getYaw() - secondState.getYaw(), timeDelta);
+            final double velocityX = get1dVelocity(secondState.getX() - firstState.getX(), timeDelta);
+            final double velocityY = get1dVelocity(secondState.getY() - firstState.getY(), timeDelta);
+            final double velocityZ = get1dVelocity(secondState.getZ() - firstState.getZ(), timeDelta);
+            final double velocityYaw = get1dVelocity(secondState.getYaw() - firstState.getYaw(), timeDelta);
             final Velocity currentVelocity = Velocity.builder()
                     .linearX(velocityX)
                     .linearY(velocityY)
