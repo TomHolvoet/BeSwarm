@@ -13,10 +13,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * @author Hoang Tung Dinh
  */
 public final class TaskExecutorService implements TaskExecutor {
-    @Nullable
-    private Task task;
-    @Nullable
-    private Future<?> future;
+    @Nullable private Task task;
+    @Nullable private Future<?> future;
 
     private TaskExecutorService() {}
 

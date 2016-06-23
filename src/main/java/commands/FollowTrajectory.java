@@ -11,6 +11,8 @@ import control.Trajectory4d;
 import control.localization.VelocityEstimator;
 import control.dto.Pose;
 import control.dto.Velocity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import services.VelocityService;
 
 /**
@@ -19,6 +21,8 @@ import services.VelocityService;
  * @author Hoang Tung Dinh
  */
 public final class FollowTrajectory implements Command {
+
+    private static final Logger logger = LoggerFactory.getLogger(FollowTrajectory.class);
 
     private final VelocityService velocityService;
     private final PoseEstimator poseEstimator;
@@ -65,6 +69,7 @@ public final class FollowTrajectory implements Command {
                 .build();
 
         final Runnable computeNextResponse = new ComputeNextResponse(pidController4d);
+        logger.debug("Start following a trajectory.");
         PeriodicTaskRunner.run(computeNextResponse, controlRateInSeconds, durationInSeconds);
     }
 

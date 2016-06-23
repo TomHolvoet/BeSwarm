@@ -1,5 +1,7 @@
 package commands;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import services.TakeOffService;
 
 /**
@@ -8,6 +10,8 @@ import services.TakeOffService;
  * @author Hoang Tung Dinh
  */
 public final class Takeoff implements Command {
+
+    private static final Logger logger = LoggerFactory.getLogger(Takeoff.class);
 
     private final TakeOffService takeOffService;
 
@@ -21,6 +25,7 @@ public final class Takeoff implements Command {
 
     @Override
     public void execute() {
+        logger.debug("Start taking off.");
         takeOffService.sendTakingOffMessage();
     }
 }

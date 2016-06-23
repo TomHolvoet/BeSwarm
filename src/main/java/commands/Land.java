@@ -1,5 +1,7 @@
 package commands;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import services.LandService;
 
 /**
@@ -9,6 +11,7 @@ import services.LandService;
  */
 public final class Land implements Command {
 
+    private static final Logger logger = LoggerFactory.getLogger(Land.class);
     private final LandService landService;
 
     private Land(LandService landService) {
@@ -25,6 +28,7 @@ public final class Land implements Command {
 
     @Override
     public void execute() {
+        logger.debug("Start landing.");
         landService.sendLandingMessage();
     }
 }

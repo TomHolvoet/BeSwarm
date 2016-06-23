@@ -107,14 +107,12 @@ public final class CratesSimulatorExample extends AbstractNodeMain {
         final Command takeOff = Takeoff.create(takeOffService);
         commands.add(takeOff);
 
-        logger.debug("Start hovering.");
         final Command hoverFiveSecond = Hover.create(velocityService, 5);
         commands.add(hoverFiveSecond);
 
 //        final Command moveToPose = getMoveToPoseCommand();
 //        commands.add(moveToPose);
 
-        logger.debug("Start following trajectory.");
         final Command followTrajectory = getFollowTrajectoryCommand();
         commands.add(followTrajectory);
 
