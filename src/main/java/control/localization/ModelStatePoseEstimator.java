@@ -1,13 +1,12 @@
 package control.localization;
 
 import com.google.common.base.Optional;
-
 import control.dto.Pose;
 import gazebo_msgs.ModelStates;
 import geometry_msgs.Point;
 import geometry_msgs.Quaternion;
 import services.ros_subscribers.MessagesSubscriberService;
-import utils.math.EulerAngle;
+import utils.math.Transformations;
 
 /**
  * @author Hoang Tung Dinh
@@ -22,7 +21,8 @@ public final class ModelStatePoseEstimator implements PoseEstimator {
         this.modelStateSubscriber.startListeningToMessages();
     }
 
-    public static ModelStatePoseEstimator create(MessagesSubscriberService<ModelStates> modelStateSubscriber, String modelName) {
+    public static ModelStatePoseEstimator create(MessagesSubscriberService<ModelStates> modelStateSubscriber,
+            String modelName) {
         return new ModelStatePoseEstimator(modelStateSubscriber, modelName);
     }
 
@@ -45,7 +45,7 @@ public final class ModelStatePoseEstimator implements PoseEstimator {
     private static Optional<Pose> getDronePoseInEulerRepresentation(geometry_msgs.Pose gazeboPose) {
         final Point currentPoint = gazeboPose.getPosition();
         final Quaternion currentOrientation = gazeboPose.getOrientation();
-        final double currentYaw = EulerAngle.createFromQuaternion(currentOrientation).angleZ();
+        final double currentYaw = Transformations.quaternionToEulerAngle(currentOrientation).angleZ();
         final Pose currentPose = Pose.builder()
                 .x(currentPoint.getX())
                 .y(currentPoint.getY())

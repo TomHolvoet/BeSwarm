@@ -3,10 +3,10 @@ package geom;
 import geometry_msgs.Quaternion;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
-import utils.math.EulerAngle;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import utils.math.EulerAngle;
+import utils.math.Transformations;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.mockito.Mockito.mock;
@@ -36,7 +36,7 @@ public class EulerAngleTest {
         when(mockQuaternion.getY()).thenReturn(quaternionY);
         when(mockQuaternion.getZ()).thenReturn(quaternionZ);
 
-        final EulerAngle eulerAngle = EulerAngle.createFromQuaternion(mockQuaternion);
+        final EulerAngle eulerAngle = Transformations.quaternionToEulerAngle(mockQuaternion);
 
         assertThat(eulerAngle.angleX()).isWithin(DELTA).of(eulerX);
         assertThat(eulerAngle.angleY()).isWithin(DELTA).of(eulerY);

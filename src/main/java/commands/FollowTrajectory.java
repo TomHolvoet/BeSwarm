@@ -13,6 +13,7 @@ import control.localization.VelocityEstimator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import services.VelocityService;
+import utils.math.Transformations;
 
 /**
  * Command for moving to a predefined pose. It is a facade which uses {@link Move}.
@@ -98,7 +99,7 @@ public final class FollowTrajectory implements Command {
             logger.debug("Got pose and velocity. Start computing the next velocity response.");
             final Velocity nextVelocityInGlobalFrame = pidController4d.compute(currentPose.get(),
                     currentVelocityInGlobalFrame.get());
-            final Velocity nextVelocityInLocalFrame = Velocity.createLocalVelocityFromGlobalVelocity(
+            final Velocity nextVelocityInLocalFrame = Transformations.globalVelocityToLocalVelocity(
                     nextVelocityInGlobalFrame, currentPose.get().yaw());
             velocityService.sendVelocityMessage(nextVelocityInLocalFrame);
         }
