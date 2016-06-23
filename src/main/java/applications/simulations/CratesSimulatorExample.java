@@ -22,12 +22,13 @@ import hal_quadrotor.TakeoffResponse;
 import hal_quadrotor.VelocityRequest;
 import hal_quadrotor.VelocityResponse;
 import keyboard.Key;
+import org.ros.exception.RemoteException;
 import org.ros.exception.ServiceNotFoundException;
-import org.ros.internal.message.Message;
 import org.ros.namespace.GraphName;
 import org.ros.node.AbstractNodeMain;
 import org.ros.node.ConnectedNode;
 import org.ros.node.service.ServiceClient;
+import org.ros.node.service.ServiceResponseListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import services.LandService;
@@ -187,9 +188,29 @@ public final class CratesSimulatorExample extends AbstractNodeMain {
             final InsertRequest insertRequest = insertSrv.newMessage();
             insertRequest.setModelName(DRONE_NAME);
             insertRequest.setModelType("hummingbird");
+            insertSrv.call(insertRequest, InsertServiceResponseListener.create());
             warmUp();
         } catch (ServiceNotFoundException e) {
             logger.info("Cannot connect to insert service.", e);
+        }
+    }
+
+    private static final class InsertServiceResponseListener implements ServiceResponseListener<InsertResponse> {
+        private InsertServiceResponseListener() {}
+
+        public static InsertServiceResponseListener create() {
+            return new InsertServiceResponseListener();
+        }
+
+        @Override
+        public void onSuccess(InsertResponse insertResponse) {
+            logger.info("Successfully landed!!!");
+            logger.info(insertResponse.getStatusMessage());
+        }
+
+        @Override
+        public void onFailure(RemoteException e) {
+            logger.info("Cannot send landing message!!!", e);
         }
     }
 }
