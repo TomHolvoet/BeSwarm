@@ -15,8 +15,8 @@ public abstract class PeriodicTrajectory {
     private final double radius;
     private final double frequency;
     private double startTime = -1;
-    private double phaseDisplacement;
-    private Point4D linearDisplacement;
+    private final double phaseDisplacement;
+    private final Point4D linearDisplacement;
 
     protected PeriodicTrajectory() {
         this(0, Point4D.origin(), 1, 1);

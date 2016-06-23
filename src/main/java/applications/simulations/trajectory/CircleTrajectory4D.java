@@ -13,19 +13,19 @@ import control.Trajectory4d;
  *
  * @author Kristof Coninx <kristof.coninx AT cs.kuleuven.be>
  */
-public class CircleTrajectory4D extends PeriodicTrajectory
+public final class CircleTrajectory4D extends PeriodicTrajectory
         implements Trajectory4d {
-    private Point4D location;
-    private CircleTrajectory2D xycircle;
-    private double scalefactor;
-    private Trajectory1d angularMotion;
+    private final Point4D location;
+    private final CircleTrajectory2D xycircle;
+    private final double scaleFactor;
+    private final Trajectory1d angularMotion;
 
     private CircleTrajectory4D(Point4D location, double phase, double radius,
             double frequency,
             double planeAngle) {
         super(phase, location, radius, frequency);
         this.location = location;
-        this.scalefactor = StrictMath.tan(planeAngle);
+        this.scaleFactor = StrictMath.tan(planeAngle);
         this.xycircle = CircleTrajectory2D.builder().setRadius(radius)
                 .setFrequency(frequency).setOrigin(location).setPhase(phase)
                 .build();
@@ -52,7 +52,7 @@ public class CircleTrajectory4D extends PeriodicTrajectory
         return new Trajectory1d() {
             @Override
             public double getDesiredPosition(double timeInSeconds) {
-                return scalefactor * xycircle
+                return scaleFactor * xycircle
                         .getTrajectoryLinearOrdinate()
                         .getDesiredPosition(timeInSeconds) - location.getY()
                         + location.getZ();
@@ -60,7 +60,7 @@ public class CircleTrajectory4D extends PeriodicTrajectory
 
             @Override
             public double getDesiredVelocity(double timeInSeconds) {
-                return scalefactor * xycircle
+                return scaleFactor * xycircle
                         .getTrajectoryLinearOrdinate()
                         .getDesiredVelocity(timeInSeconds);
             }
@@ -82,6 +82,9 @@ public class CircleTrajectory4D extends PeriodicTrajectory
         };
     }
 
+    /**
+     * Builder class for 4D circle trajectories.
+     */
     public static class Builder {
         private Point4D location = Point4D.origin();
         private double radius = 1;

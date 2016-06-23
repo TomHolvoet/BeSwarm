@@ -7,7 +7,7 @@ import control.Trajectory4d;
  * @author Kristof Coninx <kristof.coninx AT cs.kuleuven.be>
  */
 public class HoldPositionTrajectory4D implements Trajectory4d {
-    private Point4D targetpoint;
+    private final Point4D targetpoint;
 
     HoldPositionTrajectory4D(Point4D targetpoint) {
         this.targetpoint = targetpoint;
