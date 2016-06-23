@@ -32,6 +32,8 @@ public final class CratesVelocityService implements VelocityService {
         velocityRequest.setDy(velocity.linearY());
         velocityRequest.setDz(velocity.linearZ());
         velocityRequest.setYaw(velocity.angularZ());
+        logger.debug("Sending velocity: [x={} y={} z={} yaw={}]", velocity.linearX(), velocity.linearY(),
+                velocity.linearZ(), velocity.angularZ());
         srvVelocity.call(velocityRequest, VelocityServiceResponseListener.create());
     }
 
