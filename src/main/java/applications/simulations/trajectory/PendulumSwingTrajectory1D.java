@@ -34,11 +34,11 @@ public class PendulumSwingTrajectory1D extends PeriodicTrajectory
             double phase) {
         super((HALFPI * 3) + phase, origin, radius, frequency);
         this.freq2pi = frequency * TWOPI;
-        checkArgument(Math.abs(radius * frequency) < MAX_ABSOLUTE_SPEED / (
+        checkArgument(Math.abs(radius * frequency) < MAX_ABSOLUTE_VELOCITY / (
                         PISQUARED * MAXRANGE_VELOCITY_PERIODIC_PART),
-                "Absolute speed should not be larger than MAX_ABSOLUTE_SPEED,"
+                "Absolute speed should not be larger than MAX_ABSOLUTE_VELOCITY,"
                         + " which is: "
-                        + MAX_ABSOLUTE_SPEED);
+                        + MAX_ABSOLUTE_VELOCITY);
     }
 
     @Override

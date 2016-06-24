@@ -29,12 +29,12 @@ public abstract class Periodic1DTest {
     @Test
     public void getTrajectoryVelocityTestFrequencyAndRadiusRelation() {
         testSpeedBounds(highFrequencyCircle,
-                PeriodicTrajectory.MAX_ABSOLUTE_SPEED);
+                BasicTrajectory.MAX_ABSOLUTE_VELOCITY);
         testVelocityFrequencyRadiusRelation(highFreq,
                 highFrequencyCircle);
 
         testSpeedBounds(lowFrequencyCircle,
-                PeriodicTrajectory.MAX_ABSOLUTE_SPEED);
+                BasicTrajectory.MAX_ABSOLUTE_VELOCITY);
         testVelocityFrequencyRadiusRelation(lowFreq,
                 lowFrequencyCircle);
 
