@@ -43,18 +43,19 @@ public class GazeboModelStateEstimator implements StateEstimator {
         }
 
         final Pose pose = getDronePose(modelStates, index);
-        final InertialFrameVelocity inertialFrameVelocity = getInertialFrameVelocity(modelStates, index);
+        final InertialFrameVelocity inertialFrameVelocity = getInertialFrameVelocity(modelStates, index, pose);
 
         return Optional.of(DroneState.create(pose, inertialFrameVelocity));
     }
 
-    private static InertialFrameVelocity getInertialFrameVelocity(ModelStates modelStates, int index) {
+    private static InertialFrameVelocity getInertialFrameVelocity(ModelStates modelStates, int index, Pose pose) {
         final Twist gazeboTwist = modelStates.getTwist().get(index);
         return InertialFrameVelocity.builder()
                 .linearX(gazeboTwist.getLinear().getX())
                 .linearY(gazeboTwist.getLinear().getY())
                 .linearZ(gazeboTwist.getLinear().getZ())
                 .angularZ(gazeboTwist.getAngular().getZ())
+                .poseYaw(pose.yaw())
                 .build();
     }
 
