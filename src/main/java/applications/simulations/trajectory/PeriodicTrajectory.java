@@ -5,16 +5,14 @@ package applications.simulations.trajectory;
  *
  * @author Kristof Coninx <kristof.coninx AT cs.kuleuven.be>
  */
-public abstract class PeriodicTrajectory {
+public abstract class PeriodicTrajectory extends BasicTrajectory {
 
-    public static final double MAX_ABSOLUTE_SPEED = 1;
     protected static final double TWOPI = Math.PI * 2;
     protected static final double HALFPI = Math.PI / 2;
     protected static final double PISQUARED = Math.PI * Math.PI;
     protected static final double TWOPISQUARED = 2 * PISQUARED;
     private final double radius;
     private final double frequency;
-    private double startTime = -1;
     private final double phaseDisplacement;
     private final Point4D linearDisplacement;
 
@@ -48,16 +46,6 @@ public abstract class PeriodicTrajectory {
      */
     protected Point4D getLinearDisplacement() {
         return this.linearDisplacement;
-    }
-
-    protected void setStartTime(double timeInSeconds) {
-        if (startTime < 0) {
-            startTime = timeInSeconds;
-        }
-    }
-
-    protected double getStartTime() {
-        return this.startTime;
     }
 
     public double getRadius() {

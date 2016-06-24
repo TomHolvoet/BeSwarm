@@ -28,12 +28,12 @@ public abstract class Periodic2DTest {
     @Test
     public void getTrajectoryAbscissaVelocityTestFrequencyAndRadiusRelation() {
         testSpeedBounds(highFrequencyCircle.getTrajectoryLinearAbscissa(),
-                PeriodicTrajectory.MAX_ABSOLUTE_SPEED);
+                BasicTrajectory.MAX_ABSOLUTE_VELOCITY);
         testVelocityFrequencyRadiusRelation(highFreq,
                 highFrequencyCircle.getTrajectoryLinearAbscissa());
 
         testSpeedBounds(lowFrequencyCircle.getTrajectoryLinearAbscissa(),
-                PeriodicTrajectory.MAX_ABSOLUTE_SPEED);
+                BasicTrajectory.MAX_ABSOLUTE_VELOCITY);
         testVelocityFrequencyRadiusRelation(lowFreq,
                 lowFrequencyCircle.getTrajectoryLinearAbscissa());
 
@@ -52,9 +52,9 @@ public abstract class Periodic2DTest {
     @Test
     public void getTrajectoryOrdinateVelocityTestFrequencyAndRadiusRelation() {
         testSpeedBounds(highFrequencyCircle.getTrajectoryLinearOrdinate(),
-                PeriodicTrajectory.MAX_ABSOLUTE_SPEED);
+                BasicTrajectory.MAX_ABSOLUTE_VELOCITY);
 
         testSpeedBounds(lowFrequencyCircle.getTrajectoryLinearOrdinate(),
-                PeriodicTrajectory.MAX_ABSOLUTE_SPEED);
+                BasicTrajectory.MAX_ABSOLUTE_VELOCITY);
     }
 }

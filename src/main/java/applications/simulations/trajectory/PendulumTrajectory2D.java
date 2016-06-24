@@ -34,10 +34,10 @@ public class PendulumTrajectory2D extends PeriodicTrajectory
         this.linearMovement = new PendulumSwingTrajectory1D(origin, radius,
                 frequency, phase);
         checkArgument(
-                Math.abs(radius * frequency) < MAX_ABSOLUTE_SPEED / PISQUARED,
-                "Absolute speed should not be larger than MAX_ABSOLUTE_SPEED,"
+                Math.abs(radius * frequency) < MAX_ABSOLUTE_VELOCITY / PISQUARED,
+                "Absolute speed should not be larger than MAX_ABSOLUTE_VELOCITY,"
                         + " which is: "
-                        + MAX_ABSOLUTE_SPEED);
+                        + MAX_ABSOLUTE_VELOCITY);
     }
 
     @VisibleForTesting

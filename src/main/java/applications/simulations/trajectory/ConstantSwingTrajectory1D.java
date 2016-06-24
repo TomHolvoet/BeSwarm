@@ -37,7 +37,7 @@ public class ConstantSwingTrajectory1D extends PeriodicTrajectory
         this.freq2pi = frequency * TWOPI;
         this.rfreq2pi = frequency * radius * TWOPI;
         checkArgument(Math.abs(rfreq2pi) < MAX_ABSOLUTE_SPEED,
-                "Absolute speed should not be larger than MAX_ABSOLUTE_SPEED,"
+                "Absolute speed should not be larger than MAX_ABSOLUTE_VELOCITY,"
                         + " which is: "
                         + MAX_ABSOLUTE_SPEED);
     }
