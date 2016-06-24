@@ -2,7 +2,6 @@ package services.parrot;
 
 import control.dto.BodyFrameVelocity;
 import control.dto.InertialFrameVelocity;
-import control.dto.Pose;
 import geometry_msgs.Twist;
 import org.ros.node.ConnectedNode;
 import org.ros.node.topic.Publisher;
@@ -10,7 +9,6 @@ import services.VelocityService;
 import utils.math.Transformations;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * A facade which provides an interface to publish velocity (a.k.a. piloting) message. There are minimum and maximum
@@ -56,9 +54,7 @@ public final class ParrotVelocityService implements VelocityService {
      */
     @Override
     public void sendVelocityMessage(InertialFrameVelocity inertialFrameVelocity) {
-        final Pose pose = inertialFrameVelocity.pose();
-        checkNotNull(pose, "The pose must not be null.");
-        final BodyFrameVelocity bodyFrameVelocity = Transformations.globalVelocityToLocalVelocity(
+        final BodyFrameVelocity bodyFrameVelocity = Transformations.inertialFrameVelocityToBodyFrameVelocity(
                 inertialFrameVelocity);
 
         final BodyFrameVelocity refinedVelocity = getRefinedVelocity(bodyFrameVelocity);
@@ -82,6 +78,7 @@ public final class ParrotVelocityService implements VelocityService {
                 .linearY(getRefinedLinearY(velocity.linearY()))
                 .linearZ(getRefinedLinearZ(velocity.linearZ()))
                 .angularZ(getRefinedAngularZ(velocity.angularZ()))
+                .poseYaw(velocity.poseYaw())
                 .build();
     }
 

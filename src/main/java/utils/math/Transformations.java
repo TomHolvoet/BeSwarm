@@ -31,18 +31,15 @@ public final class Transformations {
         return EulerAngle.builder().angleX(eulerX).angleY(eulerY).angleZ(eulerZ).build();
     }
 
-    /**
-     * @param inertialFrameVelocity velocity in inertial frame
-     * @return velocity in body frame
-     */
-    public static BodyFrameVelocity globalVelocityToLocalVelocity(InertialFrameVelocity inertialFrameVelocity) {
+    public static BodyFrameVelocity inertialFrameVelocityToBodyFrameVelocity(
+            InertialFrameVelocity inertialFrameVelocity) {
         // TODO test me
         // same linearZ
         final double linearZ = inertialFrameVelocity.linearZ();
         // same angularZ
         final double angularZ = inertialFrameVelocity.angularZ();
 
-        final double theta = -inertialFrameVelocity.pose().yaw();
+        final double theta = -inertialFrameVelocity.poseYaw();
         final double sin = StrictMath.sin(theta);
         final double cos = StrictMath.cos(theta);
 
@@ -54,6 +51,30 @@ public final class Transformations {
                 .linearY(linearY)
                 .linearZ(linearZ)
                 .angularZ(angularZ)
+                .build();
+    }
+
+    public static InertialFrameVelocity bodyFrameVelocityToInertialFrameVelocity(BodyFrameVelocity bodyFrameVelocity) {
+        //TODO test me
+        // same linearZ
+        final double linearZ = bodyFrameVelocity.linearZ();
+        // same angularZ
+        final double angularZ = bodyFrameVelocity.angularZ();
+
+        final double theta = bodyFrameVelocity.poseYaw();
+
+        final double sin = StrictMath.sin(theta);
+        final double cos = StrictMath.cos(theta);
+
+        final double linearX = bodyFrameVelocity.linearX() * cos - bodyFrameVelocity.linearY() * sin;
+        final double linearY = bodyFrameVelocity.linearX() * sin + bodyFrameVelocity.linearY() * cos;
+
+        return InertialFrameVelocity.builder()
+                .linearX(linearX)
+                .linearY(linearY)
+                .linearZ(linearZ)
+                .angularZ(angularZ)
+                .poseYaw(theta)
                 .build();
     }
 }

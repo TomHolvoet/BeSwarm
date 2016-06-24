@@ -11,10 +11,8 @@ import control.PidParameters;
 import control.Trajectory4d;
 import control.dto.InertialFrameVelocity;
 import control.dto.Pose;
-import control.localization.CratesStatePoseEstimator;
-import control.localization.CratesStateVelocityEstimator;
-import control.localization.PoseEstimator;
-import control.localization.VelocityEstimator;
+import control.localization.CratesSimStateEstimator;
+import control.localization.StateEstimator;
 import hal_quadrotor.LandRequest;
 import hal_quadrotor.LandResponse;
 import hal_quadrotor.State;
@@ -121,13 +119,16 @@ public final class CratesSimulatorExample extends AbstractNodeMain {
     }
 
     private Command getMoveToPoseCommand() {
-        final PoseEstimator poseEstimator = CratesStatePoseEstimator.create(cratesTruthStateSubscriber);
-        final VelocityEstimator velocityEstimator = CratesStateVelocityEstimator.create(cratesTruthStateSubscriber);
+        final StateEstimator stateEstimator = CratesSimStateEstimator.create(cratesTruthStateSubscriber);
         final Pose goalPose = Pose.builder().x(3).y(-3).z(3).yaw(1).build();
-        final InertialFrameVelocity goalVelocity = InertialFrameVelocity.builder().linearX(0).linearY(0).linearZ(0).angularZ(0).build();
+        final InertialFrameVelocity goalVelocity = InertialFrameVelocity.builder()
+                .linearX(0)
+                .linearY(0)
+                .linearZ(0)
+                .angularZ(0)
+                .build();
         return MoveToPose.builder()
-                .poseEstimator(poseEstimator)
-                .velocityEstimator(velocityEstimator)
+                .stateEstimator(stateEstimator)
                 .velocityPublisher(velocityService)
                 .goalPose(goalPose)
                 .goalVelocity(goalVelocity)
@@ -136,12 +137,10 @@ public final class CratesSimulatorExample extends AbstractNodeMain {
     }
 
     private Command getFollowTrajectoryCommand() {
-        final PoseEstimator poseEstimator = CratesStatePoseEstimator.create(cratesTruthStateSubscriber);
-        final VelocityEstimator velocityEstimator = CratesStateVelocityEstimator.create(cratesTruthStateSubscriber);
+        final StateEstimator stateEstimator = CratesSimStateEstimator.create(cratesTruthStateSubscriber);
         final Trajectory4d trajectory = ExampleTrajectory2.create();
         return FollowTrajectory.builder()
-                .poseEstimator(poseEstimator)
-                .velocityEstimator(velocityEstimator)
+                .stateEstimator(stateEstimator)
                 .velocityService(velocityService)
                 .pidLinearXParameters(PidParameters.builder().kp(0.8).kd(0.4).ki(0).lagTimeInSeconds(0.4).build())
                 .pidLinearYParameters(PidParameters.builder().kp(0.8).kd(0.4).ki(0).lagTimeInSeconds(0.4).build())

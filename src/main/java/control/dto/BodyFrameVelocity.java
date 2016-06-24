@@ -17,6 +17,11 @@ public abstract class BodyFrameVelocity {
 
     public abstract double angularZ();
 
+    /**
+     * @return the yaw of the drone associated with the velocity in the body frame
+     */
+    public abstract double poseYaw();
+
     public static Builder builder() {
         return new AutoValue_BodyFrameVelocity.Builder();
     }
@@ -30,6 +35,8 @@ public abstract class BodyFrameVelocity {
         public abstract Builder linearZ(double value);
 
         public abstract Builder angularZ(double value);
+
+        public abstract Builder poseYaw(double value);
 
         public abstract BodyFrameVelocity build();
     }

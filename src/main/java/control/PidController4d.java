@@ -72,7 +72,7 @@ public final class PidController4d {
                 .linearY(linearY)
                 .linearZ(linearZ)
                 .angularZ(angularZ)
-                .pose(currentPose)
+                .poseYaw(currentPose.yaw())
                 .build();
     }
 

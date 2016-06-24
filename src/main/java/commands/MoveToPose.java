@@ -5,8 +5,7 @@ import control.PidParameters;
 import control.Trajectory4d;
 import control.dto.InertialFrameVelocity;
 import control.dto.Pose;
-import control.localization.PoseEstimator;
-import control.localization.VelocityEstimator;
+import control.localization.StateEstimator;
 import services.VelocityService;
 
 /**
@@ -22,8 +21,7 @@ public final class MoveToPose implements Command {
         final Trajectory4d trajectory4d = SinglePointTrajectory4d.create(builder.goalPose, builder.goalInertialFrameVelocity);
         followTrajectory = FollowTrajectory.builder()
                 .velocityService(builder.velocityService)
-                .poseEstimator(builder.poseEstimator)
-                .velocityEstimator(builder.velocityEstimator)
+                .stateEstimator(builder.stateEstimator)
                 .pidLinearXParameters(builder.pidLinearXParameters)
                 .pidLinearYParameters(builder.pidLinearYParameters)
                 .pidLinearZParameters(builder.pidLinearZParameters)
@@ -57,8 +55,7 @@ public final class MoveToPose implements Command {
      */
     public static final class Builder {
         private VelocityService velocityService;
-        private PoseEstimator poseEstimator;
-        private VelocityEstimator velocityEstimator;
+        private StateEstimator stateEstimator;
         private PidParameters pidLinearXParameters;
         private PidParameters pidLinearYParameters;
         private PidParameters pidLinearZParameters;
@@ -83,26 +80,14 @@ public final class MoveToPose implements Command {
         }
 
         /**
-         * Sets the {@code poseEstimator} and returns a reference to this Builder so that the methods can be chained
+         * Sets the {@code stateEstimator} and returns a reference to this Builder so that the methods can be chained
          * together.
          *
-         * @param val the {@code poseEstimator} to set
+         * @param val the {@code stateEstimator} to set
          * @return a reference to this Builder
          */
-        public Builder poseEstimator(PoseEstimator val) {
-            poseEstimator = val;
-            return this;
-        }
-
-        /**
-         * Sets the {@code velocityEstimator} and returns a reference to this Builder so that the methods can be
-         * chained together.
-         *
-         * @param val the {@code velocityEstimator} to set
-         * @return a reference to this Builder
-         */
-        public Builder velocityEstimator(VelocityEstimator val) {
-            velocityEstimator = val;
+        public Builder stateEstimator(StateEstimator val) {
+            stateEstimator = val;
             return this;
         }
 

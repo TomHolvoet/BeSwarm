@@ -10,10 +10,8 @@ import commands.Takeoff;
 import control.Trajectory4d;
 import control.dto.InertialFrameVelocity;
 import control.dto.Pose;
-import control.localization.ModelStatePoseEstimator;
-import control.localization.ModelStateVelocityEstimator;
-import control.localization.PoseEstimator;
-import control.localization.VelocityEstimator;
+import control.localization.GazeboModelStateEstimator;
+import control.localization.StateEstimator;
 import gazebo_msgs.ModelStates;
 import geometry_msgs.Twist;
 import keyboard.Key;
@@ -105,8 +103,7 @@ public final class TumSimulatorExample extends AbstractNodeMain {
 
     private Command getMoveToPoseCommand() {
         final String modelName = "quadrotor";
-        final PoseEstimator poseEstimator = ModelStatePoseEstimator.create(modelStateSubscriber, modelName);
-        final VelocityEstimator velocityEstimator = ModelStateVelocityEstimator.create(modelStateSubscriber, modelName);
+        final StateEstimator stateEstimator = GazeboModelStateEstimator.create(modelStateSubscriber, modelName);
         final Pose goalPose = Pose.builder().x(3).y(-3).z(3).yaw(1).build();
         final InertialFrameVelocity goalVelocity = InertialFrameVelocity.builder()
                 .linearX(0)
@@ -115,8 +112,7 @@ public final class TumSimulatorExample extends AbstractNodeMain {
                 .angularZ(0)
                 .build();
         return MoveToPose.builder()
-                .poseEstimator(poseEstimator)
-                .velocityEstimator(velocityEstimator)
+                .stateEstimator(stateEstimator)
                 .velocityPublisher(velocityService)
                 .goalPose(goalPose)
                 .goalVelocity(goalVelocity)
@@ -126,12 +122,10 @@ public final class TumSimulatorExample extends AbstractNodeMain {
 
     private Command getFollowTrajectoryCommand() {
         final String modelName = "quadrotor";
-        final PoseEstimator poseEstimator = ModelStatePoseEstimator.create(modelStateSubscriber, modelName);
-        final VelocityEstimator velocityEstimator = ModelStateVelocityEstimator.create(modelStateSubscriber, modelName);
+        final StateEstimator stateEstimator = GazeboModelStateEstimator.create(modelStateSubscriber, modelName);
         final Trajectory4d trajectory = ExampleTrajectory2.create();
         return FollowTrajectory.builder()
-                .poseEstimator(poseEstimator)
-                .velocityEstimator(velocityEstimator)
+                .stateEstimator(stateEstimator)
                 .velocityService(velocityService)
                 .trajectory4d(trajectory)
                 .durationInSeconds(60)

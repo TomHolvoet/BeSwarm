@@ -18,12 +18,9 @@ public abstract class InertialFrameVelocity {
     public abstract double angularZ();
 
     /**
-     * The pose of the drone associated with this velocity. This value is optional and is only for transforming
-     * velocity from global to local frame and vice versa.
-     *
-     * @return the pose of the drone associated with this velocity
+     * @return the yaw of the drone associated with the velocity in the inertial frame
      */
-    public abstract Pose pose();
+    public abstract double poseYaw();
 
     public static Builder builder() {
         return new AutoValue_InertialFrameVelocity.Builder();
@@ -39,7 +36,7 @@ public abstract class InertialFrameVelocity {
 
         public abstract Builder angularZ(double value);
 
-        public abstract Builder pose(Pose pose);
+        public abstract Builder poseYaw(double value);
 
         public abstract InertialFrameVelocity build();
     }

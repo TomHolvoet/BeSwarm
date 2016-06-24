@@ -6,10 +6,9 @@ import control.DefaultPidParameters;
 import control.PidController4d;
 import control.PidParameters;
 import control.Trajectory4d;
+import control.dto.DroneState;
 import control.dto.InertialFrameVelocity;
-import control.dto.Pose;
-import control.localization.PoseEstimator;
-import control.localization.VelocityEstimator;
+import control.localization.StateEstimator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import services.VelocityService;
@@ -24,8 +23,7 @@ public final class FollowTrajectory implements Command {
     private static final Logger logger = LoggerFactory.getLogger(FollowTrajectory.class);
 
     private final VelocityService velocityService;
-    private final PoseEstimator poseEstimator;
-    private final VelocityEstimator velocityEstimator;
+    private final StateEstimator stateEstimator;
     private final PidParameters pidLinearXParameters;
     private final PidParameters pidLinearYParameters;
     private final PidParameters pidLinearZParameters;
@@ -38,8 +36,7 @@ public final class FollowTrajectory implements Command {
 
     private FollowTrajectory(Builder builder) {
         velocityService = builder.velocityService;
-        poseEstimator = builder.poseEstimator;
-        velocityEstimator = builder.velocityEstimator;
+        stateEstimator = builder.stateEstimator;
         pidLinearXParameters = builder.pidLinearXParameters;
         pidLinearYParameters = builder.pidLinearYParameters;
         pidLinearZParameters = builder.pidLinearZParameters;
@@ -82,22 +79,16 @@ public final class FollowTrajectory implements Command {
 
         @Override
         public void run() {
-            logger.debug("Start a control loop.");
-            final Optional<Pose> currentPose = poseEstimator.getCurrentPose();
-            if (!currentPose.isPresent()) {
-                logger.debug("Cannot get pose.");
-                return;
-            }
-
-            final Optional<InertialFrameVelocity> currentVelocityInGlobalFrame = velocityEstimator.getCurrentVelocity();
-            if (!currentVelocityInGlobalFrame.isPresent()) {
-                logger.debug("Cannot get velocity.");
+            logger.trace("Start a control loop.");
+            final Optional<DroneState> currentState = stateEstimator.getCurrentState();
+            if (!currentState.isPresent()) {
+                logger.trace("Cannot get state.");
                 return;
             }
 
             logger.debug("Got pose and velocity. Start computing the next velocity response.");
-            final InertialFrameVelocity nextVelocity = pidController4d.compute(currentPose.get(),
-                    currentVelocityInGlobalFrame.get());
+            final InertialFrameVelocity nextVelocity = pidController4d.compute(currentState.get().pose(),
+                    currentState.get().inertialFrameVelocity());
             velocityService.sendVelocityMessage(nextVelocity);
         }
     }
@@ -107,8 +98,7 @@ public final class FollowTrajectory implements Command {
      */
     public static final class Builder {
         private VelocityService velocityService;
-        private PoseEstimator poseEstimator;
-        private VelocityEstimator velocityEstimator;
+        private StateEstimator stateEstimator;
         private PidParameters pidLinearXParameters;
         private PidParameters pidLinearYParameters;
         private PidParameters pidLinearZParameters;
@@ -132,26 +122,14 @@ public final class FollowTrajectory implements Command {
         }
 
         /**
-         * Sets the {@code poseEstimator} and returns a reference to this Builder so that the methods can be chained
+         * Sets the {@code stateEstimator} and returns a reference to this Builder so that the methods can be chained
          * together.
          *
-         * @param val the {@code poseEstimator} to set
+         * @param val the {@code stateEstimator} to set
          * @return a reference to this Builder
          */
-        public Builder poseEstimator(PoseEstimator val) {
-            poseEstimator = val;
-            return this;
-        }
-
-        /**
-         * Sets the {@code velocityEstimator} and returns a reference to this Builder so that the methods can be
-         * chained together.
-         *
-         * @param val the {@code velocityEstimator} to set
-         * @return a reference to this Builder
-         */
-        public Builder velocityEstimator(VelocityEstimator val) {
-            velocityEstimator = val;
+        public Builder stateEstimator(StateEstimator val) {
+            stateEstimator = val;
             return this;
         }
 
