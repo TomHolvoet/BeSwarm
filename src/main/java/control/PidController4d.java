@@ -1,7 +1,7 @@
 package control;
 
+import control.dto.InertialFrameVelocity;
 import control.dto.Pose;
-import control.dto.Velocity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import utils.math.EulerAngle;
@@ -46,7 +46,7 @@ public final class PidController4d {
      * @param currentVelocity the current velocity of the drone
      * @return the next velocity (response) of the drone
      */
-    public Velocity compute(Pose currentPose, Velocity currentVelocity) {
+    public InertialFrameVelocity compute(Pose currentPose, InertialFrameVelocity currentVelocity) {
         final double currentTimeInSeconds = System.nanoTime() / NANO_SECOND_TO_SECOND;
 
         final double linearX = pidLinearX.compute(currentPose.x(), currentVelocity.linearX(), currentTimeInSeconds);
@@ -67,7 +67,7 @@ public final class PidController4d {
                 trajectory4d.getTrajectoryLinearZ().getDesiredPosition(currentTimeInSeconds),
                 trajectory4d.getTrajectoryAngularZ().getDesiredPosition(currentTimeInSeconds));
 
-        return Velocity.builder()
+        return InertialFrameVelocity.builder()
                 .linearX(linearX)
                 .linearY(linearY)
                 .linearZ(linearZ)

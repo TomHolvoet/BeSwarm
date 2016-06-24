@@ -36,22 +36,22 @@ public final class ModelStatePoseEstimator implements PoseEstimator {
                 return Optional.absent();
             }
             final geometry_msgs.Pose gazeboPose = modelStates.getPose().get(index);
-            return getDronePoseInEulerRepresentation(gazeboPose);
+            final Pose currentPose = getDronePoseInEulerRepresentation(gazeboPose);
+            return Optional.of(currentPose);
         } else {
             return Optional.absent();
         }
     }
 
-    private static Optional<Pose> getDronePoseInEulerRepresentation(geometry_msgs.Pose gazeboPose) {
+    private static Pose getDronePoseInEulerRepresentation(geometry_msgs.Pose gazeboPose) {
         final Point currentPoint = gazeboPose.getPosition();
         final Quaternion currentOrientation = gazeboPose.getOrientation();
         final double currentYaw = Transformations.quaternionToEulerAngle(currentOrientation).angleZ();
-        final Pose currentPose = Pose.builder()
+        return Pose.builder()
                 .x(currentPoint.getX())
                 .y(currentPoint.getY())
                 .z(currentPoint.getZ())
                 .yaw(currentYaw)
                 .build();
-        return Optional.of(currentPose);
     }
 }

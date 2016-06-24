@@ -1,12 +1,11 @@
 package control.localization;
 
 import com.google.common.base.Optional;
-
-import control.dto.Velocity;
+import control.dto.InertialFrameVelocity;
 
 /**
  * @author Hoang Tung Dinh
  */
 public interface VelocityEstimator {
-    Optional<Velocity> getCurrentVelocity();
+    Optional<InertialFrameVelocity> getCurrentVelocity();
 }

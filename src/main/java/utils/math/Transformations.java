@@ -1,6 +1,7 @@
 package utils.math;
 
-import control.dto.Velocity;
+import control.dto.BodyFrameVelocity;
+import control.dto.InertialFrameVelocity;
 import geometry_msgs.Quaternion;
 
 /**
@@ -31,25 +32,28 @@ public final class Transformations {
     }
 
     /**
-     * Compute velocity in local coordinate frame from velocity in global coordinate frame.
-     *
-     * @param globalVelocity velocity in global coordinate frame
-     * @return velocity in local coordinate frame
+     * @param inertialFrameVelocity velocity in inertial frame
+     * @return velocity in body frame
      */
-    public static Velocity globalVelocityToLocalVelocity(Velocity globalVelocity, double currentYaw) {
+    public static BodyFrameVelocity globalVelocityToLocalVelocity(InertialFrameVelocity inertialFrameVelocity) {
         // TODO test me
         // same linearZ
-        final double linearZ = globalVelocity.linearZ();
+        final double linearZ = inertialFrameVelocity.linearZ();
         // same angularZ
-        final double angularZ = globalVelocity.angularZ();
+        final double angularZ = inertialFrameVelocity.angularZ();
 
-        final double theta = -currentYaw;
+        final double theta = -inertialFrameVelocity.pose().yaw();
         final double sin = StrictMath.sin(theta);
         final double cos = StrictMath.cos(theta);
 
-        final double linearX = globalVelocity.linearX() * cos - globalVelocity.linearY() * sin;
-        final double linearY = globalVelocity.linearX() * sin + globalVelocity.linearY() * cos;
+        final double linearX = inertialFrameVelocity.linearX() * cos - inertialFrameVelocity.linearY() * sin;
+        final double linearY = inertialFrameVelocity.linearX() * sin + inertialFrameVelocity.linearY() * cos;
 
-        return Velocity.builder().linearX(linearX).linearY(linearY).linearZ(linearZ).angularZ(angularZ).build();
+        return BodyFrameVelocity.builder()
+                .linearX(linearX)
+                .linearY(linearY)
+                .linearZ(linearZ)
+                .angularZ(angularZ)
+                .build();
     }
 }

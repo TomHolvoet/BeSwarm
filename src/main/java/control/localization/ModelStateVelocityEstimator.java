@@ -2,7 +2,7 @@ package control.localization;
 
 import com.google.common.base.Optional;
 
-import control.dto.Velocity;
+import control.dto.InertialFrameVelocity;
 import gazebo_msgs.ModelStates;
 import geometry_msgs.Twist;
 import services.ros_subscribers.MessagesSubscriberService;
@@ -25,7 +25,7 @@ public final class ModelStateVelocityEstimator implements VelocityEstimator {
     }
 
     @Override
-    public Optional<Velocity> getCurrentVelocity() {
+    public Optional<InertialFrameVelocity> getCurrentVelocity() {
         final Optional<ModelStates> modelStateOptional = modelStateSubscriber.getMostRecentMessage();
         if (modelStateOptional.isPresent()) {
             final ModelStates modelStates = modelStateOptional.get();
@@ -34,7 +34,7 @@ public final class ModelStateVelocityEstimator implements VelocityEstimator {
                 return Optional.absent();
             }
             final Twist gazeboTwist = modelStates.getTwist().get(index);
-            final Velocity currentVelocity = Velocity.builder()
+            final InertialFrameVelocity currentVelocity = InertialFrameVelocity.builder()
                     .linearX(gazeboTwist.getLinear().getX())
                     .linearY(gazeboTwist.getLinear().getY())
                     .linearZ(gazeboTwist.getLinear().getZ())

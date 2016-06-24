@@ -1,6 +1,6 @@
 package services.crates;
 
-import control.dto.Velocity;
+import control.dto.InertialFrameVelocity;
 import hal_quadrotor.VelocityRequest;
 import hal_quadrotor.VelocityResponse;
 import org.ros.exception.RemoteException;
@@ -29,20 +29,20 @@ public final class CratesVelocityService implements VelocityService {
     }
 
     @Override
-    public void sendVelocityMessage(Velocity velocity) {
+    public void sendVelocityMessage(InertialFrameVelocity inertialFrameVelocity) {
         final VelocityRequest velocityRequest = srvVelocity.newMessage();
-        velocityRequest.setDx(velocity.linearX());
-        velocityRequest.setDy(velocity.linearY());
-        velocityRequest.setDz(velocity.linearZ());
-        velocityRequest.setYaw(velocity.angularZ());
-        logger.debug("Sending velocity: [x={} y={} z={} yaw={}]", velocity.linearX(), velocity.linearY(),
-                velocity.linearZ(), velocity.angularZ());
+        velocityRequest.setDx(inertialFrameVelocity.linearX());
+        velocityRequest.setDy(inertialFrameVelocity.linearY());
+        velocityRequest.setDz(inertialFrameVelocity.linearZ());
+        velocityRequest.setYaw(inertialFrameVelocity.angularZ());
+        logger.debug("Sending inertialFrameVelocity: [x={} y={} z={} yaw={}]", inertialFrameVelocity.linearX(),
+                inertialFrameVelocity.linearY(), inertialFrameVelocity.linearZ(), inertialFrameVelocity.angularZ());
         final CountDownLatch countDownLatch = new CountDownLatch(1);
         srvVelocity.call(velocityRequest, VelocityServiceResponseListener.create(countDownLatch));
         try {
             countDownLatch.await(5, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
-            logger.info("Waiting for velocity response is interrupted.", e);
+            logger.info("Waiting for inertialFrameVelocity response is interrupted.", e);
         }
     }
 

@@ -3,11 +3,11 @@ package commands;
 import static com.google.common.base.Preconditions.checkArgument;
 
 import commands.schedulers.PeriodicTaskRunner;
-import control.dto.Velocity;
+import control.dto.InertialFrameVelocity;
 import services.VelocityService;
 
 /**
- * Command for moving. This command sends velocity message to the drone at a fixed rate in a fixed duration. (e.g.,
+ * Command for moving. This command sends inertialFrameVelocity message to the drone at a fixed rate in a fixed duration. (e.g.,
  * send message after each 50 milliseconds (20Hz) in 10 seconds).
  *
  * @author Hoang Tung Dinh
@@ -15,7 +15,7 @@ import services.VelocityService;
 public final class Move implements Command {
 
     private final VelocityService velocityService;
-    private final Velocity velocity;
+    private final InertialFrameVelocity inertialFrameVelocity;
     private final double durationInSeconds;
     private final double sendingRateInSeconds;
 
@@ -23,7 +23,7 @@ public final class Move implements Command {
 
     private Move(Builder builder) {
         velocityService = builder.velocityService;
-        velocity = builder.velocity;
+        inertialFrameVelocity = builder.inertialFrameVelocity;
         durationInSeconds = builder.durationInSeconds;
         sendingRateInSeconds = builder.sendingRateInSeconds;
         checkArgument(durationInSeconds > 0,
@@ -54,7 +54,7 @@ public final class Move implements Command {
 
         @Override
         public void run() {
-            velocityService.sendVelocityMessage(velocity);
+            velocityService.sendVelocityMessage(inertialFrameVelocity);
         }
     }
 
@@ -63,7 +63,7 @@ public final class Move implements Command {
      */
     public static final class Builder {
         private VelocityService velocityService;
-        private Velocity velocity;
+        private InertialFrameVelocity inertialFrameVelocity;
         private double durationInSeconds;
         private double sendingRateInSeconds;
 
@@ -82,14 +82,14 @@ public final class Move implements Command {
         }
 
         /**
-         * Sets the {@code velocity} and returns a reference to this Builder so that the methods can be chained
+         * Sets the {@code inertialFrameVelocity} and returns a reference to this Builder so that the methods can be chained
          * together.
          *
-         * @param val the {@code velocity} to set
+         * @param val the {@code inertialFrameVelocity} to set
          * @return a reference to this Builder
          */
-        public Builder velocity(Velocity val) {
-            velocity = val;
+        public Builder velocity(InertialFrameVelocity val) {
+            inertialFrameVelocity = val;
             return this;
         }
 

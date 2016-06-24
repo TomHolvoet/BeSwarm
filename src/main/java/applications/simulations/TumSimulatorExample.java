@@ -1,35 +1,33 @@
 package applications.simulations;
 
 import com.google.common.collect.ImmutableList;
-
 import commands.Command;
 import commands.FollowTrajectory;
 import commands.Hover;
 import commands.Land;
 import commands.MoveToPose;
 import commands.Takeoff;
+import control.Trajectory4d;
+import control.dto.InertialFrameVelocity;
+import control.dto.Pose;
 import control.localization.ModelStatePoseEstimator;
 import control.localization.ModelStateVelocityEstimator;
 import control.localization.PoseEstimator;
-import control.Trajectory4d;
 import control.localization.VelocityEstimator;
-import control.dto.Pose;
-import control.dto.Velocity;
 import gazebo_msgs.ModelStates;
 import geometry_msgs.Twist;
 import keyboard.Key;
-import services.LandService;
-import services.parrot.ParrotLandService;
-import services.parrot.ParrotTakeOffService;
-import services.parrot.ParrotVelocityService;
-import services.TakeOffService;
-import services.VelocityService;
-import services.ros_subscribers.KeyboardSubscriber;
-import services.ros_subscribers.MessagesSubscriberService;
-
 import org.ros.namespace.GraphName;
 import org.ros.node.AbstractNodeMain;
 import org.ros.node.ConnectedNode;
+import services.LandService;
+import services.TakeOffService;
+import services.VelocityService;
+import services.parrot.ParrotLandService;
+import services.parrot.ParrotTakeOffService;
+import services.parrot.ParrotVelocityService;
+import services.ros_subscribers.KeyboardSubscriber;
+import services.ros_subscribers.MessagesSubscriberService;
 import std_msgs.Empty;
 import taskexecutor.Task;
 import taskexecutor.TaskExecutor;
@@ -110,7 +108,12 @@ public final class TumSimulatorExample extends AbstractNodeMain {
         final PoseEstimator poseEstimator = ModelStatePoseEstimator.create(modelStateSubscriber, modelName);
         final VelocityEstimator velocityEstimator = ModelStateVelocityEstimator.create(modelStateSubscriber, modelName);
         final Pose goalPose = Pose.builder().x(3).y(-3).z(3).yaw(1).build();
-        final Velocity goalVelocity = Velocity.builder().linearX(0).linearY(0).linearZ(0).angularZ(0).build();
+        final InertialFrameVelocity goalVelocity = InertialFrameVelocity.builder()
+                .linearX(0)
+                .linearY(0)
+                .linearZ(0)
+                .angularZ(0)
+                .build();
         return MoveToPose.builder()
                 .poseEstimator(poseEstimator)
                 .velocityEstimator(velocityEstimator)
@@ -144,7 +147,8 @@ public final class TumSimulatorExample extends AbstractNodeMain {
     }
 
     private void initializeComm(ConnectedNode connectedNode) {
-        takeOffService = ParrotTakeOffService.create(connectedNode.<Empty>newPublisher("/ardrone/takeoff", Empty._TYPE));
+        takeOffService = ParrotTakeOffService.create(
+                connectedNode.<Empty>newPublisher("/ardrone/takeoff", Empty._TYPE));
         velocityService = ParrotVelocityService.builder()
                 .publisher(connectedNode.<Twist>newPublisher("/cmd_vel", Twist._TYPE))
                 .minLinearX(-1)
@@ -160,6 +164,6 @@ public final class TumSimulatorExample extends AbstractNodeMain {
                 connectedNode.<ModelStates>newSubscriber("/gazebo/model_states", ModelStates._TYPE));
         landService = ParrotLandService.create(connectedNode.<Empty>newPublisher("/ardrone/land", Empty._TYPE));
         keyboardSubscriber = KeyboardSubscriber.createKeyboardSubscriber(
-        		connectedNode.<Key>newSubscriber("/keyboard/keydown", Key._TYPE));
+                connectedNode.<Key>newSubscriber("/keyboard/keydown", Key._TYPE));
     }
 }

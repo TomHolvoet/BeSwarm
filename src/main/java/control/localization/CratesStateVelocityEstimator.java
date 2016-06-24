@@ -1,7 +1,7 @@
 package control.localization;
 
 import com.google.common.base.Optional;
-import control.dto.Velocity;
+import control.dto.InertialFrameVelocity;
 import hal_quadrotor.State;
 import services.ros_subscribers.MessagesSubscriberService;
 
@@ -28,7 +28,7 @@ public final class CratesStateVelocityEstimator implements VelocityEstimator {
     }
 
     @Override
-    public Optional<Velocity> getCurrentVelocity() {
+    public Optional<InertialFrameVelocity> getCurrentVelocity() {
         final Queue<State> messageQueue = stateSubscriber.getMessageQueue();
         if (messageQueue.size() < 2) {
             return Optional.absent();
@@ -41,7 +41,7 @@ public final class CratesStateVelocityEstimator implements VelocityEstimator {
             final double velocityY = get1dVelocity(secondState.getY() - firstState.getY(), timeDelta);
             final double velocityZ = get1dVelocity(secondState.getZ() - firstState.getZ(), timeDelta);
             final double velocityYaw = get1dVelocity(secondState.getYaw() - firstState.getYaw(), timeDelta);
-            final Velocity currentVelocity = Velocity.builder()
+            final InertialFrameVelocity currentVelocity = InertialFrameVelocity.builder()
                     .linearX(velocityX)
                     .linearY(velocityY)
                     .linearZ(velocityZ)

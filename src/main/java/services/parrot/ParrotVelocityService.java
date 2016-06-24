@@ -1,12 +1,11 @@
 package services.parrot;
 
+import control.dto.BodyFrameVelocity;
+import control.dto.InertialFrameVelocity;
 import control.dto.Pose;
 import geometry_msgs.Twist;
-
 import org.ros.node.ConnectedNode;
 import org.ros.node.topic.Publisher;
-
-import control.dto.Velocity;
 import services.VelocityService;
 import utils.math.Transformations;
 
@@ -50,36 +49,35 @@ public final class ParrotVelocityService implements VelocityService {
         checkArgument(minLinearZ <= maxLinearZ);
     }
 
-
     /**
      * Publish a velocity message.
      *
-     * @param velocity the velocity to be published
+     * @param inertialFrameVelocity the inertialFrameVelocity to be published
      */
     @Override
-    public void sendVelocityMessage(Velocity velocity) {
-        final Pose pose = velocity.pose();
+    public void sendVelocityMessage(InertialFrameVelocity inertialFrameVelocity) {
+        final Pose pose = inertialFrameVelocity.pose();
         checkNotNull(pose, "The pose must not be null.");
-        final Velocity velocityInLocalFrame = Transformations.globalVelocityToLocalVelocity(
-                velocity, velocity.pose().yaw());
+        final BodyFrameVelocity bodyFrameVelocity = Transformations.globalVelocityToLocalVelocity(
+                inertialFrameVelocity);
 
-        final Velocity refinedVelocity = getRefinedVelocity(velocityInLocalFrame);
-        
+        final BodyFrameVelocity refinedVelocity = getRefinedVelocity(bodyFrameVelocity);
+
         publisher.publish(newTwistMessage(refinedVelocity));
     }
 
-    private Twist newTwistMessage(Velocity refinedVelocity) {
-    	final Twist twist = publisher.newMessage();
+    private Twist newTwistMessage(BodyFrameVelocity refinedVelocity) {
+        final Twist twist = publisher.newMessage();
         twist.getLinear().setX(refinedVelocity.linearX());
         twist.getLinear().setY(refinedVelocity.linearY());
         twist.getLinear().setZ(refinedVelocity.linearZ());
         twist.getAngular().setZ(refinedVelocity.angularZ());
-        
+
         return twist;
     }
-    
-    private Velocity getRefinedVelocity(Velocity velocity) {
-        return Velocity.builder()
+
+    private BodyFrameVelocity getRefinedVelocity(BodyFrameVelocity velocity) {
+        return BodyFrameVelocity.builder()
                 .linearX(getRefinedLinearX(velocity.linearX()))
                 .linearY(getRefinedLinearY(velocity.linearY()))
                 .linearZ(getRefinedLinearZ(velocity.linearZ()))
@@ -131,9 +129,10 @@ public final class ParrotVelocityService implements VelocityService {
                 .maxLinearZ(Double.MAX_VALUE)
                 .maxAngularZ(Double.MAX_VALUE);
     }
-    
+
     public static Builder createServiceBuilder(String droneName, ConnectedNode connectedNode) {
-    	return ParrotVelocityService.builder().publisher(connectedNode.<Twist>newPublisher(droneName + "cmd/vel", Twist._TYPE));
+        return ParrotVelocityService.builder()
+                .publisher(connectedNode.<Twist>newPublisher(droneName + "cmd/vel", Twist._TYPE));
     }
 
     /**

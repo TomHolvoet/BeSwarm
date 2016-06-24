@@ -6,8 +6,8 @@ import control.DefaultPidParameters;
 import control.PidController4d;
 import control.PidParameters;
 import control.Trajectory4d;
+import control.dto.InertialFrameVelocity;
 import control.dto.Pose;
-import control.dto.Velocity;
 import control.localization.PoseEstimator;
 import control.localization.VelocityEstimator;
 import org.slf4j.Logger;
@@ -89,16 +89,16 @@ public final class FollowTrajectory implements Command {
                 return;
             }
 
-            final Optional<Velocity> currentVelocityInGlobalFrame = velocityEstimator.getCurrentVelocity();
+            final Optional<InertialFrameVelocity> currentVelocityInGlobalFrame = velocityEstimator.getCurrentVelocity();
             if (!currentVelocityInGlobalFrame.isPresent()) {
                 logger.debug("Cannot get velocity.");
                 return;
             }
 
             logger.debug("Got pose and velocity. Start computing the next velocity response.");
-            final Velocity nextVelocityInGlobalFrame = pidController4d.compute(currentPose.get(),
+            final InertialFrameVelocity nextVelocity = pidController4d.compute(currentPose.get(),
                     currentVelocityInGlobalFrame.get());
-            velocityService.sendVelocityMessage(nextVelocityInGlobalFrame);
+            velocityService.sendVelocityMessage(nextVelocity);
         }
     }
 

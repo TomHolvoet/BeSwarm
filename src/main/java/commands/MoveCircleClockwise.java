@@ -2,7 +2,7 @@ package commands;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
-import control.dto.Velocity;
+import control.dto.InertialFrameVelocity;
 import services.VelocityService;
 
 /**
@@ -38,7 +38,7 @@ public final class MoveCircleClockwise implements Command {
 
     @Override
     public void execute() {
-        final Velocity velocity = Velocity.builder().linearX(forwardSpeed).angularZ(-rotationSpeed).build();
+        final InertialFrameVelocity velocity = InertialFrameVelocity.builder().linearX(forwardSpeed).angularZ(-rotationSpeed).build();
         final Command move = Move.builder()
                 .velocityPublisher(velocityService)
                 .velocity(velocity)

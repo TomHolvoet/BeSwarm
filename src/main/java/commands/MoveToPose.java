@@ -3,8 +3,8 @@ package commands;
 import control.DefaultPidParameters;
 import control.PidParameters;
 import control.Trajectory4d;
+import control.dto.InertialFrameVelocity;
 import control.dto.Pose;
-import control.dto.Velocity;
 import control.localization.PoseEstimator;
 import control.localization.VelocityEstimator;
 import services.VelocityService;
@@ -19,7 +19,7 @@ public final class MoveToPose implements Command {
     private static final double DEFAULT_CONTROL_RATE_IN_SECONDS = 0.05;
 
     private MoveToPose(Builder builder) {
-        final Trajectory4d trajectory4d = SinglePointTrajectory4d.create(builder.goalPose, builder.goalVelocity);
+        final Trajectory4d trajectory4d = SinglePointTrajectory4d.create(builder.goalPose, builder.goalInertialFrameVelocity);
         followTrajectory = FollowTrajectory.builder()
                 .velocityService(builder.velocityService)
                 .poseEstimator(builder.poseEstimator)
@@ -64,7 +64,7 @@ public final class MoveToPose implements Command {
         private PidParameters pidLinearZParameters;
         private PidParameters pidAngularZParameters;
         private Pose goalPose;
-        private Velocity goalVelocity;
+        private InertialFrameVelocity goalInertialFrameVelocity;
         private double durationInSeconds;
         private double controlRateInSeconds;
 
@@ -167,14 +167,14 @@ public final class MoveToPose implements Command {
         }
 
         /**
-         * Sets the {@code goalVelocity} and returns a reference to this Builder so that the methods can be chained
+         * Sets the {@code goalInertialFrameVelocity} and returns a reference to this Builder so that the methods can be chained
          * together.
          *
-         * @param val the {@code goalVelocity} to set
+         * @param val the {@code goalInertialFrameVelocity} to set
          * @return a reference to this Builder
          */
-        public Builder goalVelocity(Velocity val) {
-            goalVelocity = val;
+        public Builder goalVelocity(InertialFrameVelocity val) {
+            goalInertialFrameVelocity = val;
             return this;
         }
 

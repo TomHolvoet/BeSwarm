@@ -1,10 +1,10 @@
 package services;
 
-import control.dto.Velocity;
+import control.dto.InertialFrameVelocity;
 
 /**
  * @author Hoang Tung Dinh
  */
 public interface VelocityService {
-    void sendVelocityMessage(Velocity velocity);
+    void sendVelocityMessage(InertialFrameVelocity inertialFrameVelocity);
 }
