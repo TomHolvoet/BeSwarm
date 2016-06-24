@@ -5,6 +5,8 @@ import control.dto.InertialFrameVelocity;
 import geometry_msgs.Twist;
 import org.ros.node.ConnectedNode;
 import org.ros.node.topic.Publisher;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import services.VelocityService;
 import utils.math.Transformations;
 
@@ -18,6 +20,8 @@ import static com.google.common.base.Preconditions.checkArgument;
  * @author Hoang Tung Dinh
  */
 public final class ParrotVelocityService implements VelocityService {
+    private static final Logger logger = LoggerFactory.getLogger(ParrotVelocityService.class);
+
     private final Publisher<Twist> publisher;
 
     private final double minLinearX;
@@ -54,6 +58,7 @@ public final class ParrotVelocityService implements VelocityService {
      */
     @Override
     public void sendVelocityMessage(InertialFrameVelocity inertialFrameVelocity) {
+        logger.trace("Sending velocity message: {}", inertialFrameVelocity);
         final BodyFrameVelocity bodyFrameVelocity = Transformations.inertialFrameVelocityToBodyFrameVelocity(
                 inertialFrameVelocity);
 

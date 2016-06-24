@@ -26,7 +26,8 @@ public final class StopMoving implements Command {
     @Override
     public void execute() {
         logger.debug("Execute stop moving command.");
-        final InertialFrameVelocity velocity = InertialFrameVelocity.builder().linearX(0).linearY(0).linearZ(0).angularZ(0).build();
+        final InertialFrameVelocity velocity = InertialFrameVelocity.builder().linearX(0).linearY(0).linearZ(0)
+                .angularZ(0).poseYaw(0).build();
         velocityService.sendVelocityMessage(velocity);
     }
 }
