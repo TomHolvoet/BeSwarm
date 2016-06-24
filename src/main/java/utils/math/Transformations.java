@@ -51,6 +51,7 @@ public final class Transformations {
                 .linearY(linearY)
                 .linearZ(linearZ)
                 .angularZ(angularZ)
+                .poseYaw(inertialFrameVelocity.poseYaw())
                 .build();
     }
 
