@@ -1,4 +1,4 @@
-package applications.simulations.trajectory;
+package applications.trajectory;
 
 import control.Trajectory1d;
 
