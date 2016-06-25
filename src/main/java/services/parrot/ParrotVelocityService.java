@@ -2,6 +2,7 @@ package services.parrot;
 
 import control.dto.BodyFrameVelocity;
 import control.dto.InertialFrameVelocity;
+import control.dto.Velocity;
 import geometry_msgs.Twist;
 import org.ros.node.ConnectedNode;
 import org.ros.node.topic.Publisher;
@@ -78,7 +79,7 @@ public final class ParrotVelocityService implements VelocityService {
     }
 
     private BodyFrameVelocity getRefinedVelocity(BodyFrameVelocity velocity) {
-        return BodyFrameVelocity.builder()
+        return Velocity.builder()
                 .linearX(getRefinedLinearX(velocity.linearX()))
                 .linearY(getRefinedLinearY(velocity.linearY()))
                 .linearZ(getRefinedLinearZ(velocity.linearZ()))

@@ -10,6 +10,7 @@ import commands.Takeoff;
 import control.Trajectory4d;
 import control.dto.InertialFrameVelocity;
 import control.dto.Pose;
+import control.dto.Velocity;
 import control.localization.GazeboModelStateEstimator;
 import control.localization.StateEstimator;
 import gazebo_msgs.ModelStates;
@@ -105,7 +106,7 @@ public final class TumSimulatorExample extends AbstractNodeMain {
         final String modelName = "quadrotor";
         final StateEstimator stateEstimator = GazeboModelStateEstimator.create(modelStateSubscriber, modelName);
         final Pose goalPose = Pose.builder().x(3).y(-3).z(3).yaw(1).build();
-        final InertialFrameVelocity goalVelocity = InertialFrameVelocity.builder()
+        final InertialFrameVelocity goalVelocity = Velocity.builder()
                 .linearX(0)
                 .linearY(0)
                 .linearZ(0)

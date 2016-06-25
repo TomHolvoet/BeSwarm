@@ -5,6 +5,7 @@ import control.dto.BodyFrameVelocity;
 import control.dto.DroneState;
 import control.dto.InertialFrameVelocity;
 import control.dto.Pose;
+import control.dto.Velocity;
 import hal_quadrotor.State;
 import services.ros_subscribers.MessagesSubscriberService;
 import utils.math.Transformations;
@@ -35,7 +36,7 @@ public final class CratesSimStateEstimator implements StateEstimator {
 
         final Pose pose = Pose.builder().x(state.getX()).y(state.getY()).z(state.getZ()).yaw(state.getYaw()).build();
 
-        final BodyFrameVelocity bodyFrameVelocity = BodyFrameVelocity.builder()
+        final BodyFrameVelocity bodyFrameVelocity = Velocity.builder()
                 .linearX(state.getU())
                 .linearY(state.getV())
                 .linearZ(state.getW())

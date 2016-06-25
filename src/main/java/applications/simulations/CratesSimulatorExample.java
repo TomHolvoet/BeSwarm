@@ -11,6 +11,7 @@ import control.PidParameters;
 import control.Trajectory4d;
 import control.dto.InertialFrameVelocity;
 import control.dto.Pose;
+import control.dto.Velocity;
 import control.localization.CratesSimStateEstimator;
 import control.localization.StateEstimator;
 import hal_quadrotor.LandRequest;
@@ -121,7 +122,7 @@ public final class CratesSimulatorExample extends AbstractNodeMain {
     private Command getMoveToPoseCommand() {
         final StateEstimator stateEstimator = CratesSimStateEstimator.create(cratesTruthStateSubscriber);
         final Pose goalPose = Pose.builder().x(3).y(-3).z(3).yaw(1).build();
-        final InertialFrameVelocity goalVelocity = InertialFrameVelocity.builder()
+        final InertialFrameVelocity goalVelocity = Velocity.builder()
                 .linearX(0)
                 .linearY(0)
                 .linearZ(0)

@@ -2,6 +2,7 @@ package control;
 
 import control.dto.InertialFrameVelocity;
 import control.dto.Pose;
+import control.dto.Velocity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import utils.math.EulerAngle;
@@ -67,7 +68,7 @@ public final class PidController4d {
                 trajectory4d.getTrajectoryLinearZ().getDesiredPosition(currentTimeInSeconds),
                 trajectory4d.getTrajectoryAngularZ().getDesiredPosition(currentTimeInSeconds));
 
-        return InertialFrameVelocity.builder()
+        return Velocity.builder()
                 .linearX(linearX)
                 .linearY(linearY)
                 .linearZ(linearZ)

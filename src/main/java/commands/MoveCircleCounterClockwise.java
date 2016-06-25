@@ -1,6 +1,7 @@
 package commands;
 
 import control.dto.InertialFrameVelocity;
+import control.dto.Velocity;
 import services.VelocityService;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -38,7 +39,7 @@ public final class MoveCircleCounterClockwise implements Command {
 
     @Override
     public void execute() {
-        final InertialFrameVelocity velocity = InertialFrameVelocity.builder().linearX(forwardSpeed).angularZ(rotationSpeed).build();
+        final InertialFrameVelocity velocity = Velocity.builder().linearX(forwardSpeed).angularZ(rotationSpeed).build();
         final Command move = Move.builder()
                 .velocityPublisher(velocityService)
                 .velocity(velocity)

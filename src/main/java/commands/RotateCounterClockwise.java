@@ -3,6 +3,7 @@ package commands;
 import static com.google.common.base.Preconditions.checkArgument;
 
 import control.dto.InertialFrameVelocity;
+import control.dto.Velocity;
 import services.VelocityService;
 
 /**
@@ -32,7 +33,8 @@ public final class RotateCounterClockwise implements Command {
 
     @Override
     public void execute() {
-        final InertialFrameVelocity velocity = InertialFrameVelocity.builder().angularZ(speed).build();
+        // FIXME
+        final InertialFrameVelocity velocity = Velocity.builder().angularZ(speed).build();
         final Command move = Move.builder()
                 .velocityPublisher(velocityService)
                 .velocity(velocity)

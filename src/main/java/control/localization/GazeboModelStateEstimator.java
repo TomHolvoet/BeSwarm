@@ -4,6 +4,7 @@ import com.google.common.base.Optional;
 import control.dto.DroneState;
 import control.dto.InertialFrameVelocity;
 import control.dto.Pose;
+import control.dto.Velocity;
 import gazebo_msgs.ModelStates;
 import geometry_msgs.Point;
 import geometry_msgs.Quaternion;
@@ -50,7 +51,7 @@ public class GazeboModelStateEstimator implements StateEstimator {
 
     private static InertialFrameVelocity getInertialFrameVelocity(ModelStates modelStates, int index, Pose pose) {
         final Twist gazeboTwist = modelStates.getTwist().get(index);
-        return InertialFrameVelocity.builder()
+        return Velocity.builder()
                 .linearX(gazeboTwist.getLinear().getX())
                 .linearY(gazeboTwist.getLinear().getY())
                 .linearZ(gazeboTwist.getLinear().getZ())

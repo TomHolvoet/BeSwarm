@@ -2,6 +2,7 @@ package utils.math;
 
 import control.dto.BodyFrameVelocity;
 import control.dto.InertialFrameVelocity;
+import control.dto.Velocity;
 import geometry_msgs.Quaternion;
 
 /**
@@ -46,7 +47,7 @@ public final class Transformations {
         final double linearX = inertialFrameVelocity.linearX() * cos - inertialFrameVelocity.linearY() * sin;
         final double linearY = inertialFrameVelocity.linearX() * sin + inertialFrameVelocity.linearY() * cos;
 
-        return BodyFrameVelocity.builder()
+        return Velocity.builder()
                 .linearX(linearX)
                 .linearY(linearY)
                 .linearZ(linearZ)
@@ -70,7 +71,7 @@ public final class Transformations {
         final double linearX = bodyFrameVelocity.linearX() * cos - bodyFrameVelocity.linearY() * sin;
         final double linearY = bodyFrameVelocity.linearX() * sin + bodyFrameVelocity.linearY() * cos;
 
-        return InertialFrameVelocity.builder()
+        return Velocity.builder()
                 .linearX(linearX)
                 .linearY(linearY)
                 .linearZ(linearZ)

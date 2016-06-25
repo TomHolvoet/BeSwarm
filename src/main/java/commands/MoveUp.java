@@ -3,6 +3,7 @@ package commands;
 import static com.google.common.base.Preconditions.checkArgument;
 
 import control.dto.InertialFrameVelocity;
+import control.dto.Velocity;
 import services.VelocityService;
 
 /**
@@ -31,7 +32,8 @@ public final class MoveUp implements Command {
 
     @Override
     public void execute() {
-        final InertialFrameVelocity velocity = InertialFrameVelocity.builder().linearZ(speed).build();
+        // FIXME
+        final InertialFrameVelocity velocity = Velocity.builder().linearZ(speed).build();
         final Command move = Move.builder()
                 .velocityPublisher(velocityService)
                 .velocity(velocity)
