@@ -47,6 +47,9 @@ public class StraightLineTrajectory4DTest {
         assertEquals(10, target.getTrajectoryLinearX().getDesiredPosition(10),
                 0);
 
+        assertEquals(1, target.getTrajectoryLinearX().getDesiredVelocity(5),
+                0);
+
         double t = 5;
         double toCalc = 10d / Math.sqrt(300d) * t;
         assertEquals(toCalc,
@@ -61,11 +64,22 @@ public class StraightLineTrajectory4DTest {
     }
 
     @Test
+    public void getTrajectoryLinearXTestHoldAtEnd() throws Exception {
+        target.getTrajectoryLinearX().getDesiredPosition(15);
+        assertEquals(10,
+                target.getTrajectoryLinearX().getDesiredPosition(15),
+                0.01);
+    }
+
+    @Test
     public void getTrajectoryLinearY() throws Exception {
         assertEquals(0, target.getTrajectoryLinearY().getDesiredPosition(5),
                 0);
         assertEquals(0, target.getTrajectoryLinearY().getDesiredPosition(10),
                 0);
+        assertEquals(1, target.getTrajectoryLinearY().getDesiredVelocity(5),
+                0);
+
         double t = 5;
         double toCalc = 10d / Math.sqrt(300d) * t;
         assertEquals(toCalc,
@@ -84,6 +98,9 @@ public class StraightLineTrajectory4DTest {
                 0);
         assertEquals(0, target.getTrajectoryLinearZ().getDesiredPosition(10),
                 0);
+        assertEquals(1, target.getTrajectoryLinearZ().getDesiredVelocity(5),
+                0);
+
         double t = 5;
         double toCalc = 10d / Math.sqrt(300d) * t;
         assertEquals(toCalc,
