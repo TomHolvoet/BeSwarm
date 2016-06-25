@@ -1,5 +1,6 @@
-package applications.simulations;
+package applications.simulations.cratessim;
 
+import applications.simulations.ExampleTrajectory2;
 import com.google.common.collect.ImmutableList;
 import commands.Command;
 import commands.FollowTrajectory;
