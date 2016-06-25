@@ -8,9 +8,7 @@ import commands.Land;
 import commands.MoveToPose;
 import commands.Takeoff;
 import control.Trajectory4d;
-import control.dto.InertialFrameVelocity;
 import control.dto.Pose;
-import control.dto.Velocity;
 import control.localization.GazeboModelStateEstimator;
 import control.localization.StateEstimator;
 import gazebo_msgs.ModelStates;
@@ -48,8 +46,10 @@ public final class TumSimulatorExample extends AbstractNodeMain {
     private TakeOffService takeOffService;
     private LandService landService;
     private VelocityService velocityService;
+    private StateEstimator stateEstimator;
     private MessagesSubscriberService<ModelStates> modelStateSubscriber;
     private KeyboardSubscriber keyboardSubscriber;
+    private static final String MODEL_NAME = "quadrotor";
 
     @Override
     public GraphName getDefaultNodeName() {
@@ -90,7 +90,7 @@ public final class TumSimulatorExample extends AbstractNodeMain {
         final Command takeOff = Takeoff.create(takeOffService);
         commands.add(takeOff);
 
-        final Command hoverFiveSecond = Hover.create(velocityService, 5);
+        final Command hoverFiveSecond = Hover.create(velocityService, stateEstimator, 5);
         commands.add(hoverFiveSecond);
 
 //        final Command moveToPose = getMoveToPoseCommand();
@@ -103,20 +103,11 @@ public final class TumSimulatorExample extends AbstractNodeMain {
     }
 
     private Command getMoveToPoseCommand() {
-        final String modelName = "quadrotor";
-        final StateEstimator stateEstimator = GazeboModelStateEstimator.create(modelStateSubscriber, modelName);
         final Pose goalPose = Pose.builder().x(3).y(-3).z(3).yaw(1).build();
-        final InertialFrameVelocity goalVelocity = Velocity.builder()
-                .linearX(0)
-                .linearY(0)
-                .linearZ(0)
-                .angularZ(0)
-                .build();
         return MoveToPose.builder()
                 .stateEstimator(stateEstimator)
-                .velocityPublisher(velocityService)
+                .velocityService(velocityService)
                 .goalPose(goalPose)
-                .goalVelocity(goalVelocity)
                 .durationInSeconds(60)
                 .build();
     }
@@ -157,8 +148,10 @@ public final class TumSimulatorExample extends AbstractNodeMain {
                 .build();
         modelStateSubscriber = MessagesSubscriberService.<ModelStates>create(
                 connectedNode.<ModelStates>newSubscriber("/gazebo/model_states", ModelStates._TYPE));
+        modelStateSubscriber.startListeningToMessages();
         landService = ParrotLandService.create(connectedNode.<Empty>newPublisher("/ardrone/land", Empty._TYPE));
         keyboardSubscriber = KeyboardSubscriber.createKeyboardSubscriber(
                 connectedNode.<Key>newSubscriber("/keyboard/keydown", Key._TYPE));
+        stateEstimator = GazeboModelStateEstimator.create(modelStateSubscriber, MODEL_NAME);
     }
 }

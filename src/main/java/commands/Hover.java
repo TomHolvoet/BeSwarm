@@ -1,12 +1,14 @@
 package commands;
 
-import applications.simulations.CratesSimulatorExample;
+import com.google.common.base.Optional;
+import control.dto.DroneState;
+import control.dto.Pose;
+import control.localization.StateEstimator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import services.VelocityService;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 /**
  * Command for hovering. This command requests the drone to hover by publishing a zero velocity and wait for a
@@ -18,34 +20,38 @@ public final class Hover implements Command {
     private static final Logger logger = LoggerFactory.getLogger(Hover.class);
 
     private final VelocityService velocityService;
+    private final StateEstimator stateEstimator;
     private final double durationInSeconds;
 
-    private Hover(VelocityService velocityService, double durationInSeconds) {
+    private Hover(VelocityService velocityService, StateEstimator stateEstimator, double durationInSeconds) {
         this.velocityService = velocityService;
+        this.stateEstimator = stateEstimator;
         this.durationInSeconds = durationInSeconds;
     }
 
-    /**
-     * @param velocityService the velocity publisher
-     * @param durationInSeconds the duration that the drone hovers
-     * @return an instance of the hovering command
-     */
-    public static Hover create(VelocityService velocityService, double durationInSeconds) {
+    public static Hover create(VelocityService velocityService, StateEstimator stateEstimator,
+            double durationInSeconds) {
         checkArgument(durationInSeconds > 0,
                 String.format("Duration must be a positive value, but it is %f", durationInSeconds));
-        return new Hover(velocityService, durationInSeconds);
+        return new Hover(velocityService, stateEstimator, durationInSeconds);
     }
 
     @Override
     public void execute() {
         logger.debug("Execute hover command.");
-        final Command stopMoving = StopMoving.create(velocityService);
-        stopMoving.execute();
-        final long durationInMilliSeconds = (long) (durationInSeconds * 1000);
-        try {
-            MILLISECONDS.sleep(durationInMilliSeconds);
-        } catch (InterruptedException e) {
-            logger.info("Hovering is interrupted", e);
+        final Optional<DroneState> currentState = stateEstimator.getCurrentState();
+        if (!currentState.isPresent()) {
+            logger.info("Cannot get the current state. Hover command will be ignored.");
+            return;
         }
+
+        final Pose currentPose = currentState.get().pose();
+        final Command moveToPose = MoveToPose.builder()
+                .goalPose(currentPose)
+                .durationInSeconds(durationInSeconds)
+                .stateEstimator(stateEstimator)
+                .velocityService(velocityService)
+                .build();
+        moveToPose.execute();
     }
 }

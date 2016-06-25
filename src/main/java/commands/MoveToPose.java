@@ -5,11 +5,12 @@ import control.PidParameters;
 import control.Trajectory4d;
 import control.dto.InertialFrameVelocity;
 import control.dto.Pose;
+import control.dto.Velocity;
 import control.localization.StateEstimator;
 import services.VelocityService;
 
 /**
- * Command for moving to a predefined pose. It is a facade which uses {@link Move}.
+ * Command for moving to a predefined pose. It is a facade which uses {@link FollowTrajectory}.
  *
  * @author Hoang Tung Dinh
  */
@@ -18,7 +19,13 @@ public final class MoveToPose implements Command {
     private static final double DEFAULT_CONTROL_RATE_IN_SECONDS = 0.05;
 
     private MoveToPose(Builder builder) {
-        final Trajectory4d trajectory4d = SinglePointTrajectory4d.create(builder.goalPose, builder.goalInertialFrameVelocity);
+        final InertialFrameVelocity zeroVelocity = Velocity.builder()
+                .linearX(0)
+                .linearY(0)
+                .linearZ(0)
+                .angularZ(0)
+                .build();
+        final Trajectory4d trajectory4d = SinglePointTrajectory4d.create(builder.goalPose, zeroVelocity);
         followTrajectory = FollowTrajectory.builder()
                 .velocityService(builder.velocityService)
                 .stateEstimator(builder.stateEstimator)
@@ -38,7 +45,7 @@ public final class MoveToPose implements Command {
     }
 
     /**
-     * All pid parameters are optional. The other are mandatory.
+     * All pid parameters and {@link Builder#controlRateInSeconds(double)} are optional. The other are mandatory.
      *
      * @return a builder
      */
@@ -61,7 +68,6 @@ public final class MoveToPose implements Command {
         private PidParameters pidLinearZParameters;
         private PidParameters pidAngularZParameters;
         private Pose goalPose;
-        private InertialFrameVelocity goalInertialFrameVelocity;
         private double durationInSeconds;
         private double controlRateInSeconds;
 
@@ -74,7 +80,7 @@ public final class MoveToPose implements Command {
          * @param val the {@code velocityService} to set
          * @return a reference to this Builder
          */
-        public Builder velocityPublisher(VelocityService val) {
+        public Builder velocityService(VelocityService val) {
             velocityService = val;
             return this;
         }
@@ -148,18 +154,6 @@ public final class MoveToPose implements Command {
          */
         public Builder goalPose(Pose val) {
             goalPose = val;
-            return this;
-        }
-
-        /**
-         * Sets the {@code goalInertialFrameVelocity} and returns a reference to this Builder so that the methods can be chained
-         * together.
-         *
-         * @param val the {@code goalInertialFrameVelocity} to set
-         * @return a reference to this Builder
-         */
-        public Builder goalVelocity(InertialFrameVelocity val) {
-            goalInertialFrameVelocity = val;
             return this;
         }
 
