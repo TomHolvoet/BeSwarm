@@ -1,7 +1,7 @@
 package choreo;
 
-import applications.simulations.trajectory.Point4D;
-import applications.simulations.trajectory.Trajectories;
+import applications.trajectory.Point4D;
+import applications.trajectory.Trajectories;
 import control.Trajectory4d;
 import org.junit.Before;
 import org.junit.Test;
