@@ -18,8 +18,6 @@ import static com.google.common.base.Preconditions.checkArgument;
 public class MessagesSubscriberService<T extends Message> {
     private final Subscriber<T> subscriber;
     private final MessagesListener<T> messagesListener;
-    private final int maxMessageQueueSize;
-    private boolean startedListeningToMessages = false;
 
     private static final int DEFAULT_MESSAGE_QUEUE__SIZE = 1;
 
@@ -28,7 +26,7 @@ public class MessagesSubscriberService<T extends Message> {
                 String.format("Queue size must be at least 1, but it is %d.", maxMessageQueueSize));
         this.subscriber = subscriber;
         this.messagesListener = MessagesListener.create(maxMessageQueueSize);
-        this.maxMessageQueueSize = maxMessageQueueSize;
+        this.subscriber.addMessageListener(messagesListener);
     }
 
     public static <Type extends Message> MessagesSubscriberService<Type> create(Subscriber<Type> subscriber) {
@@ -40,23 +38,12 @@ public class MessagesSubscriberService<T extends Message> {
         return new MessagesSubscriberService<>(subscriber, maxMessageQueueSize);
     }
 
-    public void startListeningToMessages() {
-        if (!startedListeningToMessages) {
-            subscriber.addMessageListener(messagesListener);
-            startedListeningToMessages = true;
-        }
-    }
-
     public Optional<T> getMostRecentMessage() {
         return messagesListener.getMostRecentMessage();
     }
 
     public Queue<T> getMessageQueue() {
         return messagesListener.getMessageQueue();
-    }
-
-    public int getMaxMessageQueueSize() {
-        return maxMessageQueueSize;
     }
 
     private static final class MessagesListener<K extends Message> implements MessageListener<K> {

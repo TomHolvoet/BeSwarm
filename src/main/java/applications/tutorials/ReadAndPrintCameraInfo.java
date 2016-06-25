@@ -21,7 +21,6 @@ public class ReadAndPrintCameraInfo extends AbstractNodeMain {
     public void onStart(ConnectedNode connectedNode) {
         final Subscriber<CameraInfo> subscriber = connectedNode.newSubscriber("/bebop/camera_info", CameraInfo._TYPE);
         final MessagesSubscriberService<CameraInfo> cameraInfoSubscriber = MessagesSubscriberService.<CameraInfo>create(subscriber);
-        cameraInfoSubscriber.startListeningToMessages();
         while (true) {
             try {
                 Thread.sleep(50);

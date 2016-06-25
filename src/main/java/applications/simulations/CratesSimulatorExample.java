@@ -90,7 +90,6 @@ public final class CratesSimulatorExample extends AbstractNodeMain {
 
     private KeyboardEmergency createKeyboardEmergencyNotifier(Task emergencyTask) {
         final KeyboardEmergency keyboardEmergency = KeyboardEmergency.create(emergencyTask);
-        keyboardSubscriber.startListeningToMessages();
         keyboardSubscriber.registerObserver(keyboardEmergency);
         return keyboardEmergency;
     }
@@ -168,10 +167,8 @@ public final class CratesSimulatorExample extends AbstractNodeMain {
         }
         cratesTruthStateSubscriber = MessagesSubscriberService.create(
                 connectedNode.<State>newSubscriber(srvNamePrefix + "Truth", State._TYPE), 2);
-        cratesTruthStateSubscriber.startListeningToMessages();
         keyboardSubscriber = KeyboardSubscriber.createKeyboardSubscriber(
                 connectedNode.<Key>newSubscriber("/keyboard/keydown", Key._TYPE));
-        keyboardSubscriber.startListeningToMessages();
         stateEstimator = CratesSimStateEstimator.create(cratesTruthStateSubscriber);
     }
 

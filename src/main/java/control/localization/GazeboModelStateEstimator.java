@@ -22,7 +22,6 @@ public class GazeboModelStateEstimator implements StateEstimator {
     private GazeboModelStateEstimator(MessagesSubscriberService<ModelStates> modelStateSubscriber, String modelName) {
         this.modelStateSubscriber = modelStateSubscriber;
         this.modelName = modelName;
-        this.modelStateSubscriber.startListeningToMessages();
     }
 
     public static GazeboModelStateEstimator create(MessagesSubscriberService<ModelStates> modelStateSubscriber,

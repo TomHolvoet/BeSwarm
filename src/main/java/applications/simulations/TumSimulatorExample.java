@@ -74,7 +74,6 @@ public final class TumSimulatorExample extends AbstractNodeMain {
 
     private KeyboardEmergency createKeyboardEmergencyNotifier(Task emergencyTask) {
         final KeyboardEmergency keyboardEmergency = KeyboardEmergency.create(emergencyTask);
-        keyboardSubscriber.startListeningToMessages();
         keyboardSubscriber.registerObserver(keyboardEmergency);
         return keyboardEmergency;
     }
@@ -148,7 +147,6 @@ public final class TumSimulatorExample extends AbstractNodeMain {
                 .build();
         modelStateSubscriber = MessagesSubscriberService.<ModelStates>create(
                 connectedNode.<ModelStates>newSubscriber("/gazebo/model_states", ModelStates._TYPE));
-        modelStateSubscriber.startListeningToMessages();
         landService = ParrotLandService.create(connectedNode.<Empty>newPublisher("/ardrone/land", Empty._TYPE));
         keyboardSubscriber = KeyboardSubscriber.createKeyboardSubscriber(
                 connectedNode.<Key>newSubscriber("/keyboard/keydown", Key._TYPE));
