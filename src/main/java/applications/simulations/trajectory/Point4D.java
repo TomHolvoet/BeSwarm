@@ -48,4 +48,17 @@ public abstract class Point4D {
     public static Point4D origin() {
         return new AutoValue_Point4D(0, 0, 0, 0);
     }
+
+    /**
+     * @param targetPoint The destination of the vector.
+     * @param sourcePoint the source of the vector.
+     * @return A point instance representing the difference or distance
+     * between the given points.
+     */
+    public static Point4D minus(Point4D targetPoint, Point4D sourcePoint) {
+        return create(targetPoint.getX() - sourcePoint.getX(),
+                targetPoint.getY() - sourcePoint.getY(),
+                targetPoint.getZ() - sourcePoint.getZ(),
+                targetPoint.getAngle() - sourcePoint.getAngle());
+    }
 }

@@ -133,4 +133,15 @@ public final class Trajectories {
     public static Trajectory4d newHoldPositionTrajectory(Point4D target) {
         return new HoldPositionTrajectory4D(target);
     }
+
+    /**
+     * @param sourcePoint origin point of motion.
+     * @param targetPoint destination point of motion.
+     * @param velocity    the velocity to move with.
+     * @return A new trajectory instance representing a straight line in space.
+     */
+    public static Trajectory4d newStraightLineTrajectory(Point4D sourcePoint,
+            Point4D targetPoint, double velocity) {
+        return new StraightLineTrajectory4D(sourcePoint, targetPoint, velocity);
+    }
 }

@@ -32,10 +32,10 @@ public class ConstantVelocityAngularTrajectory1D extends PeriodicTrajectory
     ConstantVelocityAngularTrajectory1D(double radius, double frequency,
             double phase) {
         super(phase, Point4D.origin(), radius, frequency);
-        checkArgument(Math.abs(frequency * TWOPI) < MAX_ABSOLUTE_SPEED,
-                "Absolute speed should not be larger than MAX_ABSOLUTE_SPEED,"
+        checkArgument(Math.abs(frequency * TWOPI) < MAX_ABSOLUTE_VELOCITY,
+                "Absolute speed should not be larger than MAX_ABSOLUTE_VELOCITY,"
                         + " which is: "
-                        + MAX_ABSOLUTE_SPEED);
+                        + MAX_ABSOLUTE_VELOCITY);
     }
 
     @Override
