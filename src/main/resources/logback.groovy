@@ -9,7 +9,7 @@ appender("STDOUT", ConsoleAppender) {
 }
 
 appender("FILE", FileAppender) {
-    file = "${DIR}/beboprosjava.log"
+    file = "${DIR}/beswarm.log"
     encoder(PatternLayoutEncoder) {
         pattern = "%-4relative [%thread] %-5level %logger{35} - %msg %n"
     }
