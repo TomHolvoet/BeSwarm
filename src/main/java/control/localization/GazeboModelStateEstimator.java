@@ -55,7 +55,6 @@ public class GazeboModelStateEstimator implements StateEstimator {
                 .linearY(gazeboTwist.getLinear().getY())
                 .linearZ(gazeboTwist.getLinear().getZ())
                 .angularZ(gazeboTwist.getAngular().getZ())
-                .poseYaw(pose.yaw())
                 .build();
     }
 

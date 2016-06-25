@@ -2,6 +2,7 @@ package utils.math;
 
 import control.dto.BodyFrameVelocity;
 import control.dto.InertialFrameVelocity;
+import control.dto.Pose;
 import control.dto.Velocity;
 import geometry_msgs.Quaternion;
 
@@ -33,37 +34,32 @@ public final class Transformations {
     }
 
     public static BodyFrameVelocity inertialFrameVelocityToBodyFrameVelocity(
-            InertialFrameVelocity inertialFrameVelocity) {
+            InertialFrameVelocity inertialFrameVelocity, Pose pose) {
         // TODO test me
         // same linearZ
         final double linearZ = inertialFrameVelocity.linearZ();
         // same angularZ
         final double angularZ = inertialFrameVelocity.angularZ();
 
-        final double theta = -inertialFrameVelocity.poseYaw();
+        final double theta = -pose.yaw();
         final double sin = StrictMath.sin(theta);
         final double cos = StrictMath.cos(theta);
 
         final double linearX = inertialFrameVelocity.linearX() * cos - inertialFrameVelocity.linearY() * sin;
         final double linearY = inertialFrameVelocity.linearX() * sin + inertialFrameVelocity.linearY() * cos;
 
-        return Velocity.builder()
-                .linearX(linearX)
-                .linearY(linearY)
-                .linearZ(linearZ)
-                .angularZ(angularZ)
-                .poseYaw(inertialFrameVelocity.poseYaw())
-                .build();
+        return Velocity.builder().linearX(linearX).linearY(linearY).linearZ(linearZ).angularZ(angularZ).build();
     }
 
-    public static InertialFrameVelocity bodyFrameVelocityToInertialFrameVelocity(BodyFrameVelocity bodyFrameVelocity) {
+    public static InertialFrameVelocity bodyFrameVelocityToInertialFrameVelocity(BodyFrameVelocity bodyFrameVelocity,
+            Pose pose) {
         //TODO test me
         // same linearZ
         final double linearZ = bodyFrameVelocity.linearZ();
         // same angularZ
         final double angularZ = bodyFrameVelocity.angularZ();
 
-        final double theta = bodyFrameVelocity.poseYaw();
+        final double theta = pose.yaw();
 
         final double sin = StrictMath.sin(theta);
         final double cos = StrictMath.cos(theta);
@@ -76,7 +72,6 @@ public final class Transformations {
                 .linearY(linearY)
                 .linearZ(linearZ)
                 .angularZ(angularZ)
-                .poseYaw(theta)
                 .build();
     }
 }

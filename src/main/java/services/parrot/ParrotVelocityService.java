@@ -2,6 +2,7 @@ package services.parrot;
 
 import control.dto.BodyFrameVelocity;
 import control.dto.InertialFrameVelocity;
+import control.dto.Pose;
 import control.dto.Velocity;
 import geometry_msgs.Twist;
 import org.ros.node.ConnectedNode;
@@ -52,16 +53,11 @@ public final class ParrotVelocityService implements VelocityService {
         checkArgument(minLinearZ <= maxLinearZ);
     }
 
-    /**
-     * Publish a velocity message.
-     *
-     * @param inertialFrameVelocity the inertialFrameVelocity to be published
-     */
     @Override
-    public void sendVelocityMessage(InertialFrameVelocity inertialFrameVelocity) {
+    public void sendVelocityMessage(InertialFrameVelocity inertialFrameVelocity, Pose pose) {
         logger.trace("Sending velocity message: {}", inertialFrameVelocity);
         final BodyFrameVelocity bodyFrameVelocity = Transformations.inertialFrameVelocityToBodyFrameVelocity(
-                inertialFrameVelocity);
+                inertialFrameVelocity, pose);
 
         final BodyFrameVelocity refinedVelocity = getRefinedVelocity(bodyFrameVelocity);
 
@@ -84,7 +80,6 @@ public final class ParrotVelocityService implements VelocityService {
                 .linearY(getRefinedLinearY(velocity.linearY()))
                 .linearZ(getRefinedLinearZ(velocity.linearZ()))
                 .angularZ(getRefinedAngularZ(velocity.angularZ()))
-                .poseYaw(velocity.poseYaw())
                 .build();
     }
 

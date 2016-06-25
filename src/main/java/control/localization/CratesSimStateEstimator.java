@@ -41,11 +41,10 @@ public final class CratesSimStateEstimator implements StateEstimator {
                 .linearY(state.getV())
                 .linearZ(state.getW())
                 .angularZ(state.getR())
-                .poseYaw(pose.yaw())
                 .build();
 
         final InertialFrameVelocity inertialFrameVelocity = Transformations.bodyFrameVelocityToInertialFrameVelocity(
-                bodyFrameVelocity);
+                bodyFrameVelocity, pose);
 
         return Optional.of(DroneState.create(pose, inertialFrameVelocity));
     }

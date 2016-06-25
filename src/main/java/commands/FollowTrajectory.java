@@ -89,7 +89,7 @@ public final class FollowTrajectory implements Command {
             logger.debug("Got pose and velocity. Start computing the next velocity response.");
             final InertialFrameVelocity nextVelocity = pidController4d.compute(currentState.get().pose(),
                     currentState.get().inertialFrameVelocity());
-            velocityService.sendVelocityMessage(nextVelocity);
+            velocityService.sendVelocityMessage(nextVelocity, currentState.get().pose());
         }
     }
 

@@ -11,6 +11,4 @@ interface VelocityDto {
     double linearZ();
 
     double angularZ();
-
-    double poseYaw();
 }

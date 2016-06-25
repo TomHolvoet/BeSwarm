@@ -1,6 +1,7 @@
 package services.crates;
 
 import control.dto.InertialFrameVelocity;
+import control.dto.Pose;
 import hal_quadrotor.VelocityRequest;
 import hal_quadrotor.VelocityResponse;
 import org.ros.exception.RemoteException;
@@ -29,7 +30,7 @@ public final class CratesVelocityService implements VelocityService {
     }
 
     @Override
-    public void sendVelocityMessage(InertialFrameVelocity inertialFrameVelocity) {
+    public void sendVelocityMessage(InertialFrameVelocity inertialFrameVelocity, Pose pose) {
         final VelocityRequest velocityRequest = srvVelocity.newMessage();
         velocityRequest.setDx(inertialFrameVelocity.linearX());
         velocityRequest.setDy(inertialFrameVelocity.linearY());

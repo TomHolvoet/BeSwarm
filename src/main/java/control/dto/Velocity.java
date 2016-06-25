@@ -21,12 +21,6 @@ public abstract class Velocity implements InertialFrameVelocity, BodyFrameVeloci
     @Override
     public abstract double angularZ();
 
-    /**
-     * @return the yaw of the drone associated with the velocity in the body frame
-     */
-    @Override
-    public abstract double poseYaw();
-
     public static Builder builder() {
         return new AutoValue_Velocity.Builder();
     }
@@ -40,8 +34,6 @@ public abstract class Velocity implements InertialFrameVelocity, BodyFrameVeloci
         public abstract Builder linearZ(double value);
 
         public abstract Builder angularZ(double value);
-
-        public abstract Builder poseYaw(double value);
 
         public abstract Velocity build();
     }
