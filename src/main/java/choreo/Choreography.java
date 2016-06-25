@@ -1,5 +1,6 @@
 package choreo;
 
+import applications.simulations.trajectory.Trajectory4DForwardingDecorator;
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Queues;

@@ -3,7 +3,7 @@ package applications.simulations.trajectory;
 import control.Trajectory1d;
 
 /**
- * Forwarding decorator for trajectory4D instances with
+ * Forwarding decorator for trajectory1D instances with
  * inner-trajectory1D hooks.
  *
  * @author Kristof Coninx <kristof.coninx AT cs.kuleuven.be>
@@ -11,6 +11,10 @@ import control.Trajectory1d;
 public abstract class Trajectory1DForwardingDecorator implements Trajectory1d {
     private final Trajectory1d target;
 
+    /**
+     * Public constructor
+     * @param target The target trajectory to wrap.
+     */
     public Trajectory1DForwardingDecorator(Trajectory1d target) {
         this.target = target;
     }

@@ -12,6 +12,11 @@ import control.Trajectory4d;
 public abstract class Trajectory4DForwardingDecorator implements Trajectory4d {
     private final Trajectory4d target;
 
+    /**
+     * Public constructor
+     *
+     * @param target The target trajectory to wrap.
+     */
     public Trajectory4DForwardingDecorator(Trajectory4d target) {
         this.target = target;
     }
