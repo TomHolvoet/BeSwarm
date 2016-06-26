@@ -2,12 +2,7 @@ package applications.parrot.tumsim;
 
 import applications.ExampleTrajectory2;
 import com.google.common.collect.ImmutableList;
-import commands.Command;
-import commands.FollowTrajectory;
-import commands.Hover;
-import commands.Land;
-import commands.MoveToPose;
-import commands.Takeoff;
+import commands.*;
 import control.Trajectory4d;
 import control.dto.Pose;
 import control.localization.GazeboModelStateEstimator;
@@ -38,12 +33,13 @@ import java.util.Collection;
 import java.util.concurrent.TimeUnit;
 
 /**
- * This class is for running the simulation with the AR drone in the Tum simulator.
+ * This class is for running the simulation with the AR drone in the Tum
+ * simulator.
  *
  * @author Hoang Tung Dinh
  * @see <a href="https://github.com/dougvk/tum_simulator">The simulator</a>
  */
-public final class TumSimulatorExample extends AbstractNodeMain {
+public class TumSimulatorExample extends AbstractNodeMain {
     private TakeOffService takeOffService;
     private LandService landService;
     private VelocityService velocityService;
@@ -67,21 +63,26 @@ public final class TumSimulatorExample extends AbstractNodeMain {
 
         final TaskExecutor taskExecutor = TaskExecutorService.create();
 
-        final KeyboardEmergency keyboardEmergencyNotifier = createKeyboardEmergencyNotifier(emergencyTask);
+        final KeyboardEmergency keyboardEmergencyNotifier =
+                createKeyboardEmergencyNotifier(
+                        emergencyTask);
         keyboardEmergencyNotifier.registerTaskExecutor(taskExecutor);
 
         taskExecutor.submitTask(flyTask);
     }
 
-    private KeyboardEmergency createKeyboardEmergencyNotifier(Task emergencyTask) {
-        final KeyboardEmergency keyboardEmergency = KeyboardEmergency.create(emergencyTask);
+    private KeyboardEmergency createKeyboardEmergencyNotifier(
+            Task emergencyTask) {
+        final KeyboardEmergency keyboardEmergency = KeyboardEmergency
+                .create(emergencyTask);
         keyboardSubscriber.registerObserver(keyboardEmergency);
         return keyboardEmergency;
     }
 
     private Task createEmergencyTask() {
         final Command land = Land.create(landService);
-        return Task.create(ImmutableList.of(land), TaskType.FIRST_ORDER_EMERGENCY);
+        return Task
+                .create(ImmutableList.of(land), TaskType.FIRST_ORDER_EMERGENCY);
     }
 
     private Task createFlyTask() {
@@ -90,16 +91,18 @@ public final class TumSimulatorExample extends AbstractNodeMain {
         final Command takeOff = Takeoff.create(takeOffService);
         commands.add(takeOff);
 
-        final Command hoverFiveSecond = Hover.create(velocityService, stateEstimator, 5);
+        final Command hoverFiveSecond = Hover
+                .create(velocityService, stateEstimator, 5);
         commands.add(hoverFiveSecond);
 
-//        final Command moveToPose = getMoveToPoseCommand();
-//        commands.add(moveToPose);
+        //        final Command moveToPose = getMoveToPoseCommand();
+        //        commands.add(moveToPose);
 
         final Command followTrajectory = getFollowTrajectoryCommand();
         commands.add(followTrajectory);
 
-        return Task.create(ImmutableList.copyOf(commands), TaskType.NORMAL_TASK);
+        return Task
+                .create(ImmutableList.copyOf(commands), TaskType.NORMAL_TASK);
     }
 
     private Command getMoveToPoseCommand() {
@@ -114,14 +117,19 @@ public final class TumSimulatorExample extends AbstractNodeMain {
 
     private Command getFollowTrajectoryCommand() {
         final String modelName = "quadrotor";
-        final StateEstimator stateEstimator = GazeboModelStateEstimator.create(modelStateSubscriber, modelName);
-        final Trajectory4d trajectory = ExampleTrajectory2.create();
+        final StateEstimator stateEstimator = GazeboModelStateEstimator
+                .create(modelStateSubscriber, modelName);
+        final Trajectory4d trajectory = getConcreteTrajectory();
         return FollowTrajectory.builder()
                 .stateEstimator(stateEstimator)
                 .velocityService(velocityService)
                 .trajectory4d(trajectory)
                 .durationInSeconds(60)
                 .build();
+    }
+
+    protected Trajectory4d getConcreteTrajectory() {
+        return ExampleTrajectory2.create();
     }
 
     private static void warmUp() {
@@ -134,9 +142,11 @@ public final class TumSimulatorExample extends AbstractNodeMain {
 
     private void initializeComm(ConnectedNode connectedNode) {
         takeOffService = ParrotTakeOffService.create(
-                connectedNode.<Empty>newPublisher("/ardrone/takeoff", Empty._TYPE));
+                connectedNode.<Empty>newPublisher("/ardrone/takeoff",
+                        Empty._TYPE));
         velocityService = ParrotVelocityService.builder()
-                .publisher(connectedNode.<Twist>newPublisher("/cmd_vel", Twist._TYPE))
+                .publisher(connectedNode.<Twist>newPublisher("/cmd_vel",
+                        Twist._TYPE))
                 .minLinearX(-1)
                 .minLinearY(-1)
                 .minLinearZ(-1)
@@ -147,10 +157,15 @@ public final class TumSimulatorExample extends AbstractNodeMain {
                 .maxAngularZ(1)
                 .build();
         modelStateSubscriber = MessagesSubscriberService.<ModelStates>create(
-                connectedNode.<ModelStates>newSubscriber("/gazebo/model_states", ModelStates._TYPE));
-        landService = ParrotLandService.create(connectedNode.<Empty>newPublisher("/ardrone/land", Empty._TYPE));
+                connectedNode.<ModelStates>newSubscriber("/gazebo/model_states",
+                        ModelStates._TYPE));
+        landService = ParrotLandService
+                .create(connectedNode.<Empty>newPublisher("/ardrone/land",
+                        Empty._TYPE));
         keyboardSubscriber = KeyboardSubscriber.createKeyboardSubscriber(
-                connectedNode.<Key>newSubscriber("/keyboard/keydown", Key._TYPE));
-        stateEstimator = GazeboModelStateEstimator.create(modelStateSubscriber, MODEL_NAME);
+                connectedNode.<Key>newSubscriber("/keyboard/keydown",
+                        Key._TYPE));
+        stateEstimator = GazeboModelStateEstimator
+                .create(modelStateSubscriber, MODEL_NAME);
     }
 }
