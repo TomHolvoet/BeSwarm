@@ -7,6 +7,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 
 /**
  * @author Kristof Coninx <kristof.coninx AT cs.kuleuven.be>
@@ -55,5 +56,27 @@ public class ChoreographyTest {
                 traj.getTrajectoryLinearZ().getDesiredPosition(time), 0);
         assertEquals(target.getAngle(),
                 traj.getTrajectoryAngularZ().getDesiredPosition(time), 0);
+    }
+
+    @Test
+    public void testComplexExample() {
+        Trajectory4d first = Trajectories
+                .newStraightLineTrajectory(Point4D.create(0, 0, 1.5, 0),
+                        Point4D.create(5, 5, 5, 0), 0.6);
+        Trajectory4d second = Trajectories
+                .newCircleTrajectory4D(Point4D.create(4, 5, 5, 0), 1, 0.10,
+                        Math.PI / 4);
+        Trajectory4d third = Trajectories
+                .newHoldPositionTrajectory(Point4D.create(1, 1, 2, 0));
+        Choreography choreo = Choreography.builder().withTrajectory(first)
+                .forTime(20)
+                .withTrajectory(second).forTime(40).withTrajectory(third)
+                .forTime(30).build();
+        assertNotEquals(0, choreo.getTrajectoryLinearX().getDesiredVelocity(1));
+        assertNotEquals(0, choreo.getTrajectoryLinearY().getDesiredVelocity(1));
+        assertNotEquals(0, choreo.getTrajectoryLinearZ().getDesiredVelocity(1));
+        assertEquals(0, choreo.getTrajectoryAngularZ().getDesiredVelocity(1),
+                0);
+
     }
 }
