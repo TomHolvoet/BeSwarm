@@ -4,8 +4,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import services.TakeOffService;
 
-import java.util.concurrent.TimeUnit;
-
 /**
  * Command for taking off.
  *
@@ -29,10 +27,5 @@ public final class Takeoff implements Command {
     public void execute() {
         logger.debug("Start taking off.");
         takeOffService.sendTakingOffMessage();
-        try {
-            TimeUnit.SECONDS.sleep(1);
-        } catch (InterruptedException e) {
-            logger.info("Take off command is interrupted.", e);
-        }
     }
 }
