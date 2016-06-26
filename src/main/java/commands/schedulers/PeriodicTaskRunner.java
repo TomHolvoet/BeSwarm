@@ -1,5 +1,8 @@
 package commands.schedulers;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -10,6 +13,8 @@ import java.util.concurrent.TimeoutException;
  * @author Hoang Tung Dinh
  */
 public final class PeriodicTaskRunner {
+
+    private static final Logger logger = LoggerFactory.getLogger(PeriodicTaskRunner.class);
 
     private PeriodicTaskRunner() {}
 
@@ -24,12 +29,15 @@ public final class PeriodicTaskRunner {
 
         try {
             future.get(durationInMilliSeconds, TimeUnit.MILLISECONDS);
-        } catch (InterruptedException | TimeoutException e) {
-            // TODO add log
+        } catch (InterruptedException e) {
+            logger.debug("The executing task is interrupted. Stop executing the task.", e);
             // the task is cancelled if time ran out or the current thread is interrupted while waiting.
             future.cancel(true);
+        } catch (TimeoutException e) {
+            logger.debug("The executing task is run out of time. Stop executing the task", e);
+            future.cancel(true);
         } catch (ExecutionException e) {
-            e.printStackTrace();
+            logger.debug("An execution exception occurs.", e);
         }
     }
 }

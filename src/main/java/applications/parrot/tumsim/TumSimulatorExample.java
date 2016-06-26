@@ -23,10 +23,6 @@ public final class TumSimulatorExample extends AbstractNodeMain {
 
     private static final String MODEL_NAME = "quadrotor";
 
-    private TumSimulatorExample() {
-        super();
-    }
-
     @Override
     public GraphName getDefaultNodeName() {
         return GraphName.of("TumSimulatorExample");
