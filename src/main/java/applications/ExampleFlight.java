@@ -101,6 +101,9 @@ public final class ExampleFlight {
                 .build();
         commands.add(followTrajectory);
 
+        final Command land = Land.create(landService);
+        commands.add(land);
+
         return Task.create(ImmutableList.copyOf(commands), TaskType.NORMAL_TASK);
     }
 
