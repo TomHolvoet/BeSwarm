@@ -66,15 +66,30 @@ public final class FollowTrajectory implements Command {
                 .trajectory4d(trajectory4d)
                 .build();
 
-        final Runnable computeNextResponse = new ComputeNextResponse(pidController4d);
+        final Runnable computeNextResponse = ComputeNextResponse.create(pidController4d, stateEstimator,
+                velocityService);
         PeriodicTaskRunner.run(computeNextResponse, controlRateInSeconds, durationInSeconds);
     }
 
-    private final class ComputeNextResponse implements Runnable {
+    private static final class ComputeNextResponse implements Runnable {
         private final PidController4d pidController4d;
+        private final StateEstimator stateEstimator;
+        private final VelocityService velocityService;
+        private final double startTimeInNanoSeconds;
 
-        private ComputeNextResponse(PidController4d pidController4d) {
+        private static final double NANO_SECOND_TO_SECOND = 1000000000.0;
+
+        private ComputeNextResponse(PidController4d pidController4d, StateEstimator stateEstimator,
+                VelocityService velocityService) {
             this.pidController4d = pidController4d;
+            this.stateEstimator = stateEstimator;
+            this.velocityService = velocityService;
+            this.startTimeInNanoSeconds = System.nanoTime();
+        }
+
+        public static ComputeNextResponse create(PidController4d pidController4d, StateEstimator stateEstimator,
+                VelocityService velocityService) {
+            return new ComputeNextResponse(pidController4d, stateEstimator, velocityService);
         }
 
         @Override
@@ -87,8 +102,9 @@ public final class FollowTrajectory implements Command {
             }
 
             logger.debug("Got pose and velocity. Start computing the next velocity response.");
+            final double currentTimeInSeconds = (System.nanoTime() - startTimeInNanoSeconds) / NANO_SECOND_TO_SECOND;
             final InertialFrameVelocity nextVelocity = pidController4d.compute(currentState.get().pose(),
-                    currentState.get().inertialFrameVelocity());
+                    currentState.get().inertialFrameVelocity(), currentTimeInSeconds);
             velocityService.sendVelocityMessage(nextVelocity, currentState.get().pose());
         }
     }

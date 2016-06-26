@@ -17,9 +17,6 @@ import utils.math.EulerAngle;
 public final class PidController4d {
 
     private static final Logger logger = LoggerFactory.getLogger(PidController4d.class);
-    private static final Logger poseLogger = LoggerFactory.getLogger(PidController4d.class.getName() + ".poselogger");
-
-    private static final double NANO_SECOND_TO_SECOND = 1000000000.0;
 
     private final PidController1d pidLinearX;
     private final PidController1d pidLinearY;
@@ -47,9 +44,8 @@ public final class PidController4d {
      * @param currentVelocity the current velocity of the drone
      * @return the next velocity (response) of the drone
      */
-    public InertialFrameVelocity compute(Pose currentPose, InertialFrameVelocity currentVelocity) {
-        final double currentTimeInSeconds = System.nanoTime() / NANO_SECOND_TO_SECOND;
-
+    public InertialFrameVelocity compute(Pose currentPose, InertialFrameVelocity currentVelocity,
+            double currentTimeInSeconds) {
         final double linearX = pidLinearX.compute(currentPose.x(), currentVelocity.linearX(), currentTimeInSeconds);
         final double linearY = pidLinearY.compute(currentPose.y(), currentVelocity.linearY(), currentTimeInSeconds);
         final double linearZ = pidLinearZ.compute(currentPose.z(), currentVelocity.linearZ(), currentTimeInSeconds);
@@ -60,8 +56,7 @@ public final class PidController4d {
         final double angularZ = pidAngularZ.compute(adaptedCurrentYaw, currentVelocity.angularZ(),
                 currentTimeInSeconds);
 
-        logger.trace("Current time: {}\nCurrent pose: {}", currentTimeInSeconds, currentPose);
-        poseLogger.trace("{} {} {} {} {} {} {} {} {}", currentTimeInSeconds, currentPose.x(), currentPose.y(),
+        logger.trace("{} {} {} {} {} {} {} {} {}", currentTimeInSeconds, currentPose.x(), currentPose.y(),
                 currentPose.z(), currentPose.yaw(),
                 trajectory4d.getTrajectoryLinearX().getDesiredPosition(currentTimeInSeconds),
                 trajectory4d.getTrajectoryLinearY().getDesiredPosition(currentTimeInSeconds),

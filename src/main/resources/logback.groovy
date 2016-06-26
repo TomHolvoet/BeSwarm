@@ -23,4 +23,4 @@ appender("FILE_DRONE_POSE", FileAppender) {
 }
 
 root(DEBUG, ["STDOUT", "FILE"])
-logger("control.PidController4d.poselogger", TRACE, ["FILE_DRONE_POSE"], false)
+logger("control.PidController4d", TRACE, ["FILE_DRONE_POSE"], false)
