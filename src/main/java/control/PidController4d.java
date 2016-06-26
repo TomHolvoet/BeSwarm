@@ -16,8 +16,9 @@ import utils.math.EulerAngle;
  */
 public final class PidController4d {
 
-    private static final Logger poseLogger = LoggerFactory.getLogger(PidController4d.class + ".poselogger");
-    private static final Logger velocityLogger = LoggerFactory.getLogger(PidController4d.class + ".velocitylogger");
+    private static final Logger poseLogger = LoggerFactory.getLogger(PidController4d.class.getName() + ".poselogger");
+    private static final Logger velocityLogger = LoggerFactory.getLogger(
+            PidController4d.class.getName() + ".velocitylogger");
 
     private final PidController1d pidLinearX;
     private final PidController1d pidLinearY;
@@ -64,7 +65,7 @@ public final class PidController4d {
                 trajectory4d.getTrajectoryLinearZ().getDesiredPosition(currentTimeInSeconds),
                 trajectory4d.getTrajectoryAngularZ().getDesiredPosition(currentTimeInSeconds));
 
-        velocityLogger.trace("{} {} {} {} {} {} {} {} {}", currentPose, currentVelocity.linearX(),
+        velocityLogger.trace("{} {} {} {} {} {} {} {} {}", currentTimeInSeconds, currentVelocity.linearX(),
                 currentVelocity.linearY(), currentVelocity.linearZ(), currentVelocity.angularZ(),
                 trajectory4d.getTrajectoryLinearX().getDesiredVelocity(currentTimeInSeconds),
                 trajectory4d.getTrajectoryLinearY().getDesiredVelocity(currentTimeInSeconds),
