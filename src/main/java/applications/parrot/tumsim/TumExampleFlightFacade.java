@@ -1,13 +1,10 @@
 package applications.parrot.tumsim;
 
 import applications.ExampleFlight;
-import applications.ExampleTrajectory2;
 import control.Trajectory4d;
 import control.localization.GazeboModelStateEstimator;
 import control.localization.StateEstimator;
 import gazebo_msgs.ModelStates;
-import org.ros.namespace.GraphName;
-import org.ros.node.AbstractNodeMain;
 import org.ros.node.ConnectedNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,29 +15,24 @@ import services.ros_subscribers.MessagesSubscriberService;
 import java.util.concurrent.TimeUnit;
 
 /**
- * This class is for running the simulation with the AR drone in the Tum simulator.
- *
  * @author Hoang Tung Dinh
- * @see <a href="https://github.com/dougvk/tum_simulator">The simulator</a>
  */
-public final class TumSimulatorExample extends AbstractNodeMain {
-
-    private static final Logger logger = LoggerFactory.getLogger(TumSimulatorExample.class);
+final class TumExampleFlightFacade {
+    private static final Logger logger = LoggerFactory.getLogger(TumExampleFlightFacade.class);
     private static final String MODEL_NAME = "quadrotor";
+    private final ExampleFlight exampleFlight;
 
-    @Override
-    public GraphName getDefaultNodeName() {
-        return GraphName.of("TumSimulatorExample");
-    }
-
-    @Override
-    public void onStart(final ConnectedNode connectedNode) {
+    private TumExampleFlightFacade(Trajectory4d trajectory4d, ConnectedNode connectedNode) {
         final ServiceFactory serviceFactory = TumSimServiceFactory.create(connectedNode);
         final StateEstimator stateEstimator = getStateEstimator(connectedNode);
-        final Trajectory4d trajectory = ExampleTrajectory2.create();
-        final ExampleFlight exampleFlight = ExampleFlight.create(serviceFactory, stateEstimator, trajectory,
-                connectedNode);
+        exampleFlight = ExampleFlight.create(serviceFactory, stateEstimator, trajectory4d, connectedNode);
+    }
 
+    public static TumExampleFlightFacade create(Trajectory4d trajectory4d, ConnectedNode connectedNode) {
+        return new TumExampleFlightFacade(trajectory4d, connectedNode);
+    }
+
+    public void fly() {
         // without this code, the take off message cannot be sent properly (I don't understand why).
         try {
             TimeUnit.SECONDS.sleep(3);
