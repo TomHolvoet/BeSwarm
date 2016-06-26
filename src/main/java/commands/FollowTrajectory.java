@@ -101,7 +101,7 @@ public final class FollowTrajectory implements Command {
                 return;
             }
 
-            logger.debug("Got pose and velocity. Start computing the next velocity response.");
+            logger.trace("Got pose and velocity. Start computing the next velocity response.");
             final double currentTimeInSeconds = (System.nanoTime() - startTimeInNanoSeconds) / NANO_SECOND_TO_SECOND;
             final InertialFrameVelocity nextVelocity = pidController4d.compute(currentState.get().pose(),
                     currentState.get().inertialFrameVelocity(), currentTimeInSeconds);

@@ -16,7 +16,8 @@ import utils.math.EulerAngle;
  */
 public final class PidController4d {
 
-    private static final Logger logger = LoggerFactory.getLogger(PidController4d.class);
+    private static final Logger poseLogger = LoggerFactory.getLogger(PidController4d.class + ".poselogger");
+    private static final Logger velocityLogger = LoggerFactory.getLogger(PidController4d.class + ".velocitylogger");
 
     private final PidController1d pidLinearX;
     private final PidController1d pidLinearY;
@@ -56,12 +57,19 @@ public final class PidController4d {
         final double angularZ = pidAngularZ.compute(adaptedCurrentYaw, currentVelocity.angularZ(),
                 currentTimeInSeconds);
 
-        logger.trace("{} {} {} {} {} {} {} {} {}", currentTimeInSeconds, currentPose.x(), currentPose.y(),
+        poseLogger.trace("{} {} {} {} {} {} {} {} {}", currentTimeInSeconds, currentPose.x(), currentPose.y(),
                 currentPose.z(), currentPose.yaw(),
                 trajectory4d.getTrajectoryLinearX().getDesiredPosition(currentTimeInSeconds),
                 trajectory4d.getTrajectoryLinearY().getDesiredPosition(currentTimeInSeconds),
                 trajectory4d.getTrajectoryLinearZ().getDesiredPosition(currentTimeInSeconds),
                 trajectory4d.getTrajectoryAngularZ().getDesiredPosition(currentTimeInSeconds));
+
+        velocityLogger.trace("{} {} {} {} {} {} {} {} {}", currentPose, currentVelocity.linearX(),
+                currentVelocity.linearY(), currentVelocity.linearZ(), currentVelocity.angularZ(),
+                trajectory4d.getTrajectoryLinearX().getDesiredVelocity(currentTimeInSeconds),
+                trajectory4d.getTrajectoryLinearY().getDesiredVelocity(currentTimeInSeconds),
+                trajectory4d.getTrajectoryLinearZ().getDesiredVelocity(currentTimeInSeconds),
+                trajectory4d.getTrajectoryAngularZ().getDesiredVelocity(currentTimeInSeconds));
 
         return Velocity.builder().linearX(linearX).linearY(linearY).linearZ(linearZ).angularZ(angularZ).build();
     }
