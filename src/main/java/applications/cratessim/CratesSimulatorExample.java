@@ -25,10 +25,10 @@ import sim.InsertResponse;
 import java.util.concurrent.TimeUnit;
 
 /**
- * This class is for running the simulation with the AR drone in the Tum simulator.
+ * This class is for running the Crates simulator.
  *
  * @author Hoang Tung Dinh
- * @see <a href="https://github.com/dougvk/tum_simulator">The simulator</a>
+ * @see <a href="https://bitbucket.org/vicengomez/crates">The simulator</a>
  */
 public final class CratesSimulatorExample extends AbstractNodeMain {
     private static final Logger logger = LoggerFactory.getLogger(CratesSimulatorExample.class);
