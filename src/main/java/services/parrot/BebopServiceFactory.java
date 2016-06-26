@@ -26,7 +26,7 @@ public final class BebopServiceFactory extends ParrotServiceFactory {
 
     @Override
     public Optional<VelocityService> createVelocityService() {
-        final String topicName = getDroneName() + "/cmd_vel";
+        final String topicName = "/" + getDroneName() + "/cmd_vel";
         final VelocityService velocityService = ParrotVelocityService.builder()
                 .publisher(getConnectedNode().<Twist>newPublisher(topicName, Twist._TYPE))
                 .minLinearX(-1)
@@ -44,7 +44,7 @@ public final class BebopServiceFactory extends ParrotServiceFactory {
 
     @Override
     public Optional<FlipService> createFlipService() {
-        final String topicName = getDroneName() + "/flip";
+        final String topicName = "/" + getDroneName() + "/flip";
         final FlipService flipService = ParrotFlipService.create(
                 getConnectedNode().<UInt8>newPublisher(topicName, UInt8._TYPE));
         logger.info("Flip service connected to {}", topicName);
