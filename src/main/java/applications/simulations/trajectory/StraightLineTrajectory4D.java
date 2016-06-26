@@ -50,7 +50,7 @@ public class StraightLineTrajectory4D implements Trajectory4d {
                 speedComponent.getAngle(),
                 endTime);
         this.holdTraj = new HoldPositionTrajectory4D(targetpoint);
-        this.hold = true;
+        this.hold = false;
     }
 
     private void setHoldPosition(boolean arg) {
@@ -93,7 +93,7 @@ public class StraightLineTrajectory4D implements Trajectory4d {
             extends Trajectory1DForwardingDecorator {
         private final double endTime;
 
-        public holdPositionForwarder(double srcComp, double speedComp,
+        holdPositionForwarder(double srcComp, double speedComp,
                 double endTime) {
             super(new LinearTrajectory1D(srcComp,
                     speedComp));

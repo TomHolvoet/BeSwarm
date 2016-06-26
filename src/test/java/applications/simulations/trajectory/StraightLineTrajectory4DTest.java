@@ -47,9 +47,6 @@ public class StraightLineTrajectory4DTest {
         assertEquals(10, target.getTrajectoryLinearX().getDesiredPosition(10),
                 0);
 
-        assertEquals(1, target.getTrajectoryLinearX().getDesiredVelocity(5),
-                0);
-
         double t = 5;
         double toCalc = 10d / Math.sqrt(300d) * t;
         assertEquals(toCalc,
@@ -61,6 +58,12 @@ public class StraightLineTrajectory4DTest {
                 target2.getTrajectoryLinearX().getDesiredPosition(t),
                 0.01);
 
+    }
+
+    @Test
+    public void getTrajectoryLinearXVelocity() {
+        assertEquals(1, target.getTrajectoryLinearX().getDesiredVelocity(5),
+                0);
     }
 
     @Test
@@ -77,8 +80,6 @@ public class StraightLineTrajectory4DTest {
                 0);
         assertEquals(0, target.getTrajectoryLinearY().getDesiredPosition(10),
                 0);
-        assertEquals(1, target.getTrajectoryLinearY().getDesiredVelocity(5),
-                0);
 
         double t = 5;
         double toCalc = 10d / Math.sqrt(300d) * t;
@@ -93,12 +94,16 @@ public class StraightLineTrajectory4DTest {
     }
 
     @Test
+    public void getTrajectoryLinearYVelocity() {
+        assertEquals(0, target.getTrajectoryLinearY().getDesiredVelocity(5),
+                0);
+    }
+
+    @Test
     public void getTrajectoryLinearZ() throws Exception {
         assertEquals(0, target.getTrajectoryLinearZ().getDesiredPosition(5),
                 0);
         assertEquals(0, target.getTrajectoryLinearZ().getDesiredPosition(10),
-                0);
-        assertEquals(1, target.getTrajectoryLinearZ().getDesiredVelocity(5),
                 0);
 
         double t = 5;
@@ -111,6 +116,12 @@ public class StraightLineTrajectory4DTest {
         assertEquals(toCalc,
                 target2.getTrajectoryLinearZ().getDesiredPosition(t),
                 0.01);
+    }
+
+    @Test
+    public void getTrajectoryLinearZVelocity() {
+        assertEquals(0, target.getTrajectoryLinearZ().getDesiredVelocity(5),
+                0);
     }
 
     @Test
