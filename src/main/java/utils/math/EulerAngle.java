@@ -1,7 +1,6 @@
 package utils.math;
 
 import com.google.auto.value.AutoValue;
-import geometry_msgs.Quaternion;
 
 /**
  * A value class which stores the euler angle in three dimensions.
