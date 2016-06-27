@@ -1,7 +1,7 @@
 package control.localization;
 
 import com.google.common.base.Optional;
-import control.dto.DroneState;
+import control.dto.DroneStateStamped;
 import control.dto.InertialFrameVelocity;
 import control.dto.Pose;
 import control.dto.Velocity;
@@ -19,6 +19,8 @@ public class GazeboModelStateEstimator implements StateEstimator {
     private final MessagesSubscriberService<ModelStates> modelStateSubscriber;
     private final String modelName;
 
+    private static final double NANO_SECOND_TO_SECOND = 1000000000.0;
+
     private GazeboModelStateEstimator(MessagesSubscriberService<ModelStates> modelStateSubscriber, String modelName) {
         this.modelStateSubscriber = modelStateSubscriber;
         this.modelName = modelName;
@@ -30,7 +32,7 @@ public class GazeboModelStateEstimator implements StateEstimator {
     }
 
     @Override
-    public Optional<DroneState> getCurrentState() {
+    public Optional<DroneStateStamped> getCurrentState() {
         final Optional<ModelStates> modelStateOptional = modelStateSubscriber.getMostRecentMessage();
         if (!modelStateOptional.isPresent()) {
             return Optional.absent();
@@ -45,7 +47,8 @@ public class GazeboModelStateEstimator implements StateEstimator {
         final Pose pose = getDronePose(modelStates, index);
         final InertialFrameVelocity inertialFrameVelocity = getInertialFrameVelocity(modelStates, index, pose);
 
-        return Optional.of(DroneState.create(pose, inertialFrameVelocity));
+        final double timeStampInSeconds = System.nanoTime() / NANO_SECOND_TO_SECOND;
+        return Optional.of(DroneStateStamped.create(pose, inertialFrameVelocity, timeStampInSeconds));
     }
 
     private static InertialFrameVelocity getInertialFrameVelocity(ModelStates modelStates, int index, Pose pose) {

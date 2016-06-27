@@ -6,7 +6,7 @@ import control.DefaultPidParameters;
 import control.PidController4d;
 import control.PidParameters;
 import control.Trajectory4d;
-import control.dto.DroneState;
+import control.dto.DroneStateStamped;
 import control.dto.InertialFrameVelocity;
 import control.localization.StateEstimator;
 import org.slf4j.Logger;
@@ -96,7 +96,7 @@ public final class FollowTrajectory implements Command {
         @Override
         public void run() {
             logger.trace("Start a control loop.");
-            final Optional<DroneState> currentState = stateEstimator.getCurrentState();
+            final Optional<DroneStateStamped> currentState = stateEstimator.getCurrentState();
             if (!currentState.isPresent()) {
                 logger.trace("Cannot get state.");
                 return;

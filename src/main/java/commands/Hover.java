@@ -1,7 +1,7 @@
 package commands;
 
 import com.google.common.base.Optional;
-import control.dto.DroneState;
+import control.dto.DroneStateStamped;
 import control.dto.Pose;
 import control.localization.StateEstimator;
 import org.slf4j.Logger;
@@ -39,7 +39,7 @@ public final class Hover implements Command {
     @Override
     public void execute() {
         logger.debug("Execute hover command.");
-        final Optional<DroneState> currentState = stateEstimator.getCurrentState();
+        final Optional<DroneStateStamped> currentState = stateEstimator.getCurrentState();
         if (!currentState.isPresent()) {
             logger.info("Cannot get the current state. Hover command will be ignored.");
             return;
