@@ -85,7 +85,7 @@ public final class LineTrajectory implements Trajectory4d {
 
             final double currentTime = timeInSeconds - startTime;
             if (currentTime < flightDuration) {
-                return StrictMath.sin(((currentTime % flightDuration)*Math.PI ) / flightDuration);
+                return 0.02;
             } else {
                 return 0.0;
             }
