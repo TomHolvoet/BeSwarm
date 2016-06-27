@@ -3,8 +3,6 @@ package control;
 import control.dto.InertialFrameVelocity;
 import control.dto.Pose;
 import control.dto.Velocity;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import utils.math.EulerAngle;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -17,10 +15,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * @author Hoang Tung Dinh
  */
 public final class PidController4d {
-
-    private static final Logger poseLogger = LoggerFactory.getLogger(PidController4d.class.getName() + ".poselogger");
-    private static final Logger velocityLogger = LoggerFactory.getLogger(
-            PidController4d.class.getName() + ".velocitylogger");
 
     private final PidController1d pidLinearX;
     private final PidController1d pidLinearY;

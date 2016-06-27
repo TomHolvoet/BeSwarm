@@ -23,6 +23,9 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public final class FollowTrajectory implements Command {
 
     private static final Logger logger = LoggerFactory.getLogger(FollowTrajectory.class);
+    private static final Logger poseLogger = LoggerFactory.getLogger(FollowTrajectory.class.getName() + ".poselogger");
+    private static final Logger velocityLogger = LoggerFactory.getLogger(
+            FollowTrajectory.class.getName() + ".velocitylogger");
 
     private final VelocityService velocityService;
     private final StateEstimator stateEstimator;
@@ -73,46 +76,32 @@ public final class FollowTrajectory implements Command {
                 .trajectory4d(trajectory4d)
                 .build();
 
-        final int stateLifeDurationInNumberOfControlLoops = (int) Math.ceil(
-                droneStateLifeDurationInSeconds / controlRateInSeconds);
-
-        final Runnable computeNextResponse = ComputeNextResponse.create(pidController4d, stateEstimator,
-                velocityService, stateLifeDurationInNumberOfControlLoops);
+        final Runnable computeNextResponse = new ComputeNextResponse(pidController4d);
         PeriodicTaskRunner.run(computeNextResponse, controlRateInSeconds, durationInSeconds);
     }
 
-    private static final class ComputeNextResponse implements Runnable {
+    private final class ComputeNextResponse implements Runnable {
         private final PidController4d pidController4d;
-        private final StateEstimator stateEstimator;
-        private final VelocityService velocityService;
         private final double startTimeInNanoSeconds;
         private final int stateLifeDurationInNumberOfControlLoops;
 
         private int counter = 0;
         private double lastTimeStamp = Double.MIN_VALUE;
-        private static final InertialFrameVelocity zeroVelocity = Velocity.builder()
+        private final InertialFrameVelocity zeroVelocity = Velocity.builder()
                 .linearX(0)
                 .linearY(0)
                 .linearZ(0)
                 .angularZ(0)
                 .build();
-        private static final Pose zeroPose = Pose.builder().x(0).y(0).z(0).yaw(0).build();
+        private final Pose zeroPose = Pose.builder().x(0).y(0).z(0).yaw(0).build();
 
         private static final double NANO_SECOND_TO_SECOND = 1000000000.0;
 
-        private ComputeNextResponse(PidController4d pidController4d, StateEstimator stateEstimator,
-                VelocityService velocityService, int stateLifeDurationInNumberOfControlLoops) {
+        private ComputeNextResponse(PidController4d pidController4d) {
             this.pidController4d = pidController4d;
-            this.stateEstimator = stateEstimator;
-            this.velocityService = velocityService;
             this.startTimeInNanoSeconds = System.nanoTime();
-            this.stateLifeDurationInNumberOfControlLoops = stateLifeDurationInNumberOfControlLoops;
-        }
-
-        public static ComputeNextResponse create(PidController4d pidController4d, StateEstimator stateEstimator,
-                VelocityService velocityService, int stateLifeDurationInNumberOfControlLoops) {
-            return new ComputeNextResponse(pidController4d, stateEstimator, velocityService,
-                    stateLifeDurationInNumberOfControlLoops);
+            this.stateLifeDurationInNumberOfControlLoops = (int) Math.ceil(
+                    droneStateLifeDurationInSeconds / controlRateInSeconds);
         }
 
         @Override
@@ -131,16 +120,29 @@ public final class FollowTrajectory implements Command {
                 logger.debug("Pose is outdated. Send zero velocity");
                 velocityService.sendVelocityMessage(zeroVelocity, zeroPose);
             } else {
-                computeResponseAndSendVelocity(currentState.get());
-            }
-        }
+                logger.trace("Got pose and velocity. Start computing the next velocity response.");
+                final double currentTimeInSeconds = (System.nanoTime() - startTimeInNanoSeconds) /
+                        NANO_SECOND_TO_SECOND;
+                final InertialFrameVelocity nextVelocity = pidController4d.compute(currentState.get().pose(),
+                        currentState.get().inertialFrameVelocity(), currentTimeInSeconds);
+                velocityService.sendVelocityMessage(nextVelocity, currentState.get().pose());
 
-        private void computeResponseAndSendVelocity(DroneStateStamped currentState) {
-            logger.trace("Got pose and velocity. Start computing the next velocity response.");
-            final double currentTimeInSeconds = (System.nanoTime() - startTimeInNanoSeconds) / NANO_SECOND_TO_SECOND;
-            final InertialFrameVelocity nextVelocity = pidController4d.compute(currentState.pose(),
-                    currentState.inertialFrameVelocity(), currentTimeInSeconds);
-            velocityService.sendVelocityMessage(nextVelocity, currentState.pose());
+                poseLogger.trace("{} {} {} {} {} {} {} {} {}", currentTimeInSeconds, currentState.get().pose().x(),
+                        currentState.get().pose().y(), currentState.get().pose().z(), currentState.get().pose().yaw(),
+                        trajectory4d.getDesiredPositionX(currentTimeInSeconds),
+                        trajectory4d.getDesiredPositionY(currentTimeInSeconds),
+                        trajectory4d.getDesiredPositionZ(currentTimeInSeconds),
+                        trajectory4d.getDesiredAngleZ(currentTimeInSeconds));
+                velocityLogger.trace("{} {} {} {} {} {} {} {} {}", currentTimeInSeconds,
+                        currentState.get().inertialFrameVelocity().linearX(),
+                        currentState.get().inertialFrameVelocity().linearY(),
+                        currentState.get().inertialFrameVelocity().linearZ(),
+                        currentState.get().inertialFrameVelocity().angularZ(),
+                        trajectory4d.getDesiredVelocityX(currentTimeInSeconds),
+                        trajectory4d.getDesiredVelocityY(currentTimeInSeconds),
+                        trajectory4d.getDesiredVelocityZ(currentTimeInSeconds),
+                        trajectory4d.getDesiredAngularVelocityZ(currentTimeInSeconds));
+            }
         }
 
         private void setCounter(DroneStateStamped currentState) {
