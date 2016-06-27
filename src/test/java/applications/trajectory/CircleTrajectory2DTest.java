@@ -10,15 +10,15 @@ public class CircleTrajectory2DTest extends Periodic2DTest {
 
     @Before
     public void setUp() throws Exception {
-        highFrequencyCircle = new CircleTrajectory2D(
-                radius, highFreq);
-        lowFrequencyCircle = new CircleTrajectory2D(
-                radius, lowFreq);
+        highFrequencyCircle = CircleTrajectory2D.builder()
+                .setFrequency(highFreq).setRadius(radius).build();
+        lowFrequencyCircle = CircleTrajectory2D.builder()
+                .setFrequency(lowFreq).setRadius(radius).build();
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testConstructorTooHighSpeedRate() {
-        new CircleTrajectory2D(
-                1, 1);
+        CircleTrajectory2D.builder()
+                .setFrequency(1).setRadius(1).build();
     }
 }
