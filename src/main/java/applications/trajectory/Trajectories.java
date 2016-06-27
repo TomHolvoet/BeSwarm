@@ -17,7 +17,7 @@ public final class Trajectories {
      * default radius(1) and frequency (5/s).
      */
     public static Trajectory4d newExampleCircleTrajectory4D() {
-        return new CircleTrajectory4D.Builder().build();
+        return CircleTrajectory4D.builder().build();
     }
 
     /**
@@ -30,7 +30,7 @@ public final class Trajectories {
     public static Trajectory4d newFlatCircleTrajectory4D(Point4D origin,
             double radius,
             double frequency) {
-        return new CircleTrajectory4D.Builder().setRadius(radius)
+        return CircleTrajectory4D.builder().setRadius(radius)
                 .setFrequency(frequency).setLocation(origin).build();
     }
 
@@ -45,7 +45,7 @@ public final class Trajectories {
     public static Trajectory4d newCircleTrajectory4D(Point4D origin,
             double radius,
             double frequency, double planeAngle) {
-        return new CircleTrajectory4D.Builder().setRadius(radius)
+        return CircleTrajectory4D.builder().setRadius(radius)
                 .setFrequency(frequency).setPlaneAngle(planeAngle)
                 .setLocation(origin).build();
     }

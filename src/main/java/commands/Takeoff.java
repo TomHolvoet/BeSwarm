@@ -25,7 +25,7 @@ public final class Takeoff implements Command {
 
     @Override
     public void execute() {
-        logger.debug("Start taking off.");
+        logger.debug("Execute take off command.");
         takeOffService.sendTakingOffMessage();
     }
 }

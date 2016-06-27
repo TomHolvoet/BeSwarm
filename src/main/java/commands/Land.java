@@ -28,7 +28,7 @@ public final class Land implements Command {
 
     @Override
     public void execute() {
-        logger.debug("Start landing.");
+        logger.debug("Execute land command.");
         landService.sendLandingMessage();
     }
 }

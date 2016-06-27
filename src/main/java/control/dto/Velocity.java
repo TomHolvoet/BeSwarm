@@ -1,6 +1,7 @@
 package control.dto;
 
 import com.google.auto.value.AutoValue;
+import geometry_msgs.Twist;
 
 /**
  * @author Hoang Tung Dinh
@@ -23,6 +24,21 @@ public abstract class Velocity implements InertialFrameVelocity, BodyFrameVeloci
 
     public static Builder builder() {
         return new AutoValue_Velocity.Builder();
+    }
+
+    /**
+     * Converts a Twist velocity (given in NED coordinates) to a local velocity using XYZ frame
+     * TODO fix frame of reference for local velocity
+     *
+     * @return
+     */
+    public static Velocity createLocalVelocityFrom(Twist twist) {
+        final double twistX = twist.getLinear().getX();
+        final double twistY = twist.getLinear().getY();
+        final double twistZ = twist.getLinear().getZ();
+        final double twistAngularZ = twist.getAngular().getZ();
+
+        return builder().linearX(twistX).linearY(twistY).linearZ(twistZ).angularZ(twistAngularZ).build();
     }
 
     @AutoValue.Builder

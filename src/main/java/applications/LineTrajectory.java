@@ -3,24 +3,32 @@ package applications;
 import control.Trajectory1d;
 import control.Trajectory4d;
 
-/**
- * @author Hoang Tung Dinh
- */
-public final class ExampleTrajectory2 implements Trajectory4d {
+import java.util.logging.Logger;
 
-    private final Trajectory1d trajectoryLinearX = new TrajectoryLinearX();
-    private final Trajectory1d trajectoryLinearY = new TrajectoryLinearY();
-    private final Trajectory1d trajectoryLinearZ = new TrajectoryLinearZ();
+/**
+ * @author mhct
+ */
+public final class LineTrajectory implements Trajectory4d {
+
+    private final Trajectory1d trajectoryLinearX;
+    private final Trajectory1d trajectoryLinearY;
+    private final Trajectory1d trajectoryLinearZ;
 
     private final Trajectory1d trajectoryAngularZ = new TrajectoryAngularZ();
 
     private double startTime = -1;
 
-    private ExampleTrajectory2() {}
-
-    public static ExampleTrajectory2 create() {
-        return new ExampleTrajectory2();
+    private LineTrajectory(double flightDuration, double length) {
+        this.trajectoryLinearX = new TrajectoryLinearX(flightDuration, length);
+        this.trajectoryLinearY = new TrajectoryLinearY();
+        this.trajectoryLinearZ = new TrajectoryLinearZ();
     }
+
+    public static LineTrajectory create(double flightDuration, double length) {
+        return new LineTrajectory(flightDuration, length);
+    }
+
+    private static final Logger logger = Logger.getLogger("Trajectory");
 
     @Override
     public double getDesiredPositionX(double timeInSeconds) {
@@ -64,16 +72,29 @@ public final class ExampleTrajectory2 implements Trajectory4d {
 
     private final class TrajectoryLinearX implements Trajectory1d {
 
-        private TrajectoryLinearX() {}
+        private final double flightDuration;
+        private double length;
+
+        public TrajectoryLinearX(double flightDuration, double length) {
+            this.flightDuration = flightDuration;
+            this.length = length;
+        }
 
         @Override
         public double getDesiredPosition(double timeInSeconds) {
             if (startTime < 0) {
                 startTime = timeInSeconds;
             }
-
             final double currentTime = timeInSeconds - startTime;
-            return 2 * StrictMath.cos(0.25 * currentTime);
+
+            if (currentTime >= flightDuration) {
+                return length;
+            } else {
+                double position = 0 + (currentTime % flightDuration) * length/flightDuration;
+                logger.info("Desired position" + position);
+
+                return position;
+            }
         }
 
         @Override
@@ -83,7 +104,11 @@ public final class ExampleTrajectory2 implements Trajectory4d {
             }
 
             final double currentTime = timeInSeconds - startTime;
-            return -0.5 * StrictMath.sin(0.25 * currentTime);
+            if (currentTime < flightDuration) {
+                return 0.02;
+            } else {
+                return 0.0;
+            }
         }
     }
 
@@ -93,22 +118,12 @@ public final class ExampleTrajectory2 implements Trajectory4d {
 
         @Override
         public double getDesiredPosition(double timeInSeconds) {
-            if (startTime < 0) {
-                startTime = timeInSeconds;
-            }
-
-            final double currentTime = timeInSeconds - startTime;
-            return 2 * StrictMath.sin(0.25 * currentTime);
+            return -2.0;
         }
 
         @Override
         public double getDesiredVelocity(double timeInSeconds) {
-            if (startTime < 0) {
-                startTime = timeInSeconds;
-            }
-
-            final double currentTime = timeInSeconds - startTime;
-            return 0.5 * StrictMath.cos(0.25 * currentTime);
+            return 0.0;
         }
     }
 
@@ -122,8 +137,7 @@ public final class ExampleTrajectory2 implements Trajectory4d {
                 startTime = timeInSeconds;
             }
 
-            final double currentTime = timeInSeconds - startTime;
-            return 4 + 2 * StrictMath.cos(0.25 * currentTime);
+            return 1.5;
         }
 
         @Override
@@ -132,8 +146,7 @@ public final class ExampleTrajectory2 implements Trajectory4d {
                 startTime = timeInSeconds;
             }
 
-            final double currentTime = timeInSeconds - startTime;
-            return -0.5 * StrictMath.sin(0.25 * currentTime);
+            return 0.0;
         }
     }
 
@@ -147,8 +160,7 @@ public final class ExampleTrajectory2 implements Trajectory4d {
                 startTime = timeInSeconds;
             }
 
-            final double currentTime = timeInSeconds - startTime;
-            return 3.14 * StrictMath.sin(0.25 * currentTime);
+            return 0.0;
         }
 
         @Override
@@ -157,8 +169,7 @@ public final class ExampleTrajectory2 implements Trajectory4d {
                 startTime = timeInSeconds;
             }
 
-            final double currentTime = timeInSeconds - startTime;
-            return 0.785 * StrictMath.cos(0.25 * currentTime);
+            return 0.0;
         }
     }
 }

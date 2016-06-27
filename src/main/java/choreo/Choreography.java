@@ -1,10 +1,8 @@
 package choreo;
 
-import applications.trajectory.Trajectory4DForwardingDecorator;
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Queues;
-import control.Trajectory1d;
 import control.Trajectory4d;
 
 import java.util.List;
@@ -29,47 +27,9 @@ public final class Choreography implements Trajectory4d {
         timeWindowShift = 0d;
     }
 
-    @Override
-    public Trajectory1d getTrajectoryLinearX() {
-        return segments.peek().getTarget().getTrajectoryLinearX();
-    }
-
-    @Override
-    public Trajectory1d getTrajectoryLinearY() {
-        return segments.peek().getTarget().getTrajectoryLinearY();
-    }
-
-    @Override
-    public Trajectory1d getTrajectoryLinearZ() {
-        return segments.peek().getTarget().getTrajectoryLinearZ();
-    }
-
-    @Override
-    public Trajectory1d getTrajectoryAngularZ() {
-        return segments.peek().getTarget().getTrajectoryAngularZ();
-    }
-
-    private void fixTimingHooks(List<TimingHook> hooks) {
-        for (TimingHook t : hooks) {
-            t.subscribeTimingListener(new TimingListener() {
-                @Override
-                public void notifyNewTiming(double timeInSeconds) {
-                    checkChoreoSegments(timeInSeconds);
-                }
-            });
-        }
-    }
-
-    /**
-     * @return A choreography builder instance.
-     */
-    public static Builder builder() {
-        return new Builder();
-    }
-
     private void checkChoreoSegments(double timeInSeconds) {
         double normTime = normalize(timeInSeconds);
-        if (normTime > getCurrentSegment().getDuration()) {
+        if (normTime >= getCurrentSegment().getDuration()) {
             shiftSegments();
         }
     }
@@ -88,34 +48,66 @@ public final class Choreography implements Trajectory4d {
         return segments.peek();
     }
 
-    private static final class TimingHook
-            extends Trajectory4DForwardingDecorator {
-        private final List<TimingListener> listeners;
+    @Override
+    public double getDesiredPositionX(double timeInSeconds) {
+        checkChoreoSegments(timeInSeconds);
+        return getCurrentSegment().getTarget()
+                .getDesiredPositionX(timeInSeconds);
+    }
 
-        private TimingHook(Trajectory4d target) {
-            super(target);
-            listeners = Lists.newArrayList();
-        }
+    @Override
+    public double getDesiredVelocityX(double timeInSeconds) {
+        checkChoreoSegments(timeInSeconds);
+        return getCurrentSegment().getTarget()
+                .getDesiredVelocityX(timeInSeconds);
+    }
 
-        @Override
-        protected void velocityDelegate(double timeInSeconds) {
-            notify(timeInSeconds);
-        }
+    @Override
+    public double getDesiredPositionY(double timeInSeconds) {
+        checkChoreoSegments(timeInSeconds);
+        return getCurrentSegment().getTarget()
+                .getDesiredPositionY(timeInSeconds);
+    }
 
-        @Override
-        protected void positionDelegate(double timeInSeconds) {
-            notify(timeInSeconds);
-        }
+    @Override
+    public double getDesiredVelocityY(double timeInSeconds) {
+        checkChoreoSegments(timeInSeconds);
+        return getCurrentSegment().getTarget()
+                .getDesiredVelocityY(timeInSeconds);
+    }
 
-        private void notify(double timeInSeconds) {
-            for (TimingListener t : listeners) {
-                t.notifyNewTiming(timeInSeconds);
-            }
-        }
+    @Override
+    public double getDesiredPositionZ(double timeInSeconds) {
+        checkChoreoSegments(timeInSeconds);
+        return getCurrentSegment().getTarget()
+                .getDesiredPositionZ(timeInSeconds);
+    }
 
-        void subscribeTimingListener(TimingListener t) {
-            this.listeners.add(t);
-        }
+    @Override
+    public double getDesiredVelocityZ(double timeInSeconds) {
+        checkChoreoSegments(timeInSeconds);
+        return getCurrentSegment().getTarget()
+                .getDesiredVelocityZ(timeInSeconds);
+    }
+
+    @Override
+    public double getDesiredAngleZ(double timeInSeconds) {
+        checkChoreoSegments(timeInSeconds);
+        return getCurrentSegment().getTarget().getDesiredAngleZ(timeInSeconds);
+    }
+
+    @Override
+    public double getDesiredAngularVelocityZ(double timeInSeconds) {
+        checkChoreoSegments(timeInSeconds);
+        return getCurrentSegment().getTarget()
+                .getDesiredAngularVelocityZ(timeInSeconds);
+    }
+
+    /**
+     * @return A choreography builder instance.
+     */
+    public static Builder builder() {
+        return new Builder();
     }
 
     /**
@@ -144,7 +136,7 @@ public final class Choreography implements Trajectory4d {
         /**
          * Creates a new Builder for choreographies.
          */
-        public Builder() {
+        private Builder() {
             this.segments = Lists.newArrayList();
         }
 
@@ -165,16 +157,7 @@ public final class Choreography implements Trajectory4d {
          * @return A fully built choreography instance.
          */
         public Choreography build() {
-            List<ChoreoSegment> newSegments = Lists.newArrayList();
-            List<TimingHook> th = Lists.newArrayList();
-            for (ChoreoSegment s : segments) {
-                TimingHook t = new TimingHook(s.getTarget());
-                th.add(t);
-                newSegments.add(new AutoValue_Choreography_ChoreoSegment(t,
-                        s.getDuration()));
-            }
-            Choreography choreography = new Choreography(newSegments);
-            choreography.fixTimingHooks(th);
+            Choreography choreography = new Choreography(segments);
             return choreography;
         }
 

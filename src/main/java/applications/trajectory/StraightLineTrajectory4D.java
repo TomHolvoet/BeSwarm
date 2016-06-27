@@ -1,6 +1,5 @@
 package applications.trajectory;
 
-import control.Trajectory1d;
 import control.Trajectory4d;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -10,13 +9,10 @@ import static com.google.common.base.Preconditions.checkArgument;
  *
  * @author Kristof Coninx <kristof.coninx AT cs.kuleuven.be>
  */
-public class StraightLineTrajectory4D implements Trajectory4d {
-    private final Trajectory1d xComp;
-    private final Trajectory1d yComp;
-    private final Trajectory1d zComp;
-    private final Trajectory1d angleComp;
+class StraightLineTrajectory4D implements Trajectory4d {
+    private final Trajectory4d moveTraj;
     private final Trajectory4d holdTraj;
-    private boolean hold;
+    private Trajectory4d currentTraj;
 
     StraightLineTrajectory4D(Point4D srcpoint, Point4D targetpoint,
             double velocity) {
@@ -37,71 +33,78 @@ public class StraightLineTrajectory4D implements Trajectory4d {
                         velocity * (diff.getY() / totalDistance),
                         velocity * (diff.getZ() / totalDistance),
                         diff.getAngle() / endTime);
-        this.xComp = new HoldPositionForwarder(srcpoint.getX(),
-                speedComponent.getX(),
-                endTime);
-        this.yComp = new HoldPositionForwarder(srcpoint.getY(),
-                speedComponent.getY(),
-                endTime);
-        this.zComp = new HoldPositionForwarder(srcpoint.getZ(),
-                speedComponent.getZ(),
-                endTime);
-        this.angleComp = new HoldPositionForwarder(srcpoint.getAngle(),
-                speedComponent.getAngle(),
-                endTime);
         this.holdTraj = new HoldPositionTrajectory4D(targetpoint);
-        this.hold = false;
+        this.moveTraj = new HoldPositionForwarder(srcpoint, speedComponent,
+                endTime);
+        this.currentTraj = moveTraj;
     }
 
-    private void setHoldPosition(boolean arg) {
-        this.hold = arg;
+    private void setHoldPosition(boolean shouldHold) {
+        if (shouldHold) {
+            this.currentTraj = holdTraj;
+        } else {
+            this.currentTraj = moveTraj;
+        }
     }
 
     @Override
-    public Trajectory1d getTrajectoryLinearX() {
-        if (!hold) {
-            return this.xComp;
-        }
-        return holdTraj.getTrajectoryLinearX();
+    public double getDesiredPositionX(double timeInSeconds) {
+        return currentTraj.getDesiredPositionX(timeInSeconds);
     }
 
     @Override
-    public Trajectory1d getTrajectoryLinearY() {
-        if (!hold) {
-            return this.yComp;
-        }
-        return holdTraj.getTrajectoryLinearY();
+    public double getDesiredVelocityX(double timeInSeconds) {
+        return currentTraj.getDesiredVelocityX(timeInSeconds);
     }
 
     @Override
-    public Trajectory1d getTrajectoryLinearZ() {
-        if (!hold) {
-            return this.zComp;
-        }
-        return holdTraj.getTrajectoryLinearZ();
+    public double getDesiredPositionY(double timeInSeconds) {
+        return currentTraj.getDesiredPositionY(timeInSeconds);
     }
 
     @Override
-    public Trajectory1d getTrajectoryAngularZ() {
-        if (!hold) {
-            return this.angleComp;
-        }
-        return holdTraj.getTrajectoryAngularZ();
+    public double getDesiredVelocityY(double timeInSeconds) {
+        return currentTraj.getDesiredVelocityY(timeInSeconds);
+    }
+
+    @Override
+    public double getDesiredPositionZ(double timeInSeconds) {
+        return currentTraj.getDesiredPositionZ(timeInSeconds);
+    }
+
+    @Override
+    public double getDesiredVelocityZ(double timeInSeconds) {
+        return currentTraj
+                .getDesiredVelocityZ(timeInSeconds);
+    }
+
+    @Override
+    public double getDesiredAngleZ(double timeInSeconds) {
+        return currentTraj.getDesiredAngleZ(timeInSeconds);
+    }
+
+    @Override
+    public double getDesiredAngularVelocityZ(double timeInSeconds) {
+        return currentTraj
+                .getDesiredAngularVelocityZ(timeInSeconds);
     }
 
     private class HoldPositionForwarder
-            extends Trajectory1DForwardingDecorator {
+            extends Trajectory4DForwardingDecorator {
         private final double endTime;
 
-        HoldPositionForwarder(double srcComp, double speedComp,
+        HoldPositionForwarder(Point4D srcComp, Point4D speedComp,
                 double endTime) {
-            super(new LinearTrajectory1D(srcComp,
+            super(new LinearTrajectory4D(srcComp,
                     speedComp));
             this.endTime = endTime;
         }
 
         @Override
         protected void velocityDelegate(double timeInSeconds) {
+            if (timeInSeconds >= endTime) {
+                setHoldPosition(true);
+            }
         }
 
         @Override

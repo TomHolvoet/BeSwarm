@@ -22,5 +22,13 @@ appender("FILE_DRONE_POSE", FileAppender) {
     }
 }
 
+appender("FILE_DRONE_VELOCITY", FileAppender) {
+    file = "${DIR}/dronevelocity.log"
+    encoder(PatternLayoutEncoder) {
+        pattern = "%msg %n"
+    }
+}
+
 root(DEBUG, ["STDOUT", "FILE"])
 logger("control.PidController4d.poselogger", TRACE, ["FILE_DRONE_POSE"], false)
+logger("control.PidController4d.velocitylogger", TRACE, ["FILE_DRONE_VELOCITY"], false)

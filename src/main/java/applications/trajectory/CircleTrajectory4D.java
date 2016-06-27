@@ -13,7 +13,7 @@ import control.Trajectory4d;
  *
  * @author Kristof Coninx <kristof.coninx AT cs.kuleuven.be>
  */
-public final class CircleTrajectory4D extends PeriodicTrajectory
+final class CircleTrajectory4D extends PeriodicTrajectory
         implements Trajectory4d {
     private final Point4D location;
     private final CircleTrajectory2D xycircle;
@@ -38,48 +38,45 @@ public final class CircleTrajectory4D extends PeriodicTrajectory
     }
 
     @Override
-    public Trajectory1d getTrajectoryLinearX() {
-        return xycircle.getTrajectoryLinearAbscissa();
+    public double getDesiredPositionX(double timeInSeconds) {
+        return xycircle.getDesiredPositionAbscissa(timeInSeconds);
     }
 
     @Override
-    public Trajectory1d getTrajectoryLinearY() {
-        return xycircle.getTrajectoryLinearOrdinate();
+    public double getDesiredVelocityX(double timeInSeconds) {
+        return xycircle.getDesiredVelocityAbscissa(timeInSeconds);
     }
 
     @Override
-    public Trajectory1d getTrajectoryLinearZ() {
-        return new Trajectory1d() {
-            @Override
-            public double getDesiredPosition(double timeInSeconds) {
-                return scaleFactor * xycircle
-                        .getTrajectoryLinearOrdinate()
-                        .getDesiredPosition(timeInSeconds) - location.getY()
-                        + location.getZ();
-            }
-
-            @Override
-            public double getDesiredVelocity(double timeInSeconds) {
-                return scaleFactor * xycircle
-                        .getTrajectoryLinearOrdinate()
-                        .getDesiredVelocity(timeInSeconds);
-            }
-        };
+    public double getDesiredPositionY(double timeInSeconds) {
+        return xycircle.getDesiredPositionOrdinate(timeInSeconds);
     }
 
     @Override
-    public Trajectory1d getTrajectoryAngularZ() {
-        return new Trajectory1d() {
-            @Override
-            public double getDesiredPosition(double timeInSeconds) {
-                return angularMotion.getDesiredPosition(timeInSeconds);
-            }
+    public double getDesiredVelocityY(double timeInSeconds) {
+        return xycircle.getDesiredVelocityOrdinate(timeInSeconds);
+    }
 
-            @Override
-            public double getDesiredVelocity(double timeInSeconds) {
-                return angularMotion.getDesiredVelocity(timeInSeconds);
-            }
-        };
+    @Override
+    public double getDesiredPositionZ(double timeInSeconds) {
+        return scaleFactor * xycircle
+                .getDesiredPositionOrdinate(timeInSeconds) - location.getY()
+                + location.getZ();
+    }
+
+    @Override
+    public double getDesiredVelocityZ(double timeInSeconds) {
+        return scaleFactor * xycircle.getDesiredVelocityOrdinate(timeInSeconds);
+    }
+
+    @Override
+    public double getDesiredAngleZ(double timeInSeconds) {
+        return angularMotion.getDesiredPosition(timeInSeconds);
+    }
+
+    @Override
+    public double getDesiredAngularVelocityZ(double timeInSeconds) {
+        return angularMotion.getDesiredVelocity(timeInSeconds);
     }
 
     /**
@@ -91,6 +88,9 @@ public final class CircleTrajectory4D extends PeriodicTrajectory
         private double frequency = 5;
         private double planeAngle = 0;
         private double phase = 0;
+
+        private Builder() {
+        }
 
         public Builder setLocation(Point4D location) {
             this.location = location;
@@ -118,7 +118,8 @@ public final class CircleTrajectory4D extends PeriodicTrajectory
         }
 
         public CircleTrajectory4D build() {
-            return new CircleTrajectory4D(location, phase, radius, frequency,
+            return new CircleTrajectory4D(location, phase, radius,
+                    frequency,
                     planeAngle);
         }
     }

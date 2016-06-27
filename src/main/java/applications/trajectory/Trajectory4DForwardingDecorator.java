@@ -1,6 +1,5 @@
 package applications.trajectory;
 
-import control.Trajectory1d;
 import control.Trajectory4d;
 
 /**
@@ -21,83 +20,60 @@ public abstract class Trajectory4DForwardingDecorator implements Trajectory4d {
         this.target = target;
     }
 
-    @Override
-    public Trajectory1d getTrajectoryLinearX() {
-        return new Trajectory1d() {
-            @Override
-            public double getDesiredPosition(double timeInSeconds) {
-                positionDelegate(timeInSeconds);
-                return target.getTrajectoryLinearX()
-                        .getDesiredPosition(timeInSeconds);
-            }
-
-            @Override
-            public double getDesiredVelocity(double timeInSeconds) {
-                velocityDelegate(timeInSeconds);
-                return target.getTrajectoryLinearX()
-                        .getDesiredVelocity(timeInSeconds);
-            }
-        };
-    }
-
-    @Override
-    public Trajectory1d getTrajectoryLinearY() {
-        return new Trajectory1d() {
-            @Override
-            public double getDesiredPosition(double timeInSeconds) {
-                positionDelegate(timeInSeconds);
-                return target.getTrajectoryLinearY()
-                        .getDesiredPosition(timeInSeconds);
-            }
-
-            @Override
-            public double getDesiredVelocity(double timeInSeconds) {
-                velocityDelegate(timeInSeconds);
-                return target.getTrajectoryLinearY()
-                        .getDesiredVelocity(timeInSeconds);
-            }
-        };
-    }
-
-    @Override
-    public Trajectory1d getTrajectoryLinearZ() {
-        return new Trajectory1d() {
-            @Override
-            public double getDesiredPosition(double timeInSeconds) {
-                positionDelegate(timeInSeconds);
-                return target.getTrajectoryLinearZ()
-                        .getDesiredPosition(timeInSeconds);
-            }
-
-            @Override
-            public double getDesiredVelocity(double timeInSeconds) {
-                velocityDelegate(timeInSeconds);
-                return target.getTrajectoryLinearZ()
-                        .getDesiredVelocity(timeInSeconds);
-            }
-        };
-    }
-
-    @Override
-    public Trajectory1d getTrajectoryAngularZ() {
-        return new Trajectory1d() {
-            @Override
-            public double getDesiredPosition(double timeInSeconds) {
-                positionDelegate(timeInSeconds);
-                return target.getTrajectoryAngularZ()
-                        .getDesiredPosition(timeInSeconds);
-            }
-
-            @Override
-            public double getDesiredVelocity(double timeInSeconds) {
-                velocityDelegate(timeInSeconds);
-                return target.getTrajectoryAngularZ()
-                        .getDesiredVelocity(timeInSeconds);
-            }
-        };
-    }
-
     protected abstract void velocityDelegate(double timeInSeconds);
 
     protected abstract void positionDelegate(double timeInSeconds);
+
+    @Override
+    public double getDesiredPositionX(double timeInSeconds) {
+        positionDelegate(timeInSeconds);
+        return target.getDesiredPositionX(timeInSeconds);
+    }
+
+    @Override
+    public double getDesiredVelocityX(double timeInSeconds) {
+        velocityDelegate(timeInSeconds);
+        return target.getDesiredVelocityX(timeInSeconds);
+    }
+
+    @Override
+    public double getDesiredPositionY(double timeInSeconds) {
+        positionDelegate(timeInSeconds);
+        return target.getDesiredPositionY(timeInSeconds);
+
+    }
+
+    @Override
+    public double getDesiredVelocityY(double timeInSeconds) {
+        velocityDelegate(timeInSeconds);
+        return target.getDesiredVelocityY(timeInSeconds);
+
+    }
+
+    @Override
+    public double getDesiredPositionZ(double timeInSeconds) {
+        positionDelegate(timeInSeconds);
+        return target.getDesiredPositionZ(timeInSeconds);
+
+    }
+
+    @Override
+    public double getDesiredVelocityZ(double timeInSeconds) {
+        velocityDelegate(timeInSeconds);
+        return target.getDesiredVelocityZ(timeInSeconds);
+
+    }
+
+    @Override
+    public double getDesiredAngleZ(double timeInSeconds) {
+        positionDelegate(timeInSeconds);
+        return target.getDesiredAngleZ(timeInSeconds);
+
+    }
+
+    @Override
+    public double getDesiredAngularVelocityZ(double timeInSeconds) {
+        velocityDelegate(timeInSeconds);
+        return target.getDesiredAngularVelocityZ(timeInSeconds);
+    }
 }

@@ -37,7 +37,7 @@ public class SwingTrajectory4DTest {
     public void getTrajectoryLinearXTestBounds() throws Exception {
         List<Double> l = Lists.newArrayList();
         for (int i = 0; i < 1000; i++) {
-            l.add(target.getTrajectoryLinearX().getDesiredPosition(i / 10d));
+            l.add(target.getDesiredPositionX(i / 10d));
         }
         assertBounds(l, origin.getX() - radius, origin.getX() + radius);
     }
@@ -46,8 +46,7 @@ public class SwingTrajectory4DTest {
     public void getTrajectoryLinearYTestBounds() throws Exception {
         List<Double> l = Lists.newArrayList();
         for (int i = 0; i < 1000; i++) {
-            l.add(target.getTrajectoryLinearY()
-                    .getDesiredPosition(i / 10d));
+            l.add(target.getDesiredPositionY(i / 10d));
         }
         assertBounds(l, origin.getY(), origin.getY());
     }
@@ -56,7 +55,7 @@ public class SwingTrajectory4DTest {
     public void getTrajectoryLinearZTestBounds() throws Exception {
         List<Double> l = Lists.newArrayList();
         for (int i = 0; i < 1000; i++) {
-            l.add(target.getTrajectoryLinearZ().getDesiredPosition(i / 10d));
+            l.add(target.getDesiredPositionZ(i / 10d));
         }
         assertBounds(l, origin.getZ() - radius, origin.getZ());
     }
@@ -65,8 +64,7 @@ public class SwingTrajectory4DTest {
     public void getTrajectoryAngularZTestBounds() throws Exception {
         List<Double> l = Lists.newArrayList();
         for (int i = 0; i < 1000; i++) {
-            l.add(target.getTrajectoryLinearZ()
-                    .getDesiredPosition(i / 10d));
+            l.add(target.getDesiredPositionZ(i / 10d));
         }
         assertBounds(l, 0,
                 Math.PI * 2);
