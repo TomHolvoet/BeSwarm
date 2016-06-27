@@ -1,75 +1,54 @@
 package applications.trajectory;
 
-import control.Trajectory1d;
 import control.Trajectory4d;
 
 /**
  * @author Kristof Coninx <kristof.coninx AT cs.kuleuven.be>
  */
-public class HoldPositionTrajectory4D implements Trajectory4d {
-    private final Point4D targetpoint;
+class HoldPositionTrajectory4D implements Trajectory4d {
+    private final Point4D targetPoint;
 
     HoldPositionTrajectory4D(Point4D targetpoint) {
-        this.targetpoint = targetpoint;
+        this.targetPoint = targetpoint;
     }
 
     @Override
-    public Trajectory1d getTrajectoryLinearX() {
-        return new Trajectory1d() {
-            @Override
-            public double getDesiredPosition(double timeInSeconds) {
-                return targetpoint.getX();
-            }
-
-            @Override
-            public double getDesiredVelocity(double timeInSeconds) {
-                return 0;
-            }
-        };
+    public double getDesiredPositionX(double timeInSeconds) {
+        return targetPoint.getX();
     }
 
     @Override
-    public Trajectory1d getTrajectoryLinearY() {
-        return new Trajectory1d() {
-            @Override
-            public double getDesiredPosition(double timeInSeconds) {
-                return targetpoint.getY();
-            }
-
-            @Override
-            public double getDesiredVelocity(double timeInSeconds) {
-                return 0;
-            }
-        };
+    public double getDesiredVelocityX(double timeInSeconds) {
+        return 0;
     }
 
     @Override
-    public Trajectory1d getTrajectoryLinearZ() {
-        return new Trajectory1d() {
-            @Override
-            public double getDesiredPosition(double timeInSeconds) {
-                return targetpoint.getZ();
-            }
-
-            @Override
-            public double getDesiredVelocity(double timeInSeconds) {
-                return 0;
-            }
-        };
+    public double getDesiredPositionY(double timeInSeconds) {
+        return targetPoint.getY();
     }
 
     @Override
-    public Trajectory1d getTrajectoryAngularZ() {
-        return new Trajectory1d() {
-            @Override
-            public double getDesiredPosition(double timeInSeconds) {
-                return targetpoint.getAngle();
-            }
+    public double getDesiredVelocityY(double timeInSeconds) {
+        return 0;
+    }
 
-            @Override
-            public double getDesiredVelocity(double timeInSeconds) {
-                return 0;
-            }
-        };
+    @Override
+    public double getDesiredPositionZ(double timeInSeconds) {
+        return targetPoint.getZ();
+    }
+
+    @Override
+    public double getDesiredVelocityZ(double timeInSeconds) {
+        return 0;
+    }
+
+    @Override
+    public double getDesiredAngleZ(double timeInSeconds) {
+        return targetPoint.getAngle();
+    }
+
+    @Override
+    public double getDesiredAngularVelocityZ(double timeInSeconds) {
+        return 0;
     }
 }

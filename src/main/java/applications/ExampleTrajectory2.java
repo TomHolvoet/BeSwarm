@@ -23,23 +23,43 @@ public final class ExampleTrajectory2 implements Trajectory4d {
     }
 
     @Override
-    public Trajectory1d getTrajectoryLinearX() {
-        return trajectoryLinearX;
+    public double getDesiredPositionX(double timeInSeconds) {
+        return trajectoryLinearX.getDesiredPosition(timeInSeconds);
     }
 
     @Override
-    public Trajectory1d getTrajectoryLinearY() {
-        return trajectoryLinearY;
+    public double getDesiredVelocityX(double timeInSeconds) {
+        return trajectoryLinearX.getDesiredVelocity(timeInSeconds);
     }
 
     @Override
-    public Trajectory1d getTrajectoryLinearZ() {
-        return trajectoryLinearZ;
+    public double getDesiredPositionY(double timeInSeconds) {
+        return trajectoryLinearY.getDesiredPosition(timeInSeconds);
     }
 
     @Override
-    public Trajectory1d getTrajectoryAngularZ() {
-        return trajectoryAngularZ;
+    public double getDesiredVelocityY(double timeInSeconds) {
+        return trajectoryLinearY.getDesiredVelocity(timeInSeconds);
+    }
+
+    @Override
+    public double getDesiredPositionZ(double timeInSeconds) {
+        return trajectoryLinearZ.getDesiredPosition(timeInSeconds);
+    }
+
+    @Override
+    public double getDesiredVelocityZ(double timeInSeconds) {
+        return trajectoryLinearZ.getDesiredVelocity(timeInSeconds);
+    }
+
+    @Override
+    public double getDesiredAngleZ(double timeInSeconds) {
+        return trajectoryAngularZ.getDesiredPosition(timeInSeconds);
+    }
+
+    @Override
+    public double getDesiredAngularVelocityZ(double timeInSeconds) {
+        return trajectoryAngularZ.getDesiredVelocity(timeInSeconds);
     }
 
     private final class TrajectoryLinearX implements Trajectory1d {

@@ -1,10 +1,11 @@
 package control;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import control.dto.InertialFrameVelocity;
 import control.dto.Pose;
 import control.dto.Velocity;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import utils.math.EulerAngle;
 
 /**
@@ -24,15 +25,15 @@ public final class PidController4d {
     private final PidController1d pidLinearY;
     private final PidController1d pidLinearZ;
     private final PidController1d pidAngularZ;
-
-    private final Trajectory4d trajectory4d;
+	private Trajectory1d angularTrajectoryZ;
 
     private PidController4d(Builder builder) {
-        trajectory4d = builder.trajectory4d;
-        pidLinearX = PidController1d.create(builder.linearXParameters, trajectory4d.getTrajectoryLinearX());
-        pidLinearY = PidController1d.create(builder.linearYParameters, trajectory4d.getTrajectoryLinearY());
-        pidLinearZ = PidController1d.create(builder.linearZParameters, trajectory4d.getTrajectoryLinearZ());
-        pidAngularZ = PidController1d.create(builder.angularZParameters, trajectory4d.getTrajectoryAngularZ());
+        
+    	angularTrajectoryZ = builder.getTrajectoryAngularZ();
+        pidLinearX = PidController1d.create(builder.linearXParameters, builder.getLinearTrajectoryX());
+        pidLinearY = PidController1d.create(builder.linearYParameters, builder.getTrajectoryLinearY());
+        pidLinearZ = PidController1d.create(builder.linearZParameters, builder.getTrajectoryLinearZ());
+        pidAngularZ = PidController1d.create(builder.angularZParameters, angularTrajectoryZ);
     }
 
     public static Builder builder() {
@@ -52,25 +53,11 @@ public final class PidController4d {
         final double linearY = pidLinearY.compute(currentPose.y(), currentVelocity.linearY(), currentTimeInSeconds);
         final double linearZ = pidLinearZ.compute(currentPose.z(), currentVelocity.linearZ(), currentTimeInSeconds);
 
-        final double desiredYaw = trajectory4d.getTrajectoryAngularZ().getDesiredPosition(currentTimeInSeconds);
+        final double desiredYaw = angularTrajectoryZ.getDesiredPosition(currentTimeInSeconds);
         final double angularError = EulerAngle.computeAngleDistance(currentPose.yaw(), desiredYaw);
         final double adaptedCurrentYaw = desiredYaw - angularError;
         final double angularZ = pidAngularZ.compute(adaptedCurrentYaw, currentVelocity.angularZ(),
                 currentTimeInSeconds);
-
-        poseLogger.trace("{} {} {} {} {} {} {} {} {}", currentTimeInSeconds, currentPose.x(), currentPose.y(),
-                currentPose.z(), currentPose.yaw(),
-                trajectory4d.getTrajectoryLinearX().getDesiredPosition(currentTimeInSeconds),
-                trajectory4d.getTrajectoryLinearY().getDesiredPosition(currentTimeInSeconds),
-                trajectory4d.getTrajectoryLinearZ().getDesiredPosition(currentTimeInSeconds),
-                trajectory4d.getTrajectoryAngularZ().getDesiredPosition(currentTimeInSeconds));
-
-        velocityLogger.trace("{} {} {} {} {} {} {} {} {}", currentTimeInSeconds, currentVelocity.linearX(),
-                currentVelocity.linearY(), currentVelocity.linearZ(), currentVelocity.angularZ(),
-                trajectory4d.getTrajectoryLinearX().getDesiredVelocity(currentTimeInSeconds),
-                trajectory4d.getTrajectoryLinearY().getDesiredVelocity(currentTimeInSeconds),
-                trajectory4d.getTrajectoryLinearZ().getDesiredVelocity(currentTimeInSeconds),
-                trajectory4d.getTrajectoryAngularZ().getDesiredVelocity(currentTimeInSeconds));
 
         return Velocity.builder().linearX(linearX).linearY(linearY).linearZ(linearZ).angularZ(angularZ).build();
     }
@@ -79,24 +66,99 @@ public final class PidController4d {
      * {@code PidController4d} builder static inner class.
      */
     public static final class Builder {
-        private Trajectory4d trajectory4d;
         private PidParameters linearXParameters;
         private PidParameters linearYParameters;
         private PidParameters linearZParameters;
         private PidParameters angularZParameters;
-
+        private Trajectory1d linearTrajectoryX;
+        private Trajectory1d linearTrajectoryY;
+        private Trajectory1d linearTrajectoryZ;
+        private Trajectory1d angularTrajectoryZ;
+        
         private Builder() {}
 
-        /**
+		public Trajectory1d getLinearTrajectoryX() {
+			return linearTrajectoryX;
+		}
+
+		public Trajectory1d getTrajectoryLinearY() {
+			return linearTrajectoryY;
+		}
+
+		public Trajectory1d getTrajectoryLinearZ() {
+			return linearTrajectoryZ;
+		}
+
+		public Trajectory1d getTrajectoryAngularZ() {
+			return angularTrajectoryZ;
+		}
+		
+		/**
          * Sets the {@code trajectory4d} and returns a reference to this Builder so that the methods can be chained
          * together.
          *
          * @param val the {@code trajectory4d} to set
          * @return a reference to this Builder
          */
-        public Builder trajectory4d(Trajectory4d val) {
-            trajectory4d = val;
-            return this;
+        public Builder trajectory4d(final Trajectory4d val) {
+
+        	linearTrajectoryX = new Trajectory1d() {
+        		
+        		@Override
+        		public double getDesiredVelocity(double timeInSeconds) {
+        			return val.getDesiredVelocityX(timeInSeconds);
+        		}
+        		
+        		@Override
+        		public double getDesiredPosition(double timeInSeconds) {
+        			return val.getDesiredPositionX(timeInSeconds);
+        		}
+        	};
+
+        	linearTrajectoryY = new Trajectory1d() {
+        		
+        		@Override
+        		public double getDesiredVelocity(double timeInSeconds) {
+        			return val.getDesiredVelocityY(timeInSeconds);
+        		}
+        		
+        		@Override
+        		public double getDesiredPosition(double timeInSeconds) {
+        			return val.getDesiredPositionY(timeInSeconds);
+        		}
+        	};
+        	
+        	linearTrajectoryZ = new Trajectory1d() {
+        		
+        		@Override
+        		public double getDesiredVelocity(double timeInSeconds) {
+        			return val.getDesiredVelocityZ(timeInSeconds);
+        		}
+        		
+        		@Override
+        		public double getDesiredPosition(double timeInSeconds) {
+        			return val.getDesiredPositionZ(timeInSeconds);
+        		}
+        	};
+        	
+        	
+        	angularTrajectoryZ = new Trajectory1d() {
+    			
+    			@Override
+    			public double getDesiredVelocity(double timeInSeconds) {
+    				return val.getDesiredAngularVelocityZ(timeInSeconds);
+    			}
+    			
+    			@Override
+    			public double getDesiredPosition(double timeInSeconds) {
+    				return val.getDesiredAngleZ(timeInSeconds);
+    			}
+    		};
+    		
+    		
+    		
+    		
+        	return this;
         }
 
         /**

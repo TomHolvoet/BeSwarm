@@ -1,9 +1,9 @@
 package applications;
 
-import java.util.logging.Logger;
-
 import control.Trajectory1d;
 import control.Trajectory4d;
+
+import java.util.logging.Logger;
 
 /**
  * @author mhct
@@ -28,27 +28,47 @@ public final class LineTrajectory implements Trajectory4d {
         return new LineTrajectory(flightDuration, length);
     }
 
-    @Override
-    public Trajectory1d getTrajectoryLinearX() {
-        return trajectoryLinearX;
-    }
-
-    @Override
-    public Trajectory1d getTrajectoryLinearY() {
-        return trajectoryLinearY;
-    }
-
-    @Override
-    public Trajectory1d getTrajectoryLinearZ() {
-        return trajectoryLinearZ;
-    }
-
-    @Override
-    public Trajectory1d getTrajectoryAngularZ() {
-        return trajectoryAngularZ;
-    }
-
     private static final Logger logger = Logger.getLogger("Trajectory");
+
+    @Override
+    public double getDesiredPositionX(double timeInSeconds) {
+        return trajectoryLinearX.getDesiredPosition(timeInSeconds);
+    }
+
+    @Override
+    public double getDesiredVelocityX(double timeInSeconds) {
+        return trajectoryLinearX.getDesiredVelocity(timeInSeconds);
+    }
+
+    @Override
+    public double getDesiredPositionY(double timeInSeconds) {
+        return trajectoryLinearY.getDesiredPosition(timeInSeconds);
+    }
+
+    @Override
+    public double getDesiredVelocityY(double timeInSeconds) {
+        return trajectoryLinearY.getDesiredVelocity(timeInSeconds);
+    }
+
+    @Override
+    public double getDesiredPositionZ(double timeInSeconds) {
+        return trajectoryLinearZ.getDesiredPosition(timeInSeconds);
+    }
+
+    @Override
+    public double getDesiredVelocityZ(double timeInSeconds) {
+        return trajectoryLinearZ.getDesiredVelocity(timeInSeconds);
+    }
+
+    @Override
+    public double getDesiredAngleZ(double timeInSeconds) {
+        return trajectoryAngularZ.getDesiredPosition(timeInSeconds);
+    }
+
+    @Override
+    public double getDesiredAngularVelocityZ(double timeInSeconds) {
+        return trajectoryAngularZ.getDesiredVelocity(timeInSeconds);
+    }
 
     private final class TrajectoryLinearX implements Trajectory1d {
 

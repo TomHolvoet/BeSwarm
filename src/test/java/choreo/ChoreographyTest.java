@@ -40,7 +40,7 @@ public class ChoreographyTest {
         testTrajectoryPos4D(choreotarget, 2, Point4D.create(5, 5, 5, 2));
         //First invocation past duration still get's old point. all following
         // trigger change in segment for first call.
-        choreotarget.getTrajectoryLinearX().getDesiredPosition(1d + duration);
+        choreotarget.getDesiredPositionX(1d + duration);
         testTrajectoryPos4D(choreotarget, 10d + duration,
                 Point4D.create(radius, 0, 0, 0));
     }
@@ -48,12 +48,12 @@ public class ChoreographyTest {
     public void testTrajectoryPos4D(Trajectory4d traj, double time,
             Point4D target) {
         assertEquals(target.getX(),
-                traj.getTrajectoryLinearX().getDesiredPosition(time), 0);
+                traj.getDesiredPositionX(time), 0);
         assertEquals(target.getY(),
-                traj.getTrajectoryLinearY().getDesiredPosition(time), 0);
+                traj.getDesiredPositionY(time), 0);
         assertEquals(target.getZ(),
-                traj.getTrajectoryLinearZ().getDesiredPosition(time), 0);
+                traj.getDesiredPositionZ(time), 0);
         assertEquals(target.getAngle(),
-                traj.getTrajectoryAngularZ().getDesiredPosition(time), 0);
+                traj.getDesiredAngleZ(time), 0);
     }
 }
