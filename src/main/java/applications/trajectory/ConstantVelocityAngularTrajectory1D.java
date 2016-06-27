@@ -42,9 +42,7 @@ class ConstantVelocityAngularTrajectory1D extends PeriodicTrajectory
     @Override
     public double getDesiredPosition(double timeInSeconds) {
         setStartTime(timeInSeconds);
-
         final double currentTime = timeInSeconds - getStartTime();
-
         return (TWOPI * getFrequency() * currentTime + getPhaseDisplacement())
                 % TWOPI;
     }

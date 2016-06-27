@@ -34,7 +34,7 @@ class StraightLineTrajectory4D implements Trajectory4d {
                         velocity * (diff.getZ() / totalDistance),
                         diff.getAngle() / endTime);
         this.holdTraj = new HoldPositionTrajectory4D(targetpoint);
-        this.moveTraj = new HoldPositionForwarder2(srcpoint, speedComponent,
+        this.moveTraj = new HoldPositionForwarder(srcpoint, speedComponent,
                 endTime);
         this.currentTraj = moveTraj;
     }
@@ -89,11 +89,11 @@ class StraightLineTrajectory4D implements Trajectory4d {
                 .getDesiredAngularVelocityZ(timeInSeconds);
     }
 
-    private class HoldPositionForwarder2
+    private class HoldPositionForwarder
             extends Trajectory4DForwardingDecorator {
         private final double endTime;
 
-        HoldPositionForwarder2(Point4D srcComp, Point4D speedComp,
+        HoldPositionForwarder(Point4D srcComp, Point4D speedComp,
                 double endTime) {
             super(new LinearTrajectory4D(srcComp,
                     speedComp));

@@ -39,14 +39,12 @@ final class CircleTrajectory4D extends PeriodicTrajectory
 
     @Override
     public double getDesiredPositionX(double timeInSeconds) {
-        return xycircle
-                .getDesiredPositionAbscissa(timeInSeconds);
+        return xycircle.getDesiredPositionAbscissa(timeInSeconds);
     }
 
     @Override
     public double getDesiredVelocityX(double timeInSeconds) {
-        return xycircle
-                .getDesiredVelocityAbscissa(timeInSeconds);
+        return xycircle.getDesiredVelocityAbscissa(timeInSeconds);
     }
 
     @Override

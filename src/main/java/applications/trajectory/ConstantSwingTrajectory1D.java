@@ -44,7 +44,6 @@ class ConstantSwingTrajectory1D extends PeriodicTrajectory
     @Override
     public double getDesiredPosition(double timeInSeconds) {
         setStartTime(timeInSeconds);
-
         final double currentTime = timeInSeconds - getStartTime();
         return getLinearDisplacement().getX() + getRadius() * StrictMath
                 .cos(freq2pi * currentTime + getPhaseDisplacement());
@@ -53,7 +52,6 @@ class ConstantSwingTrajectory1D extends PeriodicTrajectory
     @Override
     public double getDesiredVelocity(double timeInSeconds) {
         setStartTime(timeInSeconds);
-
         final double currentTime = timeInSeconds - getStartTime();
         return -rfreq2pi * StrictMath
                 .sin(freq2pi * currentTime + getPhaseDisplacement());
