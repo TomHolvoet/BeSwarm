@@ -38,38 +38,33 @@ class SwingTrajectory4D extends PeriodicTrajectory
 
     @Override
     public double getDesiredPositionX(double timeInSeconds) {
-        return xFactor * swing.getTrajectoryLinearAbscissa()
-                .getDesiredPosition(timeInSeconds);
+        return xFactor * swing.getDesiredPositionAbscissa(timeInSeconds);
     }
 
     @Override
     public double getDesiredVelocityX(double timeInSeconds) {
-        return xFactor * swing.getTrajectoryLinearAbscissa()
-                .getDesiredVelocity(timeInSeconds);
+        return xFactor * swing.getDesiredVelocityAbscissa
+                (timeInSeconds);
     }
 
     @Override
     public double getDesiredPositionY(double timeInSeconds) {
-        return yFactor * swing.getTrajectoryLinearAbscissa()
-                .getDesiredPosition(timeInSeconds);
+        return yFactor * swing.getDesiredPositionAbscissa(timeInSeconds);
     }
 
     @Override
     public double getDesiredVelocityY(double timeInSeconds) {
-        return yFactor * swing.getTrajectoryLinearAbscissa()
-                .getDesiredVelocity(timeInSeconds);
+        return yFactor * swing.getDesiredVelocityAbscissa(timeInSeconds);
     }
 
     @Override
     public double getDesiredPositionZ(double timeInSeconds) {
-        return swing.getTrajectoryLinearOrdinate()
-                .getDesiredPosition(timeInSeconds);
+        return swing.getDesiredPositionOrdinate(timeInSeconds);
     }
 
     @Override
     public double getDesiredVelocityZ(double timeInSeconds) {
-        return swing.getTrajectoryLinearOrdinate()
-                .getDesiredVelocity(timeInSeconds);
+        return swing.getDesiredVelocityOrdinate(timeInSeconds);
     }
 
     @Override

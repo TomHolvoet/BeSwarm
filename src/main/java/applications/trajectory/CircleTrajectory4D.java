@@ -39,41 +39,36 @@ final class CircleTrajectory4D extends PeriodicTrajectory
 
     @Override
     public double getDesiredPositionX(double timeInSeconds) {
-        return xycircle.getTrajectoryLinearAbscissa()
-                .getDesiredPosition(timeInSeconds);
+        return xycircle
+                .getDesiredPositionAbscissa(timeInSeconds);
     }
 
     @Override
     public double getDesiredVelocityX(double timeInSeconds) {
-        return xycircle.getTrajectoryLinearAbscissa()
-                .getDesiredVelocity(timeInSeconds);
+        return xycircle
+                .getDesiredVelocityAbscissa(timeInSeconds);
     }
 
     @Override
     public double getDesiredPositionY(double timeInSeconds) {
-        return xycircle.getTrajectoryLinearOrdinate()
-                .getDesiredPosition(timeInSeconds);
+        return xycircle.getDesiredPositionOrdinate(timeInSeconds);
     }
 
     @Override
     public double getDesiredVelocityY(double timeInSeconds) {
-        return xycircle.getTrajectoryLinearOrdinate()
-                .getDesiredVelocity(timeInSeconds);
+        return xycircle.getDesiredVelocityOrdinate(timeInSeconds);
     }
 
     @Override
     public double getDesiredPositionZ(double timeInSeconds) {
         return scaleFactor * xycircle
-                .getTrajectoryLinearOrdinate()
-                .getDesiredPosition(timeInSeconds) - location.getY()
+                .getDesiredPositionOrdinate(timeInSeconds) - location.getY()
                 + location.getZ();
     }
 
     @Override
     public double getDesiredVelocityZ(double timeInSeconds) {
-        return scaleFactor * xycircle
-                .getTrajectoryLinearOrdinate()
-                .getDesiredVelocity(timeInSeconds);
+        return scaleFactor * xycircle.getDesiredVelocityOrdinate(timeInSeconds);
     }
 
     @Override
