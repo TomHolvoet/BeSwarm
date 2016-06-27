@@ -8,6 +8,8 @@ import control.PidParameters;
 import control.Trajectory4d;
 import control.dto.DroneStateStamped;
 import control.dto.InertialFrameVelocity;
+import control.dto.Pose;
+import control.dto.Velocity;
 import control.localization.StateEstimator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,11 +31,13 @@ public final class FollowTrajectory implements Command {
     private final PidParameters pidLinearZParameters;
     private final PidParameters pidAngularZParameters;
     private final Trajectory4d trajectory4d;
-    // FIXME let the trajectory decide how long the command should word
+    // FIXME let the trajectory decide how long the command should work
     private final double durationInSeconds;
     private final double controlRateInSeconds;
+    private final double droneStateLifeDurationInSeconds;
 
     private static final double DEFAULT_CONTROL_RATE_IN_SECONDS = 0.05;
+    private static final double DEFAULT_DRONE_STATE_LIFE_DURATION_IN_SECONDS = 0.1;
 
     private FollowTrajectory(Builder builder) {
         velocityService = builder.velocityService;
@@ -45,6 +49,7 @@ public final class FollowTrajectory implements Command {
         trajectory4d = builder.trajectory4d;
         durationInSeconds = builder.durationInSeconds;
         controlRateInSeconds = builder.controlRateInSeconds;
+        droneStateLifeDurationInSeconds = builder.droneStateLifeDurationInSeconds;
     }
 
     public static Builder builder() {
@@ -52,7 +57,8 @@ public final class FollowTrajectory implements Command {
                 .pidLinearXParameters(DefaultPidParameters.LINEAR_X.getParameters())
                 .pidLinearYParameters(DefaultPidParameters.LINEAR_Y.getParameters())
                 .pidLinearZParameters(DefaultPidParameters.LINEAR_Z.getParameters())
-                .pidAngularZParameters(DefaultPidParameters.ANGULAR_Z.getParameters());
+                .pidAngularZParameters(DefaultPidParameters.ANGULAR_Z.getParameters())
+                .droneStateLifeDurationInSeconds(DEFAULT_DRONE_STATE_LIFE_DURATION_IN_SECONDS);
     }
 
     @Override
@@ -67,8 +73,11 @@ public final class FollowTrajectory implements Command {
                 .trajectory4d(trajectory4d)
                 .build();
 
+        final int stateLifeDurationInNumberOfControlLoops = (int) Math.ceil(
+                droneStateLifeDurationInSeconds / controlRateInSeconds);
+
         final Runnable computeNextResponse = ComputeNextResponse.create(pidController4d, stateEstimator,
-                velocityService);
+                velocityService, stateLifeDurationInNumberOfControlLoops);
         PeriodicTaskRunner.run(computeNextResponse, controlRateInSeconds, durationInSeconds);
     }
 
@@ -77,20 +86,33 @@ public final class FollowTrajectory implements Command {
         private final StateEstimator stateEstimator;
         private final VelocityService velocityService;
         private final double startTimeInNanoSeconds;
+        private final int stateLifeDurationInNumberOfControlLoops;
+
+        private int counter = 0;
+        private double lastTimeStamp = Double.MIN_VALUE;
+        private static final InertialFrameVelocity zeroVelocity = Velocity.builder()
+                .linearX(0)
+                .linearY(0)
+                .linearZ(0)
+                .angularZ(0)
+                .build();
+        private static final Pose zeroPose = Pose.builder().x(0).y(0).z(0).yaw(0).build();
 
         private static final double NANO_SECOND_TO_SECOND = 1000000000.0;
 
         private ComputeNextResponse(PidController4d pidController4d, StateEstimator stateEstimator,
-                VelocityService velocityService) {
+                VelocityService velocityService, int stateLifeDurationInNumberOfControlLoops) {
             this.pidController4d = pidController4d;
             this.stateEstimator = stateEstimator;
             this.velocityService = velocityService;
             this.startTimeInNanoSeconds = System.nanoTime();
+            this.stateLifeDurationInNumberOfControlLoops = stateLifeDurationInNumberOfControlLoops;
         }
 
         public static ComputeNextResponse create(PidController4d pidController4d, StateEstimator stateEstimator,
-                VelocityService velocityService) {
-            return new ComputeNextResponse(pidController4d, stateEstimator, velocityService);
+                VelocityService velocityService, int stateLifeDurationInNumberOfControlLoops) {
+            return new ComputeNextResponse(pidController4d, stateEstimator, velocityService,
+                    stateLifeDurationInNumberOfControlLoops);
         }
 
         @Override
@@ -98,15 +120,37 @@ public final class FollowTrajectory implements Command {
             logger.trace("Start a control loop.");
             final Optional<DroneStateStamped> currentState = stateEstimator.getCurrentState();
             if (!currentState.isPresent()) {
-                logger.trace("Cannot get state.");
+                logger.trace("Cannot get state. Send zero velocity.");
+                velocityService.sendVelocityMessage(zeroVelocity, zeroPose);
                 return;
             }
 
+            setCounter(currentState.get());
+
+            if (counter >= stateLifeDurationInNumberOfControlLoops) {
+                logger.debug("Pose is outdated. Send zero velocity");
+                velocityService.sendVelocityMessage(zeroVelocity, zeroPose);
+            } else {
+                computeResponseAndSendVelocity(currentState.get());
+            }
+        }
+
+        private void computeResponseAndSendVelocity(DroneStateStamped currentState) {
             logger.trace("Got pose and velocity. Start computing the next velocity response.");
             final double currentTimeInSeconds = (System.nanoTime() - startTimeInNanoSeconds) / NANO_SECOND_TO_SECOND;
-            final InertialFrameVelocity nextVelocity = pidController4d.compute(currentState.get().pose(),
-                    currentState.get().inertialFrameVelocity(), currentTimeInSeconds);
-            velocityService.sendVelocityMessage(nextVelocity, currentState.get().pose());
+            final InertialFrameVelocity nextVelocity = pidController4d.compute(currentState.pose(),
+                    currentState.inertialFrameVelocity(), currentTimeInSeconds);
+            velocityService.sendVelocityMessage(nextVelocity, currentState.pose());
+        }
+
+        private void setCounter(DroneStateStamped currentState) {
+            final double currentTimeStamp = currentState.getTimeStampInSeconds();
+            if (currentTimeStamp == lastTimeStamp) {
+                counter++;
+            } else {
+                counter = 0;
+                lastTimeStamp = currentTimeStamp;
+            }
         }
     }
 
@@ -123,6 +167,7 @@ public final class FollowTrajectory implements Command {
         private Trajectory4d trajectory4d;
         private Double durationInSeconds;
         private Double controlRateInSeconds;
+        private Double droneStateLifeDurationInSeconds;
 
         private Builder() {}
 
@@ -235,6 +280,18 @@ public final class FollowTrajectory implements Command {
         }
 
         /**
+         * Sets the {@code droneStateLifeDurationInSeconds} and returns a reference to this Builder so that the
+         * methods can be chained together.
+         *
+         * @param val the {@code droneStateLifeDurationInSeconds} to set
+         * @return a reference to this Builder
+         */
+        public Builder droneStateLifeDurationInSeconds(double val) {
+            droneStateLifeDurationInSeconds = val;
+            return this;
+        }
+
+        /**
          * Returns a {@code FollowTrajectory} built from the parameters previously set.
          *
          * @return a {@code FollowTrajectory} built with parameters of this {@code FollowTrajectory.Builder}
@@ -249,6 +306,7 @@ public final class FollowTrajectory implements Command {
             checkNotNull(trajectory4d, "missing trajectory4d");
             checkNotNull(durationInSeconds, "missing durationInSeconds");
             checkNotNull(controlRateInSeconds, "missing controlRateInSeconds");
+            checkNotNull(droneStateLifeDurationInSeconds, "missing droneStateLifeDurationInSeconds");
             return new FollowTrajectory(this);
         }
     }
