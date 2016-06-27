@@ -1,7 +1,6 @@
 package applications.trajectory;
 
 import com.google.common.annotations.VisibleForTesting;
-import control.Trajectory1d;
 import control.Trajectory2d;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -46,49 +45,39 @@ class CircleTrajectory2D extends PeriodicTrajectory
     }
 
     @Override
-    public Trajectory1d getTrajectoryLinearAbscissa() {
-        return new Trajectory1d() {
-            @Override
-            public double getDesiredPosition(double timeInSeconds) {
-                setStartTime(timeInSeconds);
+    public double getDesiredPositionAbscissa(double timeInSeconds) {
+        setStartTime(timeInSeconds);
 
-                final double currentTime = timeInSeconds - getStartTime();
-                return getRadius() * StrictMath
-                        .cos(freq2pi * currentTime + getPhaseDisplacement());
-            }
-
-            @Override
-            public double getDesiredVelocity(double timeInSeconds) {
-                setStartTime(timeInSeconds);
-
-                final double currentTime = timeInSeconds - getStartTime();
-                return -rfreq2pi * StrictMath
-                        .sin(freq2pi * currentTime + getPhaseDisplacement());
-            }
-        };
+        final double currentTime = timeInSeconds - getStartTime();
+        return getRadius() * StrictMath
+                .cos(freq2pi * currentTime + getPhaseDisplacement());
     }
 
     @Override
-    public Trajectory1d getTrajectoryLinearOrdinate() {
-        return new Trajectory1d() {
-            @Override
-            public double getDesiredPosition(double timeInSeconds) {
-                setStartTime(timeInSeconds);
+    public double getDesiredVelocityAbscissa(double timeInSeconds) {
+        setStartTime(timeInSeconds);
 
-                final double currentTime = timeInSeconds - getStartTime();
-                return getRadius() * StrictMath
-                        .sin(freq2pi * currentTime + getPhaseDisplacement());
-            }
+        final double currentTime = timeInSeconds - getStartTime();
+        return -rfreq2pi * StrictMath
+                .sin(freq2pi * currentTime + getPhaseDisplacement());
+    }
 
-            @Override
-            public double getDesiredVelocity(double timeInSeconds) {
-                setStartTime(timeInSeconds);
+    @Override
+    public double getDesiredPositionOrdinate(double timeInSeconds) {
+        setStartTime(timeInSeconds);
 
-                final double currentTime = timeInSeconds - getStartTime();
-                return rfreq2pi * StrictMath
-                        .cos(freq2pi * currentTime + getPhaseDisplacement());
-            }
-        };
+        final double currentTime = timeInSeconds - getStartTime();
+        return getRadius() * StrictMath
+                .sin(freq2pi * currentTime + getPhaseDisplacement());
+    }
+
+    @Override
+    public double getDesiredVelocityOrdinate(double timeInSeconds) {
+        setStartTime(timeInSeconds);
+
+        final double currentTime = timeInSeconds - getStartTime();
+        return rfreq2pi * StrictMath
+                .cos(freq2pi * currentTime + getPhaseDisplacement());
     }
 
     static Builder builder() {

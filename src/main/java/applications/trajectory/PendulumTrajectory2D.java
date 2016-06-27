@@ -19,6 +19,7 @@ public class PendulumTrajectory2D extends PeriodicTrajectory
         implements Trajectory2d {
     private final double freq2pi;
     private final Trajectory1d linearMovement;
+    private final Trajectory1d pendulumOrdinate;
 
     /**
      * Constructor
@@ -40,6 +41,7 @@ public class PendulumTrajectory2D extends PeriodicTrajectory
                         + "MAX_ABSOLUTE_VELOCITY,"
                         + " which is: "
                         + MAX_ABSOLUTE_VELOCITY);
+        this.pendulumOrdinate = new PendulumOrdinate();
     }
 
     @VisibleForTesting
@@ -47,21 +49,31 @@ public class PendulumTrajectory2D extends PeriodicTrajectory
         this(radius, frequency, Point4D.origin(), 0);
     }
 
-    @Override
-    public Trajectory1d getTrajectoryLinearAbscissa() {
-        return this.linearMovement;
-    }
-
-    @Override
-    public Trajectory1d getTrajectoryLinearOrdinate() {
-        return new PendulumOrdinate();
-    }
-
     /**
      * @return Builder for 2D pendulum trajectories.
      */
     public static Builder builder() {
         return new Builder();
+    }
+
+    @Override
+    public double getDesiredPositionAbscissa(double timeInSeconds) {
+        return this.linearMovement.getDesiredPosition(timeInSeconds);
+    }
+
+    @Override
+    public double getDesiredVelocityAbscissa(double timeInSeconds) {
+        return this.linearMovement.getDesiredVelocity(timeInSeconds);
+    }
+
+    @Override
+    public double getDesiredPositionOrdinate(double timeInSeconds) {
+        return this.pendulumOrdinate.getDesiredPosition(timeInSeconds);
+    }
+
+    @Override
+    public double getDesiredVelocityOrdinate(double timeInSeconds) {
+        return this.pendulumOrdinate.getDesiredVelocity(timeInSeconds);
     }
 
     /**
