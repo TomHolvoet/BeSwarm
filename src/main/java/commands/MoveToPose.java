@@ -9,6 +9,8 @@ import control.dto.Velocity;
 import control.localization.StateEstimator;
 import services.VelocityService;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
  * Command for moving to a predefined pose. It is a facade which uses {@link FollowTrajectory}.
  *
@@ -68,8 +70,8 @@ public final class MoveToPose implements Command {
         private PidParameters pidLinearZParameters;
         private PidParameters pidAngularZParameters;
         private Pose goalPose;
-        private double durationInSeconds;
-        private double controlRateInSeconds;
+        private Double durationInSeconds;
+        private Double controlRateInSeconds;
 
         private Builder() {}
 
@@ -186,6 +188,17 @@ public final class MoveToPose implements Command {
          *
          * @return a {@code MoveToPose} built with parameters of this {@code MoveToPose.Builder}
          */
-        public MoveToPose build() {return new MoveToPose(this);}
+        public MoveToPose build() {
+            checkNotNull(velocityService, "missing velocityService");
+            checkNotNull(stateEstimator, "missing stateEstimator");
+            checkNotNull(pidLinearXParameters, "missing pidLinearXParameters");
+            checkNotNull(pidLinearYParameters, "missing pidLinearYParameters");
+            checkNotNull(pidLinearZParameters, "missing pidLinearZParameters");
+            checkNotNull(pidAngularZParameters, "missing pidAngularZParameters");
+            checkNotNull(goalPose, "missing goalPose");
+            checkNotNull(durationInSeconds, "missing durationInSeconds");
+            checkNotNull(controlRateInSeconds, "missing controlRateInSeconds");
+            return new MoveToPose(this);
+        }
     }
 }

@@ -7,6 +7,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import utils.math.EulerAngle;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
  * A four-dimensional PID controller for the drone. It is the composition of 4 one-dimensional PID controller
  * {@link PidController1d} (three controllers for the three linear velocities, one controller for the
@@ -209,6 +211,16 @@ public final class PidController4d {
          *
          * @return a {@code PidController4d} built with parameters of this {@code PidController4d.Builder}
          */
-        public PidController4d build() {return new PidController4d(this);}
+        public PidController4d build() {
+            checkNotNull(linearXParameters, "missing linearXParameters");
+            checkNotNull(linearYParameters, "missing linearYParameters");
+            checkNotNull(linearZParameters, "missing linearZParameters");
+            checkNotNull(angularZParameters, "missing angularZParameters");
+            checkNotNull(linearTrajectoryX, "missing linearTrajectoryX");
+            checkNotNull(linearTrajectoryY, "missing linearTrajectoryY");
+            checkNotNull(linearTrajectoryZ, "missing linearTrajectoryZ");
+            checkNotNull(angularTrajectoryZ, "missing angularTrajectoryZ");
+            return new PidController4d(this);
+        }
     }
 }

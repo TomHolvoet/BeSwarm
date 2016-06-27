@@ -13,6 +13,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import services.VelocityService;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
  * @author Hoang Tung Dinh
  */
@@ -119,8 +121,8 @@ public final class FollowTrajectory implements Command {
         private PidParameters pidLinearZParameters;
         private PidParameters pidAngularZParameters;
         private Trajectory4d trajectory4d;
-        private double durationInSeconds;
-        private double controlRateInSeconds;
+        private Double durationInSeconds;
+        private Double controlRateInSeconds;
 
         private Builder() {}
 
@@ -237,6 +239,17 @@ public final class FollowTrajectory implements Command {
          *
          * @return a {@code FollowTrajectory} built with parameters of this {@code FollowTrajectory.Builder}
          */
-        public FollowTrajectory build() {return new FollowTrajectory(this);}
+        public FollowTrajectory build() {
+            checkNotNull(velocityService, "missing velocityService");
+            checkNotNull(stateEstimator, "missing stateEstimator");
+            checkNotNull(pidLinearXParameters, "missing pidLinearXParameters");
+            checkNotNull(pidLinearYParameters, "missing pidLinearYParameters");
+            checkNotNull(pidLinearZParameters, "missing pidLinearZParameters");
+            checkNotNull(pidAngularZParameters, "missing pidAngularZParameters");
+            checkNotNull(trajectory4d, "missing trajectory4d");
+            checkNotNull(durationInSeconds, "missing durationInSeconds");
+            checkNotNull(controlRateInSeconds, "missing controlRateInSeconds");
+            return new FollowTrajectory(this);
+        }
     }
 }

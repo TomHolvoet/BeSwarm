@@ -13,6 +13,7 @@ import services.VelocityService;
 import utils.math.Transformations;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * A facade which provides an interface to publish velocity (a.k.a. piloting) message. There are minimum and maximum
@@ -139,15 +140,15 @@ public final class ParrotVelocityService implements VelocityService {
     public static final class Builder {
         private Publisher<Twist> publisher;
 
-        private double minLinearX;
-        private double minLinearY;
-        private double minLinearZ;
-        private double minAngularZ;
+        private Double minLinearX;
+        private Double minLinearY;
+        private Double minLinearZ;
+        private Double minAngularZ;
 
-        private double maxLinearX;
-        private double maxLinearY;
-        private double maxLinearZ;
-        private double maxAngularZ;
+        private Double maxLinearX;
+        private Double maxLinearY;
+        private Double maxLinearZ;
+        private Double maxAngularZ;
 
         private Builder() {}
 
@@ -265,6 +266,15 @@ public final class ParrotVelocityService implements VelocityService {
          * @return a {@code VelocityPublisher} built with parameters of this {@code VelocityPublisher.Builder}
          */
         public ParrotVelocityService build() {
+            checkNotNull(publisher, "missing publisher");
+            checkNotNull(minLinearX, "missing minLinearX");
+            checkNotNull(minLinearY, "missing minLinearY");
+            checkNotNull(minLinearZ, "missing minLinearZ");
+            checkNotNull(minAngularZ, "missing minAngularZ");
+            checkNotNull(maxLinearX, "missing maxLinearX");
+            checkNotNull(maxLinearY, "missing maxLinearY");
+            checkNotNull(maxLinearZ, "missing maxLinearZ");
+            checkNotNull(maxAngularZ, "missing maxAngularZ");
             return new ParrotVelocityService(this);
         }
     }
