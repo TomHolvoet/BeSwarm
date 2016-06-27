@@ -1,6 +1,5 @@
 package applications.trajectory;
 
-import com.google.common.annotations.VisibleForTesting;
 import control.Trajectory1d;
 import control.Trajectory2d;
 
@@ -28,7 +27,7 @@ public class PendulumTrajectory2D extends PeriodicTrajectory
      * @param frequency The frequency f (amount of revolutions per second).
      *                  Equals 1/period.
      */
-    PendulumTrajectory2D(double radius, double frequency,
+    private PendulumTrajectory2D(double radius, double frequency,
             Point4D origin, double phase) {
         super(HALFPI * 3 + phase, origin, radius, frequency);
         this.freq2pi = frequency * TWOPI;
@@ -42,11 +41,6 @@ public class PendulumTrajectory2D extends PeriodicTrajectory
                         + " which is: "
                         + MAX_ABSOLUTE_VELOCITY);
         this.pendulumOrdinate = new PendulumOrdinate();
-    }
-
-    @VisibleForTesting
-    PendulumTrajectory2D(double radius, double frequency) {
-        this(radius, frequency, Point4D.origin(), 0);
     }
 
     /**

@@ -10,16 +10,16 @@ public class PendulumTrajectory2DTest extends Periodic2DTest {
 
     @Before
     public void setUp() throws Exception {
-        highFrequencyCircle = new PendulumTrajectory2D(
-                radius, highFreq);
-        lowFrequencyCircle = new PendulumTrajectory2D(
-                radius, lowFreq);
+        highFrequencyCircle = PendulumTrajectory2D.builder().setRadius(radius)
+                .setFrequency(highFreq).build();
+        lowFrequencyCircle = PendulumTrajectory2D.builder().setRadius(radius)
+                .setFrequency(lowFreq).build();
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testConstructorTooHighSpeedRate() {
-        new PendulumTrajectory2D(
-                1, 1);
+        PendulumTrajectory2D.builder().setRadius(1)
+                .setFrequency(1).build();
     }
 
 }
