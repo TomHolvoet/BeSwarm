@@ -10,7 +10,7 @@ import static com.google.common.base.Preconditions.checkArgument;
  *
  * @author Kristof Coninx <kristof.coninx AT cs.kuleuven.be>
  */
-public class StraightLineTrajectory4D implements Trajectory4d {
+class StraightLineTrajectory4D implements Trajectory4d {
     private final Trajectory1d xComp;
     private final Trajectory1d yComp;
     private final Trajectory1d zComp;
@@ -58,35 +58,72 @@ public class StraightLineTrajectory4D implements Trajectory4d {
     }
 
     @Override
-    public Trajectory1d getTrajectoryLinearX() {
+    public double getDesiredPositionX(double timeInSeconds) {
         if (!hold) {
-            return this.xComp;
+            return this.xComp.getDesiredPosition(timeInSeconds);
         }
-        return holdTraj.getTrajectoryLinearX();
+        return holdTraj
+                .getDesiredPositionX(timeInSeconds);
     }
 
     @Override
-    public Trajectory1d getTrajectoryLinearY() {
+    public double getDesiredVelocityX(double timeInSeconds) {
         if (!hold) {
-            return this.yComp;
+            return this.xComp.getDesiredVelocity(timeInSeconds);
         }
-        return holdTraj.getTrajectoryLinearY();
+        return holdTraj
+                .getDesiredVelocityX(timeInSeconds);
     }
 
     @Override
-    public Trajectory1d getTrajectoryLinearZ() {
+    public double getDesiredPositionY(double timeInSeconds) {
         if (!hold) {
-            return this.zComp;
+            return this.yComp.getDesiredPosition(timeInSeconds);
         }
-        return holdTraj.getTrajectoryLinearZ();
+        return holdTraj.getDesiredPositionY(timeInSeconds);
     }
 
     @Override
-    public Trajectory1d getTrajectoryAngularZ() {
+    public double getDesiredVelocityY(double timeInSeconds) {
         if (!hold) {
-            return this.angleComp;
+            return this.yComp.getDesiredVelocity(timeInSeconds);
         }
-        return holdTraj.getTrajectoryAngularZ();
+        return holdTraj
+                .getDesiredVelocityY(timeInSeconds);
+    }
+
+    @Override
+    public double getDesiredPositionZ(double timeInSeconds) {
+        if (!hold) {
+            return this.zComp.getDesiredPosition(timeInSeconds);
+        }
+        return holdTraj.getDesiredPositionZ(timeInSeconds);
+    }
+
+    @Override
+    public double getDesiredVelocityZ(double timeInSeconds) {
+        if (!hold) {
+            return this.zComp.getDesiredVelocity(timeInSeconds);
+        }
+        return holdTraj
+                .getDesiredVelocityZ(timeInSeconds);
+    }
+
+    @Override
+    public double getDesiredAngleZ(double timeInSeconds) {
+        if (!hold) {
+            return this.angleComp.getDesiredPosition(timeInSeconds);
+        }
+        return holdTraj.getDesiredAngleZ(timeInSeconds);
+    }
+
+    @Override
+    public double getDesiredAngularVelocityZ(double timeInSeconds) {
+        if (!hold) {
+            return this.angleComp.getDesiredVelocity(timeInSeconds);
+        }
+        return holdTraj
+                .getDesiredAngularVelocityZ(timeInSeconds);
     }
 
     private class holdPositionForwarder

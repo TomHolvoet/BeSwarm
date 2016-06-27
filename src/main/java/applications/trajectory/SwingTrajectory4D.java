@@ -9,7 +9,7 @@ import control.Trajectory4d;
  *
  * @author Kristof Coninx <kristof.coninx AT cs.kuleuven.be>
  */
-public class SwingTrajectory4D extends PeriodicTrajectory
+class SwingTrajectory4D extends PeriodicTrajectory
         implements Trajectory4d {
     private final Trajectory2d swing;
     private final double yFactor;
@@ -37,57 +37,49 @@ public class SwingTrajectory4D extends PeriodicTrajectory
     }
 
     @Override
-    public Trajectory1d getTrajectoryLinearX() {
-        return new Trajectory1d() {
-            @Override
-            public double getDesiredPosition(double timeInSeconds) {
-                return xFactor * swing.getTrajectoryLinearAbscissa()
-                        .getDesiredPosition(timeInSeconds);
-            }
-
-            @Override
-            public double getDesiredVelocity(double timeInSeconds) {
-                return xFactor * swing.getTrajectoryLinearAbscissa()
-                        .getDesiredVelocity(timeInSeconds);
-            }
-        };
+    public double getDesiredPositionX(double timeInSeconds) {
+        return xFactor * swing.getTrajectoryLinearAbscissa()
+                .getDesiredPosition(timeInSeconds);
     }
 
     @Override
-    public Trajectory1d getTrajectoryLinearY() {
-        return new Trajectory1d() {
-            @Override
-            public double getDesiredPosition(double timeInSeconds) {
-                return yFactor * swing.getTrajectoryLinearAbscissa()
-                        .getDesiredPosition(timeInSeconds);
-            }
-
-            @Override
-            public double getDesiredVelocity(double timeInSeconds) {
-                return yFactor * swing.getTrajectoryLinearAbscissa()
-                        .getDesiredVelocity(timeInSeconds);
-            }
-        };
+    public double getDesiredVelocityX(double timeInSeconds) {
+        return xFactor * swing.getTrajectoryLinearAbscissa()
+                .getDesiredVelocity(timeInSeconds);
     }
 
     @Override
-    public Trajectory1d getTrajectoryLinearZ() {
-        return swing.getTrajectoryLinearOrdinate();
+    public double getDesiredPositionY(double timeInSeconds) {
+        return yFactor * swing.getTrajectoryLinearAbscissa()
+                .getDesiredPosition(timeInSeconds);
     }
 
     @Override
-    public Trajectory1d getTrajectoryAngularZ() {
-        return new Trajectory1d() {
-            @Override
-            public double getDesiredPosition(double timeInSeconds) {
-                return angularMotion.getDesiredPosition(timeInSeconds);
-            }
+    public double getDesiredVelocityY(double timeInSeconds) {
+        return yFactor * swing.getTrajectoryLinearAbscissa()
+                .getDesiredVelocity(timeInSeconds);
+    }
 
-            @Override
-            public double getDesiredVelocity(double timeInSeconds) {
-                return angularMotion.getDesiredVelocity(timeInSeconds);
-            }
-        };
+    @Override
+    public double getDesiredPositionZ(double timeInSeconds) {
+        return swing.getTrajectoryLinearOrdinate()
+                .getDesiredPosition(timeInSeconds);
+    }
+
+    @Override
+    public double getDesiredVelocityZ(double timeInSeconds) {
+        return swing.getTrajectoryLinearOrdinate()
+                .getDesiredVelocity(timeInSeconds);
+    }
+
+    @Override
+    public double getDesiredAngleZ(double timeInSeconds) {
+        return angularMotion.getDesiredPosition(timeInSeconds);
+    }
+
+    @Override
+    public double getDesiredAngularVelocityZ(double timeInSeconds) {
+        return angularMotion.getDesiredVelocity(timeInSeconds);
     }
 
     public static class Builder {

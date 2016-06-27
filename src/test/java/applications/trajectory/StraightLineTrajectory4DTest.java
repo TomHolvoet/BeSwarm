@@ -29,108 +29,108 @@ public class StraightLineTrajectory4DTest {
     }
 
     private void init() {
-        target.getTrajectoryLinearX().getDesiredPosition(0);
-        target.getTrajectoryLinearY().getDesiredPosition(0);
-        target.getTrajectoryLinearZ().getDesiredPosition(0);
-        target.getTrajectoryAngularZ().getDesiredPosition(0);
-        target2.getTrajectoryLinearX().getDesiredPosition(0);
-        target2.getTrajectoryLinearY().getDesiredPosition(0);
-        target2.getTrajectoryLinearZ().getDesiredPosition(0);
-        target2.getTrajectoryAngularZ().getDesiredPosition(0);
+        target.getDesiredPositionX(0);
+        target.getDesiredPositionY(0);
+        target.getDesiredPositionZ(0);
+        target.getDesiredAngleZ(0);
+        target2.getDesiredPositionX(0);
+        target2.getDesiredPositionY(0);
+        target2.getDesiredPositionZ(0);
+        target2.getDesiredAngleZ(0);
 
     }
 
     @Test
     public void getTrajectoryLinearX() throws Exception {
-        assertEquals(5, target.getTrajectoryLinearX().getDesiredPosition(5),
+        assertEquals(5, target.getDesiredPositionX(5),
                 0);
-        assertEquals(10, target.getTrajectoryLinearX().getDesiredPosition(10),
+        assertEquals(10, target.getDesiredPositionX(10),
                 0);
 
         double t = 5;
         double toCalc = 10d / Math.sqrt(300d) * t;
         assertEquals(toCalc,
-                target2.getTrajectoryLinearX().getDesiredPosition(t),
+                target2.getDesiredPositionX(t),
                 0.01);
         t = 10;
         toCalc = (10d / Math.sqrt(300)) * t;
         assertEquals(toCalc,
-                target2.getTrajectoryLinearX().getDesiredPosition(t),
+                target2.getDesiredPositionX(t),
                 0.01);
 
     }
 
     @Test
     public void getTrajectoryLinearXVelocity() {
-        assertEquals(1, target.getTrajectoryLinearX().getDesiredVelocity(5),
+        assertEquals(1, target.getDesiredVelocityX(5),
                 0);
     }
 
     @Test
     public void getTrajectoryLinearXTestHoldAtEnd() throws Exception {
-        target.getTrajectoryLinearX().getDesiredPosition(15);
+        target.getDesiredPositionX(15);
         assertEquals(10,
-                target.getTrajectoryLinearX().getDesiredPosition(15),
+                target.getDesiredPositionX(15),
                 0.01);
     }
 
     @Test
     public void getTrajectoryLinearY() throws Exception {
-        assertEquals(0, target.getTrajectoryLinearY().getDesiredPosition(5),
+        assertEquals(0, target.getDesiredPositionY(5),
                 0);
-        assertEquals(0, target.getTrajectoryLinearY().getDesiredPosition(10),
+        assertEquals(0, target.getDesiredPositionY(10),
                 0);
 
         double t = 5;
         double toCalc = 10d / Math.sqrt(300d) * t;
         assertEquals(toCalc,
-                target2.getTrajectoryLinearY().getDesiredPosition(t),
+                target2.getDesiredPositionY(t),
                 0.01);
         t = 10;
         toCalc = 10d / Math.sqrt(300d) * t;
         assertEquals(toCalc,
-                target2.getTrajectoryLinearY().getDesiredPosition(t),
+                target2.getDesiredPositionY(t),
                 0.01);
     }
 
     @Test
     public void getTrajectoryLinearYVelocity() {
-        assertEquals(0, target.getTrajectoryLinearY().getDesiredVelocity(5),
+        assertEquals(0, target.getDesiredVelocityY(5),
                 0);
     }
 
     @Test
     public void getTrajectoryLinearZ() throws Exception {
-        assertEquals(0, target.getTrajectoryLinearZ().getDesiredPosition(5),
+        assertEquals(0, target.getDesiredPositionZ(5),
                 0);
-        assertEquals(0, target.getTrajectoryLinearZ().getDesiredPosition(10),
+        assertEquals(0, target.getDesiredPositionZ(10),
                 0);
 
         double t = 5;
         double toCalc = 10d / Math.sqrt(300d) * t;
         assertEquals(toCalc,
-                target2.getTrajectoryLinearZ().getDesiredPosition(t),
+                target2.getDesiredPositionZ(t),
                 0.01);
         t = 10;
         toCalc = 10d / Math.sqrt(300d) * t;
         assertEquals(toCalc,
-                target2.getTrajectoryLinearZ().getDesiredPosition(t),
+                target2.getDesiredPositionZ(t),
                 0.01);
     }
 
     @Test
     public void getTrajectoryLinearZVelocity() {
-        assertEquals(0, target.getTrajectoryLinearZ().getDesiredVelocity(5),
+        assertEquals(0, target.getDesiredVelocityZ(5),
                 0);
     }
 
     @Test
     public void getTrajectoryAngularZ() throws Exception {
         assertEquals(Math.PI / 4,
-                target.getTrajectoryAngularZ().getDesiredPosition(5),
+                target.getDesiredAngleZ(5),
                 0);
         assertEquals(Math.PI / 2,
-                target.getTrajectoryAngularZ().getDesiredPosition(10),
+                target.getDesiredAngleZ(10),
                 0);
     }
 

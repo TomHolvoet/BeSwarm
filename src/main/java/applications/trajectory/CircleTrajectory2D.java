@@ -11,7 +11,7 @@ import static com.google.common.base.Preconditions.checkArgument;
  * (How many revolutions per second) and a radius.
  * Created by Kristof Coninx.
  */
-public class CircleTrajectory2D extends PeriodicTrajectory
+class CircleTrajectory2D extends PeriodicTrajectory
         implements Trajectory2d {
     public static final double MAX_ABSOLUTE_SPEED = 1;
     private final double freq2pi;
@@ -34,7 +34,8 @@ public class CircleTrajectory2D extends PeriodicTrajectory
         this.freq2pi = frequency * TWOPI * (clockwise ? 1 : -1);
         this.rfreq2pi = frequency * radius * TWOPI * (clockwise ? 1 : -1);
         checkArgument(Math.abs(rfreq2pi) < MAX_ABSOLUTE_SPEED,
-                "Absolute speed should not be larger than MAX_ABSOLUTE_VELOCITY,"
+                "Absolute speed should not be larger than "
+                        + "MAX_ABSOLUTE_VELOCITY,"
                         + " which is: "
                         + MAX_ABSOLUTE_SPEED);
     }

@@ -14,7 +14,7 @@ import static com.google.common.base.Preconditions.checkArgument;
  *
  * @author Kristof Coninx <kristof.coninx AT cs.kuleuven.be>
  */
-public class PendulumSwingTrajectory1D extends PeriodicTrajectory
+class PendulumSwingTrajectory1D extends PeriodicTrajectory
         implements Trajectory1d {
     private static final double MAXRANGE_VELOCITY_PERIODIC_PART = 0.649091;
     private final double freq2pi;
@@ -36,7 +36,8 @@ public class PendulumSwingTrajectory1D extends PeriodicTrajectory
         this.freq2pi = frequency * TWOPI;
         checkArgument(Math.abs(radius * frequency) < MAX_ABSOLUTE_VELOCITY / (
                         PISQUARED * MAXRANGE_VELOCITY_PERIODIC_PART),
-                "Absolute speed should not be larger than MAX_ABSOLUTE_VELOCITY,"
+                "Absolute speed should not be larger than "
+                        + "MAX_ABSOLUTE_VELOCITY,"
                         + " which is: "
                         + MAX_ABSOLUTE_VELOCITY);
     }
