@@ -6,7 +6,7 @@ import control.Trajectory4d;
 /**
  * @author Hoang Tung Dinh
  */
-public final class ExampleTrajectory2 implements Trajectory4d {
+public final class ExampleTrajectory implements Trajectory4d {
 
     private final Trajectory1d trajectoryLinearX = new TrajectoryLinearX();
     private final Trajectory1d trajectoryLinearY = new TrajectoryLinearY();
@@ -16,10 +16,10 @@ public final class ExampleTrajectory2 implements Trajectory4d {
 
     private double startTime = -1;
 
-    private ExampleTrajectory2() {}
+    private ExampleTrajectory() {}
 
-    public static ExampleTrajectory2 create() {
-        return new ExampleTrajectory2();
+    public static ExampleTrajectory create() {
+        return new ExampleTrajectory();
     }
 
     @Override

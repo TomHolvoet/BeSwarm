@@ -46,21 +46,9 @@ public final class ExampleFlight {
 
     private ExampleFlight(ServiceFactory serviceFactory, StateEstimator stateEstimator, Trajectory4d trajectory4d,
             ConnectedNode connectedNode) {
-        final Optional<TakeOffService> takeOffServiceOptional = serviceFactory.createTakeOffService();
-        final Optional<LandService> landServiceOptional = serviceFactory.createLandService();
-        final Optional<VelocityService> velocityServiceOptional = serviceFactory.createVelocityService();
-
-        if (!(takeOffServiceOptional.isPresent() && landServiceOptional.isPresent() && velocityServiceOptional
-                .isPresent())) {
-            logger.info("Some services are not available. The program will quit automatically.");
-            logger.info(takeOffServiceOptional.toString());
-            logger.info(landServiceOptional.toString());
-            logger.info(velocityServiceOptional.toString());
-        }
-
-        this.takeOffService = takeOffServiceOptional.get();
-        this.landService = landServiceOptional.get();
-        this.velocityService = velocityServiceOptional.get();
+        this.takeOffService = serviceFactory.createTakeOffService();;
+        this.landService = serviceFactory.createLandService();;
+        this.velocityService = serviceFactory.createVelocityService();;
         this.stateEstimator = stateEstimator;
         this.trajectory4d = trajectory4d;
         this.connectedNode = connectedNode;

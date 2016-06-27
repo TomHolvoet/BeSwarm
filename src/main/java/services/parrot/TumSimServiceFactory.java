@@ -25,7 +25,7 @@ public final class TumSimServiceFactory extends ParrotServiceFactory {
     }
 
     @Override
-    public Optional<VelocityService> createVelocityService() {
+    public VelocityService createVelocityService() {
         final String topicName = "/cmd_vel";
         final VelocityService velocityService = ParrotVelocityService.builder()
                 .publisher(getConnectedNode().<Twist>newPublisher(topicName, Twist._TYPE))
@@ -39,11 +39,11 @@ public final class TumSimServiceFactory extends ParrotServiceFactory {
                 .maxAngularZ(1)
                 .build();
         logger.info("Velocity service connected to {}", topicName);
-        return Optional.of(velocityService);
+        return velocityService;
     }
 
     @Override
-    public Optional<FlipService> createFlipService() {
+    public FlipService createFlipService() {
         throw new UnsupportedOperationException("Tum simulator does not support flip service.");
     }
 }
