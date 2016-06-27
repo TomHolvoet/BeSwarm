@@ -73,10 +73,10 @@ public class ChoreographyTest {
                 .forTime(20)
                 .withTrajectory(second).forTime(40).withTrajectory(third)
                 .forTime(30).build();
-        assertNotEquals(0, choreo.getTrajectoryLinearX().getDesiredVelocity(1));
-        assertNotEquals(0, choreo.getTrajectoryLinearY().getDesiredVelocity(1));
-        assertNotEquals(0, choreo.getTrajectoryLinearZ().getDesiredVelocity(1));
-        assertEquals(0, choreo.getTrajectoryAngularZ().getDesiredVelocity(1),
+        assertNotEquals(0, choreo.getDesiredPositionX(1));
+        assertNotEquals(0, choreo.getDesiredPositionY(1));
+        assertNotEquals(0, choreo.getDesiredPositionZ(1));
+        assertEquals(0, choreo.getDesiredAngleZ(1),
                 0);
 
     }
