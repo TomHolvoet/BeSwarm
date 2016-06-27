@@ -1,5 +1,6 @@
 package applications.trajectory;
 
+import control.Trajectory1d;
 import control.Trajectory2d;
 import org.junit.Test;
 
@@ -20,22 +21,22 @@ public abstract class Periodic2DTest {
             throws Exception {
 
         testPositionFrequencyRadiusRelation(highFreq, radius,
-                highFrequencyCircle.getTrajectoryLinearAbscissa());
+                new HighFreq1D());
         testPositionFrequencyRadiusRelation(lowFreq, radius,
-                lowFrequencyCircle.getTrajectoryLinearAbscissa());
+                new LowFreq1D());
     }
 
     @Test
     public void getTrajectoryAbscissaVelocityTestFrequencyAndRadiusRelation() {
-        testSpeedBounds(highFrequencyCircle.getTrajectoryLinearAbscissa(),
+        testSpeedBounds(new HighFreq1D(),
                 BasicTrajectory.MAX_ABSOLUTE_VELOCITY);
         testVelocityFrequencyRadiusRelation(highFreq,
-                highFrequencyCircle.getTrajectoryLinearAbscissa());
+                new HighFreq1D());
 
-        testSpeedBounds(lowFrequencyCircle.getTrajectoryLinearAbscissa(),
+        testSpeedBounds(new LowFreq1D(),
                 BasicTrajectory.MAX_ABSOLUTE_VELOCITY);
         testVelocityFrequencyRadiusRelation(lowFreq,
-                lowFrequencyCircle.getTrajectoryLinearAbscissa());
+                new LowFreq1D());
 
     }
 
@@ -44,17 +45,53 @@ public abstract class Periodic2DTest {
             throws Exception {
 
         testPositionFrequencyRadiusRelation(highFreq, 0,
-                highFrequencyCircle.getTrajectoryLinearOrdinate());
+                new HighFreq1D());
         testPositionFrequencyRadiusRelation(lowFreq, 0,
-                lowFrequencyCircle.getTrajectoryLinearOrdinate());
+                new LowFreq1D());
     }
 
     @Test
     public void getTrajectoryOrdinateVelocityTestFrequencyAndRadiusRelation() {
-        testSpeedBounds(highFrequencyCircle.getTrajectoryLinearOrdinate(),
+        testSpeedBounds(new HighFreq1D(),
                 BasicTrajectory.MAX_ABSOLUTE_VELOCITY);
 
-        testSpeedBounds(lowFrequencyCircle.getTrajectoryLinearOrdinate(),
+        testSpeedBounds(new LowFreq1D(),
                 BasicTrajectory.MAX_ABSOLUTE_VELOCITY);
+    }
+
+    private class HighFreq1D implements Trajectory1d {
+        @Override
+        public double getDesiredPosition(double
+                timeInSeconds) {
+            return highFrequencyCircle
+                    .getDesiredPositionAbscissa
+                            (timeInSeconds);
+        }
+
+        @Override
+        public double getDesiredVelocity(double
+                timeInSeconds) {
+            return highFrequencyCircle
+                    .getDesiredVelocityAbscissa
+                            (timeInSeconds);
+        }
+    }
+
+    private class LowFreq1D implements Trajectory1d {
+        @Override
+        public double getDesiredPosition(double
+                timeInSeconds) {
+            return lowFrequencyCircle
+                    .getDesiredPositionAbscissa
+                            (timeInSeconds);
+        }
+
+        @Override
+        public double getDesiredVelocity(double
+                timeInSeconds) {
+            return lowFrequencyCircle
+                    .getDesiredVelocityAbscissa
+                            (timeInSeconds);
+        }
     }
 }
