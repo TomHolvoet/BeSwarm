@@ -1,6 +1,5 @@
 package applications.trajectory;
 
-import com.google.common.annotations.VisibleForTesting;
 import control.Trajectory2d;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -36,11 +35,6 @@ class CircleTrajectory2D extends PeriodicTrajectory
                         + "MAX_ABSOLUTE_VELOCITY,"
                         + " which is: "
                         + MAX_ABSOLUTE_VELOCITY);
-    }
-
-    @VisibleForTesting
-    CircleTrajectory2D(double radius, double frequency) {
-        this(radius, frequency, Point4D.origin(), 0, true);
     }
 
     @Override

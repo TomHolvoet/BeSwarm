@@ -21,22 +21,22 @@ public abstract class Periodic2DTest {
             throws Exception {
 
         testPositionFrequencyRadiusRelation(highFreq, radius,
-                new HighFreq1D());
+                new HighFreq1DAbscissa());
         testPositionFrequencyRadiusRelation(lowFreq, radius,
-                new LowFreq1D());
+                new LowFreq1DAbscissa());
     }
 
     @Test
     public void getTrajectoryAbscissaVelocityTestFrequencyAndRadiusRelation() {
-        testSpeedBounds(new HighFreq1D(),
+        testSpeedBounds(new HighFreq1DAbscissa(),
                 BasicTrajectory.MAX_ABSOLUTE_VELOCITY);
         testVelocityFrequencyRadiusRelation(highFreq,
-                new HighFreq1D());
+                new HighFreq1DAbscissa());
 
-        testSpeedBounds(new LowFreq1D(),
+        testSpeedBounds(new LowFreq1DAbscissa(),
                 BasicTrajectory.MAX_ABSOLUTE_VELOCITY);
         testVelocityFrequencyRadiusRelation(lowFreq,
-                new LowFreq1D());
+                new LowFreq1DAbscissa());
 
     }
 
@@ -45,21 +45,21 @@ public abstract class Periodic2DTest {
             throws Exception {
 
         testPositionFrequencyRadiusRelation(highFreq, 0,
-                new HighFreq1D());
+                new HighFreq1DOrdinate());
         testPositionFrequencyRadiusRelation(lowFreq, 0,
-                new LowFreq1D());
+                new LowFreq1DOrdinate());
     }
 
     @Test
     public void getTrajectoryOrdinateVelocityTestFrequencyAndRadiusRelation() {
-        testSpeedBounds(new HighFreq1D(),
+        testSpeedBounds(new HighFreq1DOrdinate(),
                 BasicTrajectory.MAX_ABSOLUTE_VELOCITY);
 
-        testSpeedBounds(new LowFreq1D(),
+        testSpeedBounds(new LowFreq1DOrdinate(),
                 BasicTrajectory.MAX_ABSOLUTE_VELOCITY);
     }
 
-    private class HighFreq1D implements Trajectory1d {
+    private class HighFreq1DAbscissa implements Trajectory1d {
         @Override
         public double getDesiredPosition(double
                 timeInSeconds) {
@@ -77,7 +77,24 @@ public abstract class Periodic2DTest {
         }
     }
 
-    private class LowFreq1D implements Trajectory1d {
+    private class HighFreq1DOrdinate implements Trajectory1d {
+        @Override
+        public double getDesiredPosition(double
+                timeInSeconds) {
+            return highFrequencyCircle
+                    .getDesiredPositionOrdinate
+                            (timeInSeconds);
+        }
+
+        @Override
+        public double getDesiredVelocity(double
+                timeInSeconds) {
+            return highFrequencyCircle
+                    .getDesiredVelocityOrdinate(timeInSeconds);
+        }
+    }
+
+    private class LowFreq1DAbscissa implements Trajectory1d {
         @Override
         public double getDesiredPosition(double
                 timeInSeconds) {
@@ -92,6 +109,23 @@ public abstract class Periodic2DTest {
             return lowFrequencyCircle
                     .getDesiredVelocityAbscissa
                             (timeInSeconds);
+        }
+    }
+
+    private class LowFreq1DOrdinate implements Trajectory1d {
+        @Override
+        public double getDesiredPosition(double
+                timeInSeconds) {
+            return lowFrequencyCircle
+                    .getDesiredPositionOrdinate
+                            (timeInSeconds);
+        }
+
+        @Override
+        public double getDesiredVelocity(double
+                timeInSeconds) {
+            return lowFrequencyCircle
+                    .getDesiredVelocityOrdinate(timeInSeconds);
         }
     }
 }

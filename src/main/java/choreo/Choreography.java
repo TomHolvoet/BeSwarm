@@ -29,7 +29,7 @@ public final class Choreography implements Trajectory4d {
 
     private void checkChoreoSegments(double timeInSeconds) {
         double normTime = normalize(timeInSeconds);
-        if (normTime > getCurrentSegment().getDuration()) {
+        if (normTime >= getCurrentSegment().getDuration()) {
             shiftSegments();
         }
     }
@@ -157,8 +157,7 @@ public final class Choreography implements Trajectory4d {
          * @return A fully built choreography instance.
          */
         public Choreography build() {
-            List<ChoreoSegment> newSegments = Lists.newArrayList();
-            Choreography choreography = new Choreography(newSegments);
+            Choreography choreography = new Choreography(segments);
             return choreography;
         }
 
