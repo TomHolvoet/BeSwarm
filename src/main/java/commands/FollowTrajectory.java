@@ -14,8 +14,6 @@ import org.slf4j.LoggerFactory;
 import services.VelocityService;
 
 /**
- * Command for moving to a predefined pose. It is a facade which uses {@link Move}.
- *
  * @author Hoang Tung Dinh
  */
 public final class FollowTrajectory implements Command {
@@ -29,6 +27,7 @@ public final class FollowTrajectory implements Command {
     private final PidParameters pidLinearZParameters;
     private final PidParameters pidAngularZParameters;
     private final Trajectory4d trajectory4d;
+    // FIXME let the trajectory decide how long the command should word
     private final double durationInSeconds;
     private final double controlRateInSeconds;
 

@@ -1,8 +1,7 @@
 package applications.parrot.bebop;
 
 import applications.ExampleFlight;
-import applications.trajectory.Point4D;
-import applications.trajectory.Trajectories;
+import applications.LineTrajectory;
 import com.google.common.base.Optional;
 import control.Trajectory4d;
 import control.dto.BodyFrameVelocity;
@@ -28,13 +27,13 @@ import java.util.concurrent.TimeUnit;
 /**
  * @author Hoang Tung Dinh
  */
-public class BebopStraightLinePattern extends AbstractNodeMain {
-    private static final Logger logger = LoggerFactory.getLogger(BebopStraightLinePattern.class);
+public class BebopSimpleLinePattern extends AbstractNodeMain {
+    private static final Logger logger = LoggerFactory.getLogger(BebopSimpleLinePattern.class);
     private static final String DRONE_NAME = "bebop";
 
     @Override
     public GraphName getDefaultNodeName() {
-        return GraphName.of("BebopStraightLinePattern");
+        return GraphName.of("BebopSimpleLinePattern");
     }
 
     @Override
@@ -42,8 +41,8 @@ public class BebopStraightLinePattern extends AbstractNodeMain {
         final ServiceFactory serviceFactory = BebopServiceFactory.create(connectedNode, DRONE_NAME);
         final StateEstimator stateEstimator = BebopStateEstimator.create(getPoseSubscriber(connectedNode),
                 getOdometrySubscriber(connectedNode));
-        final Trajectory4d trajectory4d = Trajectories.newStraightLineTrajectory(Point4D.create(0, 0, 1, 0),
-                Point4D.create(2, 0, 1, 0), 0.2);
+        final double flightDuration = 100;
+        final Trajectory4d trajectory4d = LineTrajectory.create(flightDuration, 2.0);
         final ExampleFlight exampleFlight = ExampleFlight.create(serviceFactory, stateEstimator, trajectory4d,
                 connectedNode);
 
