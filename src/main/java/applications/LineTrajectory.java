@@ -19,8 +19,8 @@ public final class LineTrajectory implements Trajectory4d {
     private double startTime = -1;
 
     private LineTrajectory(double flightDuration, double length) {
-        this.trajectoryLinearX = new TrajectoryLinearX(flightDuration, length);
-        this.trajectoryLinearY = new TrajectoryLinearY();
+        this.trajectoryLinearX = new TrajectoryLinearX();
+        this.trajectoryLinearY = new TrajectoryLinearY(flightDuration, length);
         this.trajectoryLinearZ = new TrajectoryLinearZ();
     }
 
@@ -70,12 +70,12 @@ public final class LineTrajectory implements Trajectory4d {
         return trajectoryAngularZ.getDesiredVelocity(timeInSeconds);
     }
 
-    private final class TrajectoryLinearX implements Trajectory1d {
+    private final class TrajectoryLinearY implements Trajectory1d {
 
         private final double flightDuration;
         private double length;
 
-        public TrajectoryLinearX(double flightDuration, double length) {
+        public TrajectoryLinearY(double flightDuration, double length) {
             this.flightDuration = flightDuration;
             this.length = length;
         }
@@ -90,7 +90,7 @@ public final class LineTrajectory implements Trajectory4d {
             if (currentTime >= flightDuration) {
                 return length;
             } else {
-                double position = 0 + (currentTime % flightDuration) * length/flightDuration;
+                double position = 0 - (currentTime % flightDuration) * length/flightDuration;
                 logger.info("Desired position" + position);
 
                 return position;
@@ -112,13 +112,13 @@ public final class LineTrajectory implements Trajectory4d {
         }
     }
 
-    private final class TrajectoryLinearY implements Trajectory1d {
+    private final class TrajectoryLinearX implements Trajectory1d {
 
-        private TrajectoryLinearY() {}
+        private TrajectoryLinearX() {}
 
         @Override
         public double getDesiredPosition(double timeInSeconds) {
-            return -2.0;
+            return 1.5;
         }
 
         @Override

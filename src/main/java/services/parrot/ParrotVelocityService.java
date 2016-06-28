@@ -24,6 +24,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public final class ParrotVelocityService implements VelocityService {
     private static final Logger logger = LoggerFactory.getLogger(ParrotVelocityService.class);
+    private static final Logger loggerVel = LoggerFactory.getLogger(ParrotVelocityService.class.getName() + ".vel");
 
     private final Publisher<Twist> publisher;
 
@@ -61,6 +62,7 @@ public final class ParrotVelocityService implements VelocityService {
                 inertialFrameVelocity, pose);
 
         final BodyFrameVelocity refinedVelocity = getRefinedVelocity(bodyFrameVelocity);
+        loggerVel.trace("{} {} {} {}", refinedVelocity.linearX(), refinedVelocity.linearY(), refinedVelocity.linearZ(), refinedVelocity.angularZ());
 
         publisher.publish(newTwistMessage(refinedVelocity));
     }
