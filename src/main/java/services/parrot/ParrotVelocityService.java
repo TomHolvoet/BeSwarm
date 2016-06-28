@@ -57,12 +57,12 @@ public final class ParrotVelocityService implements VelocityService {
 
     @Override
     public void sendVelocityMessage(InertialFrameVelocity inertialFrameVelocity, Pose pose) {
-        logger.trace("Sending velocity message: {}", inertialFrameVelocity);
         final BodyFrameVelocity bodyFrameVelocity = Transformations.inertialFrameVelocityToBodyFrameVelocity(
                 inertialFrameVelocity, pose);
 
         final BodyFrameVelocity refinedVelocity = getRefinedVelocity(bodyFrameVelocity);
-        loggerVel.trace("{} {} {} {}", refinedVelocity.linearX(), refinedVelocity.linearY(), refinedVelocity.linearZ(), refinedVelocity.angularZ());
+        loggerVel.trace("{} {} {} {} {}", System.nanoTime() / 1000000000.0, refinedVelocity.linearX(),
+                refinedVelocity.linearY(), refinedVelocity.linearZ(), refinedVelocity.angularZ());
 
         publisher.publish(newTwistMessage(refinedVelocity));
     }
