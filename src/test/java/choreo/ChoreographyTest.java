@@ -78,6 +78,20 @@ public class ChoreographyTest {
         assertNotEquals(0, choreo.getDesiredPositionZ(1));
         assertEquals(0, choreo.getDesiredAngleZ(1),
                 0);
+    }
 
+    @Test
+    public void testWithRealStartTimes() {
+        double timeShift = 380;
+        choreotarget.getDesiredPositionX(380);
+        choreotarget.getDesiredPositionY(380);
+        choreotarget.getDesiredPositionZ(380);
+
+        testTrajectoryPos4D(choreotarget, 2, Point4D.create(5, 5, 5, 2));
+        //First invocation past duration still get's old point. all following
+        // trigger change in segment for first call.
+        choreotarget.getDesiredPositionX(0d + duration);
+        testTrajectoryPos4D(choreotarget, (1 / frequency) + duration,
+                Point4D.create(radius, 0, 0, 0));
     }
 }

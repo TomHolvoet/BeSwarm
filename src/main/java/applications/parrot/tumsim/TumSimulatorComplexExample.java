@@ -26,7 +26,7 @@ public class TumSimulatorComplexExample extends AbstractNodeMain {
         flight.fly();
     }
 
-    public Trajectory4d getConcreteTrajectory() {
+    private Trajectory4d getConcreteTrajectory() {
         Trajectory4d first = Trajectories
                 .newStraightLineTrajectory(Point4D.create(0, 0, 1.5, 0),
                         Point4D.create(5, 5, 5, 0), 0.6);

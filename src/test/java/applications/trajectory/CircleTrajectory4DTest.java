@@ -71,4 +71,26 @@ public class CircleTrajectory4DTest {
                 Math.PI * 2);
     }
 
+    @Test
+    public void testTranslocation() {
+        double centerx = 10;
+        double centery = 10;
+        double radius = 1;
+        target = Trajectories
+                .newCircleTrajectory4D(Point4D.create(centerx, centery, 5, 0),
+                        radius, 0.1, 0);
+        List<Double> lx = Lists.newArrayList();
+        List<Double> ly = Lists.newArrayList();
+
+        for (int i = 0; i < 1000; i++) {
+            lx.add(target.getDesiredPositionX(i / 10d));
+            ly.add(target.getDesiredPositionX(i / 10d));
+
+        }
+        assertBounds(lx, centerx - radius,
+                centerx + radius);
+        assertBounds(ly, centery - radius,
+                centery + radius);
+    }
+
 }
