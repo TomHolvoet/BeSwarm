@@ -5,7 +5,11 @@ import control.Trajectory4d;
 import static com.google.common.base.Preconditions.checkArgument;
 
 /**
- * Trajectory represent a straight line in space using a given speed.
+ * Trajectory represent a straight line in space between two given points at
+ * a given speed.
+ * Once the destination point has been reached, the trajectory enforces to
+ * hold position
+ * at the destination point.
  *
  * @author Kristof Coninx <kristof.coninx AT cs.kuleuven.be>
  */

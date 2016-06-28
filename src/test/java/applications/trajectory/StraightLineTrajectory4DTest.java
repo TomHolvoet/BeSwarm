@@ -141,7 +141,6 @@ public class StraightLineTrajectory4DTest {
 
         double t = 0;
         testPartialDistanceCovered(t);
-        double toCalc;
         t = 5;
         testPartialDistanceCovered(t);
         t = 10;
