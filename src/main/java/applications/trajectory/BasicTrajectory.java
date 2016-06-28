@@ -5,7 +5,7 @@ package applications.trajectory;
  *
  * @author Kristof Coninx <kristof.coninx AT cs.kuleuven.be>
  */
-public class BasicTrajectory {
+public abstract class BasicTrajectory {
     public static final double MAX_ABSOLUTE_VELOCITY = 1;
     protected final Point4D linearDisplacement;
     private double startTime = -1;

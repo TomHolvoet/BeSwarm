@@ -22,11 +22,8 @@ class SwingTrajectory4D extends PeriodicTrajectory
         super(phase, origin, radius, frequency);
         xFactor = StrictMath.cos(xzPlaneAngle);
         yFactor = StrictMath.sin(xzPlaneAngle);
-        this.swing = new PendulumTrajectory2D.Builder().setRadius(radius)
+        this.swing = PendulumTrajectory2D.builder().setRadius(radius)
                 .setFrequency(frequency).setOrigin(origin).build();
-        //        this.angularMotion = new
-        // ConstantVelocityAngularTrajectory1D(frequency,
-        //                origin.getAngle() + phase);
         //keep constant yaw:
         this.angularMotion = new ConstantVelocityAngularTrajectory1D(0,
                 0);
@@ -77,6 +74,9 @@ class SwingTrajectory4D extends PeriodicTrajectory
         return angularMotion.getDesiredVelocity(timeInSeconds);
     }
 
+    /**
+     * Builder for 4D swing trajectories.
+     */
     public static class Builder {
         private Point4D origin = Point4D.origin();
         private double xzPlaneAngle = 0;
@@ -109,6 +109,9 @@ class SwingTrajectory4D extends PeriodicTrajectory
             return this;
         }
 
+        /**
+         * @return A new trajectory instance that represents a swing motion.
+         */
         public SwingTrajectory4D build() {
             return new SwingTrajectory4D(origin, phase, xzPlaneAngle, radius,
                     frequency

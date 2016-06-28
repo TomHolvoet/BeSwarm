@@ -134,7 +134,7 @@ public final class Choreography extends BasicTrajectory
      * duration for which to execute this trajectory.
      */
     @AutoValue
-    public static abstract class ChoreoSegment {
+    private abstract static class ChoreoSegment {
         /**
          * @return The trajectory to be executed in this segment.
          */
@@ -176,8 +176,7 @@ public final class Choreography extends BasicTrajectory
          * @return A fully built choreography instance.
          */
         public Choreography build() {
-            Choreography choreography = new Choreography(segments);
-            return choreography;
+            return new Choreography(segments);
         }
 
         /**

@@ -79,6 +79,9 @@ public class PendulumTrajectory2D extends PeriodicTrajectory
         private Point4D origin = Point4D.origin();
         private double phase = 0;
 
+        private Builder() {
+        }
+
         public Builder setRadius(double radius) {
             this.radius = radius;
             return this;
