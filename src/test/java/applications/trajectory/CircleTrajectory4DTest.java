@@ -30,7 +30,6 @@ public class CircleTrajectory4DTest {
         targetPlaneShift = Trajectories
                 .newCircleTrajectory4D(origin, radius, frequency,
                         planeshift);
-
     }
 
     @Test
@@ -72,7 +71,7 @@ public class CircleTrajectory4DTest {
     }
 
     @Test
-    public void testTranslocation() {
+    public void testCircleTranslocation() {
         double centerx = 15;
         double centery = 10;
         double centerz = 20;
