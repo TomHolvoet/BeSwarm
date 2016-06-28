@@ -54,7 +54,7 @@ class CircleTrajectory2D extends PeriodicTrajectory
     @Override
     public double getDesiredPositionOrdinate(double timeInSeconds) {
         final double currentTime = getRelativeTime(timeInSeconds);
-        return getLinearDisplacement().getX() + getRadius() * StrictMath
+        return getLinearDisplacement().getY() + getRadius() * StrictMath
                 .sin(freq2pi * currentTime + getPhaseDisplacement());
     }
 
