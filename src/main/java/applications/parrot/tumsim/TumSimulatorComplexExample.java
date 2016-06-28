@@ -32,13 +32,16 @@ public class TumSimulatorComplexExample extends AbstractNodeMain {
         Trajectory4d first = Trajectories
                 .newStraightLineTrajectory(Point4D.create(0, 0, 1.5, 0),
                         Point4D.create(5, 5, 5, 0), 0.6);
+        Trajectory4d inter = Trajectories
+                .newHoldPositionTrajectory(Point4D.create(5, 5, 5, 0));
         Trajectory4d second = Trajectories
                 .newCircleTrajectory4D(Point4D.create(4, 5, 5, 0), 1, 0.10,
                         Math.PI / 4);
         Trajectory4d third = Trajectories
                 .newHoldPositionTrajectory(Point4D.create(1, 1, 2, 0));
         return Choreography.builder().withTrajectory(init).forTime(5)
-                .withTrajectory(first).forTime(20)
+                .withTrajectory(first).forTime(20).withTrajectory(inter)
+                .forTime(5)
                 .withTrajectory(second).forTime(40).withTrajectory(third)
                 .forTime(30).build();
     }
