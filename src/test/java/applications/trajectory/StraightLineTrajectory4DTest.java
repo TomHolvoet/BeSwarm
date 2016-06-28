@@ -23,8 +23,8 @@ public class StraightLineTrajectory4DTest {
         before = Point4D.create(0, 0, 0, 0);
         after2 = Point4D.create(10, 10, 10, 0);
         after = Point4D.create(10, 0, 0, Math.PI / 2);
-        target = new StraightLineTrajectory4D(before, after, speed);
-        target2 = new StraightLineTrajectory4D(before, after2, speed);
+        target = Trajectories.newStraightLineTrajectory(before, after, speed);
+        target2 = Trajectories.newStraightLineTrajectory(before, after2, speed);
         init();
     }
 
@@ -129,17 +129,9 @@ public class StraightLineTrajectory4DTest {
 
     @Test
     public void testTrajectoryProgression() throws Exception {
-        //        target = new StraightLineTrajectory4D(Point4D.create(0, 0,
-        // 1.5, 0),
-        //                Point4D.create(5, 5, 5, 0), 0.2);
         double duration = 10492;
-        //
-        //        TestUtils.testTrajectoryPos4D(target, duration,
-        //                Point4D.create(0, 0, 1.5, 0));
-        //        TestUtils.testTrajectoryPos4D(target, duration,
-        //                Point4D.create(0, 0, 1.5, 0));
-        target = new StraightLineTrajectory4D(before, after, speed);
-        target2 = new StraightLineTrajectory4D(before, after2, speed);
+        target = Trajectories.newStraightLineTrajectory(before, after, speed);
+        target2 = Trajectories.newStraightLineTrajectory(before, after2, speed);
         assertEquals(0, target.getDesiredPositionX(duration + 0),
                 0);
         assertEquals(5, target.getDesiredPositionX(duration + 5),
