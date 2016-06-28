@@ -29,6 +29,15 @@ appender("FILE_DRONE_VELOCITY", FileAppender) {
     }
 }
 
+appender("FILE_RECEIVED_MESSAGES", FileAppender) {
+    file = "${DIR}/received_messages.log"
+    encoder(PatternLayoutEncoder) {
+        pattern = "%msg %n"
+    }
+}
+
 root(DEBUG, ["STDOUT", "FILE"])
 logger("commands.FollowTrajectory.poselogger", TRACE, ["FILE_DRONE_POSE"], false)
 logger("commands.FollowTrajectory.velocitylogger", TRACE, ["FILE_DRONE_VELOCITY"], false)
+logger("services.ros_subscribers.MessagesSubscriberService.MessagesListener", TRACE, ["FILE_RECEIVED_MESSAGES"], false)
+
