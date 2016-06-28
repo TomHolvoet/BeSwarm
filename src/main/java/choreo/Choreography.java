@@ -1,5 +1,6 @@
 package choreo;
 
+import applications.trajectory.BasicTrajectory;
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Queues;
@@ -18,11 +19,13 @@ import java.util.Queue;
  *
  * @author Kristof Coninx <kristof.coninx AT cs.kuleuven.be>
  */
-public final class Choreography implements Trajectory4d {
+public final class Choreography extends BasicTrajectory
+        implements Trajectory4d {
     private final Queue<ChoreoSegment> segments;
     private double timeWindowShift;
 
     private Choreography(List<ChoreoSegment> segmentsArg) {
+        super();
         segments = Queues.newArrayDeque(segmentsArg);
         timeWindowShift = 0d;
     }
@@ -50,57 +53,73 @@ public final class Choreography implements Trajectory4d {
 
     @Override
     public double getDesiredPositionX(double timeInSeconds) {
-        checkChoreoSegments(timeInSeconds);
+        setStartTime(timeInSeconds);
+        final double currentTime = timeInSeconds - getStartTime();
+        checkChoreoSegments(currentTime);
         return getCurrentSegment().getTarget()
-                .getDesiredPositionX(timeInSeconds);
+                .getDesiredPositionX(currentTime);
     }
 
     @Override
     public double getDesiredVelocityX(double timeInSeconds) {
-        checkChoreoSegments(timeInSeconds);
+        setStartTime(timeInSeconds);
+        final double currentTime = timeInSeconds - getStartTime();
+        checkChoreoSegments(currentTime);
         return getCurrentSegment().getTarget()
-                .getDesiredVelocityX(timeInSeconds);
+                .getDesiredVelocityX(currentTime);
     }
 
     @Override
     public double getDesiredPositionY(double timeInSeconds) {
-        checkChoreoSegments(timeInSeconds);
+        setStartTime(timeInSeconds);
+        final double currentTime = timeInSeconds - getStartTime();
+        checkChoreoSegments(currentTime);
         return getCurrentSegment().getTarget()
-                .getDesiredPositionY(timeInSeconds);
+                .getDesiredPositionY(currentTime);
     }
 
     @Override
     public double getDesiredVelocityY(double timeInSeconds) {
-        checkChoreoSegments(timeInSeconds);
+        setStartTime(timeInSeconds);
+        final double currentTime = timeInSeconds - getStartTime();
+        checkChoreoSegments(currentTime);
         return getCurrentSegment().getTarget()
-                .getDesiredVelocityY(timeInSeconds);
+                .getDesiredVelocityY(currentTime);
     }
 
     @Override
     public double getDesiredPositionZ(double timeInSeconds) {
-        checkChoreoSegments(timeInSeconds);
+        setStartTime(timeInSeconds);
+        final double currentTime = timeInSeconds - getStartTime();
+        checkChoreoSegments(currentTime);
         return getCurrentSegment().getTarget()
-                .getDesiredPositionZ(timeInSeconds);
+                .getDesiredPositionZ(currentTime);
     }
 
     @Override
     public double getDesiredVelocityZ(double timeInSeconds) {
-        checkChoreoSegments(timeInSeconds);
+        setStartTime(timeInSeconds);
+        final double currentTime = timeInSeconds - getStartTime();
+        checkChoreoSegments(currentTime);
         return getCurrentSegment().getTarget()
-                .getDesiredVelocityZ(timeInSeconds);
+                .getDesiredVelocityZ(currentTime);
     }
 
     @Override
     public double getDesiredAngleZ(double timeInSeconds) {
-        checkChoreoSegments(timeInSeconds);
-        return getCurrentSegment().getTarget().getDesiredAngleZ(timeInSeconds);
+        setStartTime(timeInSeconds);
+        final double currentTime = timeInSeconds - getStartTime();
+        checkChoreoSegments(currentTime);
+        return getCurrentSegment().getTarget().getDesiredAngleZ(currentTime);
     }
 
     @Override
     public double getDesiredAngularVelocityZ(double timeInSeconds) {
-        checkChoreoSegments(timeInSeconds);
+        setStartTime(timeInSeconds);
+        final double currentTime = timeInSeconds - getStartTime();
+        checkChoreoSegments(currentTime);
         return getCurrentSegment().getTarget()
-                .getDesiredAngularVelocityZ(timeInSeconds);
+                .getDesiredAngularVelocityZ(currentTime);
     }
 
     /**
