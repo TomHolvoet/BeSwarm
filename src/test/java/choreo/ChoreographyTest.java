@@ -90,8 +90,9 @@ public class ChoreographyTest {
         testTrajectoryPos4D(choreotarget, 2, Point4D.create(5, 5, 5, 2));
         //First invocation past duration still get's old point. all following
         // trigger change in segment for first call.
-        choreotarget.getDesiredPositionX(0d + duration);
-        testTrajectoryPos4D(choreotarget, (1 / frequency) + duration,
+        choreotarget.getDesiredPositionX(timeShift + 0d + duration);
+        testTrajectoryPos4D(choreotarget,
+                (1 / frequency) + timeShift + duration,
                 Point4D.create(radius, 0, 0, 0));
     }
 }
