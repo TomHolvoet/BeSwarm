@@ -44,41 +44,42 @@ public final class CratesServiceFactory implements ServiceFactory {
     }
 
     @Override
-    public Optional<TakeOffService> createTakeOffService() {
+    public TakeOffService createTakeOffService() {
         try {
             final TakeOffService takeOffService = CratesTakeOffService.create(
                     connectedNode.<TakeoffRequest, TakeoffResponse>newServiceClient(
                             srvNamePrefix + "controller/Takeoff", Takeoff._TYPE));
-            return Optional.of(takeOffService);
+            return takeOffService;
         } catch (ServiceNotFoundException e) {
             logger.info("Take off service not found. Drone: {}. Model: {}", droneName, modelName);
-            return Optional.absent();
+            throw new RuntimeException(
+                    String.format("Take off service not found. Drone: %s. Model: %s", droneName, modelName));
         }
     }
 
     @Override
-    public Optional<LandService> createLandService() {
+    public LandService createLandService() {
         try {
             final LandService landService = CratesLandService.create(
                     connectedNode.<LandRequest, LandResponse>newServiceClient(srvNamePrefix + "controller/Land",
                             Land._TYPE));
-            return Optional.of(landService);
+            return landService;
         } catch (ServiceNotFoundException e) {
-            logger.info("Land service not found. Drone: {}. Model: {}", droneName, modelName);
-            return Optional.absent();
+            throw new RuntimeException(
+                    String.format("Land service not found. Drone: %s. Model: %s", droneName, modelName));
         }
     }
 
     @Override
-    public Optional<VelocityService> createVelocityService() {
+    public VelocityService createVelocityService() {
         try {
             final VelocityService velocityService = CratesVelocityService.create(
                     connectedNode.<VelocityRequest, VelocityResponse>newServiceClient(
                             srvNamePrefix + "controller/Velocity", Velocity._TYPE));
-            return Optional.of(velocityService);
+            return velocityService;
         } catch (ServiceNotFoundException e) {
-            logger.info("Velocity service not found. Drone: {}. Model: {}", droneName, modelName);
-            return Optional.absent();
+            throw new RuntimeException(
+                    String.format("Velocity service not found. Drone: %s. Model: %s", droneName, modelName));
         }
     }
 
@@ -86,7 +87,7 @@ public final class CratesServiceFactory implements ServiceFactory {
      * This service is not supported by the crates simulator.
      */
     @Override
-    public Optional<FlipService> createFlipService() {
+    public FlipService createFlipService() {
         throw new UnsupportedOperationException("This service is not supported by the crates simulator.");
     }
 }

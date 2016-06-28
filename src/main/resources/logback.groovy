@@ -30,5 +30,5 @@ appender("FILE_DRONE_VELOCITY", FileAppender) {
 }
 
 root(DEBUG, ["STDOUT", "FILE"])
-logger("control.PidController4d.poselogger", TRACE, ["FILE_DRONE_POSE"], false)
-logger("control.PidController4d.velocitylogger", TRACE, ["FILE_DRONE_VELOCITY"], false)
+logger("commands.FollowTrajectory.poselogger", TRACE, ["FILE_DRONE_POSE"], false)
+logger("commands.FollowTrajectory.velocitylogger", TRACE, ["FILE_DRONE_VELOCITY"], false)

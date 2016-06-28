@@ -5,7 +5,7 @@ import applications.LineTrajectory;
 import com.google.common.base.Optional;
 import control.Trajectory4d;
 import control.dto.BodyFrameVelocity;
-import control.dto.DroneState;
+import control.dto.DroneStateStamped;
 import control.dto.InertialFrameVelocity;
 import control.dto.Pose;
 import control.dto.Velocity;
@@ -30,6 +30,7 @@ import java.util.concurrent.TimeUnit;
 public class BebopSimpleLinePattern extends AbstractNodeMain {
     private static final Logger logger = LoggerFactory.getLogger(BebopSimpleLinePattern.class);
     private static final String DRONE_NAME = "bebop";
+    private static final double NANO_SECOND_TO_SECOND = 1000000000.0;
 
     @Override
     public GraphName getDefaultNodeName() {
@@ -87,30 +88,23 @@ public class BebopSimpleLinePattern extends AbstractNodeMain {
         }
 
         @Override
-        public Optional<DroneState> getCurrentState() {
-            final Optional<Pose> pose = getPose();
-            if (!pose.isPresent()) {
+        public Optional<DroneStateStamped> getCurrentState() {
+
+            final Optional<PoseStamped> poseStampedOptional = poseSubscriber.getMostRecentMessage();
+            if (!poseStampedOptional.isPresent()) {
+                logger.debug("Cannot get Bebop pose.");
                 return Optional.absent();
             }
+            final Pose pose = Pose.create(poseStampedOptional.get());
 
-            final Optional<InertialFrameVelocity> inertialFrameVelocity = getVelocity(pose.get());
+            final Optional<InertialFrameVelocity> inertialFrameVelocity = getVelocity(pose);
             if (!inertialFrameVelocity.isPresent()) {
                 return Optional.absent();
             }
 
-            final DroneState droneState = DroneState.create(pose.get(), inertialFrameVelocity.get());
+            final DroneStateStamped droneState = DroneStateStamped.create(pose, inertialFrameVelocity.get(),
+                    poseStampedOptional.get().getHeader().getStamp().toSeconds());
             return Optional.of(droneState);
-        }
-
-        private Optional<Pose> getPose() {
-            final Optional<PoseStamped> poseStampedOptional = poseSubscriber.getMostRecentMessage();
-            if (poseStampedOptional.isPresent()) {
-                final Pose pose = Pose.create(poseStampedOptional.get());
-                return Optional.of(pose);
-            } else {
-                logger.debug("Cannot get Bebop pose.");
-                return Optional.absent();
-            }
         }
 
         private Optional<InertialFrameVelocity> getVelocity(Pose pose) {

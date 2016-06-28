@@ -1,7 +1,7 @@
 package applications.cratessim;
 
 import applications.ExampleFlight;
-import applications.ExampleTrajectory2;
+import applications.ExampleTrajectory;
 import control.Trajectory4d;
 import control.localization.CratesSimStateEstimator;
 import control.localization.StateEstimator;
@@ -45,7 +45,7 @@ public final class CratesSimulatorExample extends AbstractNodeMain {
         addDroneModel(connectedNode);
         final ServiceFactory serviceFactory = CratesServiceFactory.create(DRONE_NAME, MODEL_NAME, connectedNode);
         final StateEstimator stateEstimator = getStateEstimator(connectedNode);
-        final Trajectory4d trajectory = ExampleTrajectory2.create();
+        final Trajectory4d trajectory = ExampleTrajectory.create();
         final ExampleFlight exampleFlight = ExampleFlight.create(serviceFactory, stateEstimator, trajectory,
                 connectedNode);
         exampleFlight.fly();

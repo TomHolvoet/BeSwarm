@@ -4,7 +4,6 @@ import control.dto.BodyFrameVelocity;
 import control.dto.InertialFrameVelocity;
 import control.dto.Pose;
 import control.dto.Velocity;
-import control.dto.VelocityDto;
 import geometry_msgs.Quaternion;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
@@ -89,7 +88,14 @@ public class TransformationsTest {
                 bodyFrameVelocity);
     }
 
-    private static void assertVelocityEqual(VelocityDto vel1, VelocityDto vel2) {
+    private static void assertVelocityEqual(InertialFrameVelocity vel1, InertialFrameVelocity vel2) {
+        assertThat(vel1.linearX()).isWithin(DELTA).of(vel2.linearX());
+        assertThat(vel1.linearY()).isWithin(DELTA).of(vel2.linearY());
+        assertThat(vel1.linearZ()).isWithin(DELTA).of(vel2.linearZ());
+        assertThat(vel1.angularZ()).isWithin(DELTA).of(vel2.angularZ());
+    }
+
+    private static void assertVelocityEqual(BodyFrameVelocity vel1, BodyFrameVelocity vel2) {
         assertThat(vel1.linearX()).isWithin(DELTA).of(vel2.linearX());
         assertThat(vel1.linearY()).isWithin(DELTA).of(vel2.linearY());
         assertThat(vel1.linearZ()).isWithin(DELTA).of(vel2.linearZ());

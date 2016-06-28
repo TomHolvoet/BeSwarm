@@ -1,12 +1,11 @@
 package control;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import control.dto.InertialFrameVelocity;
 import control.dto.Pose;
 import control.dto.Velocity;
 import utils.math.EulerAngle;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * A four-dimensional PID controller for the drone. It is the composition of 4 one-dimensional PID controller
@@ -17,19 +16,15 @@ import utils.math.EulerAngle;
  */
 public final class PidController4d {
 
-    private static final Logger poseLogger = LoggerFactory.getLogger(PidController4d.class.getName() + ".poselogger");
-    private static final Logger velocityLogger = LoggerFactory.getLogger(
-            PidController4d.class.getName() + ".velocitylogger");
-
     private final PidController1d pidLinearX;
     private final PidController1d pidLinearY;
     private final PidController1d pidLinearZ;
     private final PidController1d pidAngularZ;
-	private Trajectory1d angularTrajectoryZ;
+    private final Trajectory1d angularTrajectoryZ;
 
     private PidController4d(Builder builder) {
-        
-    	angularTrajectoryZ = builder.getTrajectoryAngularZ();
+
+        angularTrajectoryZ = builder.getTrajectoryAngularZ();
         pidLinearX = PidController1d.create(builder.linearXParameters, builder.getLinearTrajectoryX());
         pidLinearY = PidController1d.create(builder.linearYParameters, builder.getTrajectoryLinearY());
         pidLinearZ = PidController1d.create(builder.linearZParameters, builder.getTrajectoryLinearZ());
@@ -74,26 +69,26 @@ public final class PidController4d {
         private Trajectory1d linearTrajectoryY;
         private Trajectory1d linearTrajectoryZ;
         private Trajectory1d angularTrajectoryZ;
-        
+
         private Builder() {}
 
-		public Trajectory1d getLinearTrajectoryX() {
-			return linearTrajectoryX;
-		}
+        public Trajectory1d getLinearTrajectoryX() {
+            return linearTrajectoryX;
+        }
 
-		public Trajectory1d getTrajectoryLinearY() {
-			return linearTrajectoryY;
-		}
+        public Trajectory1d getTrajectoryLinearY() {
+            return linearTrajectoryY;
+        }
 
-		public Trajectory1d getTrajectoryLinearZ() {
-			return linearTrajectoryZ;
-		}
+        public Trajectory1d getTrajectoryLinearZ() {
+            return linearTrajectoryZ;
+        }
 
-		public Trajectory1d getTrajectoryAngularZ() {
-			return angularTrajectoryZ;
-		}
-		
-		/**
+        public Trajectory1d getTrajectoryAngularZ() {
+            return angularTrajectoryZ;
+        }
+
+        /**
          * Sets the {@code trajectory4d} and returns a reference to this Builder so that the methods can be chained
          * together.
          *
@@ -102,63 +97,59 @@ public final class PidController4d {
          */
         public Builder trajectory4d(final Trajectory4d val) {
 
-        	linearTrajectoryX = new Trajectory1d() {
-        		
-        		@Override
-        		public double getDesiredVelocity(double timeInSeconds) {
-        			return val.getDesiredVelocityX(timeInSeconds);
-        		}
-        		
-        		@Override
-        		public double getDesiredPosition(double timeInSeconds) {
-        			return val.getDesiredPositionX(timeInSeconds);
-        		}
-        	};
+            linearTrajectoryX = new Trajectory1d() {
 
-        	linearTrajectoryY = new Trajectory1d() {
-        		
-        		@Override
-        		public double getDesiredVelocity(double timeInSeconds) {
-        			return val.getDesiredVelocityY(timeInSeconds);
-        		}
-        		
-        		@Override
-        		public double getDesiredPosition(double timeInSeconds) {
-        			return val.getDesiredPositionY(timeInSeconds);
-        		}
-        	};
-        	
-        	linearTrajectoryZ = new Trajectory1d() {
-        		
-        		@Override
-        		public double getDesiredVelocity(double timeInSeconds) {
-        			return val.getDesiredVelocityZ(timeInSeconds);
-        		}
-        		
-        		@Override
-        		public double getDesiredPosition(double timeInSeconds) {
-        			return val.getDesiredPositionZ(timeInSeconds);
-        		}
-        	};
-        	
-        	
-        	angularTrajectoryZ = new Trajectory1d() {
-    			
-    			@Override
-    			public double getDesiredVelocity(double timeInSeconds) {
-    				return val.getDesiredAngularVelocityZ(timeInSeconds);
-    			}
-    			
-    			@Override
-    			public double getDesiredPosition(double timeInSeconds) {
-    				return val.getDesiredAngleZ(timeInSeconds);
-    			}
-    		};
-    		
-    		
-    		
-    		
-        	return this;
+                @Override
+                public double getDesiredVelocity(double timeInSeconds) {
+                    return val.getDesiredVelocityX(timeInSeconds);
+                }
+
+                @Override
+                public double getDesiredPosition(double timeInSeconds) {
+                    return val.getDesiredPositionX(timeInSeconds);
+                }
+            };
+
+            linearTrajectoryY = new Trajectory1d() {
+
+                @Override
+                public double getDesiredVelocity(double timeInSeconds) {
+                    return val.getDesiredVelocityY(timeInSeconds);
+                }
+
+                @Override
+                public double getDesiredPosition(double timeInSeconds) {
+                    return val.getDesiredPositionY(timeInSeconds);
+                }
+            };
+
+            linearTrajectoryZ = new Trajectory1d() {
+
+                @Override
+                public double getDesiredVelocity(double timeInSeconds) {
+                    return val.getDesiredVelocityZ(timeInSeconds);
+                }
+
+                @Override
+                public double getDesiredPosition(double timeInSeconds) {
+                    return val.getDesiredPositionZ(timeInSeconds);
+                }
+            };
+
+            angularTrajectoryZ = new Trajectory1d() {
+
+                @Override
+                public double getDesiredVelocity(double timeInSeconds) {
+                    return val.getDesiredAngularVelocityZ(timeInSeconds);
+                }
+
+                @Override
+                public double getDesiredPosition(double timeInSeconds) {
+                    return val.getDesiredAngleZ(timeInSeconds);
+                }
+            };
+
+            return this;
         }
 
         /**
@@ -214,6 +205,16 @@ public final class PidController4d {
          *
          * @return a {@code PidController4d} built with parameters of this {@code PidController4d.Builder}
          */
-        public PidController4d build() {return new PidController4d(this);}
+        public PidController4d build() {
+            checkNotNull(linearXParameters, "missing linearXParameters");
+            checkNotNull(linearYParameters, "missing linearYParameters");
+            checkNotNull(linearZParameters, "missing linearZParameters");
+            checkNotNull(angularZParameters, "missing angularZParameters");
+            checkNotNull(linearTrajectoryX, "missing linearTrajectoryX");
+            checkNotNull(linearTrajectoryY, "missing linearTrajectoryY");
+            checkNotNull(linearTrajectoryZ, "missing linearTrajectoryZ");
+            checkNotNull(angularTrajectoryZ, "missing angularTrajectoryZ");
+            return new PidController4d(this);
+        }
     }
 }

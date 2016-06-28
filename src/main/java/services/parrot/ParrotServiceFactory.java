@@ -1,6 +1,5 @@
 package services.parrot;
 
-import com.google.common.base.Optional;
 import org.ros.node.ConnectedNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,21 +24,21 @@ abstract class ParrotServiceFactory implements ServiceFactory {
     }
 
     @Override
-    public Optional<TakeOffService> createTakeOffService() {
+    public TakeOffService createTakeOffService() {
         final String topicName = "/" + droneName + "/takeoff";
         final TakeOffService takeOffService = ParrotTakeOffService.create(
                 connectedNode.<Empty>newPublisher(topicName, Empty._TYPE));
         logger.info("Take off service connected to {}", topicName);
-        return Optional.of(takeOffService);
+        return takeOffService;
     }
 
     @Override
-    public Optional<LandService> createLandService() {
+    public LandService createLandService() {
         final String topicName = "/" + droneName + "/land";
         final LandService landService = ParrotLandService.create(
                 connectedNode.<Empty>newPublisher(topicName, Empty._TYPE));
         logger.info("Land service connected to {}", topicName);
-        return Optional.of(landService);
+        return landService;
     }
 
     ConnectedNode getConnectedNode() {

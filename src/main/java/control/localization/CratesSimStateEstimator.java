@@ -2,7 +2,7 @@ package control.localization;
 
 import com.google.common.base.Optional;
 import control.dto.BodyFrameVelocity;
-import control.dto.DroneState;
+import control.dto.DroneStateStamped;
 import control.dto.InertialFrameVelocity;
 import control.dto.Pose;
 import control.dto.Velocity;
@@ -15,6 +15,7 @@ import utils.math.Transformations;
  */
 public final class CratesSimStateEstimator implements StateEstimator {
     private final MessagesSubscriberService<State> stateSubscriber;
+    private static final double NANO_SECOND_TO_SECOND = 1000000000.0;
 
     private CratesSimStateEstimator(MessagesSubscriberService<State> stateSubscriber) {
         this.stateSubscriber = stateSubscriber;
@@ -25,7 +26,7 @@ public final class CratesSimStateEstimator implements StateEstimator {
     }
 
     @Override
-    public Optional<DroneState> getCurrentState() {
+    public Optional<DroneStateStamped> getCurrentState() {
         final Optional<State> stateOptional = stateSubscriber.getMostRecentMessage();
 
         if (!stateOptional.isPresent()) {
@@ -46,6 +47,7 @@ public final class CratesSimStateEstimator implements StateEstimator {
         final InertialFrameVelocity inertialFrameVelocity = Transformations.bodyFrameVelocityToInertialFrameVelocity(
                 bodyFrameVelocity, pose);
 
-        return Optional.of(DroneState.create(pose, inertialFrameVelocity));
+        final double timeStampInSeconds = System.nanoTime() / NANO_SECOND_TO_SECOND;
+        return Optional.of(DroneStateStamped.create(pose, inertialFrameVelocity, timeStampInSeconds));
     }
 }

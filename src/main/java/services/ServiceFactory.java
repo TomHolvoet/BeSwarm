@@ -1,16 +1,14 @@
 package services;
 
-import com.google.common.base.Optional;
-
 /**
  * @author Hoang Tung Dinh
  */
 public interface ServiceFactory {
-    Optional<TakeOffService> createTakeOffService();
+    TakeOffService createTakeOffService();
 
-    Optional<LandService> createLandService();
+    LandService createLandService();
 
-    Optional<VelocityService> createVelocityService();
+    VelocityService createVelocityService();
 
-    Optional<FlipService> createFlipService();
+    FlipService createFlipService();
 }

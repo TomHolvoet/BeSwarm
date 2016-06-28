@@ -1,6 +1,6 @@
 package applications.parrot.tumsim;
 
-import applications.ExampleTrajectory2;
+import applications.ExampleTrajectory;
 import control.Trajectory4d;
 import org.ros.namespace.GraphName;
 import org.ros.node.AbstractNodeMain;
@@ -21,7 +21,7 @@ public final class TumRunExampleTrajectory2 extends AbstractNodeMain {
 
     @Override
     public void onStart(final ConnectedNode connectedNode) {
-        final Trajectory4d trajectory = ExampleTrajectory2.create();
+        final Trajectory4d trajectory = ExampleTrajectory.create();
         final TumExampleFlightFacade flight = TumExampleFlightFacade.create(trajectory, connectedNode);
         flight.fly();
     }
