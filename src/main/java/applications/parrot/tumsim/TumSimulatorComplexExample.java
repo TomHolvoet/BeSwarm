@@ -4,12 +4,28 @@ import applications.trajectory.Point4D;
 import applications.trajectory.Trajectories;
 import choreo.Choreography;
 import control.Trajectory4d;
+import org.ros.namespace.GraphName;
+import org.ros.node.AbstractNodeMain;
+import org.ros.node.ConnectedNode;
 
 /**
  * @author Kristof Coninx <kristof.coninx AT cs.kuleuven.be>
  */
-public class TumSimulatorComplexExample extends TumSimulatorExample {
+public class TumSimulatorComplexExample extends AbstractNodeMain {
+
     @Override
+    public GraphName getDefaultNodeName() {
+        return GraphName.of("TumRunExampleTrajectory2");
+    }
+
+    @Override
+    public void onStart(final ConnectedNode connectedNode) {
+        final Trajectory4d trajectory = getConcreteTrajectory();
+        final TumExampleFlightFacade flight = TumExampleFlightFacade
+                .create(trajectory, connectedNode);
+        flight.fly();
+    }
+
     public Trajectory4d getConcreteTrajectory() {
         Trajectory4d first = Trajectories
                 .newStraightLineTrajectory(Point4D.create(0, 0, 1.5, 0),
