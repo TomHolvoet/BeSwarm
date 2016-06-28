@@ -32,6 +32,10 @@ public abstract class Pose {
                 .build();
     }
 
+    public static Pose createZeroPose() {
+    	return Pose.builder().x(0).y(0).z(0).yaw(0).build();
+    }
+    
     @AutoValue.Builder
     public abstract static class Builder {
         public abstract Builder x(double value);

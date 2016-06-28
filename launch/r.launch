@@ -12,7 +12,4 @@
     <node pkg="rostopic" type="rostopic" name="point_camera_downwards" 
     	args="pub /bebop/camera_control geometry_msgs/Twist '[0.0,0.0,0.0]' '[.00,-50.0,0.0]'" output="screen"/>
 
-    <!-- records flight -->
-    <node pkg="rosbag" type="rosbag" name="rosbag_record_all"
-       args="record /bebop/image_raw /bebop/cmd_vel /bebop/odom /tf /bebop/camera_info /arlocros/pose" />
 </launch>

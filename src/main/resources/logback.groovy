@@ -29,6 +29,14 @@ appender("FILE_DRONE_VELOCITY", FileAppender) {
     }
 }
 
+appender("FILE_DRONE_BODY_VELOCITY", FileAppender) {
+    file = "${DIR}/drone_body_velocity.log"
+    encoder(PatternLayoutEncoder) {
+        pattern = "%msg %n"
+    }
+}
+
 root(DEBUG, ["STDOUT", "FILE"])
 logger("commands.FollowTrajectory.poselogger", TRACE, ["FILE_DRONE_POSE"], false)
 logger("commands.FollowTrajectory.velocitylogger", TRACE, ["FILE_DRONE_VELOCITY"], false)
+logger("services.parrot.ParrotVelocityService.vel", TRACE, ["FILE_DRONE_BODY_VELOCITY"], false)
