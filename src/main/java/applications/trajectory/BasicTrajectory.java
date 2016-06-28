@@ -36,4 +36,9 @@ public class BasicTrajectory {
     protected Point4D getLinearDisplacement() {
         return this.linearDisplacement;
     }
+
+    protected double getRelativeTime(double timeInSeconds) {
+        setStartTime(timeInSeconds);
+        return timeInSeconds - getStartTime();
+    }
 }

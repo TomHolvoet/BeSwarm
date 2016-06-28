@@ -6,6 +6,7 @@ import control.Trajectory4d;
 import org.junit.Before;
 import org.junit.Test;
 
+import static applications.trajectory.TestUtils.testTrajectoryPos4D;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
@@ -21,7 +22,6 @@ public class ChoreographyTest {
     private Point4D point;
     private double radius = 0.2d;
     private double frequency = 0.1d;
-    public static final double EPSILON = 0.001;
 
     @Before
     public void setup() {
@@ -45,18 +45,6 @@ public class ChoreographyTest {
         choreotarget.getDesiredPositionX(0d + duration);
         testTrajectoryPos4D(choreotarget, (1 / frequency) + duration,
                 Point4D.create(radius, 0, 0, 0));
-    }
-
-    public void testTrajectoryPos4D(Trajectory4d traj, double time,
-            Point4D target) {
-        assertEquals(target.getX(),
-                traj.getDesiredPositionX(time), EPSILON);
-        assertEquals(target.getY(),
-                traj.getDesiredPositionY(time), EPSILON);
-        assertEquals(target.getZ(),
-                traj.getDesiredPositionZ(time), EPSILON);
-        assertEquals(target.getAngle(),
-                traj.getDesiredAngleZ(time), EPSILON);
     }
 
     @Test
