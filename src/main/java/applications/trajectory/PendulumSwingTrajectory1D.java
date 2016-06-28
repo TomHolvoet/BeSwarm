@@ -44,9 +44,7 @@ class PendulumSwingTrajectory1D extends PeriodicTrajectory
 
     @Override
     public double getDesiredPosition(double timeInSeconds) {
-        setStartTime(timeInSeconds);
-
-        final double currentTime = timeInSeconds - getStartTime();
+        final double currentTime = getRelativeTime(timeInSeconds);
         return getLinearDisplacement().getX() + getRadius() * StrictMath
                 .cos(TrajectoryUtils
                         .pendulumAngleFromTime(currentTime, getFrequency())
@@ -55,9 +53,7 @@ class PendulumSwingTrajectory1D extends PeriodicTrajectory
 
     @Override
     public double getDesiredVelocity(double timeInSeconds) {
-        setStartTime(timeInSeconds);
-
-        final double currentTime = timeInSeconds - getStartTime();
+        final double currentTime = getRelativeTime(timeInSeconds);
         return
                 PISQUARED * getFrequency() * getRadius() * StrictMath
                         .sin(freq2pi * currentTime + getPhaseDisplacement())

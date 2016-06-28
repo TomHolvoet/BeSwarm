@@ -30,7 +30,6 @@ public class CircleTrajectory4DTest {
         targetPlaneShift = Trajectories
                 .newCircleTrajectory4D(origin, radius, frequency,
                         planeshift);
-
     }
 
     @Test
@@ -72,25 +71,31 @@ public class CircleTrajectory4DTest {
     }
 
     @Test
-    public void testTranslocation() {
-        double centerx = 10;
+    public void testCircleTranslocation() {
+        double centerx = 15;
         double centery = 10;
+        double centerz = 20;
         double radius = 1;
         target = Trajectories
-                .newCircleTrajectory4D(Point4D.create(centerx, centery, 5, 0),
+                .newCircleTrajectory4D(
+                        Point4D.create(centerx, centery, centerz, 0),
                         radius, 0.1, 0);
         List<Double> lx = Lists.newArrayList();
         List<Double> ly = Lists.newArrayList();
+        List<Double> lz = Lists.newArrayList();
 
         for (int i = 0; i < 1000; i++) {
             lx.add(target.getDesiredPositionX(i / 10d));
-            ly.add(target.getDesiredPositionX(i / 10d));
+            ly.add(target.getDesiredPositionY(i / 10d));
+            lz.add(target.getDesiredPositionZ(i / 10d));
 
         }
         assertBounds(lx, centerx - radius,
                 centerx + radius);
         assertBounds(ly, centery - radius,
                 centery + radius);
+        assertBounds(lz, centerz,
+                centerz);
     }
 
 }

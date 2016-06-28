@@ -48,16 +48,9 @@ public class StraightLineTrajectory4DTest {
                 0);
 
         double t = 5;
-        double toCalc = 10d / Math.sqrt(300d) * t;
-        assertEquals(toCalc,
-                target2.getDesiredPositionX(t),
-                0.01);
+        testPartialDistanceCovered(t);
         t = 10;
-        toCalc = (10d / Math.sqrt(300)) * t;
-        assertEquals(toCalc,
-                target2.getDesiredPositionX(t),
-                0.01);
-
+        testPartialDistanceCovered(t);
     }
 
     @Test
@@ -132,6 +125,42 @@ public class StraightLineTrajectory4DTest {
         assertEquals(Math.PI / 2,
                 target.getDesiredAngleZ(10),
                 0);
+    }
+
+    @Test
+    public void testTrajectoryProgression() throws Exception {
+        //        target = new StraightLineTrajectory4D(Point4D.create(0, 0,
+        // 1.5, 0),
+        //                Point4D.create(5, 5, 5, 0), 0.2);
+        double duration = 10492;
+        //
+        //        TestUtils.testTrajectoryPos4D(target, duration,
+        //                Point4D.create(0, 0, 1.5, 0));
+        //        TestUtils.testTrajectoryPos4D(target, duration,
+        //                Point4D.create(0, 0, 1.5, 0));
+        target = new StraightLineTrajectory4D(before, after, speed);
+        target2 = new StraightLineTrajectory4D(before, after2, speed);
+        assertEquals(0, target.getDesiredPositionX(duration + 0),
+                0);
+        assertEquals(5, target.getDesiredPositionX(duration + 5),
+                0);
+        assertEquals(10, target.getDesiredPositionX(duration + 10),
+                0);
+
+        double t = 0;
+        testPartialDistanceCovered(t);
+        double toCalc;
+        t = 5;
+        testPartialDistanceCovered(t);
+        t = 10;
+        testPartialDistanceCovered(t);
+    }
+
+    private void testPartialDistanceCovered(double t) {
+        double toCalc = 10d / Math.sqrt(300d) * t;
+        assertEquals(toCalc,
+                target2.getDesiredPositionX(t),
+                0.01);
     }
 
 }
