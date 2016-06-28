@@ -19,6 +19,11 @@ public final class Task {
         return new Task(commands, taskType);
     }
 
+    public static Task create(TaskType taskType, Command...commands) {
+    	ImmutableList<Command> commandList = ImmutableList.<Command>copyOf(commands);
+    	return new Task(commandList, taskType);
+    }
+    
     public ImmutableList<Command> getCommands() {
         return commands;
     }
