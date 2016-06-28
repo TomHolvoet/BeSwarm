@@ -5,11 +5,15 @@ import control.Trajectory4d;
 import static com.google.common.base.Preconditions.checkArgument;
 
 /**
- * Trajectory represent a straight line in space using a given speed.
+ * Trajectory represent a straight line in space between two given points at
+ * a given speed.
+ * Once the destination point has been reached, the trajectory enforces to
+ * hold position
+ * at the destination point.
  *
  * @author Kristof Coninx <kristof.coninx AT cs.kuleuven.be>
  */
-class StraightLineTrajectory4D implements Trajectory4d {
+class StraightLineTrajectory4D extends BasicTrajectory implements Trajectory4d {
     private final Trajectory4d moveTraj;
     private final Trajectory4d holdTraj;
     private Trajectory4d currentTraj;
@@ -49,44 +53,50 @@ class StraightLineTrajectory4D implements Trajectory4d {
 
     @Override
     public double getDesiredPositionX(double timeInSeconds) {
-        return currentTraj.getDesiredPositionX(timeInSeconds);
+        final double currentTime = getRelativeTime(timeInSeconds);
+        return currentTraj.getDesiredPositionX(currentTime);
     }
 
     @Override
     public double getDesiredVelocityX(double timeInSeconds) {
-        return currentTraj.getDesiredVelocityX(timeInSeconds);
+        final double currentTime = getRelativeTime(timeInSeconds);
+        return currentTraj.getDesiredVelocityX(currentTime);
     }
 
     @Override
     public double getDesiredPositionY(double timeInSeconds) {
-        return currentTraj.getDesiredPositionY(timeInSeconds);
+        final double currentTime = getRelativeTime(timeInSeconds);
+        return currentTraj.getDesiredPositionY(currentTime);
     }
 
     @Override
     public double getDesiredVelocityY(double timeInSeconds) {
-        return currentTraj.getDesiredVelocityY(timeInSeconds);
+        final double currentTime = getRelativeTime(timeInSeconds);
+        return currentTraj.getDesiredVelocityY(currentTime);
     }
 
     @Override
     public double getDesiredPositionZ(double timeInSeconds) {
-        return currentTraj.getDesiredPositionZ(timeInSeconds);
+        final double currentTime = getRelativeTime(timeInSeconds);
+        return currentTraj.getDesiredPositionZ(currentTime);
     }
 
     @Override
     public double getDesiredVelocityZ(double timeInSeconds) {
-        return currentTraj
-                .getDesiredVelocityZ(timeInSeconds);
+        final double currentTime = getRelativeTime(timeInSeconds);
+        return currentTraj.getDesiredVelocityZ(currentTime);
     }
 
     @Override
     public double getDesiredAngleZ(double timeInSeconds) {
-        return currentTraj.getDesiredAngleZ(timeInSeconds);
+        final double currentTime = getRelativeTime(timeInSeconds);
+        return currentTraj.getDesiredAngleZ(currentTime);
     }
 
     @Override
     public double getDesiredAngularVelocityZ(double timeInSeconds) {
-        return currentTraj
-                .getDesiredAngularVelocityZ(timeInSeconds);
+        final double currentTime = getRelativeTime(timeInSeconds);
+        return currentTraj.getDesiredAngularVelocityZ(currentTime);
     }
 
     private class HoldPositionForwarder

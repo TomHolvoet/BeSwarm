@@ -45,4 +45,5 @@ public abstract class PeriodicTrajectory extends BasicTrajectory {
     public double getFrequency() {
         return frequency;
     }
+
 }
