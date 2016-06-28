@@ -1,6 +1,6 @@
 package applications.parrot.tumsim;
 
-import applications.ExampleTrajectory2;
+import applications.ExampleTrajectory;
 import com.google.common.collect.ImmutableList;
 import commands.*;
 import control.Trajectory4d;
@@ -129,7 +129,7 @@ public class TumSimulatorExample extends AbstractNodeMain {
     }
 
     protected Trajectory4d getConcreteTrajectory() {
-        return ExampleTrajectory2.create();
+        return ExampleTrajectory.create();
     }
 
     private static void warmUp() {
