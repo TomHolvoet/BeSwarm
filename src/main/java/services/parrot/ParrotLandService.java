@@ -2,6 +2,9 @@ package services.parrot;
 
 import org.ros.node.ConnectedNode;
 import org.ros.node.topic.Publisher;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import services.LandService;
 import std_msgs.Empty;
 
@@ -13,6 +16,8 @@ import static com.google.common.base.Preconditions.checkArgument;
  * @author Hoang Tung Dinh
  */
 public final class ParrotLandService implements LandService {
+
+	private static final Logger logger = LoggerFactory.getLogger(ParrotLandService.class);
 
     private final Publisher<Empty> publisher;
 
@@ -41,6 +46,7 @@ public final class ParrotLandService implements LandService {
     @Override
     public void sendLandingMessage() {
         final Empty empty = publisher.newMessage();
+        logger.debug("sending land message to ROS");
         publisher.publish(empty);
     }
 }
