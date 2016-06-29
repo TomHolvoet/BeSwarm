@@ -22,6 +22,12 @@ appender("FILE_DRONE_POSE", FileAppender) {
     }
 }
 
+appender("FILE_DRONE_BODY_VELOCITY", FileAppender) {
+    file = "${DIR}/drone_body_velocity.log"
+    encoder(PatternLayoutEncoder) {
+        pattern = "%msg %n"
+    }
+}
 appender("FILE_DRONE_VELOCITY", FileAppender) {
     file = "${DIR}/dronevelocity.log"
     encoder(PatternLayoutEncoder) {

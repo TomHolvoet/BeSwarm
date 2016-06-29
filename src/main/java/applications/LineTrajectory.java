@@ -88,7 +88,7 @@ public final class LineTrajectory implements Trajectory4d {
             final double currentTime = timeInSeconds - startTime;
 
             if (currentTime >= flightDuration) {
-                return length;
+                return -length;
             } else {
                 double position = 0 - (currentTime % flightDuration) * length/flightDuration;
                 logger.info("Desired position" + position);
