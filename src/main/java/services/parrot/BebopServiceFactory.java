@@ -1,10 +1,10 @@
 package services.parrot;
 
-import com.google.common.base.Optional;
-import geometry_msgs.Twist;
 import org.ros.node.ConnectedNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import geometry_msgs.Twist;
 import services.FlipService;
 import services.VelocityService;
 import std_msgs.UInt8;
