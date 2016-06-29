@@ -65,7 +65,7 @@ public class MessagesSubscriberService<T extends Message> {
 
         @Override
         public void onNewMessage(K t) {
-            logger.trace("{} {}", System.nanoTime() / 1000000000.0, t.getClass().getName());
+            logger.trace("{} {}", System.nanoTime() / 1000000000.0, t.toRawMessage().getType());
             messageQueue.add(t);
         }
 
