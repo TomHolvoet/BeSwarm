@@ -74,6 +74,16 @@ class SwingTrajectory4D extends PeriodicTrajectory
         return angularMotion.getDesiredVelocity(timeInSeconds);
     }
 
+    @Override
+    public String toString() {
+        return "CircleTrajectory4D{" +
+                "origin=" + getLinearDisplacement() +
+                " frequency=" + getFrequency() +
+                ", radius=" + getRadius() +
+                ", xzPlaneAngle=" + StrictMath.acos(xFactor) +
+                '}';
+    }
+
     /**
      * Builder for 4D swing trajectories.
      */

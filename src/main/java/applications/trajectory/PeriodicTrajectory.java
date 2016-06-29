@@ -46,4 +46,11 @@ public abstract class PeriodicTrajectory extends BasicTrajectory {
         return frequency;
     }
 
+    @Override
+    public String toString() {
+        return "PeriodicTrajectory{" +
+                "frequency=" + frequency +
+                ", radius=" + radius +
+                '}';
+    }
 }
