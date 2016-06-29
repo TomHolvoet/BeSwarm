@@ -105,7 +105,7 @@ public final class LineTrajectory implements Trajectory4d {
 
             final double currentTime = timeInSeconds - startTime;
             if (currentTime < flightDuration) {
-                return 0.02;
+                return length/flightDuration;
             } else {
                 return 0.0;
             }

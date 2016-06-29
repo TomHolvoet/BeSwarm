@@ -44,7 +44,7 @@ public class BebopHover extends AbstractNodeMain {
 
     @Override
     public GraphName getDefaultNodeName() {
-        return GraphName.of("BebopSimpleLinePattern");
+        return GraphName.of("BebopHover");
     }
 
     @Override
@@ -104,7 +104,7 @@ public class BebopHover extends AbstractNodeMain {
         return MessagesSubscriberService.create(connectedNode.<Odometry>newSubscriber(odometryTopic, Odometry._TYPE));
     }
 
-    private static final class BebopStateEstimator implements StateEstimator {
+    public static final class BebopStateEstimator implements StateEstimator {
 
         private static final Logger logger = LoggerFactory.getLogger(BebopStateEstimator.class);
 
@@ -125,11 +125,15 @@ public class BebopHover extends AbstractNodeMain {
         @Override
         public Optional<DroneStateStamped> getCurrentState() {
             final Optional<PoseStamped> poseStamped = poseSubscriber.getMostRecentMessage(); 
-            if (!poseStamped.isPresent()) {
-                return Optional.absent();
-            }
             
+            if (!poseStamped.isPresent()) {
+            	return Optional.absent();
+            }
+
             final Pose pose = Pose.create(poseStamped.get());
+            if (Pose.areSamePoseWithinEps(pose, Pose.createZeroPose())) {
+            	return Optional.absent();
+            }
 
             final Optional<InertialFrameVelocity> inertialFrameVelocity = getVelocity(pose);
             if (!inertialFrameVelocity.isPresent()) {
