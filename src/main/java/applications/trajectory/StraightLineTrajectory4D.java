@@ -14,12 +14,18 @@ import static com.google.common.base.Preconditions.checkArgument;
  * @author Kristof Coninx <kristof.coninx AT cs.kuleuven.be>
  */
 class StraightLineTrajectory4D extends BasicTrajectory implements Trajectory4d {
+    private final Point4D srcpoint;
+    private final Point4D targetpoint;
+    private final double velocity;
     private final Trajectory4d moveTraj;
     private final Trajectory4d holdTraj;
     private Trajectory4d currentTraj;
 
     StraightLineTrajectory4D(Point4D srcpoint, Point4D targetpoint,
             double velocity) {
+        this.srcpoint = srcpoint;
+        this.targetpoint = targetpoint;
+        this.velocity = velocity;
         checkArgument(velocity > 0,
                 "The provided velocity should be strictly greater than 0.");
         checkArgument(velocity <= BasicTrajectory.MAX_ABSOLUTE_VELOCITY,
@@ -97,6 +103,15 @@ class StraightLineTrajectory4D extends BasicTrajectory implements Trajectory4d {
     public double getDesiredAngularVelocityZ(double timeInSeconds) {
         final double currentTime = getRelativeTime(timeInSeconds);
         return currentTraj.getDesiredAngularVelocityZ(currentTime);
+    }
+
+    @Override
+    public String toString() {
+        return "StraightLineTrajectory4D{" +
+                "velocity=" + velocity +
+                ", src point=" + srcpoint +
+                ", target point=" + targetpoint +
+                '}';
     }
 
     private class HoldPositionForwarder

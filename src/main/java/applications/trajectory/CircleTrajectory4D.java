@@ -79,6 +79,16 @@ final class CircleTrajectory4D extends PeriodicTrajectory
         return angularMotion.getDesiredVelocity(timeInSeconds);
     }
 
+    @Override
+    public String toString() {
+        return "CircleTrajectory4D{" +
+                "origin=" + location +
+                " frequency=" + getFrequency() +
+                ", radius=" + getRadius() +
+                ", planeAngle=" + StrictMath.atan(scaleFactor) +
+                '}';
+    }
+
     /**
      * Builder class for 4D circle trajectories.
      */

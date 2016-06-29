@@ -2,6 +2,7 @@ package choreo;
 
 import applications.trajectory.BasicTrajectory;
 import com.google.auto.value.AutoValue;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Queues;
 import control.Trajectory4d;
@@ -21,11 +22,13 @@ import java.util.Queue;
  */
 public final class Choreography extends BasicTrajectory
         implements Trajectory4d {
+    private final ImmutableList<ChoreoSegment> initialSegments;
     private final Queue<ChoreoSegment> segments;
     private double timeWindowShift;
 
     private Choreography(List<ChoreoSegment> segmentsArg) {
         super();
+        initialSegments = ImmutableList.copyOf(segmentsArg);
         segments = Queues.newArrayDeque(segmentsArg);
         timeWindowShift = 0d;
     }
@@ -122,6 +125,13 @@ public final class Choreography extends BasicTrajectory
                 .getDesiredAngularVelocityZ(currentTime);
     }
 
+    @Override
+    public String toString() {
+        return "Choreography{" +
+                "Choreo segments=" + initialSegments +
+                '}';
+    }
+
     /**
      * @return A choreography builder instance.
      */
@@ -134,7 +144,7 @@ public final class Choreography extends BasicTrajectory
      * duration for which to execute this trajectory.
      */
     @AutoValue
-    public static abstract class ChoreoSegment {
+    abstract static class ChoreoSegment {
         /**
          * @return The trajectory to be executed in this segment.
          */
@@ -176,8 +186,7 @@ public final class Choreography extends BasicTrajectory
          * @return A fully built choreography instance.
          */
         public Choreography build() {
-            Choreography choreography = new Choreography(segments);
-            return choreography;
+            return new Choreography(segments);
         }
 
         /**
