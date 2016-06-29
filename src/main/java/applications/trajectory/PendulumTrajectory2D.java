@@ -14,7 +14,7 @@ import static com.google.common.base.Preconditions.checkArgument;
  *
  * @author Kristof Coninx <kristof.coninx AT cs.kuleuven.be>
  */
-public class PendulumTrajectory2D extends PeriodicTrajectory
+public final class PendulumTrajectory2D extends PeriodicTrajectory
         implements Trajectory2d {
     private final double freq2pi;
     private final Trajectory1d linearMovement;
@@ -102,6 +102,9 @@ public class PendulumTrajectory2D extends PeriodicTrajectory
             return this;
         }
 
+        /**
+         * @return The 2d Pendulum motion instance.
+         */
         public PendulumTrajectory2D build() {
             return new PendulumTrajectory2D(radius, frequency, origin, phase);
         }
