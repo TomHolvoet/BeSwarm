@@ -39,5 +39,5 @@ appender("FILE_RECEIVED_MESSAGES", FileAppender) {
 root(DEBUG, ["STDOUT", "FILE"])
 logger("commands.FollowTrajectory.poselogger", TRACE, ["FILE_DRONE_POSE"], false)
 logger("commands.FollowTrajectory.velocitylogger", TRACE, ["FILE_DRONE_VELOCITY"], false)
-logger("services.ros_subscribers.MessagesSubscriberService.MessagesListener", TRACE, ["FILE_RECEIVED_MESSAGES"], false)
+logger("services.ros_subscribers.MessagesSubscriberService", TRACE, ["FILE_RECEIVED_MESSAGES"], false)
 

@@ -18,6 +18,9 @@ import static com.google.common.base.Preconditions.checkArgument;
  * @author mhct
  */
 public class MessagesSubscriberService<T extends Message> {
+
+    private static final Logger logger = LoggerFactory.getLogger(MessagesSubscriberService.class);
+
     private final Subscriber<T> subscriber;
     private final MessagesListener<T> messagesListener;
 
@@ -49,7 +52,6 @@ public class MessagesSubscriberService<T extends Message> {
     }
 
     private static final class MessagesListener<K extends Message> implements MessageListener<K> {
-        private static final Logger logger = LoggerFactory.getLogger(MessagesListener.class);
 
         private final Queue<K> messageQueue;
 
