@@ -7,7 +7,16 @@ package applications.trajectory;
  */
 public class BasicTrajectory {
     public static final double MAX_ABSOLUTE_VELOCITY = 1;
+    protected final Point4D linearDisplacement;
     private double startTime = -1;
+
+    protected BasicTrajectory(Point4D displacement) {
+        this.linearDisplacement = displacement;
+    }
+
+    protected BasicTrajectory() {
+        this.linearDisplacement = Point4D.origin();
+    }
 
     protected void setStartTime(double timeInSeconds) {
         if (startTime < 0) {
@@ -17,5 +26,19 @@ public class BasicTrajectory {
 
     protected double getStartTime() {
         return this.startTime;
+    }
+
+    /**
+     * Return the origin point for linear displacement in 4D.
+     *
+     * @return
+     */
+    protected Point4D getLinearDisplacement() {
+        return this.linearDisplacement;
+    }
+
+    protected double getRelativeTime(double timeInSeconds) {
+        setStartTime(timeInSeconds);
+        return timeInSeconds - getStartTime();
     }
 }

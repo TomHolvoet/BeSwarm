@@ -14,7 +14,6 @@ public abstract class PeriodicTrajectory extends BasicTrajectory {
     private final double radius;
     private final double frequency;
     private final double phaseDisplacement;
-    private final Point4D linearDisplacement;
 
     protected PeriodicTrajectory() {
         this(0, Point4D.origin(), 1, 1);
@@ -26,8 +25,8 @@ public abstract class PeriodicTrajectory extends BasicTrajectory {
 
     protected PeriodicTrajectory(double phase, Point4D displacement,
             double radius, double frequency) {
+        super(displacement);
         this.phaseDisplacement = phase;
-        this.linearDisplacement = displacement;
         this.radius = radius;
         this.frequency = frequency;
     }
@@ -39,15 +38,6 @@ public abstract class PeriodicTrajectory extends BasicTrajectory {
         return phaseDisplacement;
     }
 
-    /**
-     * Return the origin point for linear displacement in 4D.
-     *
-     * @return
-     */
-    protected Point4D getLinearDisplacement() {
-        return this.linearDisplacement;
-    }
-
     public double getRadius() {
         return radius;
     }
@@ -55,4 +45,5 @@ public abstract class PeriodicTrajectory extends BasicTrajectory {
     public double getFrequency() {
         return frequency;
     }
+
 }

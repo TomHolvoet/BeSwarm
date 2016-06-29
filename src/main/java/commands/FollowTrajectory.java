@@ -122,13 +122,13 @@ public final class FollowTrajectory implements Command {
                         currentState.get().inertialFrameVelocity(), currentTimeInSeconds);
                 velocityService.sendVelocityMessage(nextVelocity, currentState.get().pose());
 
-                poseLogger.trace("{} {} {} {} {} {} {} {} {}", currentTimeInSeconds, currentState.get().pose().x(),
+                poseLogger.trace("{} {} {} {} {} {} {} {} {}", System.nanoTime() / NANO_SECOND_TO_SECOND, currentState.get().pose().x(),
                         currentState.get().pose().y(), currentState.get().pose().z(), currentState.get().pose().yaw(),
                         trajectory4d.getDesiredPositionX(currentTimeInSeconds),
                         trajectory4d.getDesiredPositionY(currentTimeInSeconds),
                         trajectory4d.getDesiredPositionZ(currentTimeInSeconds),
                         trajectory4d.getDesiredAngleZ(currentTimeInSeconds));
-                velocityLogger.trace("{} {} {} {} {} {} {} {} {}", currentTimeInSeconds,
+                velocityLogger.trace("{} {} {} {} {} {} {} {} {}", System.nanoTime() / NANO_SECOND_TO_SECOND,
                         currentState.get().inertialFrameVelocity().linearX(),
                         currentState.get().inertialFrameVelocity().linearY(),
                         currentState.get().inertialFrameVelocity().linearZ(),

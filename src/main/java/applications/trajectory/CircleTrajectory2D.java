@@ -39,32 +39,28 @@ class CircleTrajectory2D extends PeriodicTrajectory
 
     @Override
     public double getDesiredPositionAbscissa(double timeInSeconds) {
-        setStartTime(timeInSeconds);
-        final double currentTime = timeInSeconds - getStartTime();
-        return getRadius() * StrictMath
+        final double currentTime = getRelativeTime(timeInSeconds);
+        return getLinearDisplacement().getX() + getRadius() * StrictMath
                 .cos(freq2pi * currentTime + getPhaseDisplacement());
     }
 
     @Override
     public double getDesiredVelocityAbscissa(double timeInSeconds) {
-        setStartTime(timeInSeconds);
-        final double currentTime = timeInSeconds - getStartTime();
+        final double currentTime = getRelativeTime(timeInSeconds);
         return -rfreq2pi * StrictMath
                 .sin(freq2pi * currentTime + getPhaseDisplacement());
     }
 
     @Override
     public double getDesiredPositionOrdinate(double timeInSeconds) {
-        setStartTime(timeInSeconds);
-        final double currentTime = timeInSeconds - getStartTime();
-        return getRadius() * StrictMath
+        final double currentTime = getRelativeTime(timeInSeconds);
+        return getLinearDisplacement().getY() + getRadius() * StrictMath
                 .sin(freq2pi * currentTime + getPhaseDisplacement());
     }
 
     @Override
     public double getDesiredVelocityOrdinate(double timeInSeconds) {
-        setStartTime(timeInSeconds);
-        final double currentTime = timeInSeconds - getStartTime();
+        final double currentTime = getRelativeTime(timeInSeconds);
         return rfreq2pi * StrictMath
                 .cos(freq2pi * currentTime + getPhaseDisplacement());
     }
