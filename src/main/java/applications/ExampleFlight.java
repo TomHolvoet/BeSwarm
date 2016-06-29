@@ -85,7 +85,7 @@ public final class ExampleFlight {
                 .stateEstimator(stateEstimator)
                 .velocityService(velocityService)
                 .trajectory4d(trajectory4d)
-                .durationInSeconds(3)
+                .durationInSeconds(6)
                 .build();
         commands.add(followTrajectory);
 

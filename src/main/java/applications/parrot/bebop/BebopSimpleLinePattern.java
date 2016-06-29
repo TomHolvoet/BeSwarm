@@ -39,7 +39,7 @@ public class BebopSimpleLinePattern extends AbstractNodeMain {
         final ServiceFactory serviceFactory = BebopServiceFactory.create(connectedNode, DRONE_NAME);
         final StateEstimator stateEstimator = applications.parrot.bebop.BebopHover.BebopStateEstimator.create(getPoseSubscriber(connectedNode),
                 getOdometrySubscriber(connectedNode));
-        final Trajectory4d trajectory4d = LineTrajectory.create(flightDuration, 2.0);
+        final Trajectory4d trajectory4d = LineTrajectory.create(flightDuration, 4.0);
         final ExampleFlight exampleFlight = ExampleFlight.create(serviceFactory, stateEstimator, trajectory4d,
                 connectedNode);
 

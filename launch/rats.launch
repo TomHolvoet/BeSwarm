@@ -10,7 +10,7 @@
     <param name="beswarm/pid_linear_y_kd" value="0.1" />
     <param name="beswarm/pid_linear_y_ki" value="0.0" />
     
-    <param name="beswarm/flight_duration" value="3.0" />
+    <param name="beswarm/flight_duration" value="6.0" />
     
     <param name="beswarm/location_x" value="1.5" />
     <param name="beswarm/location_y" value="-2.5" />
