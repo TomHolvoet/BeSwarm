@@ -24,6 +24,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public final class ParrotVelocityService implements VelocityService {
     private static final Logger logger = LoggerFactory.getLogger(ParrotVelocityService.class);
+    private static final Logger loggerVel = LoggerFactory.getLogger(ParrotVelocityService.class.getName() + ".vel");
 
     private final Publisher<Twist> publisher;
 
@@ -56,11 +57,12 @@ public final class ParrotVelocityService implements VelocityService {
 
     @Override
     public void sendVelocityMessage(InertialFrameVelocity inertialFrameVelocity, Pose pose) {
-        logger.trace("Sending velocity message: {}", inertialFrameVelocity);
         final BodyFrameVelocity bodyFrameVelocity = Transformations.inertialFrameVelocityToBodyFrameVelocity(
                 inertialFrameVelocity, pose);
 
         final BodyFrameVelocity refinedVelocity = getRefinedVelocity(bodyFrameVelocity);
+        loggerVel.trace("{} {} {} {} {}", System.nanoTime() / 1000000000.0, refinedVelocity.linearX(),
+                refinedVelocity.linearY(), refinedVelocity.linearZ(), refinedVelocity.angularZ());
 
         publisher.publish(newTwistMessage(refinedVelocity));
     }

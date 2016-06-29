@@ -6,6 +6,8 @@ import com.google.common.collect.Queues;
 import org.ros.internal.message.Message;
 import org.ros.message.MessageListener;
 import org.ros.node.topic.Subscriber;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.LinkedList;
 import java.util.Queue;
@@ -16,6 +18,9 @@ import static com.google.common.base.Preconditions.checkArgument;
  * @author mhct
  */
 public class MessagesSubscriberService<T extends Message> {
+
+    private static final Logger logger = LoggerFactory.getLogger(MessagesSubscriberService.class);
+
     private final Subscriber<T> subscriber;
     private final MessagesListener<T> messagesListener;
 
@@ -47,6 +52,7 @@ public class MessagesSubscriberService<T extends Message> {
     }
 
     private static final class MessagesListener<K extends Message> implements MessageListener<K> {
+
         private final Queue<K> messageQueue;
 
         private MessagesListener(int maxQueueSize) {
@@ -59,6 +65,7 @@ public class MessagesSubscriberService<T extends Message> {
 
         @Override
         public void onNewMessage(K t) {
+            logger.trace("{} {}", System.nanoTime() / 1000000000.0, t.toRawMessage().getType());
             messageQueue.add(t);
         }
 
