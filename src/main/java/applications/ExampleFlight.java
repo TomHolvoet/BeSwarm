@@ -2,6 +2,9 @@ package applications;
 
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
+
+import applications.trajectory.Point4D;
+import applications.trajectory.Trajectories;
 import commands.Command;
 import commands.FollowTrajectory;
 import commands.Hover;
@@ -26,6 +29,7 @@ import taskexecutor.interruptors.KeyboardEmergency;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 /**
  * This class illustrates an example flight. The drone will take off, hover in 5 second, follow a trajectory and then
@@ -80,14 +84,24 @@ public final class ExampleFlight {
 
         final Command hoverFiveSecond = Hover.create(velocityService, stateEstimator, 5);
         commands.add(hoverFiveSecond);
-
-        final Command followTrajectory = FollowTrajectory.builder()
-                .stateEstimator(stateEstimator)
-                .velocityService(velocityService)
-                .trajectory4d(trajectory4d)
-                .durationInSeconds(6)
-                .build();
-        commands.add(followTrajectory);
+        
+        List<Trajectory4d> trajectories = new ArrayList<Trajectory4d>();
+        trajectories.add(Trajectories.newStraightLineTrajectory(Point4D.create(1.5, -1.0, 1.0, 0.0), Point4D.create(0.0, -4.0, 2.0, 0.0), 0.5));
+        trajectories.add(Trajectories.newStraightLineTrajectory(Point4D.create(0.0, -4.0, 2.0, 0.0), Point4D.create(1.5, -1.0, 1.0, 0.0), 0.5));
+       
+        int toggle = 0;
+        for (int i=0; i<6; i++) {
+        	final Command followTrajectory = FollowTrajectory.builder()
+        			.stateEstimator(stateEstimator)
+        			.velocityService(velocityService)
+        			.trajectory4d(trajectories.get(toggle))
+        			.durationInSeconds(16)
+        			.build();
+        	
+        	commands.add(followTrajectory);
+        	toggle = (toggle + 1) % 2;
+        }
+        
 
         final Command land = Land.create(landService);
         commands.add(land);
