@@ -8,9 +8,17 @@ import utils.math.Transformations;
  * A value class which stores the pose of the drone.
  *
  * @author Hoang Tung Dinh
+ * @author mhct
  */
 @AutoValue
 public abstract class Pose {
+    /**
+     * Default epsilon used for pose comparison
+     */
+    private static final double EPS = 0.001;
+
+    Pose() {}
+
     public abstract double x();
 
     public abstract double y();
@@ -30,6 +38,13 @@ public abstract class Pose {
                 .z(poseStamped.getPose().getPosition().getZ())
                 .yaw(Transformations.quaternionToEulerAngle(poseStamped.getPose().getOrientation()).angleZ())
                 .build();
+    }
+
+    public static boolean comparePosesWithTolerance(Pose p1, Pose p2) {
+        return StrictMath.abs(p1.x() - p2.x()) < EPS &&
+                StrictMath.abs(p1.y() - p2.y()) < EPS &&
+                StrictMath.abs(p1.z() - p2.z()) < EPS &&
+                StrictMath.abs(p1.yaw() - p2.yaw()) < EPS;
     }
 
     @AutoValue.Builder
