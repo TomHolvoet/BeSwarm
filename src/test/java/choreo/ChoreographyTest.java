@@ -83,4 +83,9 @@ public class ChoreographyTest {
                 (1 / frequency) + timeShift + duration,
                 Point4D.create(radius, 0, 0, 0));
     }
+
+    @Test
+    public void testGetDuration() {
+        assertEquals(2 * duration, choreotarget.getTrajectoryDuration(), 0);
+    }
 }
