@@ -88,4 +88,23 @@ public class ChoreographyTest {
     public void testGetDuration() {
         assertEquals(2 * duration, choreotarget.getTrajectoryDuration(), 0);
     }
+
+    @Test
+    public void testFiniteTrajectory() {
+        choreotarget = Choreography.builder().withTrajectory(Trajectories
+                .newStraightLineTrajectory(Point4D.origin(),
+                        Point4D.create(1, 0, 0, 0), 0.5)).build();
+        assertEquals(2, choreotarget.getTrajectoryDuration(), 0);
+
+        choreotarget = Choreography.builder().withTrajectory(Trajectories
+                .newStraightLineTrajectory(Point4D.origin(),
+                        Point4D.create(1, 0, 0, 0), 0.5)).forTime(5).build();
+        assertEquals(5, choreotarget.getTrajectoryDuration(), 0);
+        choreotarget = Choreography.builder().withTrajectory(Trajectories
+                .newStraightLineTrajectory(Point4D.origin(),
+                        Point4D.create(1, 0, 0, 0), 0.5)).withTrajectory(
+                Trajectories.newExamplePendulumSwingTrajectory()).forTime(5)
+                .build();
+        assertEquals(7, choreotarget.getTrajectoryDuration(), 0);
+    }
 }

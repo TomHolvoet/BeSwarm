@@ -1,11 +1,11 @@
 package choreo;
 
 import applications.trajectory.BasicTrajectory;
-import control.FiniteTrajectory4d;
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Queues;
+import control.FiniteTrajectory4d;
 import control.Trajectory4d;
 
 import java.util.List;
@@ -188,6 +188,18 @@ public final class Choreography extends BasicTrajectory
             return new SegmentBuilder(trajectory);
         }
 
+        /**
+         * @param trajectory The trajectory to add.
+         * @return this builder instance.
+         */
+        public OptionalSegmentBuilder withTrajectory(
+                FiniteTrajectory4d trajectory) {
+            //            segments.add(new
+            // AutoValue_Choreography_ChoreoSegment(trajectory,
+            //                    trajectory.getTrajectoryDuration()));
+            return new OptionalSegmentBuilder(trajectory);
+        }
+
         private Builder getBuilder() {
             return this;
         }
@@ -219,6 +231,66 @@ public final class Choreography extends BasicTrajectory
                 segments.add(new AutoValue_Choreography_ChoreoSegment(target,
                         duration));
                 return getBuilder();
+            }
+        }
+
+        /**
+         * Builder for adding time duration information to supplied
+         * trajectories.
+         */
+        public final class OptionalSegmentBuilder {
+
+            private final FiniteTrajectory4d target;
+            private final double duration;
+
+            private OptionalSegmentBuilder(FiniteTrajectory4d target) {
+                this.target = target;
+                this.duration = target.getTrajectoryDuration();
+            }
+
+            /**
+             * @param trajectory The trajectory to add.
+             * @return this builder instance.
+             */
+            public OptionalSegmentBuilder withTrajectory(
+                    FiniteTrajectory4d trajectory) {
+                addSegment();
+                return getBuilder().withTrajectory(trajectory);
+            }
+
+            private void addSegment() {
+                segments.add(
+                        new AutoValue_Choreography_ChoreoSegment(this.target,
+                                this.duration));
+            }
+
+            /**
+             * @param trajectory The trajectory to add.
+             * @return this builder instance.
+             */
+            public SegmentBuilder withTrajectory(
+                    Trajectory4d trajectory) {
+                addSegment();
+                return getBuilder().withTrajectory(trajectory);
+            }
+
+            /**
+             * @param duration the duration of the previously added trajectory.
+             * @return A Builder instance.
+             */
+            public Builder forTime(double duration) {
+                segments.add(
+                        new AutoValue_Choreography_ChoreoSegment(this.target,
+                                duration));
+                return getBuilder();
+            }
+
+            /**
+             * @return A fully built choreography instance.
+             */
+            public Choreography build() {
+                addSegment();
+                return getBuilder().build();
             }
         }
     }
