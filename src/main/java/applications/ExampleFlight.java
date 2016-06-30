@@ -1,6 +1,13 @@
 package applications;
 
-import com.google.common.base.Optional;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+import org.ros.node.ConnectedNode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.common.collect.ImmutableList;
 
 import applications.trajectory.Point4D;
@@ -13,9 +20,6 @@ import commands.Takeoff;
 import control.Trajectory4d;
 import control.localization.StateEstimator;
 import keyboard.Key;
-import org.ros.node.ConnectedNode;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import services.LandService;
 import services.ServiceFactory;
 import services.TakeOffService;
@@ -26,10 +30,6 @@ import taskexecutor.TaskExecutor;
 import taskexecutor.TaskExecutorService;
 import taskexecutor.TaskType;
 import taskexecutor.interruptors.KeyboardEmergency;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 
 /**
  * This class illustrates an example flight. The drone will take off, hover in 5 second, follow a trajectory and then
