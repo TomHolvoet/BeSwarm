@@ -194,9 +194,6 @@ public final class Choreography extends BasicTrajectory
          */
         public OptionalSegmentBuilder withTrajectory(
                 FiniteTrajectory4d trajectory) {
-            //            segments.add(new
-            // AutoValue_Choreography_ChoreoSegment(trajectory,
-            //                    trajectory.getTrajectoryDuration()));
             return new OptionalSegmentBuilder(trajectory);
         }
 
@@ -235,8 +232,8 @@ public final class Choreography extends BasicTrajectory
         }
 
         /**
-         * Builder for adding time duration information to supplied
-         * trajectories.
+         * Builder for optionally supplying a duration for supplied finite
+         * trajectory.
          */
         public final class OptionalSegmentBuilder {
 
@@ -275,6 +272,9 @@ public final class Choreography extends BasicTrajectory
             }
 
             /**
+             * This method is optional. If not called, the duration from the
+             * finite trajectory will be used.
+             *
              * @param duration the duration of the previously added trajectory.
              * @return A Builder instance.
              */
