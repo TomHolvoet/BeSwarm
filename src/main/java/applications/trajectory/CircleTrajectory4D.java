@@ -49,8 +49,9 @@ final class CircleTrajectory4D extends PeriodicTrajectory
 
     @Override
     public double getDesiredPositionY(double timeInSeconds) {
-        return (1 - scaleFactor) * xycircle
-                .getDesiredPositionOrdinate(timeInSeconds);
+        return (1 - scaleFactor) * (xycircle
+                .getDesiredPositionOrdinate(timeInSeconds) - location.getY())
+                + location.getY();
     }
 
     @Override
