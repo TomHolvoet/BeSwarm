@@ -39,7 +39,7 @@ public class TumSimulatorComplexExample extends AbstractNodeMain {
                 .newHoldPositionTrajectory(Point4D.create(1.5, -3.0, 1.5, 0));
         Trajectory4d second = Trajectories
                 .newCircleTrajectory4D(Point4D.create(1.0, -3.0, 1.5, 0), 0.5,
-                        -0.20,
+                        0.05,
                         Math.PI / 8);
         Trajectory4d third = Trajectories
                 .newHoldPositionTrajectory(Point4D.create(1.5, -3.5, 1.5, 0));
