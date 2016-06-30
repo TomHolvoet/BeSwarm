@@ -1,5 +1,6 @@
 package applications.trajectory;
 
+import control.FiniteTrajectory4d;
 import control.Trajectory2d;
 import control.Trajectory4d;
 
@@ -141,7 +142,8 @@ public final class Trajectories {
      * @return A new trajectory instance representing a straight line in
      * space between two given points at a given velocity.
      */
-    public static Trajectory4d newStraightLineTrajectory(Point4D sourcePoint,
+    public static FiniteTrajectory4d newStraightLineTrajectory(
+            Point4D sourcePoint,
             Point4D targetPoint, double velocity) {
         return new StraightLineTrajectory4D(sourcePoint, targetPoint, velocity);
     }

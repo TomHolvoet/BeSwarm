@@ -2,7 +2,8 @@ package applications.cratessim;
 
 import applications.ExampleFlight;
 import applications.ExampleTrajectory;
-import control.Trajectory4d;
+import choreo.Choreography;
+import control.FiniteTrajectory4d;
 import control.localization.CratesSimStateEstimator;
 import control.localization.StateEstimator;
 import hal_quadrotor.State;
@@ -31,7 +32,8 @@ import java.util.concurrent.TimeUnit;
  * @see <a href="https://bitbucket.org/vicengomez/crates">The simulator</a>
  */
 public final class CratesSimulatorExample extends AbstractNodeMain {
-    private static final Logger logger = LoggerFactory.getLogger(CratesSimulatorExample.class);
+    private static final Logger logger = LoggerFactory
+            .getLogger(CratesSimulatorExample.class);
     private static final String DRONE_NAME = "uav";
     private static final String MODEL_NAME = "hummingbird";
 
@@ -43,18 +45,29 @@ public final class CratesSimulatorExample extends AbstractNodeMain {
     @Override
     public void onStart(final ConnectedNode connectedNode) {
         addDroneModel(connectedNode);
-        final ServiceFactory serviceFactory = CratesServiceFactory.create(DRONE_NAME, MODEL_NAME, connectedNode);
+        final double defaultTime = 60;
+        final ServiceFactory serviceFactory = CratesServiceFactory
+                .create(DRONE_NAME, MODEL_NAME, connectedNode);
         final StateEstimator stateEstimator = getStateEstimator(connectedNode);
-        final Trajectory4d trajectory = ExampleTrajectory.create();
-        final ExampleFlight exampleFlight = ExampleFlight.create(serviceFactory, stateEstimator, trajectory,
-                connectedNode);
+        final FiniteTrajectory4d trajectory = Choreography.builder()
+                .withTrajectory(ExampleTrajectory.create()).forTime(defaultTime)
+                .build();
+        final ExampleFlight exampleFlight = ExampleFlight
+                .create(serviceFactory, stateEstimator, trajectory,
+                        connectedNode);
         exampleFlight.fly();
     }
 
-    private static StateEstimator getStateEstimator(ConnectedNode connectedNode) {
-        final String srvNamePrefix = "/hal/quadrotor/" + MODEL_NAME + "/" + DRONE_NAME + "/";
-        final MessagesSubscriberService<State> cratesTruthStateSubscriber = MessagesSubscriberService.create(
-                connectedNode.<State>newSubscriber(srvNamePrefix + "Truth", State._TYPE), 2);
+    private static StateEstimator getStateEstimator(
+            ConnectedNode connectedNode) {
+        final String srvNamePrefix =
+                "/hal/quadrotor/" + MODEL_NAME + "/" + DRONE_NAME + "/";
+        final MessagesSubscriberService<State> cratesTruthStateSubscriber =
+                MessagesSubscriberService
+                        .create(
+                                connectedNode.<State>newSubscriber(
+                                        srvNamePrefix + "Truth", State._TYPE),
+                                2);
         return CratesSimStateEstimator.create(cratesTruthStateSubscriber);
     }
 
@@ -69,20 +82,25 @@ public final class CratesSimulatorExample extends AbstractNodeMain {
     private static void addDroneModel(ConnectedNode connectedNode) {
         try {
             final String srvName = "/simulator/Insert";
-            final ServiceClient<InsertRequest, InsertResponse> insertSrv = connectedNode.newServiceClient(srvName,
-                    Insert._TYPE);
+            final ServiceClient<InsertRequest, InsertResponse> insertSrv =
+                    connectedNode
+                            .newServiceClient(srvName,
+                                    Insert._TYPE);
             final InsertRequest insertRequest = insertSrv.newMessage();
             insertRequest.setModelName(DRONE_NAME);
             insertRequest.setModelType("model://" + MODEL_NAME);
-            insertSrv.call(insertRequest, InsertServiceResponseListener.create());
+            insertSrv.call(insertRequest,
+                    InsertServiceResponseListener.create());
             warmUp();
         } catch (ServiceNotFoundException e) {
             logger.info("Cannot connect to insert service.", e);
         }
     }
 
-    private static final class InsertServiceResponseListener implements ServiceResponseListener<InsertResponse> {
-        private InsertServiceResponseListener() {}
+    private static final class InsertServiceResponseListener
+            implements ServiceResponseListener<InsertResponse> {
+        private InsertServiceResponseListener() {
+        }
 
         public static InsertServiceResponseListener create() {
             return new InsertServiceResponseListener();

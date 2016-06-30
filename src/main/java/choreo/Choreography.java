@@ -1,6 +1,7 @@
 package choreo;
 
 import applications.trajectory.BasicTrajectory;
+import control.FiniteTrajectory4d;
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
@@ -21,7 +22,7 @@ import java.util.Queue;
  * @author Kristof Coninx <kristof.coninx AT cs.kuleuven.be>
  */
 public final class Choreography extends BasicTrajectory
-        implements Trajectory4d {
+        implements FiniteTrajectory4d {
     private final ImmutableList<ChoreoSegment> initialSegments;
     private final Queue<ChoreoSegment> segments;
     private double timeWindowShift;
@@ -137,6 +138,15 @@ public final class Choreography extends BasicTrajectory
      */
     public static Builder builder() {
         return new Builder();
+    }
+
+    @Override
+    public double getTrajectoryDuration() {
+        double totalDuration = 0;
+        for (ChoreoSegment s : initialSegments) {
+            totalDuration += s.getDuration();
+        }
+        return totalDuration;
     }
 
     /**
