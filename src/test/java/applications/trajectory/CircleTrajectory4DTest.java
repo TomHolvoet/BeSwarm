@@ -98,4 +98,22 @@ public class CircleTrajectory4DTest {
                 centerz);
     }
 
+    @Test
+    public void testPlaneAngle() {
+        double centerx = 15;
+        double centery = 10;
+        double centerz = 20;
+        List<Double> lz = Lists.newArrayList();
+        target = Trajectories
+                .newCircleTrajectory4D(
+                        Point4D.create(centerx, centery, centerz, 0),
+                        radius, 0.1, Math.PI / 2);
+        for (int i = 0; i < 1000; i++) {
+            lz.add(target.getDesiredPositionZ(i / 10d));
+        }
+        assertBounds(lz, centerz - radius,
+                centerz + radius);
+
+    }
+
 }
