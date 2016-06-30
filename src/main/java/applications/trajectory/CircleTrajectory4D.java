@@ -25,7 +25,7 @@ final class CircleTrajectory4D extends PeriodicTrajectory
             double planeAngle) {
         super(phase, location, radius, frequency);
         this.location = location;
-        this.scaleFactor = StrictMath.tan(planeAngle);
+        this.scaleFactor = StrictMath.sin(planeAngle);
         this.xycircle = CircleTrajectory2D.builder().setRadius(radius)
                 .setFrequency(frequency).setOrigin(location).setPhase(phase)
                 .build();
@@ -49,12 +49,15 @@ final class CircleTrajectory4D extends PeriodicTrajectory
 
     @Override
     public double getDesiredPositionY(double timeInSeconds) {
-        return xycircle.getDesiredPositionOrdinate(timeInSeconds);
+        return (1 - scaleFactor) * (xycircle
+                .getDesiredPositionOrdinate(timeInSeconds) - location.getY())
+                + location.getY();
     }
 
     @Override
     public double getDesiredVelocityY(double timeInSeconds) {
-        return xycircle.getDesiredVelocityOrdinate(timeInSeconds);
+        return (1 - scaleFactor) * xycircle
+                .getDesiredVelocityOrdinate(timeInSeconds);
     }
 
     @Override
@@ -77,6 +80,16 @@ final class CircleTrajectory4D extends PeriodicTrajectory
     @Override
     public double getDesiredAngularVelocityZ(double timeInSeconds) {
         return angularMotion.getDesiredVelocity(timeInSeconds);
+    }
+
+    @Override
+    public String toString() {
+        return "CircleTrajectory4D{" +
+                "origin=" + location +
+                " frequency=" + getFrequency() +
+                ", radius=" + getRadius() +
+                ", planeAngle=" + StrictMath.atan(scaleFactor) +
+                '}';
     }
 
     /**

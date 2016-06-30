@@ -51,4 +51,11 @@ class HoldPositionTrajectory4D implements Trajectory4d {
     public double getDesiredAngularVelocityZ(double timeInSeconds) {
         return 0;
     }
+
+    @Override
+    public String toString() {
+        return "HoldPositionTrajectory4D{" +
+                "target point=" + targetPoint +
+                '}';
+    }
 }

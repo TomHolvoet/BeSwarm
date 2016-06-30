@@ -1,5 +1,6 @@
 package applications.trajectory;
 
+import control.FiniteTrajectory4d;
 import control.Trajectory4d;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -13,13 +14,21 @@ import static com.google.common.base.Preconditions.checkArgument;
  *
  * @author Kristof Coninx <kristof.coninx AT cs.kuleuven.be>
  */
-class StraightLineTrajectory4D extends BasicTrajectory implements Trajectory4d {
+class StraightLineTrajectory4D extends BasicTrajectory
+        implements FiniteTrajectory4d {
+    private final Point4D srcpoint;
+    private final Point4D targetpoint;
+    private final double velocity;
     private final Trajectory4d moveTraj;
     private final Trajectory4d holdTraj;
     private Trajectory4d currentTraj;
+    private final double endTime;
 
     StraightLineTrajectory4D(Point4D srcpoint, Point4D targetpoint,
             double velocity) {
+        this.srcpoint = srcpoint;
+        this.targetpoint = targetpoint;
+        this.velocity = velocity;
         checkArgument(velocity > 0,
                 "The provided velocity should be strictly greater than 0.");
         checkArgument(velocity <= BasicTrajectory.MAX_ABSOLUTE_VELOCITY,
@@ -30,7 +39,7 @@ class StraightLineTrajectory4D extends BasicTrajectory implements Trajectory4d {
         double totalDistance = StrictMath.sqrt(StrictMath.pow(diff.getX(), 2) +
                 StrictMath.pow(diff.getY(), 2) + StrictMath
                 .pow(diff.getZ(), 2));
-        final double endTime = totalDistance / speed;
+        this.endTime = totalDistance / speed;
         checkArgument(totalDistance > 0, "Distance to travel cannot be zero.");
         Point4D speedComponent = Point4D
                 .create(velocity * (diff.getX() / totalDistance),
@@ -97,6 +106,20 @@ class StraightLineTrajectory4D extends BasicTrajectory implements Trajectory4d {
     public double getDesiredAngularVelocityZ(double timeInSeconds) {
         final double currentTime = getRelativeTime(timeInSeconds);
         return currentTraj.getDesiredAngularVelocityZ(currentTime);
+    }
+
+    @Override
+    public String toString() {
+        return "StraightLineTrajectory4D{" +
+                "velocity=" + velocity +
+                ", src point=" + srcpoint +
+                ", target point=" + targetpoint +
+                '}';
+    }
+
+    @Override
+    public double getTrajectoryDuration() {
+        return this.endTime;
     }
 
     private class HoldPositionForwarder
