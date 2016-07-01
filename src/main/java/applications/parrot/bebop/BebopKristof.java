@@ -12,6 +12,7 @@ import applications.ExampleFlight;
 import applications.LineTrajectory;
 import applications.trajectory.Point4D;
 import applications.trajectory.Trajectories;
+import control.FiniteTrajectory4d;
 import control.Trajectory4d;
 import control.localization.StateEstimator;
 import geometry_msgs.PoseStamped;
@@ -41,7 +42,7 @@ public class BebopKristof extends AbstractNodeMain {
         final ServiceFactory serviceFactory = BebopServiceFactory.create(connectedNode, DRONE_NAME);
         final StateEstimator stateEstimator = applications.parrot.bebop.BebopHover.BebopStateEstimator.create(getPoseSubscriber(connectedNode),
                 getOdometrySubscriber(connectedNode));
-        final Trajectory4d trajectory4d = Trajectories.newStraightLineTrajectory(Point4D.create(1.5, 0.0, 1.0, 0.0), Point4D.create(0.0, -4.0, 2.0, 0.0), 0.5);
+        final FiniteTrajectory4d trajectory4d = Trajectories.newStraightLineTrajectory(Point4D.create(1.5, 0.0, 1.0, 0.0), Point4D.create(0.0, -4.0, 2.0, 0.0), 0.5);
         final ExampleFlight exampleFlight = ExampleFlight.create(serviceFactory, stateEstimator, trajectory4d,
                 connectedNode);
 
