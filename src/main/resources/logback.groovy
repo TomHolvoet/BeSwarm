@@ -22,6 +22,12 @@ appender("FILE_DRONE_POSE", FileAppender) {
     }
 }
 
+appender("FILE_DRONE_BODY_VELOCITY", FileAppender) {
+    file = "${DIR}/drone_body_velocity.log"
+    encoder(PatternLayoutEncoder) {
+        pattern = "%msg %n"
+    }
+}
 appender("FILE_DRONE_VELOCITY", FileAppender) {
     file = "${DIR}/dronevelocity.log"
     encoder(PatternLayoutEncoder) {
@@ -39,5 +45,5 @@ appender("FILE_RECEIVED_MESSAGES", FileAppender) {
 root(DEBUG, ["STDOUT", "FILE"])
 logger("commands.FollowTrajectory.poselogger", TRACE, ["FILE_DRONE_POSE"], false)
 logger("commands.FollowTrajectory.velocitylogger", TRACE, ["FILE_DRONE_VELOCITY"], false)
+logger("services.parrot.ParrotVelocityService.vel", TRACE, ["FILE_DRONE_BODY_VELOCITY"], false)
 logger("services.ros_subscribers.MessagesSubscriberService", TRACE, ["FILE_RECEIVED_MESSAGES"], false)
-

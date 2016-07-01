@@ -87,13 +87,8 @@ public final class FollowTrajectory implements Command {
 
         private int counter = 0;
         private double lastTimeStamp = Double.MIN_VALUE;
-        private final InertialFrameVelocity zeroVelocity = Velocity.builder()
-                .linearX(0)
-                .linearY(0)
-                .linearZ(0)
-                .angularZ(0)
-                .build();
-        private final Pose zeroPose = Pose.builder().x(0).y(0).z(0).yaw(0).build();
+        private final InertialFrameVelocity zeroVelocity = Velocity.createZeroVelocity();
+        private final Pose zeroPose = Pose.createZeroPose();
 
         private static final double NANO_SECOND_TO_SECOND = 1000000000.0;
 
