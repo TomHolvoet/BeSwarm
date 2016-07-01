@@ -1,10 +1,10 @@
 package services.parrot;
 
-import com.google.common.base.Optional;
-import geometry_msgs.Twist;
 import org.ros.node.ConnectedNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import geometry_msgs.Twist;
 import services.FlipService;
 import services.VelocityService;
 import std_msgs.UInt8;
@@ -29,14 +29,14 @@ public final class BebopServiceFactory extends ParrotServiceFactory {
         final String topicName = "/" + getDroneName() + "/cmd_vel";
         final VelocityService velocityService = ParrotVelocityService.builder()
                 .publisher(getConnectedNode().<Twist>newPublisher(topicName, Twist._TYPE))
-                .minLinearX(-1)
-                .minLinearY(-1)
-                .minLinearZ(-1)
-                .minAngularZ(-1)
-                .maxLinearX(1)
-                .maxLinearY(1)
-                .maxLinearZ(1)
-                .maxAngularZ(1)
+                .minLinearX(-0.25)
+                .minLinearY(-0.25)
+                .minLinearZ(-0.25)
+                .minAngularZ(-0.25)
+                .maxLinearX(0.25)
+                .maxLinearY(0.25)
+                .maxLinearZ(0.25)
+                .maxAngularZ(0.25)
                 .build();
         logger.info("Velocity service connected to {}", topicName);
         return velocityService;

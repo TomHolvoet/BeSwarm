@@ -1,13 +1,22 @@
 package applications;
 
-import control.FiniteTrajectory4d;
-import com.google.common.collect.ImmutableList;
-import commands.*;
-import control.localization.StateEstimator;
-import keyboard.Key;
+import java.util.ArrayList;
+import java.util.Collection;
+
 import org.ros.node.ConnectedNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.google.common.collect.ImmutableList;
+
+import commands.Command;
+import commands.FollowTrajectory;
+import commands.Hover;
+import commands.Land;
+import commands.Takeoff;
+import control.FiniteTrajectory4d;
+import control.localization.StateEstimator;
+import keyboard.Key;
 import services.LandService;
 import services.ServiceFactory;
 import services.TakeOffService;
@@ -18,9 +27,6 @@ import taskexecutor.TaskExecutor;
 import taskexecutor.TaskExecutorService;
 import taskexecutor.TaskType;
 import taskexecutor.interruptors.KeyboardEmergency;
-
-import java.util.ArrayList;
-import java.util.Collection;
 
 /**
  * This class illustrates an example flight. The drone will take off, hover
@@ -45,11 +51,8 @@ public final class ExampleFlight {
             StateEstimator stateEstimator, FiniteTrajectory4d trajectory4d,
             ConnectedNode connectedNode) {
         this.takeOffService = serviceFactory.createTakeOffService();
-        ;
         this.landService = serviceFactory.createLandService();
-        ;
         this.velocityService = serviceFactory.createVelocityService();
-        ;
         this.stateEstimator = stateEstimator;
         this.trajectory4d = trajectory4d;
         this.connectedNode = connectedNode;

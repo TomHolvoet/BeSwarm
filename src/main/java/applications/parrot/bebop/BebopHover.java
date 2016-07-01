@@ -44,19 +44,24 @@ public class BebopHover extends AbstractNodeMain {
 
     @Override
     public GraphName getDefaultNodeName() {
-        return GraphName.of("BebopSimpleLinePattern");
+        return GraphName.of("BebopHover");
     }
 
     @Override
     public void onStart(final ConnectedNode connectedNode) {
-        final double pidKP = connectedNode.getParameterTree().getDouble("beswarm/pid_kp");
-        final double pidKI = connectedNode.getParameterTree().getDouble("beswarm/pid_ki");
-        final double pidKD = connectedNode.getParameterTree().getDouble("beswarm/pid_kd");
+    	final double pidLinearXKP = connectedNode.getParameterTree().getDouble("beswarm/pid_linear_x_kp");
+    	final double pidLinearXKI = connectedNode.getParameterTree().getDouble("beswarm/pid_linear_x_ki");
+    	final double pidLinearXKD = connectedNode.getParameterTree().getDouble("beswarm/pid_linear_x_kd");
+        final double pidLinearYKP = connectedNode.getParameterTree().getDouble("beswarm/pid_linear_y_kp");
+        final double pidLinearYKI = connectedNode.getParameterTree().getDouble("beswarm/pid_linear_y_ki");
+        final double pidLinearYKD = connectedNode.getParameterTree().getDouble("beswarm/pid_linear_y_kd");
         final double flightDuration = connectedNode.getParameterTree().getDouble("beswarm/flight_duration");
         final double locationX = connectedNode.getParameterTree().getDouble("beswarm/location_x");
         final double locationY = connectedNode.getParameterTree().getDouble("beswarm/location_y");
         final double locationZ = connectedNode.getParameterTree().getDouble("beswarm/location_z");
         final double locationYaw = connectedNode.getParameterTree().getDouble("beswarm/location_yaw");
+        
+        logger.info("target location: (x,y,z,yaw) ({},{}, {}, {})", locationX, locationY, locationZ, locationYaw);
         
         final ServiceFactory serviceFactory = BebopServiceFactory.create(connectedNode, DRONE_NAME);
         TakeOffService takeoffService = serviceFactory.createTakeOffService();
@@ -77,7 +82,8 @@ public class BebopHover extends AbstractNodeMain {
     	Command moveToPose = MoveToPose.builder().goalPose(Pose.builder().x(locationX).y(locationY).z(locationZ).yaw(locationYaw).build())
     			.velocityService(velocityService)
     			.stateEstimator(stateEstimator)
-    			.pidLinearXParameters(PidParameters.builder().kp(pidKP).ki(pidKI).kd(pidKD).build())
+    			.pidLinearXParameters(PidParameters.builder().kp(pidLinearXKP).ki(pidLinearXKI).kd(pidLinearXKD).build())
+    			.pidLinearYParameters(PidParameters.builder().kp(pidLinearYKP).ki(pidLinearYKI).kd(pidLinearYKD).build())
     			.durationInSeconds(flightDuration)
     			.build();
     	Command land = Land.create(landService);
@@ -98,7 +104,7 @@ public class BebopHover extends AbstractNodeMain {
         return MessagesSubscriberService.create(connectedNode.<Odometry>newSubscriber(odometryTopic, Odometry._TYPE));
     }
 
-    private static final class BebopStateEstimator implements StateEstimator {
+    public static final class BebopStateEstimator implements StateEstimator {
 
         private static final Logger logger = LoggerFactory.getLogger(BebopStateEstimator.class);
 
@@ -119,11 +125,15 @@ public class BebopHover extends AbstractNodeMain {
         @Override
         public Optional<DroneStateStamped> getCurrentState() {
             final Optional<PoseStamped> poseStamped = poseSubscriber.getMostRecentMessage(); 
-            if (!poseStamped.isPresent()) {
-                return Optional.absent();
-            }
             
+            if (!poseStamped.isPresent()) {
+            	return Optional.absent();
+            }
+
             final Pose pose = Pose.create(poseStamped.get());
+            if (Pose.areSamePoseWithinEps(pose, Pose.createZeroPose())) {
+            	return Optional.absent();
+            }
 
             final Optional<InertialFrameVelocity> inertialFrameVelocity = getVelocity(pose);
             if (!inertialFrameVelocity.isPresent()) {
