@@ -130,6 +130,10 @@ final class CircleTrajectory4D extends PeriodicTrajectory
             return this;
         }
 
+        /**
+         * @return return a CircleTrajectory instance configured by this
+         * builder object.
+         */
         public CircleTrajectory4D build() {
             return new CircleTrajectory4D(location, phase, radius,
                     frequency,
