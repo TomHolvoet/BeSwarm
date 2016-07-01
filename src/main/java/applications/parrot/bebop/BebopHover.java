@@ -22,6 +22,7 @@ import control.dto.Velocity;
 import control.localization.StateEstimator;
 import geometry_msgs.PoseStamped;
 import nav_msgs.Odometry;
+import services.FlyingStateService;
 import services.LandService;
 import services.ServiceFactory;
 import services.TakeOffService;
@@ -67,6 +68,7 @@ public class BebopHover extends AbstractNodeMain {
         TakeOffService takeoffService = serviceFactory.createTakeOffService();
         VelocityService velocityService = serviceFactory.createVelocityService();
         LandService landService = serviceFactory.createLandService();
+        final FlyingStateService flyingStateService = serviceFactory.createFlyingStateService();
 
         final StateEstimator stateEstimator = BebopStateEstimator.create(getPoseSubscriber(connectedNode),
                 getOdometrySubscriber(connectedNode));
@@ -86,7 +88,7 @@ public class BebopHover extends AbstractNodeMain {
     			.pidLinearYParameters(PidParameters.builder().kp(pidLinearYKP).ki(pidLinearYKI).kd(pidLinearYKD).build())
     			.durationInSeconds(flightDuration)
     			.build();
-    	Command land = Land.create(landService);
+    	Command land = Land.create(landService, flyingStateService);
     	
     	final TaskExecutor taskExecutor = TaskExecutorService.create();
     	taskExecutor.submitTask(Task.create(TaskType.NORMAL_TASK, takeoff, moveToPose, land));

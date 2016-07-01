@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import org.ros.node.ConnectedNode;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.ImmutableList;
 
@@ -17,6 +15,7 @@ import commands.Takeoff;
 import control.FiniteTrajectory4d;
 import control.localization.StateEstimator;
 import keyboard.Key;
+import services.FlyingStateService;
 import services.LandService;
 import services.ServiceFactory;
 import services.TakeOffService;
@@ -37,12 +36,10 @@ import taskexecutor.interruptors.KeyboardEmergency;
  */
 public final class ExampleFlight {
 
-    private static final Logger logger = LoggerFactory
-            .getLogger(ExampleFlight.class);
-
     private final TakeOffService takeOffService;
     private final LandService landService;
     private final VelocityService velocityService;
+    private final FlyingStateService flyingStateService;
     private final StateEstimator stateEstimator;
     private final FiniteTrajectory4d trajectory4d;
     private final ConnectedNode connectedNode;
@@ -53,6 +50,7 @@ public final class ExampleFlight {
         this.takeOffService = serviceFactory.createTakeOffService();
         this.landService = serviceFactory.createLandService();
         this.velocityService = serviceFactory.createVelocityService();
+        this.flyingStateService = serviceFactory.createFlyingStateService();
         this.stateEstimator = stateEstimator;
         this.trajectory4d = trajectory4d;
         this.connectedNode = connectedNode;
@@ -98,7 +96,7 @@ public final class ExampleFlight {
                 .build();
         commands.add(followTrajectory);
 
-        final Command land = Land.create(landService);
+        final Command land = Land.create(landService, flyingStateService);
         commands.add(land);
 
         return Task
@@ -106,7 +104,7 @@ public final class ExampleFlight {
     }
 
     private Task createEmergencyTask() {
-        final Command land = Land.create(landService);
+        final Command land = Land.create(landService, flyingStateService);
         return Task
                 .create(ImmutableList.of(land), TaskType.FIRST_ORDER_EMERGENCY);
     }

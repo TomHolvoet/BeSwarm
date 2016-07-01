@@ -1,12 +1,14 @@
 package services.parrot;
 
+import bebop_msgs.Ardrone3PilotingStateFlyingStateChanged;
+import geometry_msgs.Twist;
 import org.ros.node.ConnectedNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import geometry_msgs.Twist;
 import services.FlipService;
+import services.FlyingStateService;
 import services.VelocityService;
+import services.ros_subscribers.MessagesSubscriberService;
 import std_msgs.UInt8;
 
 /**
@@ -49,5 +51,16 @@ public final class BebopServiceFactory extends ParrotServiceFactory {
                 getConnectedNode().<UInt8>newPublisher(topicName, UInt8._TYPE));
         logger.info("Flip service connected to {}", topicName);
         return flipService;
+    }
+
+    @Override
+    public FlyingStateService createFlyingStateService() {
+        final String topicName = "/" + getDroneName() + "/states/ARDrone3/PilotingState/FlyingStateChanged";
+        final MessagesSubscriberService<Ardrone3PilotingStateFlyingStateChanged> flyingStateSubscriber =
+                MessagesSubscriberService
+                .create(getConnectedNode().<Ardrone3PilotingStateFlyingStateChanged>newSubscriber(topicName,
+                        Ardrone3PilotingStateFlyingStateChanged._TYPE));
+
+        return BebopFlyingStateService.create(flyingStateSubscriber);
     }
 }
