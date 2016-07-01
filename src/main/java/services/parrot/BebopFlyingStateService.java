@@ -37,7 +37,7 @@ public final class BebopFlyingStateService implements MessageObserver<Ardrone3Pi
             MessagesSubscriberService<Ardrone3PilotingStateFlyingStateChanged> flyingStateSubscriber) {
         final BebopFlyingStateService bebopFlyingStateService = new BebopFlyingStateService();
         flyingStateSubscriber.registerMessageObserver(bebopFlyingStateService);
-        return new BebopFlyingStateService();
+        return bebopFlyingStateService;
     }
 
     @Override
