@@ -9,6 +9,8 @@ import org.ros.node.topic.Subscriber;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -21,7 +23,6 @@ public class MessagesSubscriberService<T extends Message> {
 
     private static final Logger logger = LoggerFactory.getLogger(MessagesSubscriberService.class);
 
-    private final Subscriber<T> subscriber;
     private final MessagesListener<T> messagesListener;
 
     private static final int DEFAULT_MESSAGE_QUEUE__SIZE = 1;
@@ -29,9 +30,8 @@ public class MessagesSubscriberService<T extends Message> {
     protected MessagesSubscriberService(Subscriber<T> subscriber, int maxMessageQueueSize) {
         checkArgument(maxMessageQueueSize >= 1,
                 String.format("Queue size must be at least 1, but it is %d.", maxMessageQueueSize));
-        this.subscriber = subscriber;
         this.messagesListener = MessagesListener.create(maxMessageQueueSize);
-        this.subscriber.addMessageListener(messagesListener);
+        subscriber.addMessageListener(messagesListener);
     }
 
     public static <Type extends Message> MessagesSubscriberService<Type> create(Subscriber<Type> subscriber) {
@@ -51,12 +51,21 @@ public class MessagesSubscriberService<T extends Message> {
         return messagesListener.getMessageQueue();
     }
 
-    private static final class MessagesListener<K extends Message> implements MessageListener<K> {
+    public void registerMessageObserver(MessageObserver<T> messageObserver) {
+        messagesListener.registerMessageObserver(messageObserver);
+    }
 
+    public void removeMessageObserver(MessageObserver<T> messageObserver) {
+        messagesListener.removeMessageObserver(messageObserver);
+    }
+
+    private static final class MessagesListener<K extends Message> implements MessageListener<K> {
+        private final Collection<MessageObserver<K>> messageObservers;
         private final Queue<K> messageQueue;
 
         private MessagesListener(int maxQueueSize) {
             messageQueue = Queues.synchronizedQueue(EvictingQueue.<K>create(maxQueueSize));
+            messageObservers = new ArrayList<>();
         }
 
         public static <Type extends Message> MessagesListener<Type> create(int maxQueueSize) {
@@ -67,6 +76,21 @@ public class MessagesSubscriberService<T extends Message> {
         public void onNewMessage(K t) {
             logger.trace("{} {}", System.nanoTime() / 1000000000.0, t.toRawMessage().getType());
             messageQueue.add(t);
+            notifyMessageObservers(t);
+        }
+
+        private void notifyMessageObservers(K t) {
+            for (final MessageObserver<K> msgObs : messageObservers) {
+                msgObs.onNewMessage(t);
+            }
+        }
+
+        public void registerMessageObserver(MessageObserver<K> messageObserver) {
+            messageObservers.add(messageObserver);
+        }
+
+        public void removeMessageObserver(MessageObserver<K> messageObserver) {
+            messageObservers.remove(messageObserver);
         }
 
         Optional<K> getMostRecentMessage() {
