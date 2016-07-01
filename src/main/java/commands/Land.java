@@ -41,7 +41,7 @@ public final class Land implements Command {
             if (currentFlyingState.isPresent()) {
                 if (currentFlyingState.get() == FlyingState.LANDED) {
                     logger.info("Successfully landed.");
-                    break;
+                    return;
                 }
 
                 if (currentFlyingState.get() != FlyingState.LANDING) {
@@ -49,7 +49,7 @@ public final class Land implements Command {
                     landService.sendLandingMessage();
                 }
             } else {
-                logger.trace("Cannot get flying state. Send a ");
+                logger.trace("Cannot get flying state. Send a landing message.");
                 landService.sendLandingMessage();
             }
 
