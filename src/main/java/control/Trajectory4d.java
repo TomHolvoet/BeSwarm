@@ -62,7 +62,8 @@ public interface Trajectory4d {
      * page</a>. The yaw angle
      * is in radians, ranging from -infinite to infinite.
      *
-     * @return the trajectory of the yaw
+     * @param timeInSeconds the point in time to get the position for.
+     * @return the desired position of the yaw
      */
     double getDesiredAngleZ(double timeInSeconds);
 
