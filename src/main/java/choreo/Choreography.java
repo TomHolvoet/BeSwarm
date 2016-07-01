@@ -1,11 +1,11 @@
 package choreo;
 
 import applications.trajectory.BasicTrajectory;
-import control.FiniteTrajectory4d;
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Queues;
+import control.FiniteTrajectory4d;
 import control.Trajectory4d;
 
 import java.util.List;
@@ -188,6 +188,15 @@ public final class Choreography extends BasicTrajectory
             return new SegmentBuilder(trajectory);
         }
 
+        /**
+         * @param trajectory The trajectory to add.
+         * @return this builder instance.
+         */
+        public OptionalSegmentBuilder withTrajectory(
+                FiniteTrajectory4d trajectory) {
+            return new OptionalSegmentBuilder(trajectory);
+        }
+
         private Builder getBuilder() {
             return this;
         }
@@ -203,7 +212,7 @@ public final class Choreography extends BasicTrajectory
          * Builder for adding time duration information to supplied
          * trajectories.
          */
-        public final class SegmentBuilder {
+        public class SegmentBuilder {
 
             private final Trajectory4d target;
 
@@ -216,9 +225,56 @@ public final class Choreography extends BasicTrajectory
              * @return A Builder instance.
              */
             public Builder forTime(double duration) {
-                segments.add(new AutoValue_Choreography_ChoreoSegment(target,
-                        duration));
+                addSegmentWithDuration(duration);
                 return getBuilder();
+            }
+
+            protected void addSegmentWithDuration(double duration) {
+                segments.add(
+                        new AutoValue_Choreography_ChoreoSegment(this.target,
+                                duration));
+            }
+        }
+
+        /**
+         * Builder for optionally supplying a duration for supplied finite
+         * trajectory.
+         */
+        public final class OptionalSegmentBuilder extends SegmentBuilder {
+
+            private final double duration;
+
+            private OptionalSegmentBuilder(FiniteTrajectory4d target) {
+                super(target);
+                this.duration = target.getTrajectoryDuration();
+            }
+
+            /**
+             * @param trajectory The trajectory to add.
+             * @return this builder instance.
+             */
+            public OptionalSegmentBuilder withTrajectory(
+                    FiniteTrajectory4d trajectory) {
+                addSegmentWithDuration(duration);
+                return getBuilder().withTrajectory(trajectory);
+            }
+
+            /**
+             * @param trajectory The trajectory to add.
+             * @return this builder instance.
+             */
+            public SegmentBuilder withTrajectory(
+                    Trajectory4d trajectory) {
+                addSegmentWithDuration(duration);
+                return getBuilder().withTrajectory(trajectory);
+            }
+
+            /**
+             * @return A fully built choreography instance.
+             */
+            public Choreography build() {
+                addSegmentWithDuration(duration);
+                return getBuilder().build();
             }
         }
     }

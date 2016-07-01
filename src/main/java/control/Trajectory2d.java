@@ -8,23 +8,34 @@ package control;
  * @author Kristof Coninx
  */
 public interface Trajectory2d {
-    //    /**
-    //     * @return A 1d trajectory function for the abscissa (or commonly
-    // x-axis).
-    //     */
-    //    Trajectory1d getTrajectoryLinearAbscissa();
-    //
-    //    /**
-    //     * @return A 1d trajectory function for the abscissa (or commonly
-    // y-axis).
-    //     */
-    //    Trajectory1d getTrajectoryLinearOrdinate();
 
+    /**
+     * @param timeInSeconds the point in time to get the position for.
+     * @return The desired value of the position relative to the abscissa
+     * for the given point in time.
+     */
     double getDesiredPositionAbscissa(double timeInSeconds);
 
+    /**
+     * @param timeInSeconds the point in time to get the position for.
+     * @return The desired value of the momentary velocity relative to the
+     * abscissa.
+     * for the given point in time.
+     */
     double getDesiredVelocityAbscissa(double timeInSeconds);
 
+    /**
+     * @param timeInSeconds the point in time to get the position for.
+     * @return The desired value of the position relative to the ordinate.
+     * for the given point in time.
+     */
     double getDesiredPositionOrdinate(double timeInSeconds);
 
+    /**
+     * @param timeInSeconds the point in time to get the position for.
+     * @return The desired value of the momentary velocity relative to the
+     * ordinate.
+     * for the given point in time.
+     */
     double getDesiredVelocityOrdinate(double timeInSeconds);
 }
