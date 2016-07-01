@@ -84,14 +84,14 @@ dependencies {
     compile 'org.codehaus.groovy:groovy-all:2.4.6'
     compile 'com.google.guava:guava:11.0.2'
     // crates messages
-    compile 'io.github.agentwise:hal:0.1.0'
-    compile 'io.github.agentwise:hal_quadrotor:0.1.0'
-    compile 'io.github.agentwise:hal_sensor_altimeter:0.1.0'
-    compile 'io.github.agentwise:hal_sensor_compass:0.1.0'
-    compile 'io.github.agentwise:hal_sensor_gnss:0.1.0'
-    compile 'io.github.agentwise:hal_sensor_imu:0.1.0'
-    compile 'io.github.agentwise:hal_sensor_orientation:0.1.0'
-    compile 'io.github.agentwise:sim:0.1.0'
+    compile 'org.ros.rosjava_messages:hal:0.1.0'
+    compile 'org.ros.rosjava_messages:hal_quadrotor:0.1.0'
+    compile 'org.ros.rosjava_messages:hal_sensor_altimeter:0.1.0'
+    compile 'org.ros.rosjava_messages:hal_sensor_compass:0.1.0'
+    compile 'org.ros.rosjava_messages:hal_sensor_gnss:0.1.0'
+    compile 'org.ros.rosjava_messages:hal_sensor_imu:0.1.0'
+    compile 'org.ros.rosjava_messages:hal_sensor_orientation:0.1.0'
+    compile 'org.ros.rosjava_messages:sim:0.1.0'
     // bebop messages
     compile 'org.ros.rosjava_messages:bebop_msgs:0.5.1'
     // tum sim messages
