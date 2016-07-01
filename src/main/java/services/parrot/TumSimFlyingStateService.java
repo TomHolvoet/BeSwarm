@@ -44,7 +44,7 @@ public final class TumSimFlyingStateService implements MessageObserver<Navdata>,
     @Override
     public void onNewMessage(Navdata message) {
         currentFlyingState = FLYING_STATE_MAP.get(message.getState());
-        logger.info("Current flying state: {}", currentFlyingState.getStateName());
+        logger.trace("Current flying state: {}", currentFlyingState.getStateName());
     }
 
     @Override
