@@ -1,27 +1,24 @@
 package applications.parrot.bebop;
 
-import java.util.concurrent.TimeUnit;
-
-import org.ros.namespace.GraphName;
-import org.ros.node.AbstractNodeMain;
-import org.ros.node.ConnectedNode;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.google.common.base.Optional;
-
 import commands.Command;
 import commands.Land;
 import commands.MoveToPose;
 import commands.Takeoff;
 import control.PidParameters;
 import control.dto.BodyFrameVelocity;
+import control.dto.DroneStateStamped;
 import control.dto.InertialFrameVelocity;
 import control.dto.Pose;
 import control.dto.Velocity;
 import control.localization.StateEstimator;
 import geometry_msgs.PoseStamped;
 import nav_msgs.Odometry;
+import org.ros.namespace.GraphName;
+import org.ros.node.AbstractNodeMain;
+import org.ros.node.ConnectedNode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import services.FlyingStateService;
 import services.LandService;
 import services.ServiceFactory;
@@ -34,7 +31,8 @@ import taskexecutor.TaskExecutor;
 import taskexecutor.TaskExecutorService;
 import taskexecutor.TaskType;
 import utils.math.Transformations;
-import control.dto.DroneStateStamped;
+
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author Hoang Tung Dinh
@@ -50,9 +48,9 @@ public class BebopHover extends AbstractNodeMain {
 
     @Override
     public void onStart(final ConnectedNode connectedNode) {
-    	final double pidLinearXKP = connectedNode.getParameterTree().getDouble("beswarm/pid_linear_x_kp");
-    	final double pidLinearXKI = connectedNode.getParameterTree().getDouble("beswarm/pid_linear_x_ki");
-    	final double pidLinearXKD = connectedNode.getParameterTree().getDouble("beswarm/pid_linear_x_kd");
+        final double pidLinearXKP = connectedNode.getParameterTree().getDouble("beswarm/pid_linear_x_kp");
+        final double pidLinearXKI = connectedNode.getParameterTree().getDouble("beswarm/pid_linear_x_ki");
+        final double pidLinearXKD = connectedNode.getParameterTree().getDouble("beswarm/pid_linear_x_kd");
         final double pidLinearYKP = connectedNode.getParameterTree().getDouble("beswarm/pid_linear_y_kp");
         final double pidLinearYKI = connectedNode.getParameterTree().getDouble("beswarm/pid_linear_y_ki");
         final double pidLinearYKD = connectedNode.getParameterTree().getDouble("beswarm/pid_linear_y_kd");
@@ -61,9 +59,9 @@ public class BebopHover extends AbstractNodeMain {
         final double locationY = connectedNode.getParameterTree().getDouble("beswarm/location_y");
         final double locationZ = connectedNode.getParameterTree().getDouble("beswarm/location_z");
         final double locationYaw = connectedNode.getParameterTree().getDouble("beswarm/location_yaw");
-        
+
         logger.info("target location: (x,y,z,yaw) ({},{}, {}, {})", locationX, locationY, locationZ, locationYaw);
-        
+
         final ServiceFactory serviceFactory = BebopServiceFactory.create(connectedNode, DRONE_NAME);
         TakeOffService takeoffService = serviceFactory.createTakeOffService();
         VelocityService velocityService = serviceFactory.createVelocityService();
@@ -79,21 +77,23 @@ public class BebopHover extends AbstractNodeMain {
             logger.info("Warm up time is interrupted.", e);
         }
 
-       
-    	Command takeoff = Takeoff.create(takeoffService);
-    	Command moveToPose = MoveToPose.builder().goalPose(Pose.builder().x(locationX).y(locationY).z(locationZ).yaw(locationYaw).build())
-    			.velocityService(velocityService)
-    			.stateEstimator(stateEstimator)
-    			.pidLinearXParameters(PidParameters.builder().kp(pidLinearXKP).ki(pidLinearXKI).kd(pidLinearXKD).build())
-    			.pidLinearYParameters(PidParameters.builder().kp(pidLinearYKP).ki(pidLinearYKI).kd(pidLinearYKD).build())
-    			.durationInSeconds(flightDuration)
-    			.build();
-    	Command land = Land.create(landService, flyingStateService);
-    	
-    	final TaskExecutor taskExecutor = TaskExecutorService.create();
-    	taskExecutor.submitTask(Task.create(TaskType.NORMAL_TASK, takeoff, moveToPose, land));
+        Command takeoff = Takeoff.create(takeoffService);
+        Command moveToPose = MoveToPose.builder()
+                .goalPose(Pose.builder().x(locationX).y(locationY).z(locationZ).yaw(locationYaw).build())
+                .velocityService(velocityService)
+                .stateEstimator(stateEstimator)
+                .pidLinearXParameters(
+                        PidParameters.builder().kp(pidLinearXKP).ki(pidLinearXKI).kd(pidLinearXKD).build())
+                .pidLinearYParameters(
+                        PidParameters.builder().kp(pidLinearYKP).ki(pidLinearYKI).kd(pidLinearYKD).build())
+                .durationInSeconds(flightDuration)
+                .build();
+        Command land = Land.create(landService, flyingStateService);
+
+        final TaskExecutor taskExecutor = TaskExecutorService.create();
+        taskExecutor.submitTask(Task.create(TaskType.NORMAL_TASK, takeoff, moveToPose, land));
     }
-    
+
     private static MessagesSubscriberService<PoseStamped> getPoseSubscriber(ConnectedNode connectedNode) {
         final String poseTopic = "/arlocros/pose";
         logger.info("Subscribed to {} for getting pose.", poseTopic);
@@ -126,15 +126,15 @@ public class BebopHover extends AbstractNodeMain {
 
         @Override
         public Optional<DroneStateStamped> getCurrentState() {
-            final Optional<PoseStamped> poseStamped = poseSubscriber.getMostRecentMessage(); 
-            
+            final Optional<PoseStamped> poseStamped = poseSubscriber.getMostRecentMessage();
+
             if (!poseStamped.isPresent()) {
-            	return Optional.absent();
+                return Optional.absent();
             }
 
             final Pose pose = Pose.create(poseStamped.get());
             if (Pose.areSamePoseWithinEps(pose, Pose.createZeroPose())) {
-            	return Optional.absent();
+                return Optional.absent();
             }
 
             final Optional<InertialFrameVelocity> inertialFrameVelocity = getVelocity(pose);
@@ -142,7 +142,8 @@ public class BebopHover extends AbstractNodeMain {
                 return Optional.absent();
             }
 
-            final DroneStateStamped droneState = DroneStateStamped.create(pose, inertialFrameVelocity.get(), poseStamped.get().getHeader().getStamp().toSeconds());
+            final DroneStateStamped droneState = DroneStateStamped.create(pose, inertialFrameVelocity.get(),
+                    poseStamped.get().getHeader().getStamp().toSeconds());
             return Optional.of(droneState);
         }
 

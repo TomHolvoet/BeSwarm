@@ -33,6 +33,12 @@ public final class BebopFlyingStateService implements MessageObserver<Ardrone3Pi
 
     private BebopFlyingStateService() {}
 
+    /**
+     * Creates the flying state service for the bebop drone.
+     *
+     * @param flyingStateSubscriber the message subscriber of the flying state changed of bebop
+     * @return the flying state service
+     */
     public static BebopFlyingStateService create(
             MessagesSubscriberService<Ardrone3PilotingStateFlyingStateChanged> flyingStateSubscriber) {
         final BebopFlyingStateService bebopFlyingStateService = new BebopFlyingStateService();

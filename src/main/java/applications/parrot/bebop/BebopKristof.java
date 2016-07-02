@@ -1,25 +1,22 @@
 package applications.parrot.bebop;
 
-import java.util.concurrent.TimeUnit;
-
+import applications.ExampleFlight;
+import applications.trajectory.Point4D;
+import applications.trajectory.Trajectories;
+import control.FiniteTrajectory4d;
+import control.localization.StateEstimator;
+import geometry_msgs.PoseStamped;
+import nav_msgs.Odometry;
 import org.ros.namespace.GraphName;
 import org.ros.node.AbstractNodeMain;
 import org.ros.node.ConnectedNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import applications.ExampleFlight;
-import applications.LineTrajectory;
-import applications.trajectory.Point4D;
-import applications.trajectory.Trajectories;
-import control.FiniteTrajectory4d;
-import control.Trajectory4d;
-import control.localization.StateEstimator;
-import geometry_msgs.PoseStamped;
-import nav_msgs.Odometry;
 import services.ServiceFactory;
 import services.parrot.BebopServiceFactory;
 import services.ros_subscribers.MessagesSubscriberService;
+
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author Hoang Tung Dinh
@@ -27,7 +24,6 @@ import services.ros_subscribers.MessagesSubscriberService;
 public class BebopKristof extends AbstractNodeMain {
     private static final Logger logger = LoggerFactory.getLogger(BebopKristof.class);
     private static final String DRONE_NAME = "bebop";
-    private static final double NANO_SECOND_TO_SECOND = 1000000000.0;
 
     @Override
     public GraphName getDefaultNodeName() {
@@ -38,11 +34,11 @@ public class BebopKristof extends AbstractNodeMain {
     public void onStart(final ConnectedNode connectedNode) {
         final double flightDuration = connectedNode.getParameterTree().getDouble("beswarm/flight_duration");
 
-        
         final ServiceFactory serviceFactory = BebopServiceFactory.create(connectedNode, DRONE_NAME);
-        final StateEstimator stateEstimator = applications.parrot.bebop.BebopHover.BebopStateEstimator.create(getPoseSubscriber(connectedNode),
-                getOdometrySubscriber(connectedNode));
-        final FiniteTrajectory4d trajectory4d = Trajectories.newStraightLineTrajectory(Point4D.create(1.5, 0.0, 1.0, 0.0), Point4D.create(0.0, -4.0, 2.0, 0.0), 0.5);
+        final StateEstimator stateEstimator = BebopHover.BebopStateEstimator.create(
+                getPoseSubscriber(connectedNode), getOdometrySubscriber(connectedNode));
+        final FiniteTrajectory4d trajectory4d = Trajectories.newStraightLineTrajectory(
+                Point4D.create(1.5, 0.0, 1.0, 0.0), Point4D.create(0.0, -4.0, 2.0, 0.0), 0.5);
         final ExampleFlight exampleFlight = ExampleFlight.create(serviceFactory, stateEstimator, trajectory4d,
                 connectedNode);
 

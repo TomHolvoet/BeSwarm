@@ -23,6 +23,12 @@ public final class CratesLandService implements LandService {
         this.srvLand = srvLand;
     }
 
+    /**
+     * Creates that land service working with the Crates simulator.
+     *
+     * @param srvLand the ros service client for landing
+     * @return the land service working with the crates simualtor
+     */
     public static CratesLandService create(ServiceClient<LandRequest, LandResponse> srvLand) {
         return new CratesLandService(srvLand);
     }

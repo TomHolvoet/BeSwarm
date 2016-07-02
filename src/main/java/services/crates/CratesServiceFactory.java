@@ -49,7 +49,7 @@ public final class CratesServiceFactory implements ServiceFactory {
             return CratesTakeOffService.create(connectedNode.<TakeoffRequest, TakeoffResponse>newServiceClient(
                     srvNamePrefix + "controller/Takeoff", Takeoff._TYPE));
         } catch (ServiceNotFoundException e) {
-            logger.info("Take off service not found. Drone: {}. Model: {}", droneName, modelName);
+            logger.info("Take off service not found. Drone: {}. Model: {}. Exception: {}", droneName, modelName, e);
             throw new RuntimeException(
                     String.format("Take off service not found. Drone: %s. Model: %s", droneName, modelName));
         }
