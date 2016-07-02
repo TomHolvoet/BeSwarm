@@ -34,7 +34,6 @@ public final class FollowTrajectory implements Command {
     private final PidParameters pidLinearZParameters;
     private final PidParameters pidAngularZParameters;
     private final Trajectory4d trajectory4d;
-    // FIXME let the trajectory decide how long the command should work
     private final double durationInSeconds;
     private final double controlRateInSeconds;
     private final double droneStateLifeDurationInSeconds;
@@ -66,7 +65,7 @@ public final class FollowTrajectory implements Command {
 
     @Override
     public void execute() {
-        logger.debug("Execute follow trajectory command.");
+        logger.debug("Execute follow trajectory command: {}", trajectory4d);
 
         final PidController4d pidController4d = PidController4d.builder()
                 .linearXParameters(pidLinearXParameters)
