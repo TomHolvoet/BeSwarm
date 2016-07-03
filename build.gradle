@@ -38,7 +38,7 @@ jacocoTestReport {
             destination "${buildDir}/jacocoHtml"
         }
     }
-    additionalSourceDirs = files(sourceSets.main.allJava.srcDirs)
+//    additionalSourceDirs = files(sourceSets.main.allJava.srcDirs)
 }
 
 sourceCompatibility = 1.7
