@@ -1,10 +1,10 @@
 package services;
 
-import control.dto.Direction;
+import control.dto.FlipDirection;
 
 /**
  * @author Hoang Tung Dinh
  */
 public interface FlipService {
-    void sendFlipMessage(Direction direction);
+    void sendFlipMessage(FlipDirection flipDirection);
 }

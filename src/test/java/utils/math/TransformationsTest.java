@@ -30,7 +30,7 @@ public class TransformationsTest {
 
     @Test
     @Parameters(method = "eulerAndCorrespondingQuaternions")
-    public void testComputeEulerAngleFromQuaternionAngle(double quaternionW, double quaternionX, double quaternionY,
+    public void testQuaternionToEulerAngle(double quaternionW, double quaternionX, double quaternionY,
             double quaternionZ, double eulerX, double eulerY, double eulerZ) {
         final Quaternion mockQuaternion = mock(Quaternion.class);
         when(mockQuaternion.getW()).thenReturn(quaternionW);

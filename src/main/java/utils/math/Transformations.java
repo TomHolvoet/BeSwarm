@@ -35,7 +35,6 @@ public final class Transformations {
 
     public static BodyFrameVelocity inertialFrameVelocityToBodyFrameVelocity(
             InertialFrameVelocity inertialFrameVelocity, Pose pose) {
-        // TODO test me
         // same linearZ
         final double linearZ = inertialFrameVelocity.linearZ();
         // same angularZ
@@ -53,7 +52,6 @@ public final class Transformations {
 
     public static InertialFrameVelocity bodyFrameVelocityToInertialFrameVelocity(BodyFrameVelocity bodyFrameVelocity,
             Pose pose) {
-        //TODO test me
         // same linearZ
         final double linearZ = bodyFrameVelocity.linearZ();
         // same angularZ
