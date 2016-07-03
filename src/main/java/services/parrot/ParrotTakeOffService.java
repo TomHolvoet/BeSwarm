@@ -1,6 +1,5 @@
 package services.parrot;
 
-import org.ros.node.ConnectedNode;
 import org.ros.node.topic.Publisher;
 import services.TakeOffService;
 import std_msgs.Empty;
@@ -30,10 +29,6 @@ public final class ParrotTakeOffService implements TakeOffService {
         checkArgument(publisher.getTopicName().toString().endsWith("/takeoff"),
                 "Topic name must be [namespace]/takeoff");
         return new ParrotTakeOffService(publisher);
-    }
-
-    public static ParrotTakeOffService createService(String droneName, ConnectedNode connectedNode) {
-        return create(connectedNode.<Empty>newPublisher(droneName + "/takeoff", Empty._TYPE));
     }
 
     /**
