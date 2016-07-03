@@ -7,6 +7,7 @@ import geometry_msgs.Twist;
 import geometry_msgs.Vector3;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,6 +16,8 @@ import org.ros.node.topic.Publisher;
 import services.VelocityService;
 import utils.math.VelocityProvider;
 import utils.math.VelocityProviderWithThreshold;
+
+import javax.annotation.Nullable;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
@@ -30,10 +33,10 @@ public class ParrotVelocityServiceTest {
 
     private static final double DELTA = 0.01;
 
-    private Publisher<Twist> publisher;
-    private Twist twist;
-    private Vector3 linear;
-    private Vector3 angular;
+    @Nullable private Publisher<Twist> publisher;
+    @Nullable private Twist twist;
+    @Nullable private Vector3 linear;
+    @Nullable private Vector3 angular;
 
     @Before
     public void setUp() {
@@ -47,6 +50,14 @@ public class ParrotVelocityServiceTest {
         angular = mock(Vector3.class);
         when(twist.getLinear()).thenReturn(linear);
         when(twist.getAngular()).thenReturn(angular);
+    }
+
+    @After
+    public void tearDown() {
+        publisher = null;
+        twist = null;
+        linear = null;
+        angular = null;
     }
 
     @Test
