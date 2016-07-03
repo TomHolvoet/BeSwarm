@@ -30,7 +30,6 @@ public class ParrotFlipServiceTest {
         for (final FlipDirection flipDirection : FlipDirection.values()) {
             final UInt8 message = mock(UInt8.class);
             when(publisher.newMessage()).thenReturn(message);
-            when(message.getData()).thenReturn(flipDirection.getCode());
 
             parrotFlipService.sendFlipMessage(flipDirection);
 
@@ -40,7 +39,7 @@ public class ParrotFlipServiceTest {
 
             final ArgumentCaptor<UInt8> publisherArgumentCaptor = ArgumentCaptor.forClass(UInt8.class);
             verify(publisher, atLeastOnce()).publish(publisherArgumentCaptor.capture());
-            assertThat(publisherArgumentCaptor.getValue().getData()).isEqualTo(flipDirection.getCode());
+            assertThat(publisherArgumentCaptor.getValue()).isEqualTo(message);
 
         }
     }

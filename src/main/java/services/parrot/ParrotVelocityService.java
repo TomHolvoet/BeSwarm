@@ -131,11 +131,6 @@ public final class ParrotVelocityService implements VelocityService {
                 .maxAngularZ(Double.MAX_VALUE);
     }
 
-    public static Builder createServiceBuilder(String droneName, ConnectedNode connectedNode) {
-        return ParrotVelocityService.builder()
-                .publisher(connectedNode.<Twist>newPublisher(droneName + "cmd/vel", Twist._TYPE));
-    }
-
     /**
      * {@code VelocityPublisher} builder static inner class.
      */
