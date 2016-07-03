@@ -7,12 +7,14 @@ import geometry_msgs.Twist;
 import geometry_msgs.Vector3;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.ros.node.topic.Publisher;
 import services.VelocityService;
 import utils.math.VelocityProvider;
+import utils.math.VelocityProviderWithThreshold;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
@@ -28,24 +30,52 @@ public class ParrotVelocityServiceTest {
 
     private static final double DELTA = 0.01;
 
-    @Test
-    @Parameters(source = VelocityProvider.class)
-    public void testSendVelocityMessage(Pose pose, BodyFrameVelocity bodyFrameVelocity,
-            InertialFrameVelocity inertialFrameVelocity) {
-        final Publisher<Twist> publisher = mock(Publisher.class, RETURNS_DEEP_STUBS);
+    private Publisher<Twist> publisher;
+    private Twist twist;
+    private Vector3 linear;
+    private Vector3 angular;
+
+    @Before
+    public void setUp() {
+        publisher = mock(Publisher.class, RETURNS_DEEP_STUBS);
         when(publisher.getTopicName().toString()).thenReturn("/bebop/cmd_vel");
 
-        final Twist twist = mock(Twist.class, RETURNS_DEEP_STUBS);
+        twist = mock(Twist.class, RETURNS_DEEP_STUBS);
         when(publisher.newMessage()).thenReturn(twist);
 
-        final Vector3 linear = mock(Vector3.class);
-        final Vector3 angular = mock(Vector3.class);
+        linear = mock(Vector3.class);
+        angular = mock(Vector3.class);
         when(twist.getLinear()).thenReturn(linear);
         when(twist.getAngular()).thenReturn(angular);
+    }
 
+    @Test
+    @Parameters(source = VelocityProvider.class)
+    public void testSendVelocityMessageWithoutThreshold(Pose pose, BodyFrameVelocity bodyFrameVelocity,
+            InertialFrameVelocity inertialFrameVelocity) {
         final VelocityService parrotVelocityService = ParrotVelocityService.builder().publisher(publisher).build();
         parrotVelocityService.sendVelocityMessage(inertialFrameVelocity, pose);
+        checkMessageSetUp(bodyFrameVelocity, linear, angular);
+        checkCorrectTwistMessageSent(publisher, twist);
 
+    }
+
+    @Test
+    @Parameters(source = VelocityProviderWithThreshold.class)
+    public void testSendVelocityMessageWithThreshold(Pose pose, BodyFrameVelocity bodyFrameVelocity,
+            InertialFrameVelocity inertialFrameVelocity) {
+        final VelocityService parrotVelocityService = ParrotVelocityService.builder()
+                .publisher(publisher)
+                .minLinearX(-0.25)
+                .minLinearY(-0.25)
+                .minLinearZ(-0.25)
+                .minAngularZ(-0.25)
+                .maxLinearX(0.25)
+                .maxLinearY(0.25)
+                .maxLinearZ(0.25)
+                .maxAngularZ(0.25)
+                .build();
+        parrotVelocityService.sendVelocityMessage(inertialFrameVelocity, pose);
         checkMessageSetUp(bodyFrameVelocity, linear, angular);
         checkCorrectTwistMessageSent(publisher, twist);
 
