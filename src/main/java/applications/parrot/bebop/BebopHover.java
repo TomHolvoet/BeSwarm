@@ -1,16 +1,12 @@
 package applications.parrot.bebop;
 
-import com.google.common.base.Optional;
 import commands.Command;
 import commands.Land;
 import commands.MoveToPose;
 import commands.Takeoff;
 import control.PidParameters;
-import control.dto.BodyFrameVelocity;
-import control.dto.DroneStateStamped;
-import control.dto.InertialFrameVelocity;
 import control.dto.Pose;
-import control.dto.Velocity;
+import control.localization.BebopStateEstimatorWithPoseStampedAndOdom;
 import control.localization.StateEstimator;
 import geometry_msgs.PoseStamped;
 import nav_msgs.Odometry;
@@ -30,7 +26,6 @@ import taskexecutor.Task;
 import taskexecutor.TaskExecutor;
 import taskexecutor.TaskExecutorService;
 import taskexecutor.TaskType;
-import utils.math.Transformations;
 
 import java.util.concurrent.TimeUnit;
 
@@ -68,8 +63,8 @@ public class BebopHover extends AbstractNodeMain {
         LandService landService = serviceFactory.createLandService();
         final FlyingStateService flyingStateService = serviceFactory.createFlyingStateService();
 
-        final StateEstimator stateEstimator = BebopStateEstimator.create(getPoseSubscriber(connectedNode),
-                getOdometrySubscriber(connectedNode));
+        final StateEstimator stateEstimator = BebopStateEstimatorWithPoseStampedAndOdom.create(
+                getPoseSubscriber(connectedNode), getOdometrySubscriber(connectedNode));
         // without this code, the take off message cannot be sent properly (I don't understand why).
         try {
             TimeUnit.SECONDS.sleep(3);
@@ -104,62 +99,5 @@ public class BebopHover extends AbstractNodeMain {
         final String odometryTopic = "/" + DRONE_NAME + "/odom";
         logger.info("Subscribed to {} for getting odometry", odometryTopic);
         return MessagesSubscriberService.create(connectedNode.<Odometry>newSubscriber(odometryTopic, Odometry._TYPE));
-    }
-
-    public static final class BebopStateEstimator implements StateEstimator {
-
-        private static final Logger logger = LoggerFactory.getLogger(BebopStateEstimator.class);
-
-        private final MessagesSubscriberService<PoseStamped> poseSubscriber;
-        private final MessagesSubscriberService<Odometry> odometrySubscriber;
-
-        private BebopStateEstimator(MessagesSubscriberService<PoseStamped> poseSubscriber,
-                MessagesSubscriberService<Odometry> odometrySubscriber) {
-            this.poseSubscriber = poseSubscriber;
-            this.odometrySubscriber = odometrySubscriber;
-        }
-
-        public static BebopStateEstimator create(MessagesSubscriberService<PoseStamped> poseSubscriber,
-                MessagesSubscriberService<Odometry> odometrySubscriber) {
-            return new BebopStateEstimator(poseSubscriber, odometrySubscriber);
-        }
-
-        @Override
-        public Optional<DroneStateStamped> getCurrentState() {
-            final Optional<PoseStamped> poseStamped = poseSubscriber.getMostRecentMessage();
-
-            if (!poseStamped.isPresent()) {
-                return Optional.absent();
-            }
-
-            final Pose pose = Pose.create(poseStamped.get());
-            if (Pose.areSamePoseWithinEps(pose, Pose.createZeroPose())) {
-                return Optional.absent();
-            }
-
-            final Optional<InertialFrameVelocity> inertialFrameVelocity = getVelocity(pose);
-            if (!inertialFrameVelocity.isPresent()) {
-                return Optional.absent();
-            }
-
-            final DroneStateStamped droneState = DroneStateStamped.create(pose, inertialFrameVelocity.get(),
-                    poseStamped.get().getHeader().getStamp().toSeconds());
-            return Optional.of(droneState);
-        }
-
-        private Optional<InertialFrameVelocity> getVelocity(Pose pose) {
-            final Optional<Odometry> odometryOptional = odometrySubscriber.getMostRecentMessage();
-            if (odometryOptional.isPresent()) {
-                final BodyFrameVelocity bodyFrameVelocity = Velocity.createLocalVelocityFrom(
-                        odometryOptional.get().getTwist().getTwist());
-                final InertialFrameVelocity inertialFrameVelocity = Transformations
-                        .bodyFrameVelocityToInertialFrameVelocity(
-                        bodyFrameVelocity, pose);
-                return Optional.of(inertialFrameVelocity);
-            } else {
-                logger.debug("Cannot get Bebop odometry.");
-                return Optional.absent();
-            }
-        }
     }
 }

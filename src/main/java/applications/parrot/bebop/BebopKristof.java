@@ -4,6 +4,7 @@ import applications.ExampleFlight;
 import applications.trajectory.Point4D;
 import applications.trajectory.Trajectories;
 import control.FiniteTrajectory4d;
+import control.localization.BebopStateEstimatorWithPoseStampedAndOdom;
 import control.localization.StateEstimator;
 import geometry_msgs.PoseStamped;
 import nav_msgs.Odometry;
@@ -35,7 +36,7 @@ public class BebopKristof extends AbstractNodeMain {
         final double flightDuration = connectedNode.getParameterTree().getDouble("beswarm/flight_duration");
 
         final ServiceFactory serviceFactory = BebopServiceFactory.create(connectedNode, DRONE_NAME);
-        final StateEstimator stateEstimator = BebopHover.BebopStateEstimator.create(
+        final StateEstimator stateEstimator = BebopStateEstimatorWithPoseStampedAndOdom.create(
                 getPoseSubscriber(connectedNode), getOdometrySubscriber(connectedNode));
         final FiniteTrajectory4d trajectory4d = Trajectories.newStraightLineTrajectory(
                 Point4D.create(1.5, 0.0, 1.0, 0.0), Point4D.create(0.0, -4.0, 2.0, 0.0), 0.5);

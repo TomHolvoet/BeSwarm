@@ -2,9 +2,9 @@ package applications.parrot.bebop;
 
 import applications.ExampleFlight;
 import applications.LineTrajectory;
-import applications.parrot.bebop.BebopHover.BebopStateEstimator;
 import choreo.Choreography;
 import control.FiniteTrajectory4d;
+import control.localization.BebopStateEstimatorWithPoseStampedAndOdom;
 import control.localization.StateEstimator;
 import geometry_msgs.PoseStamped;
 import nav_msgs.Odometry;
@@ -36,8 +36,8 @@ public class BebopSimpleLinePattern extends AbstractNodeMain {
         final double flightDuration = connectedNode.getParameterTree().getDouble("beswarm/flight_duration");
 
         final ServiceFactory serviceFactory = BebopServiceFactory.create(connectedNode, DRONE_NAME);
-        final StateEstimator stateEstimator = BebopStateEstimator.create(getPoseSubscriber(connectedNode),
-                getOdometrySubscriber(connectedNode));
+        final StateEstimator stateEstimator = BebopStateEstimatorWithPoseStampedAndOdom.create(
+                getPoseSubscriber(connectedNode), getOdometrySubscriber(connectedNode));
         final FiniteTrajectory4d choreography = Choreography.builder()
                 .withTrajectory(LineTrajectory.create(flightDuration, 2.0))
                 .forTime(flightDuration)
