@@ -23,11 +23,9 @@ public final class TumRunStraightLinePattern extends AbstractNodeMain {
 
     @Override
     public void onStart(final ConnectedNode connectedNode) {
-        final FiniteTrajectory4d trajectory = Trajectories
-                .newStraightLineTrajectory(Point4D.create(0, 0, 1, 0),
-                        Point4D.create(2, 0, 1, 0), 0.2);
-        final TumExampleFlightFacade flight = TumExampleFlightFacade
-                .create(trajectory, connectedNode);
+        final FiniteTrajectory4d trajectory = Trajectories.newStraightLineTrajectory(Point4D.create(0, 0, 1, 0),
+                Point4D.create(2, 0, 1, 0), 0.2);
+        final TumExampleFlightFacade flight = TumExampleFlightFacade.create(trajectory, connectedNode);
         flight.fly();
     }
 }

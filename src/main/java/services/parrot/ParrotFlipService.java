@@ -2,7 +2,6 @@ package services.parrot;
 
 import control.dto.FlipDirection;
 import org.ros.node.topic.Publisher;
-
 import services.FlipService;
 import std_msgs.UInt8;
 

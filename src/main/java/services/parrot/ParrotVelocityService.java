@@ -5,7 +5,6 @@ import control.dto.InertialFrameVelocity;
 import control.dto.Pose;
 import control.dto.Velocity;
 import geometry_msgs.Twist;
-import org.ros.node.ConnectedNode;
 import org.ros.node.topic.Publisher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

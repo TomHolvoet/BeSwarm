@@ -26,9 +26,9 @@ public final class TumRunSimpleLinePattern extends AbstractNodeMain {
         final double flightDuration = 100;
         final FiniteTrajectory4d trajectory = Choreography.builder()
                 .withTrajectory(LineTrajectory.create(flightDuration, 2.0))
-                .forTime(flightDuration).build();
-        final TumExampleFlightFacade flight = TumExampleFlightFacade
-                .create(trajectory, connectedNode);
+                .forTime(flightDuration)
+                .build();
+        final TumExampleFlightFacade flight = TumExampleFlightFacade.create(trajectory, connectedNode);
         flight.fly();
     }
 }

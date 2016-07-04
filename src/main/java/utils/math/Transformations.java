@@ -65,11 +65,6 @@ public final class Transformations {
         final double linearX = bodyFrameVelocity.linearX() * cos - bodyFrameVelocity.linearY() * sin;
         final double linearY = bodyFrameVelocity.linearX() * sin + bodyFrameVelocity.linearY() * cos;
 
-        return Velocity.builder()
-                .linearX(linearX)
-                .linearY(linearY)
-                .linearZ(linearZ)
-                .angularZ(angularZ)
-                .build();
+        return Velocity.builder().linearX(linearX).linearY(linearY).linearZ(linearZ).angularZ(angularZ).build();
     }
 }
