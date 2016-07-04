@@ -44,11 +44,8 @@ public final class BebopStateEstimatorWithPoseStampedAndOdom implements StateEst
         }
 
         final Pose pose = Pose.create(poseStamped.get());
-        if (Pose.areSamePoseWithinEps(pose, Pose.createZeroPose())) {
-            return Optional.absent();
-        }
-
         final Optional<InertialFrameVelocity> inertialFrameVelocity = getVelocity(pose);
+
         if (!inertialFrameVelocity.isPresent()) {
             return Optional.absent();
         }

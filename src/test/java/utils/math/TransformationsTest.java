@@ -48,7 +48,7 @@ public class TransformationsTest {
     @Parameters(source = VelocityProvider.class)
     public void testBodyFrameVelocityToInertialFrameVelocity(Pose pose, BodyFrameVelocity bodyFrameVelocity,
             InertialFrameVelocity inertialFrameVelocity) {
-        assertVelocityEqual(Transformations.bodyFrameVelocityToInertialFrameVelocity(bodyFrameVelocity, pose),
+        TestUtils.assertVelocityEqual(Transformations.bodyFrameVelocityToInertialFrameVelocity(bodyFrameVelocity, pose),
                 inertialFrameVelocity);
     }
 
@@ -56,21 +56,8 @@ public class TransformationsTest {
     @Parameters(source = VelocityProvider.class)
     public void testInertialFrameVelocityToBodyFrameVelocity(Pose pose, BodyFrameVelocity bodyFrameVelocity,
             InertialFrameVelocity inertialFrameVelocity) {
-        assertVelocityEqual(Transformations.inertialFrameVelocityToBodyFrameVelocity(inertialFrameVelocity, pose),
+        TestUtils.assertVelocityEqual(
+                Transformations.inertialFrameVelocityToBodyFrameVelocity(inertialFrameVelocity, pose),
                 bodyFrameVelocity);
-    }
-
-    private static void assertVelocityEqual(InertialFrameVelocity vel1, InertialFrameVelocity vel2) {
-        assertThat(vel1.linearX()).isWithin(DELTA).of(vel2.linearX());
-        assertThat(vel1.linearY()).isWithin(DELTA).of(vel2.linearY());
-        assertThat(vel1.linearZ()).isWithin(DELTA).of(vel2.linearZ());
-        assertThat(vel1.angularZ()).isWithin(DELTA).of(vel2.angularZ());
-    }
-
-    private static void assertVelocityEqual(BodyFrameVelocity vel1, BodyFrameVelocity vel2) {
-        assertThat(vel1.linearX()).isWithin(DELTA).of(vel2.linearX());
-        assertThat(vel1.linearY()).isWithin(DELTA).of(vel2.linearY());
-        assertThat(vel1.linearZ()).isWithin(DELTA).of(vel2.linearZ());
-        assertThat(vel1.angularZ()).isWithin(DELTA).of(vel2.angularZ());
     }
 }

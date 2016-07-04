@@ -3,6 +3,7 @@ package services.parrot;
 import control.dto.BodyFrameVelocity;
 import control.dto.InertialFrameVelocity;
 import control.dto.Pose;
+import control.dto.Velocity;
 import geometry_msgs.Twist;
 import geometry_msgs.Vector3;
 import junitparams.JUnitParamsRunner;
@@ -14,6 +15,7 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.ros.node.topic.Publisher;
 import services.VelocityService;
+import utils.math.TestUtils;
 import utils.math.VelocityProvider;
 import utils.math.VelocityProviderWithThreshold;
 
@@ -102,15 +104,23 @@ public class ParrotVelocityServiceTest {
         final ArgumentCaptor<Double> argumentCaptor = ArgumentCaptor.forClass(Double.class);
 
         verify(linear).setX(argumentCaptor.capture());
-        assertThat(argumentCaptor.getValue()).isWithin(DELTA).of(bodyFrameVelocity.linearX());
+        final double linearX = argumentCaptor.getValue();
 
         verify(linear).setY(argumentCaptor.capture());
-        assertThat(argumentCaptor.getValue()).isWithin(DELTA).of(bodyFrameVelocity.linearY());
+        final double linearY = argumentCaptor.getValue();
 
         verify(linear).setZ(argumentCaptor.capture());
-        assertThat(argumentCaptor.getValue()).isWithin(DELTA).of(bodyFrameVelocity.linearZ());
+        final double linearZ = argumentCaptor.getValue();
 
         verify(angular).setZ(argumentCaptor.capture());
-        assertThat(argumentCaptor.getValue()).isWithin(DELTA).of(bodyFrameVelocity.angularZ());
+        final double angularZ = argumentCaptor.getValue();
+
+        final BodyFrameVelocity sentBodyFrameVelocity = Velocity.builder()
+                .linearX(linearX)
+                .linearY(linearY)
+                .linearZ(linearZ)
+                .angularZ(angularZ)
+                .build();
+        TestUtils.assertVelocityEqual(bodyFrameVelocity, sentBodyFrameVelocity);
     }
 }
