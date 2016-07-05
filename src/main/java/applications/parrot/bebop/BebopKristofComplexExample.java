@@ -86,7 +86,7 @@ public class BebopKristofComplexExample extends AbstractNodeMain {
 
     private static FiniteTrajectory4d getFiniteTrajectory(ConnectedNode connectedNode) {
         final String trajectoryName = connectedNode.getParameterTree().getString("beswarm/trajectory");
-        if (trajectoryName.equals("straight_line")) {
+        if ("straight_line".equals(trajectoryName)) {
             return getStraightLineTrajectory();
         } else {
             return getComplexTrajectory();

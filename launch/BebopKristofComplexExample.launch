@@ -30,11 +30,12 @@
     <param name="beswarm/trajectory" value="straight_line"/>
     <!--<param name="beswarm/trajectory" value="complex"/>-->
 
+    <!--<param name="pose_topic" value="arlocros/pose"/>-->
+
     <!-- Main Java Application-->
-    <!--<node pkg="rosjava_catkin_package_a" type="BebopRosJava" name="BebopLinePattern"-->
-          <!--args="applications.parrot.bebop.BebopSimpleLinePattern" output="screen">-->
-        <!--<param name="pose_topic" value="arlocros/pose"/>-->
-    <!--</node>-->
+    <node name="BebopKristof" pkg="rosjava_catkin_package_a" type="BeSwarm"
+          args="applications.parrot.bebop.BebopKristofComplexExample" output="screen">
+    </node>
 
     <!-- records flight -->
     <node pkg="rosbag" type="record" name="rosbag_record_all"
