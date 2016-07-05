@@ -22,8 +22,6 @@ import services.ros_subscribers.MessagesSubscriberService;
 
 import java.util.concurrent.TimeUnit;
 
-import static applications.trajectory.Trajectories.newStraightLineTrajectory;
-
 /**
  * @author Hoang Tung Dinh
  */
@@ -97,7 +95,7 @@ public class BebopKristofComplexExample extends AbstractNodeMain {
 
     private static FiniteTrajectory4d getComplexTrajectory() {
         Trajectory4d init = Trajectories.newHoldPositionTrajectory(Point4D.create(0, 0, 1, 0));
-        FiniteTrajectory4d first = newStraightLineTrajectory(Point4D.create(0, 0, 1, 0),
+        FiniteTrajectory4d first = Trajectories.newStraightLineTrajectory(Point4D.create(0, 0, 1, 0),
                 Point4D.create(1.5, -3.0, 1.5, 0), 0.1);
         Trajectory4d inter = Trajectories.newHoldPositionTrajectory(Point4D.create(1.5, -3.0, 1.5, 0));
         Trajectory4d second = Trajectories.newCircleTrajectory4D(Point4D.create(1.0, -3.0, 1.5, 0), 0.5, 0.05,
@@ -122,6 +120,6 @@ public class BebopKristofComplexExample extends AbstractNodeMain {
 
     private static FiniteTrajectory4d getStraightLineTrajectory() {
         return Trajectories.newStraightLineTrajectory(Point4D.create(1.5, 0.0, 1.0, 0.0),
-                Point4D.create(0.0, -4.0, 2.0, 0.0), 0.5);
+                Point4D.create(0.0, -4.0, 2.0, 0.0), 0.25);
     }
 }
