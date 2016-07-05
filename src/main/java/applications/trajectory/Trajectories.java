@@ -64,7 +64,7 @@ public final class Trajectories {
             double frequency, double planeAngle) {
         return CircleTrajectory4D.builder()
                 .setLocation(origin).setRadius(radius)
-                .setFrequency(0.1).setPlaneAngle(Math.PI / 2).setAngularMovement(false).build();
+                .setFrequency(0.1).setPlaneAngle(planeAngle).setAngularMovement(false).build();
     }
 
     /**
