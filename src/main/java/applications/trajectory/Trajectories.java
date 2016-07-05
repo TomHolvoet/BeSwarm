@@ -51,6 +51,14 @@ public final class Trajectories {
                 .setLocation(origin).build();
     }
 
+    public static Trajectory4d newConstantYawCircleTrajectory4D(Point4D origin,
+            double radius,
+            double frequency, double planeAngle) {
+        return CircleTrajectory4D.builder()
+                .setLocation(origin).setRadius(radius)
+                .setFrequency(0.1).setPlaneAngle(Math.PI / 2).setAngularMovement(false).build();
+    }
+
     /**
      * @return A trajectory2d object representing an example circle
      * trajectory with default radius(1) and frequency(5) around the origin.
