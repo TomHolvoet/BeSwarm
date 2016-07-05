@@ -6,7 +6,9 @@ import commands.FollowTrajectory;
 import commands.Hover;
 import commands.Land;
 import commands.Takeoff;
+import control.DefaultPidParameters;
 import control.FiniteTrajectory4d;
+import control.PidParameters;
 import control.localization.StateEstimator;
 import keyboard.Key;
 import org.ros.node.ConnectedNode;
@@ -42,8 +44,14 @@ public final class ExampleFlight {
     private final FiniteTrajectory4d finiteTrajectory4d;
     private final ConnectedNode connectedNode;
 
+    private final PidParameters pidLinearX;
+    private final PidParameters pidLinearY;
+    private final PidParameters pidLinearZ;
+    private final PidParameters pidAngularZ;
+
     private ExampleFlight(ServiceFactory serviceFactory, StateEstimator stateEstimator,
-            FiniteTrajectory4d finiteTrajectory4d, ConnectedNode connectedNode) {
+            FiniteTrajectory4d finiteTrajectory4d, ConnectedNode connectedNode, PidParameters pidLinearX,
+            PidParameters pidLinearY, PidParameters pidLinearZ, PidParameters pidAngularZ) {
         this.takeOffService = serviceFactory.createTakeOffService();
         this.landService = serviceFactory.createLandService();
         this.velocityService = serviceFactory.createVelocityService();
@@ -51,11 +59,24 @@ public final class ExampleFlight {
         this.stateEstimator = stateEstimator;
         this.finiteTrajectory4d = finiteTrajectory4d;
         this.connectedNode = connectedNode;
+        this.pidLinearX = pidLinearX;
+        this.pidLinearY = pidLinearY;
+        this.pidLinearZ = pidLinearZ;
+        this.pidAngularZ = pidAngularZ;
     }
 
     public static ExampleFlight create(ServiceFactory serviceFactory, StateEstimator stateEstimator,
             FiniteTrajectory4d finiteTrajectory4d, ConnectedNode connectedNode) {
-        return new ExampleFlight(serviceFactory, stateEstimator, finiteTrajectory4d, connectedNode);
+        return new ExampleFlight(serviceFactory, stateEstimator, finiteTrajectory4d, connectedNode,
+                DefaultPidParameters.LINEAR_X.getParameters(), DefaultPidParameters.LINEAR_Y.getParameters(),
+                DefaultPidParameters.LINEAR_Z.getParameters(), DefaultPidParameters.ANGULAR_Z.getParameters());
+    }
+
+    public static ExampleFlight create(ServiceFactory serviceFactory, StateEstimator stateEstimator,
+            FiniteTrajectory4d finiteTrajectory4d, ConnectedNode connectedNode, PidParameters pidLinearX,
+            PidParameters pidLinearY, PidParameters pidLinearZ, PidParameters pidAngularZ) {
+        return new ExampleFlight(serviceFactory, stateEstimator, finiteTrajectory4d, connectedNode, pidLinearX,
+                pidLinearY, pidLinearZ, pidAngularZ);
     }
 
     public void fly() {
@@ -85,6 +106,10 @@ public final class ExampleFlight {
                 .velocityService(velocityService)
                 .trajectory4d(finiteTrajectory4d)
                 .durationInSeconds(finiteTrajectory4d.getTrajectoryDuration())
+                .pidLinearXParameters(pidLinearX)
+                .pidLinearYParameters(pidLinearY)
+                .pidLinearZParameters(pidLinearZ)
+                .pidAngularZParameters(pidAngularZ)
                 .build();
         commands.add(followTrajectory);
 

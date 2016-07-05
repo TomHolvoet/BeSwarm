@@ -5,6 +5,7 @@ import applications.trajectory.Point4D;
 import applications.trajectory.Trajectories;
 import choreo.Choreography;
 import control.FiniteTrajectory4d;
+import control.PidParameters;
 import control.Trajectory4d;
 import control.localization.BebopStateEstimatorWithPoseStampedAndOdom;
 import control.localization.StateEstimator;
@@ -37,7 +38,14 @@ public class BebopKristofComplexExample extends AbstractNodeMain {
 
     @Override
     public void onStart(final ConnectedNode connectedNode) {
-        final double flightDuration = connectedNode.getParameterTree().getDouble("beswarm/flight_duration");
+        final PidParameters pidLinearX = getPidParameters(connectedNode, "beswarm/pid_linear_x_kp",
+                "beswarm/pid_linear_x_kd", "beswarm/pid_linear_x_ki");
+        final PidParameters pidLinearY = getPidParameters(connectedNode, "beswarm/pid_linear_y_kp",
+                "beswarm/pid_linear_y_kd", "beswarm/pid_linear_y_ki");
+        final PidParameters pidLinearZ = getPidParameters(connectedNode, "beswarm/pid_linear_z_kp",
+                "beswarm/pid_linear_z_kd", "beswarm/pid_linear_z_ki");
+        final PidParameters pidAngularZ = getPidParameters(connectedNode, "beswarm/pid_angular_z_kp",
+                "beswarm/pid_angular_z_kd", "beswarm/pid_angular_z_ki");
 
         final ServiceFactory serviceFactory = BebopServiceFactory.create(connectedNode, DRONE_NAME);
         final StateEstimator stateEstimator = BebopStateEstimatorWithPoseStampedAndOdom.create(
@@ -46,7 +54,7 @@ public class BebopKristofComplexExample extends AbstractNodeMain {
         final FiniteTrajectory4d trajectory4d = getConcreteTrajectory();
 
         final ExampleFlight exampleFlight = ExampleFlight.create(serviceFactory, stateEstimator, trajectory4d,
-                connectedNode);
+                connectedNode, pidLinearX, pidLinearY, pidLinearZ, pidAngularZ);
 
         // without this code, the take off message cannot be sent properly (I don't understand why).
         try {
@@ -56,6 +64,14 @@ public class BebopKristofComplexExample extends AbstractNodeMain {
         }
 
         exampleFlight.fly();
+    }
+
+    private static PidParameters getPidParameters(ConnectedNode connectedNode, String argKp, String argKd,
+            String argKi) {
+        final double pidLinearXKp = connectedNode.getParameterTree().getDouble(argKp);
+        final double pidLinearXKd = connectedNode.getParameterTree().getDouble(argKd);
+        final double pidLinearXKi = connectedNode.getParameterTree().getDouble(argKi);
+        return PidParameters.builder().kp(pidLinearXKp).kd(pidLinearXKd).ki(pidLinearXKi).build();
     }
 
     private static MessagesSubscriberService<PoseStamped> getPoseSubscriber(ConnectedNode connectedNode) {
