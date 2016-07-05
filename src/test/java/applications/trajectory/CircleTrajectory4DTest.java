@@ -116,4 +116,21 @@ public class CircleTrajectory4DTest {
 
     }
 
+    @Test
+    public void testNoAngularMovement() {
+        double centerx = 15;
+        double centery = 10;
+        double centerz = 20;
+        List<Double> lz = Lists.newArrayList();
+        target = Trajectories
+                .newConstantYawCircleTrajectory4D(Point4D.create(centerx, centery, centerz, 0),
+                        radius, 0.1, 0);
+        for (int i = 0; i < 1000; i++) {
+            lz.add(target.getDesiredAngleZ(i / 10d));
+        }
+        assertBounds(lz, 0,
+                0);
+
+    }
+
 }

@@ -52,6 +52,22 @@ public final class Trajectories {
     }
 
     /**
+     * @param origin     the linear displacement in space.
+     * @param radius     the radius of the circle.
+     * @param frequency  the frequency in time of completing the circle.
+     * @param planeAngle The angle of the circle trajectory plane with the
+     *                   xy-plane.
+     * @return a circle trajectory in space with constant yaw as a Trajectory4d object.
+     */
+    public static Trajectory4d newConstantYawCircleTrajectory4D(Point4D origin,
+            double radius,
+            double frequency, double planeAngle) {
+        return CircleTrajectory4D.builder()
+                .setLocation(origin).setRadius(radius)
+                .setFrequency(0.1).setPlaneAngle(planeAngle).setAngularMovement(false).build();
+    }
+
+    /**
      * @return A trajectory2d object representing an example circle
      * trajectory with default radius(1) and frequency(5) around the origin.
      */
