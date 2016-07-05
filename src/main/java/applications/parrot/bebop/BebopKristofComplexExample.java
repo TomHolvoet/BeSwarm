@@ -51,7 +51,7 @@ public class BebopKristofComplexExample extends AbstractNodeMain {
         final StateEstimator stateEstimator = BebopStateEstimatorWithPoseStampedAndOdom.create(
                 getPoseSubscriber(connectedNode), getOdometrySubscriber(connectedNode));
 
-        final FiniteTrajectory4d trajectory4d = getConcreteTrajectory();
+        final FiniteTrajectory4d trajectory4d = getFiniteTrajectory(connectedNode);
 
         final ExampleFlight exampleFlight = ExampleFlight.create(serviceFactory, stateEstimator, trajectory4d,
                 connectedNode, pidLinearX, pidLinearY, pidLinearZ, pidAngularZ);
@@ -86,7 +86,16 @@ public class BebopKristofComplexExample extends AbstractNodeMain {
         return MessagesSubscriberService.create(connectedNode.<Odometry>newSubscriber(odometryTopic, Odometry._TYPE));
     }
 
-    private static FiniteTrajectory4d getConcreteTrajectory() {
+    private static FiniteTrajectory4d getFiniteTrajectory(ConnectedNode connectedNode) {
+        final String trajectoryName = connectedNode.getParameterTree().getString("beswarm/trajectory");
+        if (trajectoryName.equals("straight_line")) {
+            return getStraightLineTrajectory();
+        } else {
+            return getComplexTrajectory();
+        }
+    }
+
+    private static FiniteTrajectory4d getComplexTrajectory() {
         Trajectory4d init = Trajectories.newHoldPositionTrajectory(Point4D.create(0, 0, 1, 0));
         FiniteTrajectory4d first = newStraightLineTrajectory(Point4D.create(0, 0, 1, 0),
                 Point4D.create(1.5, -3.0, 1.5, 0), 0.1);
@@ -109,5 +118,10 @@ public class BebopKristofComplexExample extends AbstractNodeMain {
                 .withTrajectory(fourth)
                 .forTime(5)
                 .build();
+    }
+
+    private static FiniteTrajectory4d getStraightLineTrajectory() {
+        return Trajectories.newStraightLineTrajectory(Point4D.create(1.5, 0.0, 1.0, 0.0),
+                Point4D.create(0.0, -4.0, 2.0, 0.0), 0.5);
     }
 }

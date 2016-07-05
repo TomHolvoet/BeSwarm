@@ -27,16 +27,8 @@
     <!--<param name="beswarm/pid_min_vel_yaw" value="0.1"/>-->
     <!--<param name="beswarm/pid_max_vel_yaw" value="0.1"/>-->
 
-    <!--<param name="beswarm/flight_duration" value="6.0" />-->
-
-    <!--<param name="beswarm/location_x" value="1.5" />-->
-    <!--<param name="beswarm/location_y" value="-2.5" />-->
-    <!--<param name="beswarm/location_z" value="1.0" />-->
-    <!--<param name="beswarm/location_yaw" value="0.0" />-->
-
-    <!--<param name="beswarm/late_delay" value="True" />-->
-    <!--<param name="beswarm/late_delay_milliseconds" value="100" />-->
-
+    <param name="beswarm/trajectory" value="straight_line"/>
+    <!--<param name="beswarm/trajectory" value="complex"/>-->
 
     <!-- Main Java Application-->
     <!--<node pkg="rosjava_catkin_package_a" type="BebopRosJava" name="BebopLinePattern"-->
