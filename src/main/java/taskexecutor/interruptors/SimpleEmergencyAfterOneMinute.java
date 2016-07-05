@@ -1,11 +1,11 @@
 package taskexecutor.interruptors;
 
-import java.util.ArrayList;
-import java.util.Collection;
-
 import taskexecutor.EmergencyNotifier;
 import taskexecutor.Task;
 import taskexecutor.TaskExecutor;
+
+import java.util.ArrayList;
+import java.util.Collection;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
 

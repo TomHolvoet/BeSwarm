@@ -26,9 +26,9 @@ public final class TumRunExampleTrajectory2 extends AbstractNodeMain {
         final double defaultTime = 60;
         final FiniteTrajectory4d trajectory = Choreography.builder()
                 .withTrajectory(ExampleTrajectory.create())
-                .forTime(defaultTime).build();
-        final TumExampleFlightFacade flight = TumExampleFlightFacade
-                .create(trajectory, connectedNode);
+                .forTime(defaultTime)
+                .build();
+        final TumExampleFlightFacade flight = TumExampleFlightFacade.create(trajectory, connectedNode);
         flight.fly();
     }
 }

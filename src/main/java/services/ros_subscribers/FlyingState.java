@@ -10,7 +10,11 @@ public enum FlyingState {
     FLYING("Flying"),
     LANDING("Landing"),
     EMERGENCY("Emergency"),
-    USER_TAKEOFF("User take off");
+    USER_TAKEOFF("User take off"),
+    UNKNOWN("Unknown"),
+    INITED("Inited"),
+    LOOPING("Looping"),
+    TEST("Test");
 
     private final String stateName;
 

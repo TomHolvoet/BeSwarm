@@ -1,8 +1,7 @@
 package services.parrot;
 
+import control.dto.FlipDirection;
 import org.ros.node.topic.Publisher;
-
-import control.dto.Direction;
 import services.FlipService;
 import std_msgs.UInt8;
 
@@ -35,12 +34,12 @@ public final class ParrotFlipService implements FlipService {
     /**
      * Publish a flip message.
      *
-     * @param direction the flipping direction
+     * @param flipDirection the flipping flipDirection
      */
     @Override
-    public void sendFlipMessage(Direction direction) {
+    public void sendFlipMessage(FlipDirection flipDirection) {
         final UInt8 message = publisher.newMessage();
-        message.setData(direction.getCode());
+        message.setData(flipDirection.getCode());
         publisher.publish(message);
     }
 }

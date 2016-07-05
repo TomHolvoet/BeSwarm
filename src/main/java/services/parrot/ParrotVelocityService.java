@@ -5,7 +5,6 @@ import control.dto.InertialFrameVelocity;
 import control.dto.Pose;
 import control.dto.Velocity;
 import geometry_msgs.Twist;
-import org.ros.node.ConnectedNode;
 import org.ros.node.topic.Publisher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -129,11 +128,6 @@ public final class ParrotVelocityService implements VelocityService {
                 .maxLinearY(Double.MAX_VALUE)
                 .maxLinearZ(Double.MAX_VALUE)
                 .maxAngularZ(Double.MAX_VALUE);
-    }
-
-    public static Builder createServiceBuilder(String droneName, ConnectedNode connectedNode) {
-        return ParrotVelocityService.builder()
-                .publisher(connectedNode.<Twist>newPublisher(droneName + "cmd/vel", Twist._TYPE));
     }
 
     /**

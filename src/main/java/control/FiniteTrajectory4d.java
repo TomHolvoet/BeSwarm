@@ -1,7 +1,5 @@
 package control;
 
-import control.Trajectory4d;
-
 /**
  * @author Kristof Coninx <kristof.coninx AT cs.kuleuven.be>
  */

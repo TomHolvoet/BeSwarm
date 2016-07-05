@@ -14,11 +14,11 @@ public final class KeyboardSubscriber extends MessagesSubscriberService<Key> imp
     private static final int MESSAGE_QUEUE_SIZE = 1;
 
     private KeyboardSubscriber(Subscriber<Key> subscriber) {
-    	super(subscriber, MESSAGE_QUEUE_SIZE);
+        super(subscriber, MESSAGE_QUEUE_SIZE);
     }
 
     public static KeyboardSubscriber createKeyboardSubscriber(Subscriber<Key> subscriber) {
-    	return new KeyboardSubscriber(subscriber);
+        return new KeyboardSubscriber(subscriber);
     }
 
     @Override

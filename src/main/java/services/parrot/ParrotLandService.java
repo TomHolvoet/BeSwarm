@@ -1,10 +1,8 @@
 package services.parrot;
 
-import org.ros.node.ConnectedNode;
 import org.ros.node.topic.Publisher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import services.LandService;
 import std_msgs.Empty;
 
@@ -17,7 +15,7 @@ import static com.google.common.base.Preconditions.checkArgument;
  */
 public final class ParrotLandService implements LandService {
 
-	private static final Logger logger = LoggerFactory.getLogger(ParrotLandService.class);
+    private static final Logger logger = LoggerFactory.getLogger(ParrotLandService.class);
 
     private final Publisher<Empty> publisher;
 
@@ -36,17 +34,13 @@ public final class ParrotLandService implements LandService {
         return new ParrotLandService(publisher);
     }
 
-    public static ParrotLandService createService(String droneName, ConnectedNode connectedNode) {
-        return create(connectedNode.<Empty>newPublisher(droneName + "/land", Empty._TYPE));
-    }
-
     /**
      * Publish a landing message.
      */
     @Override
     public void sendLandingMessage() {
         final Empty empty = publisher.newMessage();
-        logger.debug("sending land message to ROS");
+        logger.trace("sending land message to ROS");
         publisher.publish(empty);
     }
 }

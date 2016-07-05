@@ -1,6 +1,5 @@
 package services.crates;
 
-import com.google.common.base.Optional;
 import hal_quadrotor.Land;
 import hal_quadrotor.LandRequest;
 import hal_quadrotor.LandResponse;
@@ -15,6 +14,7 @@ import org.ros.node.ConnectedNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import services.FlipService;
+import services.FlyingStateService;
 import services.LandService;
 import services.ServiceFactory;
 import services.TakeOffService;
@@ -46,12 +46,10 @@ public final class CratesServiceFactory implements ServiceFactory {
     @Override
     public TakeOffService createTakeOffService() {
         try {
-            final TakeOffService takeOffService = CratesTakeOffService.create(
-                    connectedNode.<TakeoffRequest, TakeoffResponse>newServiceClient(
-                            srvNamePrefix + "controller/Takeoff", Takeoff._TYPE));
-            return takeOffService;
+            return CratesTakeOffService.create(connectedNode.<TakeoffRequest, TakeoffResponse>newServiceClient(
+                    srvNamePrefix + "controller/Takeoff", Takeoff._TYPE));
         } catch (ServiceNotFoundException e) {
-            logger.info("Take off service not found. Drone: {}. Model: {}", droneName, modelName);
+            logger.info("Take off service not found. Drone: {}. Model: {}. Exception: {}", droneName, modelName, e);
             throw new RuntimeException(
                     String.format("Take off service not found. Drone: %s. Model: %s", droneName, modelName));
         }
@@ -60,10 +58,9 @@ public final class CratesServiceFactory implements ServiceFactory {
     @Override
     public LandService createLandService() {
         try {
-            final LandService landService = CratesLandService.create(
+            return CratesLandService.create(
                     connectedNode.<LandRequest, LandResponse>newServiceClient(srvNamePrefix + "controller/Land",
                             Land._TYPE));
-            return landService;
         } catch (ServiceNotFoundException e) {
             throw new RuntimeException(
                     String.format("Land service not found. Drone: %s. Model: %s", droneName, modelName));
@@ -73,10 +70,8 @@ public final class CratesServiceFactory implements ServiceFactory {
     @Override
     public VelocityService createVelocityService() {
         try {
-            final VelocityService velocityService = CratesVelocityService.create(
-                    connectedNode.<VelocityRequest, VelocityResponse>newServiceClient(
-                            srvNamePrefix + "controller/Velocity", Velocity._TYPE));
-            return velocityService;
+            return CratesVelocityService.create(connectedNode.<VelocityRequest, VelocityResponse>newServiceClient(
+                    srvNamePrefix + "controller/Velocity", Velocity._TYPE));
         } catch (ServiceNotFoundException e) {
             throw new RuntimeException(
                     String.format("Velocity service not found. Drone: %s. Model: %s", droneName, modelName));
@@ -89,5 +84,11 @@ public final class CratesServiceFactory implements ServiceFactory {
     @Override
     public FlipService createFlipService() {
         throw new UnsupportedOperationException("This service is not supported by the crates simulator.");
+    }
+
+    @Override
+    public FlyingStateService createFlyingStateService() {
+        // TODO implement
+        throw new UnsupportedOperationException("This operation is currently not supported by Crates simulator.");
     }
 }

@@ -8,7 +8,7 @@ import utils.math.EulerAngle;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * A four-dimensional PID controller for the drone. It is the composition of 4 one-dimensional PID controller
+ * A four-dimensional PID controller for the drone. It is the composition of 4 one-dimensional PID controllers
  * {@link PidController1d} (three controllers for the three linear velocities, one controller for the
  * angular velocity).
  *
@@ -38,8 +38,9 @@ public final class PidController4d {
     /**
      * Compute the next velocity (response) of the control loop.
      *
-     * @param currentPose     the current pose of the drone
-     * @param currentVelocity the current velocity of the drone
+     * @param currentPose          the current pose of the drone
+     * @param currentVelocity      the current velocity of the drone
+     * @param currentTimeInSeconds the current time which will be used to get the desired position of the drone
      * @return the next velocity (response) of the drone
      */
     public InertialFrameVelocity compute(Pose currentPose, InertialFrameVelocity currentVelocity,

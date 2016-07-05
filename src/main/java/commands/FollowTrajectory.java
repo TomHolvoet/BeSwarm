@@ -34,7 +34,6 @@ public final class FollowTrajectory implements Command {
     private final PidParameters pidLinearZParameters;
     private final PidParameters pidAngularZParameters;
     private final Trajectory4d trajectory4d;
-    // FIXME let the trajectory decide how long the command should work
     private final double durationInSeconds;
     private final double controlRateInSeconds;
     private final double droneStateLifeDurationInSeconds;
@@ -66,7 +65,7 @@ public final class FollowTrajectory implements Command {
 
     @Override
     public void execute() {
-        logger.debug("Execute follow trajectory command.");
+        logger.debug("Execute follow trajectory command: {}", trajectory4d);
 
         final PidController4d pidController4d = PidController4d.builder()
                 .linearXParameters(pidLinearXParameters)
@@ -121,23 +120,24 @@ public final class FollowTrajectory implements Command {
                 final InertialFrameVelocity nextVelocity = pidController4d.compute(currentState.get().pose(),
                         currentState.get().inertialFrameVelocity(), currentTimeInSeconds);
                 velocityService.sendVelocityMessage(nextVelocity, currentState.get().pose());
-
-                poseLogger.trace("{} {} {} {} {} {} {} {} {}", System.nanoTime() / NANO_SECOND_TO_SECOND, currentState.get().pose().x(),
-                        currentState.get().pose().y(), currentState.get().pose().z(), currentState.get().pose().yaw(),
-                        trajectory4d.getDesiredPositionX(currentTimeInSeconds),
-                        trajectory4d.getDesiredPositionY(currentTimeInSeconds),
-                        trajectory4d.getDesiredPositionZ(currentTimeInSeconds),
-                        trajectory4d.getDesiredAngleZ(currentTimeInSeconds));
-                velocityLogger.trace("{} {} {} {} {} {} {} {} {}", System.nanoTime() / NANO_SECOND_TO_SECOND,
-                        currentState.get().inertialFrameVelocity().linearX(),
-                        currentState.get().inertialFrameVelocity().linearY(),
-                        currentState.get().inertialFrameVelocity().linearZ(),
-                        currentState.get().inertialFrameVelocity().angularZ(),
-                        trajectory4d.getDesiredVelocityX(currentTimeInSeconds),
-                        trajectory4d.getDesiredVelocityY(currentTimeInSeconds),
-                        trajectory4d.getDesiredVelocityZ(currentTimeInSeconds),
-                        trajectory4d.getDesiredAngularVelocityZ(currentTimeInSeconds));
+                logDroneState(currentState.get(), currentTimeInSeconds);
             }
+        }
+
+        private void logDroneState(DroneStateStamped currentState, double currentTimeInSeconds) {
+            poseLogger.trace("{} {} {} {} {} {} {} {} {}", System.nanoTime() / NANO_SECOND_TO_SECOND,
+                    currentState.pose().x(), currentState.pose().y(), currentState.pose().z(),
+                    currentState.pose().yaw(), trajectory4d.getDesiredPositionX(currentTimeInSeconds),
+                    trajectory4d.getDesiredPositionY(currentTimeInSeconds),
+                    trajectory4d.getDesiredPositionZ(currentTimeInSeconds),
+                    trajectory4d.getDesiredAngleZ(currentTimeInSeconds));
+            velocityLogger.trace("{} {} {} {} {} {} {} {} {}", System.nanoTime() / NANO_SECOND_TO_SECOND,
+                    currentState.inertialFrameVelocity().linearX(), currentState.inertialFrameVelocity().linearY(),
+                    currentState.inertialFrameVelocity().linearZ(), currentState.inertialFrameVelocity().angularZ(),
+                    trajectory4d.getDesiredVelocityX(currentTimeInSeconds),
+                    trajectory4d.getDesiredVelocityY(currentTimeInSeconds),
+                    trajectory4d.getDesiredVelocityZ(currentTimeInSeconds),
+                    trajectory4d.getDesiredAngularVelocityZ(currentTimeInSeconds));
         }
 
         private void setCounter(DroneStateStamped currentState) {

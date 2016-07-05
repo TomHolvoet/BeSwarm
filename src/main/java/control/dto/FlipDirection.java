@@ -1,13 +1,13 @@
 package control.dto;
 
 /**
- * Direction for flipping.
+ * FlipDirection for flipping.
  *
  * @author Hoang Tung Dinh
  * @see <a href="http://bebop-autonomy.readthedocs.io/en/latest/piloting.html#flight-animations">Bebop
  * documentations</a>
  */
-public enum Direction {
+public enum FlipDirection {
     FORWARD((byte) 0),
     BACKWARD((byte) 1),
     RIGHT((byte) 2),
@@ -15,7 +15,7 @@ public enum Direction {
 
     private final byte code;
 
-    Direction(byte code) {
+    FlipDirection(byte code) {
         this.code = code;
     }
 

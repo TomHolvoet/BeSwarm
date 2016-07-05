@@ -1,12 +1,14 @@
 package services.parrot;
 
-import com.google.common.base.Optional;
+import ardrone_autonomy.Navdata;
 import geometry_msgs.Twist;
 import org.ros.node.ConnectedNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import services.FlipService;
+import services.FlyingStateService;
 import services.VelocityService;
+import services.ros_subscribers.MessagesSubscriberService;
 
 /**
  * @author Hoang Tung Dinh
@@ -45,5 +47,14 @@ public final class TumSimServiceFactory extends ParrotServiceFactory {
     @Override
     public FlipService createFlipService() {
         throw new UnsupportedOperationException("Tum simulator does not support flip service.");
+    }
+
+    @Override
+    public FlyingStateService createFlyingStateService() {
+        final String topicName = "/" + DRONE_NAME + "/navdata";
+        final MessagesSubscriberService<Navdata> flyingStateSubscriber = MessagesSubscriberService.create(
+                getConnectedNode().<Navdata>newSubscriber(topicName, Navdata._TYPE));
+
+        return TumSimFlyingStateService.create(flyingStateSubscriber);
     }
 }

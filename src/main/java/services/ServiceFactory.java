@@ -11,4 +11,6 @@ public interface ServiceFactory {
     VelocityService createVelocityService();
 
     FlipService createFlipService();
+
+    FlyingStateService createFlyingStateService();
 }

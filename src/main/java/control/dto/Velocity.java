@@ -27,14 +27,9 @@ public abstract class Velocity implements InertialFrameVelocity, BodyFrameVeloci
     }
 
     public static Velocity createZeroVelocity() {
-    	return Velocity.builder()
-        .linearX(0)
-        .linearY(0)
-        .linearZ(0)
-        .angularZ(0)
-        .build();
+        return Velocity.builder().linearX(0).linearY(0).linearZ(0).angularZ(0).build();
     }
-    
+
     /**
      * Converts a Twist velocity (given in NED coordinates) to a local velocity using XYZ frame
      * TODO fix frame of reference for local velocity

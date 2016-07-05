@@ -9,6 +9,7 @@ import org.ros.node.topic.Subscriber;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
@@ -25,7 +26,7 @@ public class MessagesSubscriberService<T extends Message> {
 
     private final MessagesListener<T> messagesListener;
 
-    private static final int DEFAULT_MESSAGE_QUEUE__SIZE = 1;
+    private static final int DEFAULT_MESSAGE_QUEUE_SIZE = 1;
 
     protected MessagesSubscriberService(Subscriber<T> subscriber, int maxMessageQueueSize) {
         checkArgument(maxMessageQueueSize >= 1,
@@ -35,7 +36,7 @@ public class MessagesSubscriberService<T extends Message> {
     }
 
     public static <Type extends Message> MessagesSubscriberService<Type> create(Subscriber<Type> subscriber) {
-        return new MessagesSubscriberService<>(subscriber, DEFAULT_MESSAGE_QUEUE__SIZE);
+        return new MessagesSubscriberService<>(subscriber, DEFAULT_MESSAGE_QUEUE_SIZE);
     }
 
     public static <Type extends Message> MessagesSubscriberService<Type> create(Subscriber<Type> subscriber,
@@ -62,6 +63,7 @@ public class MessagesSubscriberService<T extends Message> {
     private static final class MessagesListener<K extends Message> implements MessageListener<K> {
         private final Collection<MessageObserver<K>> messageObservers;
         private final Queue<K> messageQueue;
+        @Nullable private K mostRecentMessage;
 
         private MessagesListener(int maxQueueSize) {
             messageQueue = Queues.synchronizedQueue(EvictingQueue.<K>create(maxQueueSize));
@@ -73,10 +75,11 @@ public class MessagesSubscriberService<T extends Message> {
         }
 
         @Override
-        public void onNewMessage(K t) {
-            logger.trace("{} {}", System.nanoTime() / 1000000000.0, t.toRawMessage().getType());
-            messageQueue.add(t);
-            notifyMessageObservers(t);
+        public void onNewMessage(K newMessage) {
+            logger.trace("{} {}", System.nanoTime() / 1000000000.0, newMessage.toRawMessage().getType());
+            messageQueue.add(newMessage);
+            mostRecentMessage = newMessage;
+            notifyMessageObservers(newMessage);
         }
 
         private void notifyMessageObservers(K t) {
@@ -94,10 +97,10 @@ public class MessagesSubscriberService<T extends Message> {
         }
 
         Optional<K> getMostRecentMessage() {
-            if (messageQueue.isEmpty()) {
+            if (mostRecentMessage == null) {
                 return Optional.<K>absent();
             } else {
-                return Optional.<K>of(messageQueue.peek());
+                return Optional.<K>of(mostRecentMessage);
             }
         }
 

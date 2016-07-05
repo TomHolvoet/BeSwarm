@@ -1,6 +1,6 @@
 package commands;
 
-import control.dto.Direction;
+import control.dto.FlipDirection;
 import services.FlipService;
 
 /**
@@ -11,26 +11,26 @@ import services.FlipService;
 public final class Flip implements Command {
 
     private final FlipService flipService;
-    private final Direction direction;
+    private final FlipDirection flipDirection;
 
-    private Flip(FlipService flipService, Direction direction) {
+    private Flip(FlipService flipService, FlipDirection flipDirection) {
         this.flipService = flipService;
-        this.direction = direction;
+        this.flipDirection = flipDirection;
     }
 
     /**
      * Create a flipping command.
      *
-     * @param flipService the flip publisher
-     * @param direction  the flipping direction
+     * @param flipService   the flip publisher
+     * @param flipDirection the flipping flipDirection
      * @return an instance of the flipping command
      */
-    public static Flip create(FlipService flipService, Direction direction) {
-        return new Flip(flipService, direction);
+    public static Flip create(FlipService flipService, FlipDirection flipDirection) {
+        return new Flip(flipService, flipDirection);
     }
 
     @Override
     public void execute() {
-        flipService.sendFlipMessage(direction);
+        flipService.sendFlipMessage(flipDirection);
     }
 }
