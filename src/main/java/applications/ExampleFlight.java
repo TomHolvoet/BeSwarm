@@ -39,23 +39,23 @@ public final class ExampleFlight {
     private final VelocityService velocityService;
     private final FlyingStateService flyingStateService;
     private final StateEstimator stateEstimator;
-    private final FiniteTrajectory4d trajectory4d;
+    private final FiniteTrajectory4d finiteTrajectory4d;
     private final ConnectedNode connectedNode;
 
-    private ExampleFlight(ServiceFactory serviceFactory, StateEstimator stateEstimator, FiniteTrajectory4d trajectory4d,
-            ConnectedNode connectedNode) {
+    private ExampleFlight(ServiceFactory serviceFactory, StateEstimator stateEstimator,
+            FiniteTrajectory4d finiteTrajectory4d, ConnectedNode connectedNode) {
         this.takeOffService = serviceFactory.createTakeOffService();
         this.landService = serviceFactory.createLandService();
         this.velocityService = serviceFactory.createVelocityService();
         this.flyingStateService = serviceFactory.createFlyingStateService();
         this.stateEstimator = stateEstimator;
-        this.trajectory4d = trajectory4d;
+        this.finiteTrajectory4d = finiteTrajectory4d;
         this.connectedNode = connectedNode;
     }
 
     public static ExampleFlight create(ServiceFactory serviceFactory, StateEstimator stateEstimator,
-            FiniteTrajectory4d trajectory4d, ConnectedNode connectedNode) {
-        return new ExampleFlight(serviceFactory, stateEstimator, trajectory4d, connectedNode);
+            FiniteTrajectory4d finiteTrajectory4d, ConnectedNode connectedNode) {
+        return new ExampleFlight(serviceFactory, stateEstimator, finiteTrajectory4d, connectedNode);
     }
 
     public void fly() {
@@ -83,8 +83,8 @@ public final class ExampleFlight {
         final Command followTrajectory = FollowTrajectory.builder()
                 .stateEstimator(stateEstimator)
                 .velocityService(velocityService)
-                .trajectory4d(trajectory4d)
-                .durationInSeconds(trajectory4d.getTrajectoryDuration())
+                .trajectory4d(finiteTrajectory4d)
+                .durationInSeconds(finiteTrajectory4d.getTrajectoryDuration())
                 .build();
         commands.add(followTrajectory);
 

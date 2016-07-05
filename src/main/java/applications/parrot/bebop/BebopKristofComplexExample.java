@@ -3,7 +3,9 @@ package applications.parrot.bebop;
 import applications.ExampleFlight;
 import applications.trajectory.Point4D;
 import applications.trajectory.Trajectories;
+import choreo.Choreography;
 import control.FiniteTrajectory4d;
+import control.Trajectory4d;
 import control.localization.BebopStateEstimatorWithPoseStampedAndOdom;
 import control.localization.StateEstimator;
 import geometry_msgs.PoseStamped;
@@ -19,11 +21,13 @@ import services.ros_subscribers.MessagesSubscriberService;
 
 import java.util.concurrent.TimeUnit;
 
+import static applications.trajectory.Trajectories.newStraightLineTrajectory;
+
 /**
  * @author Hoang Tung Dinh
  */
-public class BebopKristof extends AbstractNodeMain {
-    private static final Logger logger = LoggerFactory.getLogger(BebopKristof.class);
+public class BebopKristofComplexExample extends AbstractNodeMain {
+    private static final Logger logger = LoggerFactory.getLogger(BebopKristofComplexExample.class);
     private static final String DRONE_NAME = "bebop";
 
     @Override
@@ -38,8 +42,9 @@ public class BebopKristof extends AbstractNodeMain {
         final ServiceFactory serviceFactory = BebopServiceFactory.create(connectedNode, DRONE_NAME);
         final StateEstimator stateEstimator = BebopStateEstimatorWithPoseStampedAndOdom.create(
                 getPoseSubscriber(connectedNode), getOdometrySubscriber(connectedNode));
-        final FiniteTrajectory4d trajectory4d = Trajectories.newStraightLineTrajectory(
-                Point4D.create(1.5, 0.0, 1.0, 0.0), Point4D.create(0.0, -4.0, 2.0, 0.0), 0.5);
+
+        final FiniteTrajectory4d trajectory4d = getConcreteTrajectory();
+
         final ExampleFlight exampleFlight = ExampleFlight.create(serviceFactory, stateEstimator, trajectory4d,
                 connectedNode);
 
@@ -65,4 +70,28 @@ public class BebopKristof extends AbstractNodeMain {
         return MessagesSubscriberService.create(connectedNode.<Odometry>newSubscriber(odometryTopic, Odometry._TYPE));
     }
 
+    private static FiniteTrajectory4d getConcreteTrajectory() {
+        Trajectory4d init = Trajectories.newHoldPositionTrajectory(Point4D.create(0, 0, 1, 0));
+        FiniteTrajectory4d first = newStraightLineTrajectory(Point4D.create(0, 0, 1, 0),
+                Point4D.create(1.5, -3.0, 1.5, 0), 0.1);
+        Trajectory4d inter = Trajectories.newHoldPositionTrajectory(Point4D.create(1.5, -3.0, 1.5, 0));
+        Trajectory4d second = Trajectories.newCircleTrajectory4D(Point4D.create(1.0, -3.0, 1.5, 0), 0.5, 0.05,
+                Math.PI / 8);
+        Trajectory4d third = Trajectories.newHoldPositionTrajectory(Point4D.create(1.5, -3.5, 1.5, 0));
+        Trajectory4d fourth = Trajectories.newHoldPositionTrajectory(Point4D.create(1.5, -3.5, 1.0, 0));
+        return Choreography.builder()
+                .withTrajectory(init)
+                .forTime(4)
+                .withTrajectory(first)
+                .forTime(first.getTrajectoryDuration() + 2)
+                .withTrajectory(inter)
+                .forTime(5)
+                .withTrajectory(second)
+                .forTime(40)
+                .withTrajectory(third)
+                .forTime(10)
+                .withTrajectory(fourth)
+                .forTime(5)
+                .build();
+    }
 }
