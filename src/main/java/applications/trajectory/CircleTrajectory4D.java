@@ -22,14 +22,15 @@ final class CircleTrajectory4D extends PeriodicTrajectory
 
     private CircleTrajectory4D(Point4D location, double phase, double radius,
             double frequency,
-            double planeAngle) {
+            double planeAngle, boolean angularMovement) {
         super(phase, location, radius, frequency);
         this.location = location;
         this.scaleFactor = StrictMath.sin(planeAngle);
         this.xycircle = CircleTrajectory2D.builder().setRadius(radius)
                 .setFrequency(frequency).setOrigin(location).setPhase(phase)
                 .build();
-        this.angularMotion = new ConstantVelocityAngularTrajectory1D(frequency,
+        double angularFreq = angularMovement ? frequency : 0;
+        this.angularMotion = new ConstantVelocityAngularTrajectory1D(angularFreq,
                 phase);
     }
 
@@ -98,9 +99,10 @@ final class CircleTrajectory4D extends PeriodicTrajectory
     public static class Builder {
         private Point4D location = Point4D.origin();
         private double radius = 1;
-        private double frequency = 5;
+        private double frequency = 0.05;
         private double planeAngle = 0;
         private double phase = 0;
+        private boolean angularMovement = true;
 
         private Builder() {
         }
@@ -130,6 +132,11 @@ final class CircleTrajectory4D extends PeriodicTrajectory
             return this;
         }
 
+        public Builder setAngularMovement(boolean rotation) {
+            this.angularMovement = rotation;
+            return this;
+        }
+
         /**
          * @return return a CircleTrajectory instance configured by this
          * builder object.
@@ -137,7 +144,7 @@ final class CircleTrajectory4D extends PeriodicTrajectory
         public CircleTrajectory4D build() {
             return new CircleTrajectory4D(location, phase, radius,
                     frequency,
-                    planeAngle);
+                    planeAngle, angularMovement);
         }
     }
 }
