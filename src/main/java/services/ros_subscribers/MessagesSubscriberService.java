@@ -76,7 +76,7 @@ public class MessagesSubscriberService<T extends Message> {
 
         @Override
         public void onNewMessage(K newMessage) {
-            logger.trace("{} {}", System.nanoTime() / 1000000000.0, newMessage.toRawMessage().getType());
+            logger.trace("{} {}", System.nanoTime() / 1.0E09, newMessage.toRawMessage().getType());
             messageQueue.add(newMessage);
             mostRecentMessage = newMessage;
             notifyMessageObservers(newMessage);
