@@ -15,7 +15,7 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.ros.node.topic.Publisher;
 import services.VelocityService;
-import utils.math.TestUtils;
+import utils.TestUtils;
 import utils.math.VelocityProvider;
 import utils.math.VelocityProviderWithThreshold;
 

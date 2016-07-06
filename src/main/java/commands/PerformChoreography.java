@@ -47,7 +47,7 @@ public final class PerformChoreography implements Command {
         @Override
         public CommandBuilders.BuildStep<PerformChoreography> withFiniteTrajectory4d(FiniteTrajectory4d val) {
             finiteTrajectory4d = val;
-            return null;
+            return this;
         }
 
         @Override

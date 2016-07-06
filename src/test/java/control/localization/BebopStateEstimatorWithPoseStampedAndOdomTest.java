@@ -13,7 +13,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import services.ros_subscribers.MessagesSubscriberService;
-import utils.math.TestUtils;
+import utils.TestUtils;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
