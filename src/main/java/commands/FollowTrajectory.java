@@ -82,7 +82,7 @@ public final class FollowTrajectory implements Command {
         private final InertialFrameVelocity zeroVelocity = Velocity.createZeroVelocity();
         private final Pose zeroPose = Pose.createZeroPose();
 
-        private static final double NANO_SECOND_TO_SECOND = 1000000000.0;
+        private static final double NANO_SECOND_TO_SECOND = 1.0E09;
 
         private ComputeNextResponse(PidController4d pidController4d) {
             this.pidController4d = pidController4d;
