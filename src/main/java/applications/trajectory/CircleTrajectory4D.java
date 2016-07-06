@@ -99,7 +99,7 @@ final class CircleTrajectory4D extends PeriodicTrajectory
     public static class Builder {
         private Point4D location = Point4D.origin();
         private double radius = 1;
-        private double frequency = 5;
+        private double frequency = 0.05;
         private double planeAngle = 0;
         private double phase = 0;
         private boolean angularMovement = true;

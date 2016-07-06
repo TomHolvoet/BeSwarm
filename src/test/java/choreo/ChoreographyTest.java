@@ -106,5 +106,13 @@ public class ChoreographyTest {
                 Trajectories.newExamplePendulumSwingTrajectory()).forTime(5)
                 .build();
         assertEquals(7, choreotarget.getTrajectoryDuration(), 0);
+
+        choreotarget = Choreography.builder().withTrajectory(Trajectories
+                .newStraightLineTrajectory(Point4D.origin(),
+                        Point4D.create(1, 0, 0, 0), 0.5)).withTrajectory(
+                Trajectories.newExamplePendulumSwingTrajectory()).forTime(2)
+                .withTrajectory(Trajectories.newExampleCircleTrajectory4D()).forTime(10)
+                .build();
+        assertEquals(14, choreotarget.getTrajectoryDuration(), 0);
     }
 }
