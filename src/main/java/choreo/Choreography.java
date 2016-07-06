@@ -166,15 +166,37 @@ public final class Choreography extends BasicTrajectory
         public abstract double getDuration();
     }
 
+    /**
+     * Step builder instance that can be built or further configured with trajectories.
+     */
     public static interface BuildableStepBuilder {
+        /**
+         * @param trajectory The trajectory to add.
+         * @return this builder instance.
+         */
         public BuildableStepBuilder withTrajectory(FiniteTrajectory4d trajectory);
 
+        /**
+         * @param trajectory The trajectory to add to the choreography.
+         * @return A builder instance to specify the duration to
+         * execute given trajectory for.
+         */
         public TimingRequiredStepBuilder withTrajectory(Trajectory4d trajectory);
 
+        /**
+         * @return A fully built choreography instance.
+         */
         public Choreography build();
     }
 
+    /**
+     * Step builder instance for adding timing to specified trajectory.
+     */
     public static interface TimingRequiredStepBuilder {
+        /**
+         * @param duration the duration of the previously added trajectory.
+         * @return A Builder instance.
+         */
         public BuildableStepBuilder forTime(double duration);
     }
 
@@ -186,46 +208,27 @@ public final class Choreography extends BasicTrajectory
         private final List<ChoreoSegment> segments;
         private Trajectory4d tempTarget;
 
-        /**
-         * Creates a new Builder for choreographies.
-         */
         private Builder() {
             this.segments = Lists.newArrayList();
         }
 
-        /**
-         * @param trajectory The trajectory to add to the choreography.
-         * @return A segmentBuilder instance to specify the duration to
-         * execute given trajectory with.
-         */
         @Override
         public TimingRequiredStepBuilder withTrajectory(Trajectory4d trajectory) {
             this.tempTarget = trajectory;
             return this;
         }
 
-        /**
-         * @param trajectory The trajectory to add.
-         * @return this builder instance.
-         */
         @Override
         public BuildableStepBuilder withTrajectory(FiniteTrajectory4d trajectory) {
             addSegmentWithDuration(trajectory, trajectory.getTrajectoryDuration());
             return this;
         }
 
-        /**
-         * @return A fully built choreography instance.
-         */
         @Override
         public Choreography build() {
             return new Choreography(segments);
         }
 
-        /**
-         * @param duration the duration of the previously added trajectory.
-         * @return A Builder instance.
-         */
         @Override
         public BuildableStepBuilder forTime(double duration) {
             addSegmentWithDuration(tempTarget, duration);
