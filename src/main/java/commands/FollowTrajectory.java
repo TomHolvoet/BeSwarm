@@ -2,7 +2,6 @@ package commands;
 
 import com.google.common.base.Optional;
 import commands.schedulers.PeriodicTaskRunner;
-import control.DefaultPidParameters;
 import control.PidController4d;
 import control.PidParameters;
 import control.Trajectory4d;
@@ -14,8 +13,6 @@ import control.localization.StateEstimator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import services.VelocityService;
-
-import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * @author Hoang Tung Dinh
@@ -38,29 +35,25 @@ public final class FollowTrajectory implements Command {
     private final double controlRateInSeconds;
     private final double droneStateLifeDurationInSeconds;
 
-    private static final double DEFAULT_CONTROL_RATE_IN_SECONDS = 0.05;
-    private static final double DEFAULT_DRONE_STATE_LIFE_DURATION_IN_SECONDS = 0.1;
-
     private FollowTrajectory(Builder builder) {
-        velocityService = builder.velocityService;
-        stateEstimator = builder.stateEstimator;
-        pidLinearXParameters = builder.pidLinearXParameters;
-        pidLinearYParameters = builder.pidLinearYParameters;
-        pidLinearZParameters = builder.pidLinearZParameters;
-        pidAngularZParameters = builder.pidAngularZParameters;
-        trajectory4d = builder.trajectory4d;
-        durationInSeconds = builder.durationInSeconds;
-        controlRateInSeconds = builder.controlRateInSeconds;
-        droneStateLifeDurationInSeconds = builder.droneStateLifeDurationInSeconds;
+        velocityService = builder.getVelocityService();
+        stateEstimator = builder.getStateEstimator();
+        pidLinearXParameters = builder.getPidLinearXParameters();
+        pidLinearYParameters = builder.getPidLinearYParameters();
+        pidLinearZParameters = builder.getPidLinearZParameters();
+        pidAngularZParameters = builder.getPidAngularZParameters();
+        trajectory4d = builder.getTrajectory4d();
+        durationInSeconds = builder.getDurationInSeconds();
+        controlRateInSeconds = builder.getControlRateInSeconds();
+        droneStateLifeDurationInSeconds = builder.getDroneStateLifeDurationInSeconds();
     }
 
-    public static Builder builder() {
-        return new Builder().controlRateInSeconds(DEFAULT_CONTROL_RATE_IN_SECONDS)
-                .pidLinearXParameters(DefaultPidParameters.LINEAR_X.getParameters())
-                .pidLinearYParameters(DefaultPidParameters.LINEAR_Y.getParameters())
-                .pidLinearZParameters(DefaultPidParameters.LINEAR_Z.getParameters())
-                .pidAngularZParameters(DefaultPidParameters.ANGULAR_Z.getParameters())
-                .droneStateLifeDurationInSeconds(DEFAULT_DRONE_STATE_LIFE_DURATION_IN_SECONDS);
+    public static CommandBuilders.VelocityServiceStep<Trajectory4dStep> builder() {
+        return new Builder();
+    }
+
+    public static Trajectory4dStep copyBuilder(CommandBuilders.AbstractFollowTrajectoryBuilder<?, ?> otherBuilder) {
+        return new Builder().copyOf(otherBuilder);
     }
 
     @Override
@@ -151,160 +144,51 @@ public final class FollowTrajectory implements Command {
         }
     }
 
-    /**
-     * {@code FollowTrajectory} builder static inner class.
-     */
-    public static final class Builder {
-        private VelocityService velocityService;
-        private StateEstimator stateEstimator;
-        private PidParameters pidLinearXParameters;
-        private PidParameters pidLinearYParameters;
-        private PidParameters pidLinearZParameters;
-        private PidParameters pidAngularZParameters;
+    public interface Trajectory4dStep {
+        DurationInSecondsStep withTrajectory4d(Trajectory4d val);
+    }
+
+    public interface DurationInSecondsStep {
+        CommandBuilders.BuildStep<FollowTrajectory> withDurationInSeconds(double val);
+    }
+
+    public static final class Builder extends CommandBuilders.AbstractFollowTrajectoryBuilder<Trajectory4dStep,
+            FollowTrajectory> implements Trajectory4dStep, DurationInSecondsStep {
         private Trajectory4d trajectory4d;
-        private Double durationInSeconds;
-        private Double controlRateInSeconds;
-        private Double droneStateLifeDurationInSeconds;
+        private double durationInSeconds;
 
-        private Builder() {}
+        private Builder() {
+            super();
+        }
 
-        /**
-         * Sets the {@code velocityService} and returns a reference to this Builder so that the methods can be
-         * chained together.
-         *
-         * @param val the {@code velocityService} to set
-         * @return a reference to this Builder
-         */
-        public Builder velocityService(VelocityService val) {
-            velocityService = val;
+        @Override
+        Trajectory4dStep nextInterfaceInBuilderChain() {
             return this;
         }
 
-        /**
-         * Sets the {@code stateEstimator} and returns a reference to this Builder so that the methods can be chained
-         * together.
-         *
-         * @param val the {@code stateEstimator} to set
-         * @return a reference to this Builder
-         */
-        public Builder stateEstimator(StateEstimator val) {
-            stateEstimator = val;
-            return this;
-        }
-
-        /**
-         * Sets the {@code pidLinearXParameters} and returns a reference to this Builder so that the methods can be
-         * chained together.
-         *
-         * @param val the {@code pidLinearXParameters} to set
-         * @return a reference to this Builder
-         */
-        public Builder pidLinearXParameters(PidParameters val) {
-            pidLinearXParameters = val;
-            return this;
-        }
-
-        /**
-         * Sets the {@code pidLinearYParameters} and returns a reference to this Builder so that the methods can be
-         * chained together.
-         *
-         * @param val the {@code pidLinearYParameters} to set
-         * @return a reference to this Builder
-         */
-        public Builder pidLinearYParameters(PidParameters val) {
-            pidLinearYParameters = val;
-            return this;
-        }
-
-        /**
-         * Sets the {@code pidLinearZParameters} and returns a reference to this Builder so that the methods can be
-         * chained together.
-         *
-         * @param val the {@code pidLinearZParameters} to set
-         * @return a reference to this Builder
-         */
-        public Builder pidLinearZParameters(PidParameters val) {
-            pidLinearZParameters = val;
-            return this;
-        }
-
-        /**
-         * Sets the {@code pidAngularZParameters} and returns a reference to this Builder so that the methods can be
-         * chained together.
-         *
-         * @param val the {@code pidAngularZParameters} to set
-         * @return a reference to this Builder
-         */
-        public Builder pidAngularZParameters(PidParameters val) {
-            pidAngularZParameters = val;
-            return this;
-        }
-
-        /**
-         * Sets the {@code trajectory4d} and returns a reference to this Builder so that the methods can be chained
-         * together.
-         *
-         * @param val the {@code trajectory4d} to set
-         * @return a reference to this Builder
-         */
-        public Builder trajectory4d(Trajectory4d val) {
+        @Override
+        public DurationInSecondsStep withTrajectory4d(Trajectory4d val) {
             trajectory4d = val;
             return this;
         }
 
-        /**
-         * Sets the {@code durationInSeconds} and returns a reference to this Builder so that the methods can be
-         * chained together.
-         *
-         * @param val the {@code durationInSeconds} to set
-         * @return a reference to this Builder
-         */
-        public Builder durationInSeconds(double val) {
+        @Override
+        public CommandBuilders.BuildStep<FollowTrajectory> withDurationInSeconds(double val) {
             durationInSeconds = val;
             return this;
         }
 
-        /**
-         * Sets the {@code controlRateInSeconds} and returns a reference to this Builder so that the methods can be
-         * chained together.
-         *
-         * @param val the {@code controlRateInSeconds} to set
-         * @return a reference to this Builder
-         */
-        public Builder controlRateInSeconds(double val) {
-            controlRateInSeconds = val;
-            return this;
-        }
-
-        /**
-         * Sets the {@code droneStateLifeDurationInSeconds} and returns a reference to this Builder so that the
-         * methods can be chained together.
-         *
-         * @param val the {@code droneStateLifeDurationInSeconds} to set
-         * @return a reference to this Builder
-         */
-        public Builder droneStateLifeDurationInSeconds(double val) {
-            droneStateLifeDurationInSeconds = val;
-            return this;
-        }
-
-        /**
-         * Returns a {@code FollowTrajectory} built from the parameters previously set.
-         *
-         * @return a {@code FollowTrajectory} built with parameters of this {@code FollowTrajectory.Builder}
-         */
+        @Override
         public FollowTrajectory build() {
-            checkNotNull(velocityService, "missing velocityService");
-            checkNotNull(stateEstimator, "missing stateEstimator");
-            checkNotNull(pidLinearXParameters, "missing pidLinearXParameters");
-            checkNotNull(pidLinearYParameters, "missing pidLinearYParameters");
-            checkNotNull(pidLinearZParameters, "missing pidLinearZParameters");
-            checkNotNull(pidAngularZParameters, "missing pidAngularZParameters");
-            checkNotNull(trajectory4d, "missing trajectory4d");
-            checkNotNull(durationInSeconds, "missing durationInSeconds");
-            checkNotNull(controlRateInSeconds, "missing controlRateInSeconds");
-            checkNotNull(droneStateLifeDurationInSeconds, "missing droneStateLifeDurationInSeconds");
             return new FollowTrajectory(this);
+        }
+
+        public Trajectory4d getTrajectory4d() {
+            return trajectory4d;
+        }
+
+        public double getDurationInSeconds() {
+            return durationInSeconds;
         }
     }
 }

@@ -1,15 +1,9 @@
 package commands;
 
-import control.DefaultPidParameters;
-import control.PidParameters;
 import control.Trajectory4d;
 import control.dto.InertialFrameVelocity;
 import control.dto.Pose;
 import control.dto.Velocity;
-import control.localization.StateEstimator;
-import services.VelocityService;
-
-import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Command for moving to a predefined pose. It is a facade which uses {@link FollowTrajectory}.
@@ -17,188 +11,64 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * @author Hoang Tung Dinh
  */
 public final class MoveToPose implements Command {
-    private final Command followTrajectory;
-    private static final double DEFAULT_CONTROL_RATE_IN_SECONDS = 0.05;
+    private final FollowTrajectory followTrajectoryCommand;
 
-    private MoveToPose(Builder builder) {
-        final InertialFrameVelocity zeroVelocity = Velocity.builder()
-                .linearX(0)
-                .linearY(0)
-                .linearZ(0)
-                .angularZ(0)
-                .build();
-        final Trajectory4d trajectory4d = SinglePointTrajectory4d.create(builder.goalPose, zeroVelocity);
-        followTrajectory = FollowTrajectory.builder()
-                .velocityService(builder.velocityService)
-                .stateEstimator(builder.stateEstimator)
-                .pidLinearXParameters(builder.pidLinearXParameters)
-                .pidLinearYParameters(builder.pidLinearYParameters)
-                .pidLinearZParameters(builder.pidLinearZParameters)
-                .pidAngularZParameters(builder.pidAngularZParameters)
-                .trajectory4d(trajectory4d)
-                .durationInSeconds(builder.durationInSeconds)
-                .controlRateInSeconds(builder.controlRateInSeconds)
-                .build();
+    private MoveToPose(FollowTrajectory followTrajectoryCommand) {
+        this.followTrajectoryCommand = followTrajectoryCommand;
+    }
+
+    public static CommandBuilders.VelocityServiceStep<GoalPoseStep> builder() {
+        return new Builder();
     }
 
     @Override
     public void execute() {
-        followTrajectory.execute();
+        followTrajectoryCommand.execute();
     }
 
-    /**
-     * All pid parameters and {@link Builder#controlRateInSeconds(double)} are optional. The other are mandatory.
-     *
-     * @return a builder
-     */
-    public static Builder builder() {
-        return new Builder().controlRateInSeconds(DEFAULT_CONTROL_RATE_IN_SECONDS)
-                .pidLinearXParameters(DefaultPidParameters.LINEAR_X.getParameters())
-                .pidLinearYParameters(DefaultPidParameters.LINEAR_Y.getParameters())
-                .pidLinearZParameters(DefaultPidParameters.LINEAR_Z.getParameters())
-                .pidAngularZParameters(DefaultPidParameters.ANGULAR_Z.getParameters());
+    public interface GoalPoseStep {
+        DurationInSecondsStep withGoalPose(Pose val);
     }
 
-    /**
-     * {@code MoveToPose} builder static inner class.
-     */
-    public static final class Builder {
-        private VelocityService velocityService;
-        private StateEstimator stateEstimator;
-        private PidParameters pidLinearXParameters;
-        private PidParameters pidLinearYParameters;
-        private PidParameters pidLinearZParameters;
-        private PidParameters pidAngularZParameters;
+    public interface DurationInSecondsStep {
+        CommandBuilders.BuildStep<MoveToPose> withDurationInSeconds(double val);
+    }
+
+    public static final class Builder extends CommandBuilders.AbstractFollowTrajectoryBuilder<GoalPoseStep,
+            MoveToPose> implements GoalPoseStep, DurationInSecondsStep {
         private Pose goalPose;
-        private Double durationInSeconds;
-        private Double controlRateInSeconds;
+        private double durationInSeconds;
 
-        private Builder() {}
+        private Builder() {
+            super();
+        }
 
-        /**
-         * Sets the {@code velocityService} and returns a reference to this Builder so that the methods can be
-         * chained together.
-         *
-         * @param val the {@code velocityService} to set
-         * @return a reference to this Builder
-         */
-        public Builder velocityService(VelocityService val) {
-            velocityService = val;
+        @Override
+        GoalPoseStep nextInterfaceInBuilderChain() {
             return this;
         }
 
-        /**
-         * Sets the {@code stateEstimator} and returns a reference to this Builder so that the methods can be chained
-         * together.
-         *
-         * @param val the {@code stateEstimator} to set
-         * @return a reference to this Builder
-         */
-        public Builder stateEstimator(StateEstimator val) {
-            stateEstimator = val;
-            return this;
-        }
-
-        /**
-         * Sets the {@code pidLinearXParameters} and returns a reference to this Builder so that the methods can be
-         * chained together.
-         *
-         * @param val the {@code pidLinearXParameters} to set
-         * @return a reference to this Builder
-         */
-        public Builder pidLinearXParameters(PidParameters val) {
-            pidLinearXParameters = val;
-            return this;
-        }
-
-        /**
-         * Sets the {@code pidLinearYParameters} and returns a reference to this Builder so that the methods can be
-         * chained together.
-         *
-         * @param val the {@code pidLinearYParameters} to set
-         * @return a reference to this Builder
-         */
-        public Builder pidLinearYParameters(PidParameters val) {
-            pidLinearYParameters = val;
-            return this;
-        }
-
-        /**
-         * Sets the {@code pidLinearZParameters} and returns a reference to this Builder so that the methods can be
-         * chained together.
-         *
-         * @param val the {@code pidLinearZParameters} to set
-         * @return a reference to this Builder
-         */
-        public Builder pidLinearZParameters(PidParameters val) {
-            pidLinearZParameters = val;
-            return this;
-        }
-
-        /**
-         * Sets the {@code pidAngularZParameters} and returns a reference to this Builder so that the methods can be
-         * chained together.
-         *
-         * @param val the {@code pidAngularZParameters} to set
-         * @return a reference to this Builder
-         */
-        public Builder pidAngularZParameters(PidParameters val) {
-            pidAngularZParameters = val;
-            return this;
-        }
-
-        /**
-         * Sets the {@code goalPose} and returns a reference to this Builder so that the methods can be chained
-         * together.
-         *
-         * @param val the {@code goalPose} to set
-         * @return a reference to this Builder
-         */
-        public Builder goalPose(Pose val) {
+        @Override
+        public DurationInSecondsStep withGoalPose(Pose val) {
             goalPose = val;
             return this;
         }
 
-        /**
-         * Sets the {@code durationInSeconds} and returns a reference to this Builder so that the methods can be
-         * chained together.
-         *
-         * @param val the {@code durationInSeconds} to set
-         * @return a reference to this Builder
-         */
-        public Builder durationInSeconds(double val) {
+        @Override
+        public CommandBuilders.BuildStep<MoveToPose> withDurationInSeconds(double val) {
             durationInSeconds = val;
             return this;
         }
 
-        /**
-         * Sets the {@code controlRateInSeconds} and returns a reference to this Builder so that the methods can be
-         * chained together.
-         *
-         * @param val the {@code controlRateInSeconds} to set
-         * @return a reference to this Builder
-         */
-        public Builder controlRateInSeconds(double val) {
-            controlRateInSeconds = val;
-            return this;
-        }
-
-        /**
-         * Returns a {@code MoveToPose} built from the parameters previously set.
-         *
-         * @return a {@code MoveToPose} built with parameters of this {@code MoveToPose.Builder}
-         */
+        @Override
         public MoveToPose build() {
-            checkNotNull(velocityService, "missing velocityService");
-            checkNotNull(stateEstimator, "missing stateEstimator");
-            checkNotNull(pidLinearXParameters, "missing pidLinearXParameters");
-            checkNotNull(pidLinearYParameters, "missing pidLinearYParameters");
-            checkNotNull(pidLinearZParameters, "missing pidLinearZParameters");
-            checkNotNull(pidAngularZParameters, "missing pidAngularZParameters");
-            checkNotNull(goalPose, "missing goalPose");
-            checkNotNull(durationInSeconds, "missing durationInSeconds");
-            checkNotNull(controlRateInSeconds, "missing controlRateInSeconds");
-            return new MoveToPose(this);
+            final InertialFrameVelocity zeroVelocity = Velocity.createZeroVelocity();
+            final Trajectory4d trajectory4d = SinglePointTrajectory4d.create(goalPose, zeroVelocity);
+            final FollowTrajectory followTrajectory = FollowTrajectory.copyBuilder(this)
+                    .withTrajectory4d(trajectory4d)
+                    .withDurationInSeconds(durationInSeconds)
+                    .build();
+            return new MoveToPose(followTrajectory);
         }
     }
 }

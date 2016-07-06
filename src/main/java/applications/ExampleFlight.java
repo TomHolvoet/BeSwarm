@@ -102,15 +102,16 @@ public final class ExampleFlight {
         commands.add(hoverFiveSecond);
 
         final Command followTrajectory = FollowTrajectory.builder()
-                .stateEstimator(stateEstimator)
-                .velocityService(velocityService)
-                .trajectory4d(finiteTrajectory4d)
-                .durationInSeconds(finiteTrajectory4d.getTrajectoryDuration())
-                .pidLinearXParameters(pidLinearX)
-                .pidLinearYParameters(pidLinearY)
-                .pidLinearZParameters(pidLinearZ)
-                .pidAngularZParameters(pidAngularZ)
+                .withVelocityService(velocityService)
+                .withStateEstimator(stateEstimator)
+                .withTrajectory4d(finiteTrajectory4d)
+                .withDurationInSeconds(finiteTrajectory4d.getTrajectoryDuration())
+                .withPidLinearXParameters(pidLinearX)
+                .withPidLinearYParameters(pidLinearY)
+                .withPidLinearZParameters(pidLinearZ)
+                .withPidAngularZParameters(pidAngularZ)
                 .build();
+
         commands.add(followTrajectory);
 
         final Command land = Land.create(landService, flyingStateService);
