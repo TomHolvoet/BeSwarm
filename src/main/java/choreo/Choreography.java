@@ -166,11 +166,25 @@ public final class Choreography extends BasicTrajectory
         public abstract double getDuration();
     }
 
+    public static interface BuildableStepBuilder {
+        public BuildableStepBuilder withTrajectory(FiniteTrajectory4d trajectory);
+
+        public TimingRequiredStepBuilder withTrajectory(Trajectory4d trajectory);
+
+        public Choreography build();
+    }
+
+    public static interface TimingRequiredStepBuilder {
+        public BuildableStepBuilder forTime(double duration);
+    }
+
     /**
      * Builder class for building choreography instances.
      */
-    public static class Builder {
+    public static class Builder implements BuildableStepBuilder, TimingRequiredStepBuilder {
+
         private final List<ChoreoSegment> segments;
+        private Trajectory4d tempTarget;
 
         /**
          * Creates a new Builder for choreographies.
@@ -184,84 +198,42 @@ public final class Choreography extends BasicTrajectory
          * @return A segmentBuilder instance to specify the duration to
          * execute given trajectory with.
          */
-        public TimingStepBuilder withTrajectory(Trajectory4d trajectory) {
-            return new ConcreteSegmentBuilder(trajectory);
+        @Override
+        public TimingRequiredStepBuilder withTrajectory(Trajectory4d trajectory) {
+            this.tempTarget = trajectory;
+            return this;
         }
 
         /**
          * @param trajectory The trajectory to add.
          * @return this builder instance.
          */
-        public TargetStepBuilder withTrajectory(
-                FiniteTrajectory4d trajectory) {
-            return new ConcreteSegmentBuilder(trajectory);
-        }
-
-        private Builder getBuilder() {
+        @Override
+        public BuildableStepBuilder withTrajectory(FiniteTrajectory4d trajectory) {
+            addSegmentWithDuration(trajectory, trajectory.getTrajectoryDuration());
             return this;
         }
 
         /**
          * @return A fully built choreography instance.
          */
+        @Override
         public Choreography build() {
             return new Choreography(segments);
         }
 
-        public static interface TargetStepBuilder {
-            public TargetStepBuilder withTrajectory(FiniteTrajectory4d trajectory);
-
-            public TimingStepBuilder withTrajectory(Trajectory4d trajectory);
-
-            public Choreography build();
+        /**
+         * @param duration the duration of the previously added trajectory.
+         * @return A Builder instance.
+         */
+        @Override
+        public BuildableStepBuilder forTime(double duration) {
+            addSegmentWithDuration(tempTarget, duration);
+            return this;
         }
 
-        public static interface TimingStepBuilder {
-            public TargetStepBuilder forTime(double duration);
-        }
-
-        public class ConcreteSegmentBuilder implements TargetStepBuilder, TimingStepBuilder {
-            private final Trajectory4d target;
-            private double duration;
-
-            private ConcreteSegmentBuilder(Trajectory4d target) {
-                this.target = target;
-            }
-
-            private ConcreteSegmentBuilder(FiniteTrajectory4d target) {
-                this((Trajectory4d) target);
-                this.duration = target.getTrajectoryDuration();
-            }
-
-            @Override
-            public TargetStepBuilder withTrajectory(FiniteTrajectory4d trajectory) {
-                addSegmentWithDuration(trajectory.getTrajectoryDuration());
-                return getBuilder().withTrajectory(trajectory);
-            }
-
-            @Override
-            public TimingStepBuilder withTrajectory(Trajectory4d trajectory) {
-                addSegmentWithDuration(duration);
-                return getBuilder().withTrajectory(trajectory);
-            }
-
-            @Override
-            public Choreography build() {
-                addSegmentWithDuration(duration);
-                return getBuilder().build();
-            }
-
-            @Override
-            public TargetStepBuilder forTime(double duration) {
-                addSegmentWithDuration(duration);
-                return null;
-            }
-
-            private void addSegmentWithDuration(double duration) {
-                segments.add(
-                        new AutoValue_Choreography_ChoreoSegment(this.target,
-                                duration));
-            }
+        private void addSegmentWithDuration(Trajectory4d target, double duration) {
+            segments.add(new AutoValue_Choreography_ChoreoSegment(target, duration));
         }
     }
 }
