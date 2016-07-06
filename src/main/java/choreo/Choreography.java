@@ -11,6 +11,8 @@ import control.Trajectory4d;
 import java.util.List;
 import java.util.Queue;
 
+import static com.google.common.base.Preconditions.checkArgument;
+
 /**
  * A choreography represents a sequence of different trajectories to be
  * executed for set durations.
@@ -133,13 +135,6 @@ public final class Choreography extends BasicTrajectory
                 '}';
     }
 
-    /**
-     * @return A choreography builder instance.
-     */
-    public static Builder builder() {
-        return new Builder();
-    }
-
     @Override
     public double getTrajectoryDuration() {
         double totalDuration = 0;
@@ -147,6 +142,13 @@ public final class Choreography extends BasicTrajectory
             totalDuration += s.getDuration();
         }
         return totalDuration;
+    }
+
+    /**
+     * @return A choreography builder instance.
+     */
+    public static Builder builder() {
+        return new Builder();
     }
 
     /**
@@ -167,115 +169,94 @@ public final class Choreography extends BasicTrajectory
     }
 
     /**
-     * Builder class for building choreography instances.
+     * Step builder instance that can be built or further configured with trajectories.
      */
-    public static class Builder {
-        private final List<ChoreoSegment> segments;
-
-        /**
-         * Creates a new Builder for choreographies.
-         */
-        private Builder() {
-            this.segments = Lists.newArrayList();
-        }
-
-        /**
-         * @param trajectory The trajectory to add to the choreography.
-         * @return A segmentBuilder instance to specify the duration to
-         * execute given trajectory with.
-         */
-        public SegmentBuilder withTrajectory(Trajectory4d trajectory) {
-            return new SegmentBuilder(trajectory);
-        }
-
+    public static interface BuildableStepBuilder extends TimingRequiredStepBuilder {
         /**
          * @param trajectory The trajectory to add.
          * @return this builder instance.
          */
-        public OptionalSegmentBuilder withTrajectory(
-                FiniteTrajectory4d trajectory) {
-            return new OptionalSegmentBuilder(trajectory);
-        }
+        public BuildableStepBuilder withTrajectory(FiniteTrajectory4d trajectory);
 
-        private Builder getBuilder() {
-            return this;
-        }
+        /**
+         * @param trajectory The trajectory to add to the choreography.
+         * @return A builder instance to specify the duration to
+         * execute given trajectory for.
+         */
+        public TimingRequiredStepBuilder withTrajectory(Trajectory4d trajectory);
 
         /**
          * @return A fully built choreography instance.
          */
+        public Choreography build();
+    }
+
+    /**
+     * Step builder instance for adding timing to specified trajectory.
+     */
+    public static interface TimingRequiredStepBuilder {
+        /**
+         * @param duration the duration of the previously added trajectory.
+         * @return A Builder instance.
+         */
+        public BuildableStepBuilder forTime(double duration);
+    }
+
+    /**
+     * Builder class for building choreography instances.
+     */
+    public static class Builder implements BuildableStepBuilder, TimingRequiredStepBuilder {
+
+        private final List<ChoreoSegment> segments;
+        private Trajectory4d tempTarget;
+        private double tempDuration;
+        private boolean initial = true;
+
+        private Builder() {
+            this.segments = Lists.newArrayList();
+        }
+
+        @Override
+        public TimingRequiredStepBuilder withTrajectory(Trajectory4d trajectory) {
+            addSegmentWithDuration(tempTarget, tempDuration);
+            this.tempTarget = trajectory;
+            return this;
+        }
+
+        @Override
+        public BuildableStepBuilder withTrajectory(FiniteTrajectory4d trajectory) {
+            addSegmentWithDuration(tempTarget, tempDuration);
+            this.tempTarget = trajectory;
+            this.tempDuration = trajectory.getTrajectoryDuration();
+            return this;
+        }
+
+        @Override
         public Choreography build() {
+            addSegmentWithDuration(tempTarget, tempDuration);
             return new Choreography(segments);
         }
 
-        /**
-         * Builder for adding time duration information to supplied
-         * trajectories.
-         */
-        public class SegmentBuilder {
-
-            private final Trajectory4d target;
-
-            private SegmentBuilder(Trajectory4d target) {
-                this.target = target;
-            }
-
-            /**
-             * @param duration the duration of the previously added trajectory.
-             * @return A Builder instance.
-             */
-            public Builder forTime(double duration) {
-                addSegmentWithDuration(duration);
-                return getBuilder();
-            }
-
-            protected void addSegmentWithDuration(double duration) {
-                segments.add(
-                        new AutoValue_Choreography_ChoreoSegment(this.target,
-                                duration));
-            }
+        @Override
+        public BuildableStepBuilder forTime(double duration) {
+            checkArgument(duration > 0, "Duration should be > 0");
+            this.tempDuration = duration;
+            return this;
         }
 
-        /**
-         * Builder for optionally supplying a duration for supplied finite
-         * trajectory.
-         */
-        public final class OptionalSegmentBuilder extends SegmentBuilder {
+        private boolean hasTempState() {
+            return !initial;
+        }
 
-            private final double duration;
+        private void reset() {
+            this.initial = false;
+        }
 
-            private OptionalSegmentBuilder(FiniteTrajectory4d target) {
-                super(target);
-                this.duration = target.getTrajectoryDuration();
+        private void addSegmentWithDuration(Trajectory4d target, double duration) {
+            if (hasTempState()) {
+                segments.add(new AutoValue_Choreography_ChoreoSegment(target, duration));
             }
-
-            /**
-             * @param trajectory The trajectory to add.
-             * @return this builder instance.
-             */
-            public OptionalSegmentBuilder withTrajectory(
-                    FiniteTrajectory4d trajectory) {
-                addSegmentWithDuration(duration);
-                return getBuilder().withTrajectory(trajectory);
-            }
-
-            /**
-             * @param trajectory The trajectory to add.
-             * @return this builder instance.
-             */
-            public SegmentBuilder withTrajectory(
-                    Trajectory4d trajectory) {
-                addSegmentWithDuration(duration);
-                return getBuilder().withTrajectory(trajectory);
-            }
-
-            /**
-             * @return A fully built choreography instance.
-             */
-            public Choreography build() {
-                addSegmentWithDuration(duration);
-                return getBuilder().build();
-            }
+            reset();
         }
     }
 }
