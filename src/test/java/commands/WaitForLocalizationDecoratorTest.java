@@ -9,6 +9,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
+import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -38,7 +39,17 @@ public class WaitForLocalizationDecoratorTest {
         TimeUnit.MILLISECONDS.sleep(100);
         verify(toBeExecutedCommand, never()).execute();
 
-        when(stateEstimator.getCurrentState()).thenReturn(Optional.of(mock(DroneStateStamped.class)));
+        final DroneStateStamped firstState = mock(DroneStateStamped.class, RETURNS_DEEP_STUBS);
+        when(firstState.getTimeStampInSeconds()).thenReturn(10d);
+
+        when(stateEstimator.getCurrentState()).thenReturn(Optional.of(firstState));
+        TimeUnit.MILLISECONDS.sleep(100);
+        verify(toBeExecutedCommand, never()).execute();
+
+        final DroneStateStamped secondState = mock(DroneStateStamped.class, RETURNS_DEEP_STUBS);
+        when(secondState.getTimeStampInSeconds()).thenReturn(11d);
+
+        when(stateEstimator.getCurrentState()).thenReturn(Optional.of(secondState));
         TimeUnit.MILLISECONDS.sleep(100);
         verify(toBeExecutedCommand).execute();
 

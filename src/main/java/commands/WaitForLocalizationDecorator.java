@@ -6,6 +6,7 @@ import control.localization.StateEstimator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.Nullable;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -18,6 +19,8 @@ public final class WaitForLocalizationDecorator implements Command {
     private final StateEstimator stateEstimator;
     private final Command command;
     private static final int SLEEP_DURATION_IN_MILLISECONDS = 50;
+
+    @Nullable private DroneStateStamped lastReceivedPose;
 
     private WaitForLocalizationDecorator(StateEstimator stateEstimator, Command command) {
         this.stateEstimator = stateEstimator;
@@ -32,10 +35,17 @@ public final class WaitForLocalizationDecorator implements Command {
         logger.debug("Start waiting for localization.");
 
         while (true) {
-            final Optional<DroneStateStamped> droneStateStamped = stateEstimator.getCurrentState();
+            final Optional<DroneStateStamped> droneStateStampedOptional = stateEstimator.getCurrentState();
 
-            if (droneStateStamped.isPresent()) {
-                break;
+            if (droneStateStampedOptional.isPresent()) {
+                final DroneStateStamped droneStateStamped = droneStateStampedOptional.get();
+                if (lastReceivedPose == null) {
+                    lastReceivedPose = droneStateStamped;
+                } else {
+                    if (droneStateStamped.getTimeStampInSeconds() != lastReceivedPose.getTimeStampInSeconds()) {
+                        break;
+                    }
+                }
             }
 
             try {
