@@ -118,10 +118,14 @@ public class CircleTrajectory4DTest {
 
     @Test
     public void testNoAngularMovement() {
+        testAngularMovement(0);
+    }
+
+    private void testAngularMovement(double angle) {
         double centerx = 15;
         double centery = 10;
         double centerz = 20;
-        double orientation = 0;
+        double orientation = angle;
         List<Double> lz = Lists.newArrayList();
         target = Trajectories
                 .newConstantYawCircleTrajectory4D(Point4D.create(centerx, centery, centerz, 0),
@@ -131,6 +135,11 @@ public class CircleTrajectory4DTest {
         }
         assertBounds(lz, orientation,
                 orientation);
+    }
+
+    @Test
+    public void testConcreteAngularMovement() {
+        testAngularMovement(Math.PI / 2);
     }
 
     @Test(expected = IllegalArgumentException.class)
