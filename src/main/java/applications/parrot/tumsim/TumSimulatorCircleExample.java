@@ -1,7 +1,7 @@
 package applications.parrot.tumsim;
 
-import applications.trajectory.Point4D;
 import applications.trajectory.Trajectories;
+import applications.trajectory.points.Point3D;
 import choreo.Choreography;
 import control.FiniteTrajectory4d;
 import control.Trajectory4d;
@@ -27,22 +27,21 @@ public class TumSimulatorCircleExample extends AbstractNodeMain {
     }
 
     public static FiniteTrajectory4d getConcreteTrajectory() {
-//        final Trajectory4d init = Trajectories.newHoldPositionTrajectory(Point4D.create(2, -2, 1.5, 0));
+//        Trajectory4d init = Trajectories.newHoldPositionTrajectory(Point4D.create(2, -2, 1.5, 0));
+//        Trajectory4d second = Trajectories
+//                .newConstantYawCircleTrajectory4D(Point3D.create(1, -2, 1.5), 0.5, 0.05, 0, 0);
         //Alternatively, the builder api can also be used like this, to create circle trajectory.
-        final Trajectory4d second = Trajectories.CircleTrajectoryBuilder()
-                .setLocation(Point4D.create(1, -2, 1.5, 0))
+        Trajectory4d second = Trajectories.CircleTrajectoryBuilder()
+                .setLocation(Point3D.create(1, -2, 1.5))
                 .setRadius(0.5)
                 .setFrequency(0.05)
                 .fixYawAt(-Math.PI / 2)
                 .build();
-//        final Trajectory4d third = Trajectories.newHoldPositionTrajectory(Point4D.create(2, -2, 1, 0));
+//        Trajectory4d third = Trajectories
+//                .newHoldPositionTrajectory(Point4D.create(2, -2, 1, 0));
         return Choreography.builder()
-//                .withTrajectory(init)
-//                .forTime(10)
                 .withTrajectory(second)
                 .forTime(120)
-//                .withTrajectory(third)
-//                .forTime(10)
                 .build();
     }
 }
