@@ -1,7 +1,6 @@
 package applications.trajectory;
 
 import control.FiniteTrajectory4d;
-import control.Trajectory2d;
 import control.Trajectory4d;
 
 /**
@@ -52,6 +51,13 @@ public final class Trajectories {
     }
 
     /**
+     * @return A builder instance for Circle trajectories for custom build.
+     */
+    public static CircleTrajectory4D.Builder CircleTrajectoryBuilder() {
+        return CircleTrajectory4D.builder();
+    }
+
+    /**
      * @param origin     the linear displacement in space.
      * @param radius     the radius of the circle.
      * @param frequency  the frequency in time of completing the circle.
@@ -68,48 +74,16 @@ public final class Trajectories {
     }
 
     /**
-     * @return A trajectory2d object representing an example circle
-     * trajectory with default radius(1) and frequency(5) around the origin.
-     */
-    public static Trajectory2d newExampleCircleTrajectory2D() {
-        return CircleTrajectory2D.builder().build();
-    }
-
-    /**
-     * @param origin    the linear displacement in space.
-     * @param radius    the radius of the circle.
-     * @param frequency the frequency in time of completing the circle.
-     * @param clockwise clockwise rotation if true.
-     * @return A new circle  trajectory in 2d format.
-     */
-    public static Trajectory2d newCircleTrajectory2D(Point4D origin,
-            double radius, double frequency, boolean clockwise) {
-        return CircleTrajectory2D.builder().setRadius(radius)
-                .setFrequency(frequency).setClockwise(clockwise)
-                .setOrigin(origin).build();
-    }
-
-    /**
-     * A trajectory2d object representing an example circle
-     * trajectory.
-     *
-     * @param radius    the radius of the circle.
-     * @param frequency the frequency in time of completing the circle.
-     * @return Simple 2d circle trajectory.
-     */
-    public static Trajectory2d newSimpleCircleTrajectory2D(double radius,
-            double frequency) {
-        return CircleTrajectory2D.builder().setRadius(radius)
-                .setFrequency(frequency).build();
-    }
-
-    /**
      * @return An example trajectory4d object representing a pendulum swing
      * motion
      * using default radius and frequency.
      */
     public static Trajectory4d newExamplePendulumSwingTrajectory() {
         return SwingTrajectory4D.builder().build();
+    }
+
+    public static SwingTrajectory4D.Builder SwingTrajectoryBuilder() {
+        return SwingTrajectory4D.builder();
     }
 
     /**
@@ -132,7 +106,7 @@ public final class Trajectories {
      *                   virtual string).
      * @param frequency  the frequency in time of completing the motion.
      * @param planeAngle the angle between the plane of motion and the xz plane.
-     * @return A new simple pendulum trajectory in the xz plane.
+     * @return A new simple pendulum trajectory with customizable angle to the xz plane.
      */
     public static Trajectory4d newPendulumSwingTrajectory(Point4D origin,
             double radius, double frequency, double planeAngle) {
