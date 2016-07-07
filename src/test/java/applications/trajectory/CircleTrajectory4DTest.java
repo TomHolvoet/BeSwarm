@@ -107,7 +107,7 @@ public class CircleTrajectory4DTest {
         target = Trajectories
                 .newCircleTrajectory4D(
                         Point4D.create(centerx, centery, centerz, 0),
-                        radius, 0.1, Math.PI / 2);
+                        radius, frequency, Math.PI / 2);
         for (int i = 0; i < 1000; i++) {
             lz.add(target.getDesiredPositionZ(i / 10d));
         }
@@ -129,7 +129,7 @@ public class CircleTrajectory4DTest {
         List<Double> lz = Lists.newArrayList();
         target = Trajectories
                 .newConstantYawCircleTrajectory4D(Point4D.create(centerx, centery, centerz, 0),
-                        radius, 0.1, 0, orientation);
+                        radius, frequency, 0, orientation);
         for (int i = 0; i < 1000; i++) {
             lz.add(target.getDesiredAngleZ(i / 10d));
         }
@@ -148,9 +148,8 @@ public class CircleTrajectory4DTest {
         double centery = 10;
         double centerz = 20;
         double orientation = Math.PI * 2 + 5;
-        List<Double> lz = Lists.newArrayList();
         target = Trajectories
-                .newConstantYawCircleTrajectory4D(Point4D.create(centerx, centery, centerz, 0),
-                        radius, 0.1, 0, orientation);
+                .newConstantYawCircleTrajectory4D(origin,
+                        radius, frequency, 0, orientation);
     }
 }
