@@ -40,7 +40,7 @@ public class TumSimulatorCircleExample extends AbstractNodeMain {
                 .withTrajectory(init)
                 .forTime(10)
                 .withTrajectory(second)
-                .forTime(40)
+                .forTime(120)
                 .withTrajectory(third)
                 .forTime(10)
                 .build();
