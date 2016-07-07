@@ -1,5 +1,7 @@
 package applications.trajectory;
 
+import applications.trajectory.points.Point3D;
+import applications.trajectory.points.Point4D;
 import control.Trajectory2d;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -24,10 +26,9 @@ class CircleTrajectory2D extends PeriodicTrajectory
      *                  Represents a linear displacement.
      * @param clockwise Turn right hand if true;
      */
-    private CircleTrajectory2D(double radius, double frequency, Point4D origin,
-            double phase,
+    private CircleTrajectory2D(double radius, double frequency, Point3D origin, double phase,
             boolean clockwise) {
-        super(phase, origin, radius, frequency);
+        super(phase, Point4D.from(origin, 0), radius, frequency);
         this.freq2pi = frequency * TWOPI * (clockwise ? 1 : -1);
         this.rfreq2pi = frequency * radius * TWOPI * (clockwise ? 1 : -1);
         checkArgument(Math.abs(rfreq2pi) < MAX_ABSOLUTE_VELOCITY,
@@ -72,7 +73,7 @@ class CircleTrajectory2D extends PeriodicTrajectory
     static class Builder {
         private double radius = 1;
         private double frequency = 5;
-        private Point4D origin = Point4D.origin();
+        private Point3D origin = Point3D.origin();
         private boolean clockwise = true;
         private double phase = 0;
 
@@ -86,7 +87,7 @@ class CircleTrajectory2D extends PeriodicTrajectory
             return this;
         }
 
-        public Builder setOrigin(Point4D origin) {
+        public Builder setOrigin(Point3D origin) {
             this.origin = origin;
             return this;
         }

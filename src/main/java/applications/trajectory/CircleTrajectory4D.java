@@ -1,5 +1,7 @@
 package applications.trajectory;
 
+import applications.trajectory.points.Point3D;
+import applications.trajectory.points.Point4D;
 import control.Trajectory1d;
 import control.Trajectory4d;
 
@@ -17,26 +19,26 @@ import static com.google.common.base.Preconditions.checkArgument;
  */
 final class CircleTrajectory4D extends PeriodicTrajectory
         implements Trajectory4d {
-    private final Point4D location;
+    private final Point3D location;
     private final CircleTrajectory2D xycircle;
     private final double scaleFactor;
     private final Trajectory1d angularMotion;
 
-    private CircleTrajectory4D(Point4D location, double phase, double radius, double frequency,
+    private CircleTrajectory4D(Point3D location, double phase, double radius, double frequency,
             double planeAngle) {
         this(location, phase, radius, frequency, planeAngle,
                 new ConstantVelocityAngularTrajectory1D(frequency, phase));
     }
 
-    private CircleTrajectory4D(Point4D location, double phase, double radius, double frequency,
+    private CircleTrajectory4D(Point3D location, double phase, double radius, double frequency,
             double planeAngle, double constantYawAngle) {
         this(location, phase, radius, frequency, planeAngle,
                 new LinearTrajectory1D(constantYawAngle, 0));
     }
 
-    private CircleTrajectory4D(Point4D location, double phase, double radius, double frequency,
+    private CircleTrajectory4D(Point3D location, double phase, double radius, double frequency,
             double planeAngle, Trajectory1d yawTrajectory) {
-        super(phase, location, radius, frequency);
+        super(phase, Point4D.from(location, 0), radius, frequency);
         this.location = location;
         this.scaleFactor = StrictMath.sin(planeAngle);
         this.xycircle = CircleTrajectory2D.builder().setRadius(radius).setFrequency(frequency)
@@ -104,7 +106,7 @@ final class CircleTrajectory4D extends PeriodicTrajectory
      * Builder class for 4D circle trajectories.
      */
     public static class Builder {
-        private Point4D location = Point4D.origin();
+        private Point3D location = Point3D.origin();
         private double radius = 1;
         private double frequency = 0.05;
         private double planeAngle = 0;
@@ -115,7 +117,7 @@ final class CircleTrajectory4D extends PeriodicTrajectory
         private Builder() {
         }
 
-        public Builder setLocation(Point4D location) {
+        public Builder setLocation(Point3D location) {
             this.location = location;
             return this;
         }

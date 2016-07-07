@@ -1,5 +1,7 @@
 package applications.trajectory;
 
+import applications.trajectory.points.Point4D;
+
 /**
  * Abstract class for periodic trajectory commonalities.
  *

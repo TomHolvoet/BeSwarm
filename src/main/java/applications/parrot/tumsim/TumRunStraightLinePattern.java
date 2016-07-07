@@ -1,6 +1,6 @@
 package applications.parrot.tumsim;
 
-import applications.trajectory.Point4D;
+import applications.trajectory.points.Point4D;
 import applications.trajectory.Trajectories;
 import control.FiniteTrajectory4d;
 import org.ros.namespace.GraphName;

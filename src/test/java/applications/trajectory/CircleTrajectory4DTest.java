@@ -1,5 +1,6 @@
 package applications.trajectory;
 
+import applications.trajectory.points.Point3D;
 import com.google.common.collect.Lists;
 import control.Trajectory4d;
 import org.junit.Before;
@@ -16,7 +17,7 @@ public class CircleTrajectory4DTest {
 
     private Trajectory4d target;
     private Trajectory4d targetPlaneShift;
-    private Point4D origin = Point4D.create(0, 0, 5, 0);
+    private Point3D origin = Point3D.create(0, 0, 5);
     private double radius = 1d;
     private double frequency = 0.1;
     private double planeshift = Math.PI / 6d;
@@ -78,7 +79,7 @@ public class CircleTrajectory4DTest {
         double radius = 1;
         target = Trajectories
                 .newCircleTrajectory4D(
-                        Point4D.create(centerx, centery, centerz, 0),
+                        Point3D.create(centerx, centery, centerz),
                         radius, 0.1, 0);
         List<Double> lx = Lists.newArrayList();
         List<Double> ly = Lists.newArrayList();
@@ -106,7 +107,7 @@ public class CircleTrajectory4DTest {
         List<Double> lz = Lists.newArrayList();
         target = Trajectories
                 .newCircleTrajectory4D(
-                        Point4D.create(centerx, centery, centerz, 0),
+                        Point3D.create(centerx, centery, centerz),
                         radius, frequency, Math.PI / 2);
         for (int i = 0; i < 1000; i++) {
             lz.add(target.getDesiredPositionZ(i / 10d));
@@ -128,7 +129,7 @@ public class CircleTrajectory4DTest {
         double orientation = angle;
         List<Double> lz = Lists.newArrayList();
         target = Trajectories
-                .newConstantYawCircleTrajectory4D(Point4D.create(centerx, centery, centerz, 0),
+                .newConstantYawCircleTrajectory4D(Point3D.create(centerx, centery, centerz),
                         radius, frequency, 0, orientation);
         for (int i = 0; i < 1000; i++) {
             lz.add(target.getDesiredAngleZ(i / 10d));

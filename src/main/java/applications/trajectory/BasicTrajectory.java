@@ -1,5 +1,7 @@
 package applications.trajectory;
 
+import applications.trajectory.points.Point4D;
+
 /**
  * Basic trajectories to be executed and synced at the time set by the user.
  *

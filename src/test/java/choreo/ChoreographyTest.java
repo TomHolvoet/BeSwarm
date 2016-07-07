@@ -1,7 +1,8 @@
 package choreo;
 
-import applications.trajectory.Point4D;
 import applications.trajectory.Trajectories;
+import applications.trajectory.points.Point3D;
+import applications.trajectory.points.Point4D;
 import control.Trajectory4d;
 import org.junit.Before;
 import org.junit.Test;
@@ -29,7 +30,7 @@ public class ChoreographyTest {
         holdTrajectory = Trajectories.newHoldPositionTrajectory(
                 point);
         pathTrajectory = Trajectories
-                .newCircleTrajectory4D(Point4D.origin(), radius, frequency, 0);
+                .newCircleTrajectory4D(Point3D.origin(), radius, frequency, 0);
         this.choreotarget = Choreography.builder()
                 .withTrajectory(holdTrajectory).forTime(duration)
                 .withTrajectory(pathTrajectory)
@@ -53,7 +54,7 @@ public class ChoreographyTest {
                 .newStraightLineTrajectory(Point4D.create(0, 0, 1.5, 0),
                         Point4D.create(5, 5, 5, 0), 0.6);
         Trajectory4d second = Trajectories
-                .newCircleTrajectory4D(Point4D.create(4, 5, 5, 0), 1, 0.10,
+                .newCircleTrajectory4D(Point3D.create(4, 5, 5), 1, 0.10,
                         Math.PI / 4);
         Trajectory4d third = Trajectories
                 .newHoldPositionTrajectory(Point4D.create(1, 1, 2, 0));

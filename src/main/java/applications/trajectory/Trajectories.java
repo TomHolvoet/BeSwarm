@@ -1,5 +1,7 @@
 package applications.trajectory;
 
+import applications.trajectory.points.Point3D;
+import applications.trajectory.points.Point4D;
 import control.FiniteTrajectory4d;
 import control.Trajectory4d;
 
@@ -27,7 +29,7 @@ public final class Trajectories {
      * @return a simple flat circle trajectory in the xy-plane in a
      * Trajectory4D format.
      */
-    public static Trajectory4d newFlatCircleTrajectory4D(Point4D origin,
+    public static Trajectory4d newFlatCircleTrajectory4D(Point3D origin,
             double radius,
             double frequency) {
         return CircleTrajectory4D.builder().setRadius(radius)
@@ -42,7 +44,7 @@ public final class Trajectories {
      *                   xy-plane.
      * @return a circle trajectory in space as a Trajectory4d object.
      */
-    public static Trajectory4d newCircleTrajectory4D(Point4D origin,
+    public static Trajectory4d newCircleTrajectory4D(Point3D origin,
             double radius,
             double frequency, double planeAngle) {
         return CircleTrajectory4D.builder().setRadius(radius)
@@ -65,12 +67,12 @@ public final class Trajectories {
      *                   xy-plane.
      * @return a circle trajectory in space with constant yaw as a Trajectory4d object.
      */
-    public static Trajectory4d newConstantYawCircleTrajectory4D(Point4D origin,
-            double radius,
+    public static Trajectory4d newConstantYawCircleTrajectory4D(Point3D origin, double radius,
             double frequency, double planeAngle, double fixedYawOrientation) {
         return CircleTrajectory4D.builder()
                 .setLocation(origin).setRadius(radius)
-                .setFrequency(0.1).setPlaneAngle(planeAngle).fixYawAt(fixedYawOrientation).build();
+                .setFrequency(frequency).setPlaneAngle(planeAngle).fixYawAt(fixedYawOrientation)
+                .build();
     }
 
     /**
