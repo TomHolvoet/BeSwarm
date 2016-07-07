@@ -4,25 +4,25 @@
     <include file="$(find bebop_tools)/launch/joy_teleop.launch"/>
 
     <param name="beswarm/pid_linear_x_kp" value="0.3"/>
-    <param name="beswarm/pid_linear_x_kd" value="0.1"/>
+    <param name="beswarm/pid_linear_x_kd" value="0.4"/>
     <param name="beswarm/pid_linear_x_ki" value="0.0"/>
     <!--<param name="beswarm/pid_min_vel_x" value="0.25"/>-->
     <!--<param name="beswarm/pid_max_vel_x" value="0.25"/>-->
 
     <param name="beswarm/pid_linear_y_kp" value="0.3"/>
-    <param name="beswarm/pid_linear_y_kd" value="0.1"/>
+    <param name="beswarm/pid_linear_y_kd" value="0.4"/>
     <param name="beswarm/pid_linear_y_ki" value="0.0"/>
     <!--<param name="beswarm/pid_min_vel_y" value="0.25"/>-->
     <!--<param name="beswarm/pid_max_vel_y" value="0.25"/>-->
 
     <param name="beswarm/pid_linear_z_kp" value="0.3"/>
-    <param name="beswarm/pid_linear_z_kd" value="0.1"/>
+    <param name="beswarm/pid_linear_z_kd" value="0.4"/>
     <param name="beswarm/pid_linear_z_ki" value="0.0"/>
     <!--<param name="beswarm/pid_min_vel_z" value="0.25"/>-->
     <!--<param name="beswarm/pid_max_vel_z" value="0.25"/>-->
 
     <param name="beswarm/pid_angular_z_kp" value="0.3"/>
-    <param name="beswarm/pid_angular_z_kd" value="0.1"/>
+    <param name="beswarm/pid_angular_z_kd" value="0.4"/>
     <param name="beswarm/pid_angular_z_ki" value="0.0"/>
     <!--<param name="beswarm/pid_min_vel_yaw" value="0.1"/>-->
     <!--<param name="beswarm/pid_max_vel_yaw" value="0.1"/>-->
