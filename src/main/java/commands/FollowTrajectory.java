@@ -105,7 +105,6 @@ public final class FollowTrajectory implements Command {
 
             if (counter >= stateLifeDurationInNumberOfControlLoops) {
                 logger.debug("Pose is outdated. Stop sending velocity.");
-//                velocityService.sendVelocityMessage(zeroVelocity, zeroPose);
             } else {
                 logger.trace("Got pose and velocity. Start computing the next velocity response.");
                 final double currentTimeInSeconds = (System.nanoTime() - startTimeInNanoSeconds) /
