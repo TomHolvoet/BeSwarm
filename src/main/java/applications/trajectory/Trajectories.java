@@ -67,10 +67,10 @@ public final class Trajectories {
      */
     public static Trajectory4d newConstantYawCircleTrajectory4D(Point4D origin,
             double radius,
-            double frequency, double planeAngle) {
+            double frequency, double planeAngle, double fixedYawOrientation) {
         return CircleTrajectory4D.builder()
                 .setLocation(origin).setRadius(radius)
-                .setFrequency(0.1).setPlaneAngle(planeAngle).setAngularMovement(false).build();
+                .setFrequency(0.1).setPlaneAngle(planeAngle).fixYawAt(fixedYawOrientation).build();
     }
 
     /**

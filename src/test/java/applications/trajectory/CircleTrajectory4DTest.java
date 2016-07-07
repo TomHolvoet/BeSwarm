@@ -121,16 +121,27 @@ public class CircleTrajectory4DTest {
         double centerx = 15;
         double centery = 10;
         double centerz = 20;
+        double orientation = 0;
         List<Double> lz = Lists.newArrayList();
         target = Trajectories
                 .newConstantYawCircleTrajectory4D(Point4D.create(centerx, centery, centerz, 0),
-                        radius, 0.1, 0);
+                        radius, 0.1, 0, orientation);
         for (int i = 0; i < 1000; i++) {
             lz.add(target.getDesiredAngleZ(i / 10d));
         }
-        assertBounds(lz, 0,
-                0);
-
+        assertBounds(lz, orientation,
+                orientation);
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void testCheckArgWithin2PI() {
+        double centerx = 15;
+        double centery = 10;
+        double centerz = 20;
+        double orientation = Math.PI * 2 + 5;
+        List<Double> lz = Lists.newArrayList();
+        target = Trajectories
+                .newConstantYawCircleTrajectory4D(Point4D.create(centerx, centery, centerz, 0),
+                        radius, 0.1, 0, orientation);
+    }
 }
