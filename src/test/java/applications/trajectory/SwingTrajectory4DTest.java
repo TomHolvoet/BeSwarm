@@ -1,5 +1,6 @@
 package applications.trajectory;
 
+import applications.trajectory.points.Point4D;
 import com.google.common.collect.Lists;
 import control.Trajectory4d;
 import org.junit.Before;

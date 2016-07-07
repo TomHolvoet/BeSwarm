@@ -1,5 +1,6 @@
 package applications.trajectory;
 
+import applications.trajectory.points.Point4D;
 import com.google.common.annotations.VisibleForTesting;
 import control.Trajectory1d;
 

@@ -1,5 +1,6 @@
 package applications.trajectory;
 
+import applications.trajectory.points.Point4D;
 import control.Trajectory1d;
 import control.Trajectory2d;
 import control.Trajectory4d;
@@ -25,8 +26,8 @@ class SwingTrajectory4D extends PeriodicTrajectory
         this.swing = PendulumTrajectory2D.builder().setRadius(radius)
                 .setFrequency(frequency).setOrigin(origin).build();
         //keep constant yaw:
-        this.angularMotion = new ConstantVelocityAngularTrajectory1D(0,
-                0);
+        //        this.angularMotion = new ConstantVelocityAngularTrajectory1D(0, 0);
+        this.angularMotion = new LinearTrajectory1D(origin.getAngle(), 0);
     }
 
     static Builder builder() {

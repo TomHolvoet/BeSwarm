@@ -1,5 +1,6 @@
 package applications.trajectory;
 
+import applications.trajectory.points.Point4D;
 import control.Trajectory1d;
 import control.Trajectory4d;
 
