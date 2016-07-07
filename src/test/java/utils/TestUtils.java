@@ -1,10 +1,14 @@
-package utils.math;
+package utils;
 
+import control.Trajectory4d;
 import control.dto.BodyFrameVelocity;
 import control.dto.InertialFrameVelocity;
 import control.dto.Pose;
 
 import static com.google.common.truth.Truth.assertThat;
+import static org.mockito.Matchers.anyDouble;
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.verify;
 
 /**
  * @author Hoang Tung Dinh
@@ -31,5 +35,17 @@ public final class TestUtils {
         assertThat(pose1.y()).isWithin(DELTA).of(pose2.y());
         assertThat(pose1.z()).isWithin(DELTA).of(pose2.z());
         assertThat(pose1.yaw()).isWithin(DELTA).of(pose2.yaw());
+    }
+
+    public static void verifyTrajectoryCalled(Trajectory4d trajectory4d) {
+        verify(trajectory4d, atLeastOnce()).getDesiredPositionX(anyDouble());
+        verify(trajectory4d, atLeastOnce()).getDesiredPositionY(anyDouble());
+        verify(trajectory4d, atLeastOnce()).getDesiredPositionZ(anyDouble());
+        verify(trajectory4d, atLeastOnce()).getDesiredAngleZ(anyDouble());
+
+        verify(trajectory4d, atLeastOnce()).getDesiredVelocityX(anyDouble());
+        verify(trajectory4d, atLeastOnce()).getDesiredVelocityY(anyDouble());
+        verify(trajectory4d, atLeastOnce()).getDesiredVelocityZ(anyDouble());
+        verify(trajectory4d, atLeastOnce()).getDesiredAngularVelocityZ(anyDouble());
     }
 }

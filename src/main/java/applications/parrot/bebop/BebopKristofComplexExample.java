@@ -1,6 +1,7 @@
 package applications.parrot.bebop;
 
 import applications.ExampleFlight;
+import applications.parrot.tumsim.TumSimulatorCircleExample;
 import applications.trajectory.Trajectories;
 import applications.trajectory.points.Point3D;
 import applications.trajectory.points.Point4D;
@@ -51,7 +52,7 @@ public class BebopKristofComplexExample extends AbstractNodeMain {
         final StateEstimator stateEstimator = BebopStateEstimatorWithPoseStampedAndOdom.create(
                 getPoseSubscriber(connectedNode), getOdometrySubscriber(connectedNode));
 
-        final FiniteTrajectory4d trajectory4d = getFiniteTrajectory(connectedNode);
+        final FiniteTrajectory4d trajectory4d = TumSimulatorCircleExample.getConcreteTrajectory();
 
         final ExampleFlight exampleFlight = ExampleFlight
                 .create(serviceFactory, stateEstimator, trajectory4d,

@@ -74,14 +74,14 @@ public class BebopHover extends AbstractNodeMain {
 
         Command takeoff = Takeoff.create(takeoffService);
         Command moveToPose = MoveToPose.builder()
-                .goalPose(Pose.builder().x(locationX).y(locationY).z(locationZ).yaw(locationYaw).build())
-                .velocityService(velocityService)
-                .stateEstimator(stateEstimator)
-                .pidLinearXParameters(
+                .withVelocityService(velocityService)
+                .withStateEstimator(stateEstimator)
+                .withGoalPose(Pose.builder().x(locationX).y(locationY).z(locationZ).yaw(locationYaw).build())
+                .withDurationInSeconds(flightDuration)
+                .withPidLinearXParameters(
                         PidParameters.builder().kp(pidLinearXKP).ki(pidLinearXKI).kd(pidLinearXKD).build())
-                .pidLinearYParameters(
+                .withPidLinearYParameters(
                         PidParameters.builder().kp(pidLinearYKP).ki(pidLinearYKI).kd(pidLinearYKD).build())
-                .durationInSeconds(flightDuration)
                 .build();
         Command land = Land.create(landService, flyingStateService);
 
