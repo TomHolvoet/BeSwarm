@@ -6,6 +6,7 @@ import commands.FollowTrajectory;
 import commands.Hover;
 import commands.Land;
 import commands.Takeoff;
+import commands.WaitForLocalizationDecorator;
 import control.DefaultPidParameters;
 import control.FiniteTrajectory4d;
 import control.PidParameters;
@@ -112,7 +113,10 @@ public final class ExampleFlight {
                 .withPidAngularZParameters(pidAngularZ)
                 .build();
 
-        commands.add(followTrajectory);
+        final Command waitForLocalizationThenFollowTrajectory = WaitForLocalizationDecorator.create(stateEstimator,
+                followTrajectory);
+
+        commands.add(waitForLocalizationThenFollowTrajectory);
 
         final Command land = Land.create(landService, flyingStateService);
         commands.add(land);
