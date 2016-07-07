@@ -27,7 +27,7 @@ public class TumSimulatorCircleExample extends AbstractNodeMain {
     }
 
     public static FiniteTrajectory4d getConcreteTrajectory() {
-        final Trajectory4d init = Trajectories.newHoldPositionTrajectory(Point4D.create(2, -2, 1.5, 0));
+//        final Trajectory4d init = Trajectories.newHoldPositionTrajectory(Point4D.create(2, -2, 1.5, 0));
         //Alternatively, the builder api can also be used like this, to create circle trajectory.
         final Trajectory4d second = Trajectories.CircleTrajectoryBuilder()
                 .setLocation(Point4D.create(1, -2, 1.5, 0))
@@ -35,14 +35,14 @@ public class TumSimulatorCircleExample extends AbstractNodeMain {
                 .setFrequency(0.05)
                 .fixYawAt(-Math.PI / 2)
                 .build();
-        final Trajectory4d third = Trajectories.newHoldPositionTrajectory(Point4D.create(2, -2, 1, 0));
+//        final Trajectory4d third = Trajectories.newHoldPositionTrajectory(Point4D.create(2, -2, 1, 0));
         return Choreography.builder()
-                .withTrajectory(init)
-                .forTime(10)
+//                .withTrajectory(init)
+//                .forTime(10)
                 .withTrajectory(second)
                 .forTime(120)
-                .withTrajectory(third)
-                .forTime(10)
+//                .withTrajectory(third)
+//                .forTime(10)
                 .build();
     }
 }

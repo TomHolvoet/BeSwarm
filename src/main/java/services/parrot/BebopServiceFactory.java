@@ -36,17 +36,16 @@ public final class BebopServiceFactory extends ParrotServiceFactory {
     @Override
     public VelocityService createVelocityService() {
         final String topicName = "/" + getDroneName() + "/cmd_vel";
-        // TODO use the maximum velocity
         final VelocityService velocityService = ParrotVelocityService.builder()
                 .publisher(getConnectedNode().<Twist>newPublisher(topicName, Twist._TYPE))
-                .minLinearX(-0.25)
-                .minLinearY(-0.25)
-                .minLinearZ(-0.25)
-                .minAngularZ(-0.25)
-                .maxLinearX(0.25)
-                .maxLinearY(0.25)
-                .maxLinearZ(0.25)
-                .maxAngularZ(0.25)
+                .minLinearX(-1)
+                .minLinearY(-1)
+                .minLinearZ(-1)
+                .minAngularZ(-1)
+                .maxLinearX(1)
+                .maxLinearY(1)
+                .maxLinearZ(1)
+                .maxAngularZ(1)
                 .build();
         logger.info("Velocity service connected to {}", topicName);
         return velocityService;
