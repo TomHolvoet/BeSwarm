@@ -171,19 +171,19 @@ public final class Choreography extends BasicTrajectory
     /**
      * Step builder instance that can be built or further configured with trajectories.
      */
-    public static interface BuildableStepBuilder extends TimingRequiredStepBuilder {
+    public interface BuildableStepBuilder extends TimingRequiredStepBuilder {
         /**
          * @param trajectory The trajectory to add.
          * @return this builder instance.
          */
-        public BuildableStepBuilder withTrajectory(FiniteTrajectory4d trajectory);
+        BuildableStepBuilder withTrajectory(FiniteTrajectory4d trajectory);
 
         /**
          * @param trajectory The trajectory to add to the choreography.
          * @return A builder instance to specify the duration to
          * execute given trajectory for.
          */
-        public TimingRequiredStepBuilder withTrajectory(Trajectory4d trajectory);
+        TimingRequiredStepBuilder withTrajectory(Trajectory4d trajectory);
 
         /**
          * @return A fully built choreography instance.
@@ -194,12 +194,12 @@ public final class Choreography extends BasicTrajectory
     /**
      * Step builder instance for adding timing to specified trajectory.
      */
-    public static interface TimingRequiredStepBuilder {
+    public interface TimingRequiredStepBuilder {
         /**
          * @param duration the duration of the previously added trajectory.
          * @return A Builder instance.
          */
-        public BuildableStepBuilder forTime(double duration);
+        BuildableStepBuilder forTime(double duration);
     }
 
     /**

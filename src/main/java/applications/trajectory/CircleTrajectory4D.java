@@ -3,6 +3,8 @@ package applications.trajectory;
 import control.Trajectory1d;
 import control.Trajectory4d;
 
+import static com.google.common.base.Preconditions.checkArgument;
+
 /**
  * A 4D motion primitive for circle motion in 3 dimensions.
  * This circle is defined by a displacement parameter for relocating the
@@ -20,18 +22,26 @@ final class CircleTrajectory4D extends PeriodicTrajectory
     private final double scaleFactor;
     private final Trajectory1d angularMotion;
 
-    private CircleTrajectory4D(Point4D location, double phase, double radius,
-            double frequency,
-            double planeAngle, boolean angularMovement) {
+    private CircleTrajectory4D(Point4D location, double phase, double radius, double frequency,
+            double planeAngle) {
+        this(location, phase, radius, frequency, planeAngle,
+                new ConstantVelocityAngularTrajectory1D(frequency, phase));
+    }
+
+    private CircleTrajectory4D(Point4D location, double phase, double radius, double frequency,
+            double planeAngle, double constantYawAngle) {
+        this(location, phase, radius, frequency, planeAngle,
+                new LinearTrajectory1D(constantYawAngle, 0));
+    }
+
+    private CircleTrajectory4D(Point4D location, double phase, double radius, double frequency,
+            double planeAngle, Trajectory1d yawTrajectory) {
         super(phase, location, radius, frequency);
         this.location = location;
         this.scaleFactor = StrictMath.sin(planeAngle);
-        this.xycircle = CircleTrajectory2D.builder().setRadius(radius)
-                .setFrequency(frequency).setOrigin(location).setPhase(phase)
-                .build();
-        double angularFreq = angularMovement ? frequency : 0;
-        this.angularMotion = new ConstantVelocityAngularTrajectory1D(angularFreq,
-                phase);
+        this.xycircle = CircleTrajectory2D.builder().setRadius(radius).setFrequency(frequency)
+                .setOrigin(location).setPhase(phase).build();
+        this.angularMotion = yawTrajectory;
     }
 
     static Builder builder() {
@@ -50,21 +60,18 @@ final class CircleTrajectory4D extends PeriodicTrajectory
 
     @Override
     public double getDesiredPositionY(double timeInSeconds) {
-        return (1 - scaleFactor) * (xycircle
-                .getDesiredPositionOrdinate(timeInSeconds) - location.getY())
-                + location.getY();
+        return (1 - scaleFactor) * (xycircle.getDesiredPositionOrdinate(timeInSeconds) - location
+                .getY()) + location.getY();
     }
 
     @Override
     public double getDesiredVelocityY(double timeInSeconds) {
-        return (1 - scaleFactor) * xycircle
-                .getDesiredVelocityOrdinate(timeInSeconds);
+        return (1 - scaleFactor) * xycircle.getDesiredVelocityOrdinate(timeInSeconds);
     }
 
     @Override
     public double getDesiredPositionZ(double timeInSeconds) {
-        return scaleFactor * (xycircle.getDesiredPositionOrdinate(timeInSeconds)
-                - location.getY())
+        return scaleFactor * (xycircle.getDesiredPositionOrdinate(timeInSeconds) - location.getY())
                 + location.getZ();
     }
 
@@ -103,6 +110,7 @@ final class CircleTrajectory4D extends PeriodicTrajectory
         private double planeAngle = 0;
         private double phase = 0;
         private boolean angularMovement = true;
+        private double yawDirection = 0;
 
         private Builder() {
         }
@@ -132,8 +140,14 @@ final class CircleTrajectory4D extends PeriodicTrajectory
             return this;
         }
 
-        public Builder setAngularMovement(boolean rotation) {
-            this.angularMovement = rotation;
+        /**
+         * @param yawDirection The orientation of the drone to hold constant for this trajectory.
+         * @return this builder instance.
+         */
+        public Builder fixYawAt(double yawDirection) {
+            checkArgument(Math.abs(yawDirection) < Math.PI * 2);
+            this.angularMovement = false;
+            this.yawDirection = yawDirection;
             return this;
         }
 
@@ -142,9 +156,11 @@ final class CircleTrajectory4D extends PeriodicTrajectory
          * builder object.
          */
         public CircleTrajectory4D build() {
-            return new CircleTrajectory4D(location, phase, radius,
-                    frequency,
-                    planeAngle, angularMovement);
+            if (angularMovement) {
+                return new CircleTrajectory4D(location, phase, radius, frequency, planeAngle);
+            }
+            return new CircleTrajectory4D(location, phase, radius, frequency, planeAngle,
+                    yawDirection);
         }
     }
 }
