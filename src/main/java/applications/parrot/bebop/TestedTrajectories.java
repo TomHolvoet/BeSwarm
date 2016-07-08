@@ -42,11 +42,11 @@ public final class TestedTrajectories {
         return Choreography.builder().withTrajectory(second).forTime(120).build();
     }
 
-    public static FiniteTrajectory4d getIndoorPendulum() {
+    public static FiniteTrajectory4d getSlowIndoorPendulum() {
         double yawAngle = -Math.PI / 2;
         Trajectory4d target1 = Trajectories.SwingTrajectoryBuilder()
                 .setOrigin(Point4D.create(1.5, -2, 2.0, yawAngle))
-                .setFrequency(0.067)
+                .setFrequency(0.03)
                 .setRadius(1.5)
                 .build();
         return Choreography.builder().withTrajectory(target1).forTime(120).build();

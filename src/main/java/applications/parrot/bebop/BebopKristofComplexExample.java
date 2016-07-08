@@ -52,7 +52,7 @@ public class BebopKristofComplexExample extends AbstractNodeMain {
         final StateEstimator stateEstimator = BebopStateEstimatorWithPoseStampedAndOdom.create(
                 getPoseSubscriber(connectedNode), getOdometrySubscriber(connectedNode));
 
-        final FiniteTrajectory4d trajectory4d = TestedTrajectories.getIndoorPendulum();
+        final FiniteTrajectory4d trajectory4d = TestedTrajectories.getSlowIndoorPendulum();
 
         final ExampleFlight exampleFlight = ExampleFlight
                 .create(serviceFactory, stateEstimator, trajectory4d,
