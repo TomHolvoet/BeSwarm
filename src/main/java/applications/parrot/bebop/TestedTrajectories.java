@@ -28,6 +28,10 @@ public final class TestedTrajectories {
         return Choreography.builder().withTrajectory(second).forTime(120).build();
     }
 
+    /**
+     * This trajectory has been tested and worked well with pid params 0.3 1.0 for x y, 0.3 0.6 for z and 0.3 0.4 for
+     * yaw.
+     */
     public static FiniteTrajectory4d getFastCircle() {
         Trajectory4d second = Trajectories.CircleTrajectoryBuilder()
                 .setLocation(Point3D.create(1, -2, 1.5))
@@ -39,7 +43,7 @@ public final class TestedTrajectories {
     }
 
     public static FiniteTrajectory4d getIndoorPendulum() {
-        double yawAngle = 0;
+        double yawAngle = -Math.PI / 2;
         Trajectory4d target1 = Trajectories.SwingTrajectoryBuilder()
                 .setOrigin(Point4D.create(1.5, -2, 2.5, yawAngle))
                 .setFrequency(0.067)
