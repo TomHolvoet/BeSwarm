@@ -45,7 +45,7 @@ public final class TestedTrajectories {
     public static FiniteTrajectory4d getIndoorPendulum() {
         double yawAngle = -Math.PI / 2;
         Trajectory4d target1 = Trajectories.SwingTrajectoryBuilder()
-                .setOrigin(Point4D.create(1.5, -2, 2.5, yawAngle))
+                .setOrigin(Point4D.create(1.5, -2, 2.0, yawAngle))
                 .setFrequency(0.067)
                 .setRadius(1.5)
                 .build();
