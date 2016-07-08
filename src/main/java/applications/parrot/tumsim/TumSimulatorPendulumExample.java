@@ -25,6 +25,6 @@ public class TumSimulatorPendulumExample extends AbstractNodeMain {
     }
 
     private FiniteTrajectory4d getConcreteTrajectory() {
-        return TestedTrajectories.getIndoorPendulum();
+        return TestedTrajectories.getSlowIndoorPendulum();
     }
 }
