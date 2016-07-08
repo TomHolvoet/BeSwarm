@@ -18,7 +18,7 @@ public class SwingTrajectory4DTest {
 
     private Trajectory4d target;
     private Trajectory4d targetPlaneShift;
-    private Point4D origin = Point4D.create(0, 0, 5, 0);
+    private Point4D origin = Point4D.create(2, 10, 5, 0);
     private double radius = 1d;
     private double frequency = 0.1;
     private double planeshift = Math.PI / 6d;
