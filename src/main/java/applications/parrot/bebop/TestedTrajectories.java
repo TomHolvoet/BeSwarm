@@ -42,6 +42,9 @@ public final class TestedTrajectories {
         return Choreography.builder().withTrajectory(second).forTime(120).build();
     }
 
+    /**
+     * This trajectory can work with pid params: 0.5 0.8 for x, 0.2 1.0 for y, 1.0 0.3 for z, 0.3 0.4 for yaw
+     */
     public static FiniteTrajectory4d getSlowIndoorPendulum() {
         double yawAngle = -Math.PI / 2;
         Trajectory4d target1 = Trajectories.SwingTrajectoryBuilder()
