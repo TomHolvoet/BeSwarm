@@ -55,12 +55,9 @@ class PendulumSwingTrajectory1D extends PeriodicTrajectory
     @Override
     public double getDesiredVelocity(double timeInSeconds) {
         final double currentTime = getRelativeTime(timeInSeconds);
-        return
-                PISQUARED * getFrequency() * getRadius() * StrictMath
-                        .sin(freq2pi * currentTime + getPhaseDisplacement())
-                        * StrictMath
-                        .sin(HALFPI * StrictMath
-                                .cos(freq2pi * currentTime
-                                        + getPhaseDisplacement()));
+        return PISQUARED * getFrequency() * getRadius() * StrictMath
+                .sin(freq2pi * currentTime + getPhaseDisplacement())
+                * StrictMath.sin(HALFPI * StrictMath
+                .cos(freq2pi * currentTime + getPhaseDisplacement()));
     }
 }

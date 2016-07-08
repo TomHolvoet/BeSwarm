@@ -2,6 +2,7 @@ package applications.parrot.bebop;
 
 import applications.trajectory.Trajectories;
 import applications.trajectory.points.Point3D;
+import applications.trajectory.points.Point4D;
 import choreo.Choreography;
 import control.FiniteTrajectory4d;
 import control.Trajectory4d;
@@ -11,7 +12,8 @@ import control.Trajectory4d;
  */
 public final class TestedTrajectories {
 
-    private TestedTrajectories() {}
+    private TestedTrajectories() {
+    }
 
     /**
      * This trajectory has been tested and worked well.
@@ -34,5 +36,15 @@ public final class TestedTrajectories {
                 .fixYawAt(-Math.PI / 2)
                 .build();
         return Choreography.builder().withTrajectory(second).forTime(120).build();
+    }
+
+    public static FiniteTrajectory4d getIndoorPendulum() {
+        double yawAngle = 0;
+        Trajectory4d target1 = Trajectories.SwingTrajectoryBuilder()
+                .setOrigin(Point4D.create(1.5, -2, 2.5, yawAngle))
+                .setFrequency(0.067)
+                .setRadius(1.5)
+                .build();
+        return Choreography.builder().withTrajectory(target1).forTime(120).build();
     }
 }

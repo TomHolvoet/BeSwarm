@@ -9,6 +9,7 @@ import org.junit.Test;
 import java.util.List;
 
 import static applications.trajectory.TestUtils.assertBounds;
+import static junit.framework.TestCase.assertEquals;
 
 /**
  * @author Kristof Coninx <kristof.coninx AT cs.kuleuven.be>
@@ -17,7 +18,7 @@ public class SwingTrajectory4DTest {
 
     private Trajectory4d target;
     private Trajectory4d targetPlaneShift;
-    private Point4D origin = Point4D.create(0, 0, 5, 0);
+    private Point4D origin = Point4D.create(2, 10, 5, 0);
     private double radius = 1d;
     private double frequency = 0.1;
     private double planeshift = Math.PI / 6d;
@@ -69,6 +70,17 @@ public class SwingTrajectory4DTest {
         }
         assertBounds(l, 0,
                 Math.PI * 2);
+    }
+
+    @Test
+    public void testYawAngleFixed() {
+        double yawAngle = 0.5;
+        Trajectory4d target1 = Trajectories.SwingTrajectoryBuilder()
+                .setOrigin(Point4D.create(1.5, -2, 2.5, yawAngle))
+                .setFrequency(0.067)
+                .setRadius(1.5)
+                .build();
+        assertEquals(yawAngle, target1.getDesiredAngleZ(10), 0);
     }
 
 }

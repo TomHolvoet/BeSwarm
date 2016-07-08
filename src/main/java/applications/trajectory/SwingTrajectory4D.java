@@ -47,7 +47,8 @@ class SwingTrajectory4D extends PeriodicTrajectory
 
     @Override
     public double getDesiredPositionY(double timeInSeconds) {
-        return yFactor * swing.getDesiredPositionAbscissa(timeInSeconds);
+        return yFactor * swing.getDesiredPositionAbscissa(timeInSeconds) + this
+                .getLinearDisplacement().getY();
     }
 
     @Override
