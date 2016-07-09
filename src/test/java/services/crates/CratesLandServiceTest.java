@@ -2,6 +2,7 @@ package services.crates;
 
 import hal_quadrotor.LandRequest;
 import hal_quadrotor.LandResponse;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -19,22 +20,22 @@ import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 /**
  * @author Hoang Tung Dinh
  */
-public class CratesLandServiceTest {
+public abstract class CratesLandServiceTest {
 
     private ServiceClient<LandRequest, LandResponse> serviceClient;
     private ArgumentCaptor<ServiceResponseListener> argumentCaptor;
     private LandService cratesLandService;
     private Future<?> future;
 
+    abstract void responseToMessage(ServiceResponseListener<LandResponse> serviceResponseListener);
+
     @Before
     public void setUp() throws InterruptedException {
         serviceClient = mock(ServiceClient.class);
-        when(serviceClient.newMessage()).thenReturn(mock(LandRequest.class));
         argumentCaptor = ArgumentCaptor.forClass(ServiceResponseListener.class);
 
         cratesLandService = CratesLandService.create(serviceClient);
@@ -48,23 +49,17 @@ public class CratesLandServiceTest {
         TimeUnit.MILLISECONDS.sleep(300);
     }
 
-    @Test
-    public void testSendLandMessage_OnFailure() throws InterruptedException {
-        checkServiceCalledAndIsWaiting(serviceClient, argumentCaptor, future);
-
-        final ServiceResponseListener<LandResponse> serviceResponseListener = argumentCaptor.getValue();
-        serviceResponseListener.onFailure(mock(RemoteException.class));
-
-        TimeUnit.MILLISECONDS.sleep(50);
-        assertThat(future.isDone()).isTrue();
+    @After
+    public void tearDown() {
+        future.cancel(true);
     }
 
     @Test
-    public void testSendLandMessage_OnSuccess() throws InterruptedException {
+    public void testSendLandMessage() throws InterruptedException {
         checkServiceCalledAndIsWaiting(serviceClient, argumentCaptor, future);
 
         final ServiceResponseListener<LandResponse> serviceResponseListener = argumentCaptor.getValue();
-        serviceResponseListener.onSuccess(mock(LandResponse.class));
+        responseToMessage(serviceResponseListener);
 
         TimeUnit.MILLISECONDS.sleep(50);
         assertThat(future.isDone()).isTrue();

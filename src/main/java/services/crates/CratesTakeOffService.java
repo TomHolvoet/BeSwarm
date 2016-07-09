@@ -1,5 +1,6 @@
 package services.crates;
 
+import com.google.common.annotations.VisibleForTesting;
 import hal_quadrotor.TakeoffRequest;
 import hal_quadrotor.TakeoffResponse;
 import org.ros.node.service.ServiceClient;
@@ -15,8 +16,10 @@ import java.util.concurrent.TimeUnit;
  */
 final class CratesTakeOffService implements TakeOffService {
     private static final Logger logger = LoggerFactory.getLogger(CratesTakeOffService.class);
-    private static final double DEFAULT_TAKE_OFF_ALTITUDE = 5;
     private final ServiceClient<TakeoffRequest, TakeoffResponse> srvTakeOff;
+
+    @VisibleForTesting
+    public static final double DEFAULT_TAKE_OFF_ALTITUDE = 5;
 
     private CratesTakeOffService(ServiceClient<TakeoffRequest, TakeoffResponse> srvTakeOff) {
         this.srvTakeOff = srvTakeOff;
@@ -37,11 +40,22 @@ final class CratesTakeOffService implements TakeOffService {
         final TakeoffRequest takeoffRequest = srvTakeOff.newMessage();
         takeoffRequest.setAltitude(desiredAltitude);
         final CountDownLatch countDownLatch = new CountDownLatch(1);
-        srvTakeOff.call(takeoffRequest, CratesServiceResponseListener.<TakeoffResponse>create(countDownLatch));
-        try {
-            countDownLatch.await(5, TimeUnit.SECONDS);
-        } catch (InterruptedException e) {
-            logger.info("Waiting for taking off response is interrupted.", e);
+        final CratesServiceResponseListener<TakeoffResponse> cratesServiceResponseListener =
+                CratesServiceResponseListener
+                .create(countDownLatch);
+        final long waitingTimeInMilliSeconds = 200;
+
+        while (true) {
+            srvTakeOff.call(takeoffRequest, cratesServiceResponseListener);
+            try {
+                countDownLatch.await(waitingTimeInMilliSeconds, TimeUnit.MILLISECONDS);
+            } catch (InterruptedException e) {
+                logger.info("Waiting for taking off response is interrupted.", e);
+            }
+
+            if (countDownLatch.getCount() == 0) {
+                return;
+            }
         }
     }
 }
