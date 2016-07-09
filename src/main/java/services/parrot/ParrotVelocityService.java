@@ -21,7 +21,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  *
  * @author Hoang Tung Dinh
  */
-public final class ParrotVelocityService implements VelocityService {
+final class ParrotVelocityService implements VelocityService {
     private static final Logger logger = LoggerFactory.getLogger(ParrotVelocityService.class);
     private static final Logger loggerVel = LoggerFactory.getLogger(ParrotVelocityService.class.getName() + ".vel");
 

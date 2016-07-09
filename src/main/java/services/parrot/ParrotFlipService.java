@@ -12,7 +12,7 @@ import static com.google.common.base.Preconditions.checkArgument;
  *
  * @author Hoang Tung Dinh
  */
-public final class ParrotFlipService implements FlipService {
+final class ParrotFlipService implements FlipService {
 
     private final Publisher<UInt8> publisher;
 

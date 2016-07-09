@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * @author Hoang Tung Dinh
  */
-public final class CratesTakeOffService implements TakeOffService {
+final class CratesTakeOffService implements TakeOffService {
     private static final Logger logger = LoggerFactory.getLogger(CratesTakeOffService.class);
     private static final double DEFAULT_TAKE_OFF_ALTITUDE = 5;
     private final ServiceClient<TakeoffRequest, TakeoffResponse> srvTakeOff;

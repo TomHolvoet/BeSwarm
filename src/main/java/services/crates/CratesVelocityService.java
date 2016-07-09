@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * @author Hoang Tung Dinh
  */
-public final class CratesVelocityService implements VelocityService {
+final class CratesVelocityService implements VelocityService {
     private static final Logger logger = LoggerFactory.getLogger(CratesVelocityService.class);
     private final ServiceClient<VelocityRequest, VelocityResponse> srvVelocity;
 

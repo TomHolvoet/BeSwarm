@@ -16,7 +16,7 @@ import java.util.Map;
 /**
  * @author Hoang Tung Dinh
  */
-public final class TumSimFlyingStateService implements MessageObserver<Navdata>, FlyingStateService {
+final class TumSimFlyingStateService implements MessageObserver<Navdata>, FlyingStateService {
 
     private static final Logger logger = LoggerFactory.getLogger(TumSimFlyingStateService.class);
     @Nullable private FlyingState currentFlyingState;
