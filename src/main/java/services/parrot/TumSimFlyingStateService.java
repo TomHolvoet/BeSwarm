@@ -20,18 +20,18 @@ final class TumSimFlyingStateService implements MessageObserver<Navdata>, Flying
 
     private static final Logger logger = LoggerFactory.getLogger(TumSimFlyingStateService.class);
     @Nullable private FlyingState currentFlyingState;
-    private static final Map<Integer, ArDroneState> FLYING_STATE_MAP = ImmutableMap.<Integer, ArDroneState>builder()
+    private static final Map<Integer, ArDroneFlyingState> FLYING_STATE_MAP = ImmutableMap.<Integer, ArDroneFlyingState>builder()
             .put(
-            0, ArDroneState.UNKNOWN)
-            .put(1, ArDroneState.INITED)
-            .put(2, ArDroneState.LANDED)
-            .put(3, ArDroneState.FLYING)
-            .put(4, ArDroneState.HOVERING)
-            .put(5, ArDroneState.TEST)
-            .put(6, ArDroneState.TAKING_OFF)
-            .put(7, ArDroneState.FLYING)
-            .put(8, ArDroneState.LANDING)
-            .put(9, ArDroneState.LOOPING)
+            0, ArDroneFlyingState.UNKNOWN)
+            .put(1, ArDroneFlyingState.INITED)
+            .put(2, ArDroneFlyingState.LANDED)
+            .put(3, ArDroneFlyingState.FLYING)
+            .put(4, ArDroneFlyingState.HOVERING)
+            .put(5, ArDroneFlyingState.TEST)
+            .put(6, ArDroneFlyingState.TAKING_OFF)
+            .put(7, ArDroneFlyingState.FLYING)
+            .put(8, ArDroneFlyingState.LANDING)
+            .put(9, ArDroneFlyingState.LOOPING)
             .build();
 
     private TumSimFlyingStateService() {}
@@ -57,7 +57,7 @@ final class TumSimFlyingStateService implements MessageObserver<Navdata>, Flying
         }
     }
 
-    private enum ArDroneState {
+    private enum ArDroneFlyingState {
         UNKNOWN("Unknown") {
             @Override
             FlyingState getConvertedFlyingState() {
@@ -123,7 +123,7 @@ final class TumSimFlyingStateService implements MessageObserver<Navdata>, Flying
 
         private final String stateName;
 
-        ArDroneState(String stateName) {
+        ArDroneFlyingState(String stateName) {
             this.stateName = stateName;
         }
 
