@@ -37,11 +37,19 @@ final class CratesVelocityService implements VelocityService {
         logger.debug("Sending inertialFrameVelocity: [x={} y={} z={} yaw={}]", inertialFrameVelocity.linearX(),
                 inertialFrameVelocity.linearY(), inertialFrameVelocity.linearZ(), inertialFrameVelocity.angularZ());
         final CountDownLatch countDownLatch = new CountDownLatch(1);
-        srvVelocity.call(velocityRequest, CratesServiceResponseListener.<VelocityResponse>create(countDownLatch));
-        try {
-            countDownLatch.await(5, TimeUnit.SECONDS);
-        } catch (InterruptedException e) {
-            logger.info("Waiting for inertialFrameVelocity response is interrupted.", e);
+
+        while (true) {
+            srvVelocity.call(velocityRequest, CratesServiceResponseListener.<VelocityResponse>create(countDownLatch));
+
+            try {
+                countDownLatch.await(CratesUtilities.ROS_SERVICE_WAITING_TIME_IN_MILLISECONDS, TimeUnit.MILLISECONDS);
+            } catch (InterruptedException e) {
+                logger.info("Waiting for inertialFrameVelocity response is interrupted.", e);
+            }
+
+            if (countDownLatch.getCount() == 0) {
+                return;
+            }
         }
     }
 }

@@ -18,8 +18,7 @@ final class CratesTakeOffService implements TakeOffService {
     private static final Logger logger = LoggerFactory.getLogger(CratesTakeOffService.class);
     private final ServiceClient<TakeoffRequest, TakeoffResponse> srvTakeOff;
 
-    @VisibleForTesting
-    public static final double DEFAULT_TAKE_OFF_ALTITUDE = 5;
+    @VisibleForTesting static final double DEFAULT_TAKE_OFF_ALTITUDE = 5;
 
     private CratesTakeOffService(ServiceClient<TakeoffRequest, TakeoffResponse> srvTakeOff) {
         this.srvTakeOff = srvTakeOff;
@@ -43,12 +42,11 @@ final class CratesTakeOffService implements TakeOffService {
         final CratesServiceResponseListener<TakeoffResponse> cratesServiceResponseListener =
                 CratesServiceResponseListener
                 .create(countDownLatch);
-        final long waitingTimeInMilliSeconds = 200;
 
         while (true) {
             srvTakeOff.call(takeoffRequest, cratesServiceResponseListener);
             try {
-                countDownLatch.await(waitingTimeInMilliSeconds, TimeUnit.MILLISECONDS);
+                countDownLatch.await(CratesUtilities.ROS_SERVICE_WAITING_TIME_IN_MILLISECONDS, TimeUnit.MILLISECONDS);
             } catch (InterruptedException e) {
                 logger.info("Waiting for taking off response is interrupted.", e);
             }

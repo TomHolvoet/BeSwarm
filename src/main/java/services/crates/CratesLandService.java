@@ -39,12 +39,11 @@ final class CratesLandService implements LandService {
                 .create(
                 countDownLatch);
         final LandRequest landRequest = srvLand.newMessage();
-        final long waitingTimeInMilliSeconds = 200;
 
         while (true) {
             srvLand.call(landRequest, landServiceResponseListener);
             try {
-                countDownLatch.await(waitingTimeInMilliSeconds, TimeUnit.MILLISECONDS);
+                countDownLatch.await(CratesUtilities.ROS_SERVICE_WAITING_TIME_IN_MILLISECONDS, TimeUnit.MILLISECONDS);
             } catch (InterruptedException e) {
                 logger.info("Waiting for landing response is interrupted.", e);
             }
