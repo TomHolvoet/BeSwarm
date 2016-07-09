@@ -20,17 +20,18 @@ final class TumSimFlyingStateService implements MessageObserver<Navdata>, Flying
 
     private static final Logger logger = LoggerFactory.getLogger(TumSimFlyingStateService.class);
     @Nullable private FlyingState currentFlyingState;
-    private static final Map<Integer, FlyingState> FLYING_STATE_MAP = ImmutableMap.<Integer, FlyingState>builder().put(
-            0, FlyingState.UNKNOWN)
-            .put(1, FlyingState.INITED)
-            .put(2, FlyingState.LANDED)
-            .put(3, FlyingState.FLYING)
-            .put(4, FlyingState.HOVERING)
-            .put(5, FlyingState.TEST)
-            .put(6, FlyingState.TAKING_OFF)
-            .put(7, FlyingState.FLYING)
-            .put(8, FlyingState.LANDING)
-            .put(9, FlyingState.LOOPING)
+    private static final Map<Integer, ArDroneState> FLYING_STATE_MAP = ImmutableMap.<Integer, ArDroneState>builder()
+            .put(
+            0, ArDroneState.UNKNOWN)
+            .put(1, ArDroneState.INITED)
+            .put(2, ArDroneState.LANDED)
+            .put(3, ArDroneState.FLYING)
+            .put(4, ArDroneState.HOVERING)
+            .put(5, ArDroneState.TEST)
+            .put(6, ArDroneState.TAKING_OFF)
+            .put(7, ArDroneState.FLYING)
+            .put(8, ArDroneState.LANDING)
+            .put(9, ArDroneState.LOOPING)
             .build();
 
     private TumSimFlyingStateService() {}
@@ -43,7 +44,7 @@ final class TumSimFlyingStateService implements MessageObserver<Navdata>, Flying
 
     @Override
     public void onNewMessage(Navdata message) {
-        currentFlyingState = FLYING_STATE_MAP.get(message.getState());
+        currentFlyingState = FLYING_STATE_MAP.get(message.getState()).getConvertedFlyingState();
         logger.trace("Current flying state: {}", currentFlyingState.getStateName());
     }
 
@@ -54,5 +55,82 @@ final class TumSimFlyingStateService implements MessageObserver<Navdata>, Flying
         } else {
             return Optional.of(currentFlyingState);
         }
+    }
+
+    private enum ArDroneState {
+        UNKNOWN("Unknown") {
+            @Override
+            FlyingState getConvertedFlyingState() {
+                return FlyingState.UNKNOWN;
+            }
+        },
+
+        INITED("Inited") {
+            @Override
+            FlyingState getConvertedFlyingState() {
+                return FlyingState.LANDED;
+            }
+        },
+
+        LANDED("Landed") {
+            @Override
+            FlyingState getConvertedFlyingState() {
+                return FlyingState.LANDED;
+            }
+        },
+
+        FLYING("Flying") {
+            @Override
+            FlyingState getConvertedFlyingState() {
+                return FlyingState.FLYING;
+            }
+        },
+
+        HOVERING("Hovering") {
+            @Override
+            FlyingState getConvertedFlyingState() {
+                return FlyingState.HOVERING;
+            }
+        },
+
+        TEST("Test") {
+            @Override
+            FlyingState getConvertedFlyingState() {
+                return FlyingState.UNKNOWN;
+            }
+        },
+
+        TAKING_OFF("Taking off") {
+            @Override
+            FlyingState getConvertedFlyingState() {
+                return FlyingState.TAKING_OFF;
+            }
+        },
+
+        LANDING("Landing") {
+            @Override
+            FlyingState getConvertedFlyingState() {
+                return FlyingState.LANDING;
+            }
+        },
+
+        LOOPING("Looping") {
+            @Override
+            FlyingState getConvertedFlyingState() {
+                return FlyingState.UNKNOWN;
+            }
+        };
+
+        private final String stateName;
+
+        ArDroneState(String stateName) {
+            this.stateName = stateName;
+        }
+
+        public String getStateName() {
+            return stateName;
+        }
+
+        abstract FlyingState getConvertedFlyingState();
     }
 }

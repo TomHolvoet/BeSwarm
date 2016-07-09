@@ -96,9 +96,6 @@ public class LandTest {
                 new Object[]{Optional.of(FlyingState.FLYING)},
                 new Object[]{Optional.of(FlyingState.EMERGENCY)},
                 new Object[]{Optional.of(FlyingState.USER_TAKEOFF)},
-                new Object[]{Optional.of(FlyingState.UNKNOWN)},
-                new Object[]{Optional.of(FlyingState.INITED)},
-                new Object[]{Optional.of(FlyingState.LOOPING)},
-                new Object[]{Optional.of(FlyingState.TEST)}};
+                new Object[]{Optional.of(FlyingState.UNKNOWN)}};
     }
 }

@@ -4,17 +4,14 @@ package services.ros_subscribers;
  * @author Hoang Tung Dinh
  */
 public enum FlyingState {
+    UNKNOWN("Unknown"),
     LANDED("Landed"),
     TAKING_OFF("Taking off"),
     HOVERING("Hovering"),
     FLYING("Flying"),
     LANDING("Landing"),
     EMERGENCY("Emergency"),
-    USER_TAKEOFF("User take off"),
-    UNKNOWN("Unknown"),
-    INITED("Inited"),
-    LOOPING("Looping"),
-    TEST("Test");
+    USER_TAKEOFF("User take off");
 
     private final String stateName;
 
