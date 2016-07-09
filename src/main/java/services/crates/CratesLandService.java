@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * @author Hoang Tung Dinh
  */
-public final class CratesLandService implements LandService {
+final class CratesLandService implements LandService {
     private static final Logger logger = LoggerFactory.getLogger(CratesLandService.class);
     private final ServiceClient<LandRequest, LandResponse> srvLand;
 
@@ -35,13 +35,23 @@ public final class CratesLandService implements LandService {
 
     @Override
     public void sendLandingMessage() {
-        final LandRequest landRequest = srvLand.newMessage();
         final CountDownLatch countDownLatch = new CountDownLatch(1);
-        srvLand.call(landRequest, LandServiceResponseListener.create(countDownLatch));
-        try {
-            countDownLatch.await(5, TimeUnit.SECONDS);
-        } catch (InterruptedException e) {
-            logger.info("Waiting for landing response is interrupted.", e);
+        final LandServiceResponseListener landServiceResponseListener = LandServiceResponseListener.create(
+                countDownLatch);
+        final LandRequest landRequest = srvLand.newMessage();
+        final long waitingTimeInMilliSeconds = 200;
+
+        while (true) {
+            srvLand.call(landRequest, landServiceResponseListener);
+            try {
+                countDownLatch.await(waitingTimeInMilliSeconds, TimeUnit.MILLISECONDS);
+            } catch (InterruptedException e) {
+                logger.info("Waiting for landing response is interrupted.", e);
+            }
+
+            if (countDownLatch.getCount() == 0) {
+                return;
+            }
         }
     }
 
