@@ -20,3 +20,5 @@ generated/
 generated_tests/
 /bin/
 out/
+
+/src/test/resources/logback.groovy
