@@ -43,7 +43,6 @@ public final class CratesSimulatorExample extends AbstractNodeMain {
     @Override
     public void onStart(final ConnectedNode connectedNode) {
         addDroneModel(connectedNode);
-        final double defaultTime = 60;
         final ServiceFactory serviceFactory = CratesServiceFactory.create(DRONE_NAME, MODEL_NAME, connectedNode);
         final StateEstimator stateEstimator = getStateEstimator(connectedNode);
         FiniteTrajectory4d trajectory = TrajectoriesForTesting.getFastCircle();
