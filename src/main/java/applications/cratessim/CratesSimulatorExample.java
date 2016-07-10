@@ -1,8 +1,7 @@
 package applications.cratessim;
 
 import applications.ExampleFlight;
-import applications.ExampleTrajectory;
-import choreo.Choreography;
+import applications.TrajectoriesForTesting;
 import control.FiniteTrajectory4d;
 import control.localization.CratesSimStateEstimator;
 import control.localization.StateEstimator;
@@ -47,10 +46,7 @@ public final class CratesSimulatorExample extends AbstractNodeMain {
         final double defaultTime = 60;
         final ServiceFactory serviceFactory = CratesServiceFactory.create(DRONE_NAME, MODEL_NAME, connectedNode);
         final StateEstimator stateEstimator = getStateEstimator(connectedNode);
-        final FiniteTrajectory4d trajectory = Choreography.builder()
-                .withTrajectory(ExampleTrajectory.create())
-                .forTime(defaultTime)
-                .build();
+        FiniteTrajectory4d trajectory = TrajectoriesForTesting.getFastCircle();
         final ExampleFlight exampleFlight = ExampleFlight.create(serviceFactory, stateEstimator, trajectory,
                 connectedNode);
         exampleFlight.fly();

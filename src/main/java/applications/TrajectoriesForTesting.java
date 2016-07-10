@@ -1,4 +1,4 @@
-package applications.parrot.bebop;
+package applications;
 
 import applications.trajectory.Trajectories;
 import applications.trajectory.points.Point3D;
@@ -10,9 +10,9 @@ import control.Trajectory4d;
 /**
  * @author Hoang Tung Dinh
  */
-public final class TestedTrajectories {
+public final class TrajectoriesForTesting {
 
-    private TestedTrajectories() {
+    private TrajectoriesForTesting() {
     }
 
     /**

@@ -1,6 +1,6 @@
 package applications.parrot.tumsim;
 
-import applications.parrot.bebop.TestedTrajectories;
+import applications.TrajectoriesForTesting;
 import control.FiniteTrajectory4d;
 import org.ros.namespace.GraphName;
 import org.ros.node.AbstractNodeMain;
@@ -25,6 +25,6 @@ public class TumSimulatorPendulumExample extends AbstractNodeMain {
     }
 
     private FiniteTrajectory4d getConcreteTrajectory() {
-        return TestedTrajectories.getSlowIndoorPendulum();
+        return TrajectoriesForTesting.getSlowIndoorPendulum();
     }
 }
