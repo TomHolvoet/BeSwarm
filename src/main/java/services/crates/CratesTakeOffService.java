@@ -11,6 +11,8 @@ import services.TakeOffService;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
+import static com.google.common.base.Preconditions.checkArgument;
+
 /**
  * @author Hoang Tung Dinh
  */
@@ -35,6 +37,9 @@ final class CratesTakeOffService implements TakeOffService {
 
     @Override
     public void sendTakingOffMessage(double desiredAltitude) {
+        checkArgument(desiredAltitude >= 3, "Since the take off controller in the crates simulator uses 2.0 meters as" +
+                " the distance consider reached, the desired altitude must be at least 3.0 meters, so that the " +
+                "drone can be at 1.0 meter at least.");
         logger.debug("Send taking off messages.");
         final TakeoffRequest takeoffRequest = srvTakeOff.newMessage();
         takeoffRequest.setAltitude(desiredAltitude);

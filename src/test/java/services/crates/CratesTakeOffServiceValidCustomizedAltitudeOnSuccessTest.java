@@ -1,7 +1,6 @@
 package services.crates;
 
 import hal_quadrotor.TakeoffResponse;
-import org.ros.exception.RemoteException;
 import org.ros.node.service.ServiceResponseListener;
 
 import static org.mockito.Mockito.mock;
@@ -9,9 +8,9 @@ import static org.mockito.Mockito.mock;
 /**
  * @author Hoang Tung Dinh
  */
-public class CratesTakeOffServiceCustomizedAltitudeOnFailureTest extends CratesTakeOffServiceCustomizedAltitudeTest {
+public class CratesTakeOffServiceValidCustomizedAltitudeOnSuccessTest extends CratesTakeOffServiceValidCustomizedAltitudeTest {
     @Override
     void responseToMessage(ServiceResponseListener<TakeoffResponse> serviceResponseListener) {
-        serviceResponseListener.onFailure(mock(RemoteException.class));
+        serviceResponseListener.onSuccess(mock(TakeoffResponse.class));
     }
 }

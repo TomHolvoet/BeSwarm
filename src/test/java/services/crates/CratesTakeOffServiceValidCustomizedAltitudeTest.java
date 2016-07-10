@@ -11,21 +11,21 @@ import static org.mockito.Mockito.verify;
 /**
  * @author Hoang Tung Dinh
  */
-public abstract class CratesTakeOffServiceCustomizedAltitudeTest extends CratesTakeOffServiceTest {
-    private static final double takeOffAltitude = 1.0;
+public abstract class CratesTakeOffServiceValidCustomizedAltitudeTest extends CratesTakeOffServiceTest {
+    private static final double validTakeOffAltitude = 3.0;
 
     @Override
     Future<?> sendMessage(final TakeOffService cratesTakeOffService) {
         return Executors.newSingleThreadExecutor().submit(new Runnable() {
             @Override
             public void run() {
-                cratesTakeOffService.sendTakingOffMessage(takeOffAltitude);
+                cratesTakeOffService.sendTakingOffMessage(validTakeOffAltitude);
             }
         });
     }
 
     @Override
     void checkCorrectSentAltitude(TakeoffRequest takeoffRequest) {
-        verify(takeoffRequest).setAltitude(takeOffAltitude);
+        verify(takeoffRequest).setAltitude(validTakeOffAltitude);
     }
 }
