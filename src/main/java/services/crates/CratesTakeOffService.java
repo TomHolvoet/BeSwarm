@@ -8,9 +8,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import services.TakeOffService;
 
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
-
 import static com.google.common.base.Preconditions.checkArgument;
 
 /**
@@ -43,22 +40,6 @@ final class CratesTakeOffService implements TakeOffService {
         logger.debug("Send taking off messages.");
         final TakeoffRequest takeoffRequest = srvTakeOff.newMessage();
         takeoffRequest.setAltitude(desiredAltitude);
-        final CountDownLatch countDownLatch = new CountDownLatch(1);
-        final CratesServiceResponseListener<TakeoffResponse> cratesServiceResponseListener =
-                CratesServiceResponseListener
-                .create(countDownLatch);
-
-        while (true) {
-            srvTakeOff.call(takeoffRequest, cratesServiceResponseListener);
-            try {
-                countDownLatch.await(CratesUtilities.ROS_SERVICE_WAITING_TIME_IN_MILLISECONDS, TimeUnit.MILLISECONDS);
-            } catch (InterruptedException e) {
-                logger.info("Waiting for taking off response is interrupted.", e);
-            }
-
-            if (countDownLatch.getCount() == 0) {
-                return;
-            }
-        }
+        CratesUtilities.sendRequest(srvTakeOff, takeoffRequest);
     }
 }

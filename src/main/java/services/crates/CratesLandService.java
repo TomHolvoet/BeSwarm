@@ -7,9 +7,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import services.LandService;
 
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
-
 /**
  * @author Hoang Tung Dinh
  */
@@ -33,24 +30,8 @@ final class CratesLandService implements LandService {
 
     @Override
     public void sendLandingMessage() {
-        logger.debug("Send landing messages.");
-        final CountDownLatch countDownLatch = new CountDownLatch(1);
-        final CratesServiceResponseListener<LandResponse> landServiceResponseListener = CratesServiceResponseListener
-                .create(
-                countDownLatch);
         final LandRequest landRequest = srvLand.newMessage();
-
-        while (true) {
-            srvLand.call(landRequest, landServiceResponseListener);
-            try {
-                countDownLatch.await(CratesUtilities.ROS_SERVICE_WAITING_TIME_IN_MILLISECONDS, TimeUnit.MILLISECONDS);
-            } catch (InterruptedException e) {
-                logger.info("Waiting for landing response is interrupted.", e);
-            }
-
-            if (countDownLatch.getCount() == 0) {
-                return;
-            }
-        }
+        logger.debug("Send landing messages.");
+        CratesUtilities.sendRequest(srvLand, landRequest);
     }
 }
