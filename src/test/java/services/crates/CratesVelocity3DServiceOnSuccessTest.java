@@ -8,7 +8,7 @@ import static org.mockito.Mockito.mock;
 /**
  * @author Hoang Tung Dinh
  */
-public class CratesVelocity4dServiceOnSuccessTest extends CratesVelocity4dServiceTest {
+public class CratesVelocity3DServiceOnSuccessTest extends CratesVelocity3dServiceTest {
     @Override
     void responseToMessage(ServiceResponseListener<VelocityResponse> serviceResponseListener) {
         serviceResponseListener.onSuccess(mock(VelocityResponse.class));

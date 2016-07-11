@@ -9,7 +9,7 @@ import static org.mockito.Mockito.mock;
 /**
  * @author Hoang Tung Dinh
  */
-public class CratesVelocity4dServiceOnFailureTest extends CratesVelocity4dServiceTest {
+public class CratesVelocity3DServiceOnFailureTest extends CratesVelocity3dServiceTest {
     @Override
     void responseToMessage(ServiceResponseListener<VelocityResponse> serviceResponseListener) {
         serviceResponseListener.onFailure(mock(RemoteException.class));
