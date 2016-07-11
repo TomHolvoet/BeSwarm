@@ -51,7 +51,6 @@ public final class BebopServiceFactory extends ParrotServiceFactory {
         return velocityService;
     }
 
-    @Override
     public FlipService createFlipService() {
         final String topicName = "/" + getDroneName() + "/flip";
         final FlipService flipService = ParrotFlipService.create(

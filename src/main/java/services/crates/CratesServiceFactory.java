@@ -7,19 +7,14 @@ import hal_quadrotor.State;
 import hal_quadrotor.Takeoff;
 import hal_quadrotor.TakeoffRequest;
 import hal_quadrotor.TakeoffResponse;
-import hal_quadrotor.Velocity;
-import hal_quadrotor.VelocityRequest;
-import hal_quadrotor.VelocityResponse;
 import org.ros.exception.ServiceNotFoundException;
 import org.ros.node.ConnectedNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import services.FlipService;
 import services.FlyingStateService;
 import services.LandService;
 import services.ServiceFactory;
 import services.TakeOffService;
-import services.VelocityService;
 import services.ros_subscribers.MessagesSubscriberService;
 
 /**
@@ -68,25 +63,6 @@ public final class CratesServiceFactory implements ServiceFactory {
             throw new RuntimeException(
                     String.format("Land service not found. Drone: %s. Model: %s", droneName, modelName));
         }
-    }
-
-    @Override
-    public VelocityService createVelocityService() {
-        try {
-            return CratesVelocityService.create(connectedNode.<VelocityRequest, VelocityResponse>newServiceClient(
-                    namePrefix + "controller/Velocity", Velocity._TYPE));
-        } catch (ServiceNotFoundException e) {
-            throw new RuntimeException(
-                    String.format("Velocity service not found. Drone: %s. Model: %s", droneName, modelName));
-        }
-    }
-
-    /**
-     * This service is not supported by the crates simulator.
-     */
-    @Override
-    public FlipService createFlipService() {
-        throw new UnsupportedOperationException("This service is not supported by the crates simulator.");
     }
 
     @Override

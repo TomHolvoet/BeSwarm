@@ -8,9 +8,5 @@ public interface ServiceFactory {
 
     LandService createLandService();
 
-    VelocityService createVelocityService();
-
-    FlipService createFlipService();
-
     FlyingStateService createFlyingStateService();
 }

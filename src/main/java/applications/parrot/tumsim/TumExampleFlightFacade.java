@@ -9,6 +9,7 @@ import org.ros.node.ConnectedNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import services.ServiceFactory;
+import services.parrot.ParrotServiceFactory;
 import services.parrot.TumSimServiceFactory;
 import services.ros_subscribers.MessagesSubscriberService;
 
@@ -23,9 +24,9 @@ final class TumExampleFlightFacade {
     private final ExampleFlight exampleFlight;
 
     private TumExampleFlightFacade(FiniteTrajectory4d trajectory4d, ConnectedNode connectedNode) {
-        final ServiceFactory serviceFactory = TumSimServiceFactory.create(connectedNode);
+        final ParrotServiceFactory parrotServiceFactory = TumSimServiceFactory.create(connectedNode);
         final StateEstimator stateEstimator = getStateEstimator(connectedNode);
-        exampleFlight = ExampleFlight.create(serviceFactory, stateEstimator, trajectory4d, connectedNode);
+        exampleFlight = ExampleFlight.create(parrotServiceFactory, stateEstimator, trajectory4d, connectedNode);
     }
 
     public static TumExampleFlightFacade create(FiniteTrajectory4d trajectory4d, ConnectedNode connectedNode) {

@@ -21,6 +21,7 @@ import services.ServiceFactory;
 import services.TakeOffService;
 import services.VelocityService;
 import services.parrot.BebopServiceFactory;
+import services.parrot.ParrotServiceFactory;
 import services.ros_subscribers.MessagesSubscriberService;
 import taskexecutor.Task;
 import taskexecutor.TaskExecutor;
@@ -57,11 +58,11 @@ public class BebopHover extends AbstractNodeMain {
 
         logger.info("target location: (x,y,z,yaw) ({},{}, {}, {})", locationX, locationY, locationZ, locationYaw);
 
-        final ServiceFactory serviceFactory = BebopServiceFactory.create(connectedNode, DRONE_NAME);
-        TakeOffService takeoffService = serviceFactory.createTakeOffService();
-        VelocityService velocityService = serviceFactory.createVelocityService();
-        LandService landService = serviceFactory.createLandService();
-        final FlyingStateService flyingStateService = serviceFactory.createFlyingStateService();
+        final ParrotServiceFactory parrotServiceFactory = BebopServiceFactory.create(connectedNode, DRONE_NAME);
+        TakeOffService takeoffService = parrotServiceFactory.createTakeOffService();
+        VelocityService velocityService = parrotServiceFactory.createVelocityService();
+        LandService landService = parrotServiceFactory.createLandService();
+        final FlyingStateService flyingStateService = parrotServiceFactory.createFlyingStateService();
 
         final StateEstimator stateEstimator = BebopStateEstimatorWithPoseStampedAndOdom.create(
                 getPoseSubscriber(connectedNode), getOdometrySubscriber(connectedNode));

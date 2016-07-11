@@ -15,9 +15,9 @@ import keyboard.Key;
 import org.ros.node.ConnectedNode;
 import services.FlyingStateService;
 import services.LandService;
-import services.ServiceFactory;
 import services.TakeOffService;
 import services.VelocityService;
+import services.parrot.ParrotServiceFactory;
 import services.ros_subscribers.KeyboardSubscriber;
 import taskexecutor.Task;
 import taskexecutor.TaskExecutor;
@@ -50,13 +50,13 @@ public final class ExampleFlight {
     private final PidParameters pidLinearZ;
     private final PidParameters pidAngularZ;
 
-    private ExampleFlight(ServiceFactory serviceFactory, StateEstimator stateEstimator,
+    private ExampleFlight(ParrotServiceFactory parrotServiceFactory, StateEstimator stateEstimator,
             FiniteTrajectory4d finiteTrajectory4d, ConnectedNode connectedNode, PidParameters pidLinearX,
             PidParameters pidLinearY, PidParameters pidLinearZ, PidParameters pidAngularZ) {
-        this.takeOffService = serviceFactory.createTakeOffService();
-        this.landService = serviceFactory.createLandService();
-        this.velocityService = serviceFactory.createVelocityService();
-        this.flyingStateService = serviceFactory.createFlyingStateService();
+        this.takeOffService = parrotServiceFactory.createTakeOffService();
+        this.landService = parrotServiceFactory.createLandService();
+        this.velocityService = parrotServiceFactory.createVelocityService();
+        this.flyingStateService = parrotServiceFactory.createFlyingStateService();
         this.stateEstimator = stateEstimator;
         this.finiteTrajectory4d = finiteTrajectory4d;
         this.connectedNode = connectedNode;
@@ -66,17 +66,17 @@ public final class ExampleFlight {
         this.pidAngularZ = pidAngularZ;
     }
 
-    public static ExampleFlight create(ServiceFactory serviceFactory, StateEstimator stateEstimator,
+    public static ExampleFlight create(ParrotServiceFactory parrotServiceFactory, StateEstimator stateEstimator,
             FiniteTrajectory4d finiteTrajectory4d, ConnectedNode connectedNode) {
-        return new ExampleFlight(serviceFactory, stateEstimator, finiteTrajectory4d, connectedNode,
+        return new ExampleFlight(parrotServiceFactory, stateEstimator, finiteTrajectory4d, connectedNode,
                 DefaultPidParameters.LINEAR_X.getParameters(), DefaultPidParameters.LINEAR_Y.getParameters(),
                 DefaultPidParameters.LINEAR_Z.getParameters(), DefaultPidParameters.ANGULAR_Z.getParameters());
     }
 
-    public static ExampleFlight create(ServiceFactory serviceFactory, StateEstimator stateEstimator,
+    public static ExampleFlight create(ParrotServiceFactory parrotServiceFactory, StateEstimator stateEstimator,
             FiniteTrajectory4d finiteTrajectory4d, ConnectedNode connectedNode, PidParameters pidLinearX,
             PidParameters pidLinearY, PidParameters pidLinearZ, PidParameters pidAngularZ) {
-        return new ExampleFlight(serviceFactory, stateEstimator, finiteTrajectory4d, connectedNode, pidLinearX,
+        return new ExampleFlight(parrotServiceFactory, stateEstimator, finiteTrajectory4d, connectedNode, pidLinearX,
                 pidLinearY, pidLinearZ, pidAngularZ);
     }
 

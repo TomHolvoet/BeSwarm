@@ -5,7 +5,6 @@ import geometry_msgs.Twist;
 import org.ros.node.ConnectedNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import services.FlipService;
 import services.FlyingStateService;
 import services.VelocityService;
 import services.ros_subscribers.MessagesSubscriberService;
@@ -42,11 +41,6 @@ public final class TumSimServiceFactory extends ParrotServiceFactory {
                 .build();
         logger.info("Velocity service connected to {}", topicName);
         return velocityService;
-    }
-
-    @Override
-    public FlipService createFlipService() {
-        throw new UnsupportedOperationException("Tum simulator does not support flip service.");
     }
 
     @Override

@@ -6,12 +6,13 @@ import org.slf4j.LoggerFactory;
 import services.LandService;
 import services.ServiceFactory;
 import services.TakeOffService;
+import services.VelocityService;
 import std_msgs.Empty;
 
 /**
  * @author Hoang Tung Dinh
  */
-abstract class ParrotServiceFactory implements ServiceFactory {
+public abstract class ParrotServiceFactory implements ServiceFactory {
 
     private static final Logger logger = LoggerFactory.getLogger(ParrotServiceFactory.class);
 
@@ -40,6 +41,8 @@ abstract class ParrotServiceFactory implements ServiceFactory {
         logger.info("Land service connected to {}", topicName);
         return landService;
     }
+
+    public abstract VelocityService createVelocityService();
 
     ConnectedNode getConnectedNode() {
         return connectedNode;
