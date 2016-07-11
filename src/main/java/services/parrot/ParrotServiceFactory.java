@@ -4,7 +4,7 @@ import org.ros.node.ConnectedNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import services.LandService;
-import services.ServiceFactory;
+import services.CommonServiceFactory;
 import services.TakeOffService;
 import services.VelocityService;
 import std_msgs.Empty;
@@ -12,7 +12,7 @@ import std_msgs.Empty;
 /**
  * @author Hoang Tung Dinh
  */
-public abstract class ParrotServiceFactory implements ServiceFactory {
+public abstract class ParrotServiceFactory implements CommonServiceFactory {
 
     private static final Logger logger = LoggerFactory.getLogger(ParrotServiceFactory.class);
 

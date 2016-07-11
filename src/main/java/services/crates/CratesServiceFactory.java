@@ -13,14 +13,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import services.FlyingStateService;
 import services.LandService;
-import services.ServiceFactory;
+import services.CommonServiceFactory;
 import services.TakeOffService;
 import services.ros_subscribers.MessagesSubscriberService;
 
 /**
  * @author Hoang Tung Dinh
  */
-public final class CratesServiceFactory implements ServiceFactory {
+public final class CratesServiceFactory implements CommonServiceFactory {
 
     private static final Logger logger = LoggerFactory.getLogger(CratesServiceFactory.class);
 

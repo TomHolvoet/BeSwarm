@@ -10,7 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import services.FlyingStateService;
 import services.LandService;
-import services.ServiceFactory;
+import services.CommonServiceFactory;
 import services.TakeOffService;
 import services.parrot.BebopServiceFactory;
 
@@ -33,7 +33,7 @@ public final class BebopLandingCheck extends AbstractNodeMain {
     @Override
     public void onStart(final ConnectedNode connectedNode) {
         try {
-            final ServiceFactory serviceFactory = BebopServiceFactory.create(connectedNode, DRONE_NAME);
+            final CommonServiceFactory serviceFactory = BebopServiceFactory.create(connectedNode, DRONE_NAME);
             final TakeOffService takeoffService = serviceFactory.createTakeOffService();
             final LandService landService = serviceFactory.createLandService();
             final FlyingStateService flyingStateService = serviceFactory.createFlyingStateService();

@@ -8,7 +8,6 @@ import gazebo_msgs.ModelStates;
 import org.ros.node.ConnectedNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import services.ServiceFactory;
 import services.parrot.ParrotServiceFactory;
 import services.parrot.TumSimServiceFactory;
 import services.ros_subscribers.MessagesSubscriberService;

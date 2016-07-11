@@ -3,7 +3,7 @@ package services;
 /**
  * @author Hoang Tung Dinh
  */
-public interface ServiceFactory {
+public interface CommonServiceFactory {
     TakeOffService createTakeOffService();
 
     LandService createLandService();

@@ -13,7 +13,6 @@ import org.ros.node.AbstractNodeMain;
 import org.ros.node.ConnectedNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import services.ServiceFactory;
 import services.parrot.BebopServiceFactory;
 import services.parrot.ParrotServiceFactory;
 import services.ros_subscribers.MessagesSubscriberService;
