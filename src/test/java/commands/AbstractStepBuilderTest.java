@@ -83,7 +83,7 @@ public abstract class AbstractStepBuilderTest {
     }
 
     private static void checkCorrectServicesCalled(Velocity4dService velocity4dService, StateEstimator stateEstimator) {
-        verify(velocity4dService, atLeastOnce()).sendVelocityMessage(any(InertialFrameVelocity.class), any(Pose.class));
+        verify(velocity4dService, atLeastOnce()).sendVelocity4dMessage(any(InertialFrameVelocity.class), any(Pose.class));
         verify(stateEstimator, atLeastOnce()).getCurrentState();
     }
 

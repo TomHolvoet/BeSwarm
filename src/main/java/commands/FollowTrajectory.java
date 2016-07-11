@@ -97,7 +97,7 @@ public final class FollowTrajectory implements Command {
             final Optional<DroneStateStamped> currentState = stateEstimator.getCurrentState();
             if (!currentState.isPresent()) {
                 logger.trace("Cannot get state. Send zero velocity.");
-                velocity4dService.sendVelocityMessage(zeroVelocity, zeroPose);
+                velocity4dService.sendVelocity4dMessage(zeroVelocity, zeroPose);
                 return;
             }
 
@@ -111,7 +111,7 @@ public final class FollowTrajectory implements Command {
                         NANO_SECOND_TO_SECOND;
                 final InertialFrameVelocity nextVelocity = pidController4d.compute(currentState.get().pose(),
                         currentState.get().inertialFrameVelocity(), currentTimeInSeconds);
-                velocity4dService.sendVelocityMessage(nextVelocity, currentState.get().pose());
+                velocity4dService.sendVelocity4dMessage(nextVelocity, currentState.get().pose());
                 logDroneState(currentState.get(), currentTimeInSeconds);
             }
         }

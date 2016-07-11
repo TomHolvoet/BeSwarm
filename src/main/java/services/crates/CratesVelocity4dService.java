@@ -28,7 +28,7 @@ final class CratesVelocity4dService implements Velocity4dService {
     }
 
     @Override
-    public void sendVelocityMessage(InertialFrameVelocity inertialFrameVelocity, Pose pose) {
+    public void sendVelocity4dMessage(InertialFrameVelocity inertialFrameVelocity, Pose pose) {
         final VelocityRequest velocityRequest = srvVelocity.newMessage();
         velocityRequest.setDx(inertialFrameVelocity.linearX());
         velocityRequest.setDy(inertialFrameVelocity.linearY());

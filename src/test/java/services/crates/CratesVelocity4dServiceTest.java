@@ -64,7 +64,7 @@ public abstract class CratesVelocity4dServiceTest {
         final Future<?> future = Executors.newSingleThreadExecutor().submit(new Runnable() {
             @Override
             public void run() {
-                cratesVelocity4dService.sendVelocityMessage(inertialFrameVelocity, mock(Pose.class));
+                cratesVelocity4dService.sendVelocity4dMessage(inertialFrameVelocity, mock(Pose.class));
             }
         });
 
