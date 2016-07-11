@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory;
 import services.FlyingStateService;
 import services.LandService;
 import services.TakeOffService;
-import services.VelocityService;
+import services.Velocity4dService;
 import services.parrot.BebopServiceFactory;
 import services.parrot.ParrotServiceFactory;
 import services.ros_subscribers.MessagesSubscriberService;
@@ -59,7 +59,7 @@ public class BebopHover extends AbstractNodeMain {
 
         final ParrotServiceFactory parrotServiceFactory = BebopServiceFactory.create(connectedNode, DRONE_NAME);
         TakeOffService takeoffService = parrotServiceFactory.createTakeOffService();
-        VelocityService velocityService = parrotServiceFactory.createVelocityService();
+        Velocity4dService velocity4dService = parrotServiceFactory.createVelocity4dService();
         LandService landService = parrotServiceFactory.createLandService();
         final FlyingStateService flyingStateService = parrotServiceFactory.createFlyingStateService();
 
@@ -74,7 +74,7 @@ public class BebopHover extends AbstractNodeMain {
 
         Command takeoff = Takeoff.create(takeoffService);
         Command moveToPose = MoveToPose.builder()
-                .withVelocityService(velocityService)
+                .withVelocityService(velocity4dService)
                 .withStateEstimator(stateEstimator)
                 .withGoalPose(Pose.builder().x(locationX).y(locationY).z(locationZ).yaw(locationYaw).build())
                 .withDurationInSeconds(flightDuration)

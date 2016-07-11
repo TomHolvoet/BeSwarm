@@ -6,7 +6,7 @@ import org.ros.node.ConnectedNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import services.FlyingStateService;
-import services.VelocityService;
+import services.Velocity4dService;
 import services.ros_subscribers.MessagesSubscriberService;
 
 /**
@@ -26,9 +26,9 @@ public final class TumSimServiceFactory extends ParrotServiceFactory {
     }
 
     @Override
-    public VelocityService createVelocityService() {
+    public Velocity4dService createVelocity4dService() {
         final String topicName = "/cmd_vel";
-        final VelocityService velocityService = ParrotVelocityService.builder()
+        final Velocity4dService velocity4dService = ParrotVelocity4dService.builder()
                 .publisher(getConnectedNode().<Twist>newPublisher(topicName, Twist._TYPE))
                 .minLinearX(-1)
                 .minLinearY(-1)
@@ -40,7 +40,7 @@ public final class TumSimServiceFactory extends ParrotServiceFactory {
                 .maxAngularZ(1)
                 .build();
         logger.info("Velocity service connected to {}", topicName);
-        return velocityService;
+        return velocity4dService;
     }
 
     @Override

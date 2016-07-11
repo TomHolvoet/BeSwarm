@@ -12,7 +12,7 @@ import control.dto.Velocity;
 import control.localization.StateEstimator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import services.VelocityService;
+import services.Velocity4dService;
 
 /**
  * @author Hoang Tung Dinh
@@ -24,7 +24,7 @@ public final class FollowTrajectory implements Command {
     private static final Logger velocityLogger = LoggerFactory.getLogger(
             FollowTrajectory.class.getName() + ".velocitylogger");
 
-    private final VelocityService velocityService;
+    private final Velocity4dService velocity4dService;
     private final StateEstimator stateEstimator;
     private final PidParameters pidLinearXParameters;
     private final PidParameters pidLinearYParameters;
@@ -36,7 +36,7 @@ public final class FollowTrajectory implements Command {
     private final double droneStateLifeDurationInSeconds;
 
     private FollowTrajectory(Builder builder) {
-        velocityService = builder.getVelocityService();
+        velocity4dService = builder.getVelocity4dService();
         stateEstimator = builder.getStateEstimator();
         pidLinearXParameters = builder.getPidLinearXParameters();
         pidLinearYParameters = builder.getPidLinearYParameters();
@@ -97,7 +97,7 @@ public final class FollowTrajectory implements Command {
             final Optional<DroneStateStamped> currentState = stateEstimator.getCurrentState();
             if (!currentState.isPresent()) {
                 logger.trace("Cannot get state. Send zero velocity.");
-                velocityService.sendVelocityMessage(zeroVelocity, zeroPose);
+                velocity4dService.sendVelocityMessage(zeroVelocity, zeroPose);
                 return;
             }
 
@@ -111,7 +111,7 @@ public final class FollowTrajectory implements Command {
                         NANO_SECOND_TO_SECOND;
                 final InertialFrameVelocity nextVelocity = pidController4d.compute(currentState.get().pose(),
                         currentState.get().inertialFrameVelocity(), currentTimeInSeconds);
-                velocityService.sendVelocityMessage(nextVelocity, currentState.get().pose());
+                velocity4dService.sendVelocityMessage(nextVelocity, currentState.get().pose());
                 logDroneState(currentState.get(), currentTimeInSeconds);
             }
         }

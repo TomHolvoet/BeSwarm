@@ -1,6 +1,7 @@
 package services.crates;
 
 import hal_quadrotor.VelocityResponse;
+import org.ros.exception.RemoteException;
 import org.ros.node.service.ServiceResponseListener;
 
 import static org.mockito.Mockito.mock;
@@ -8,9 +9,9 @@ import static org.mockito.Mockito.mock;
 /**
  * @author Hoang Tung Dinh
  */
-public class CratesVelocityServiceOnSuccessTest extends CratesVelocityServiceTest {
+public class CratesVelocity4dServiceOnFailureTest extends CratesVelocity4dServiceTest {
     @Override
     void responseToMessage(ServiceResponseListener<VelocityResponse> serviceResponseListener) {
-        serviceResponseListener.onSuccess(mock(VelocityResponse.class));
+        serviceResponseListener.onFailure(mock(RemoteException.class));
     }
 }

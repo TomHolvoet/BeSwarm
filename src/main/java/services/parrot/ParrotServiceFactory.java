@@ -6,7 +6,7 @@ import org.slf4j.LoggerFactory;
 import services.LandService;
 import services.CommonServiceFactory;
 import services.TakeOffService;
-import services.VelocityService;
+import services.Velocity4dService;
 import std_msgs.Empty;
 
 /**
@@ -42,7 +42,7 @@ public abstract class ParrotServiceFactory implements CommonServiceFactory {
         return landService;
     }
 
-    public abstract VelocityService createVelocityService();
+    public abstract Velocity4dService createVelocity4dService();
 
     ConnectedNode getConnectedNode() {
         return connectedNode;

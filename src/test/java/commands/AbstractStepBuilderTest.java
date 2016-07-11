@@ -9,7 +9,7 @@ import control.dto.Pose;
 import control.localization.StateEstimator;
 import org.junit.Before;
 import org.junit.Test;
-import services.VelocityService;
+import services.Velocity4dService;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.RETURNS_MOCKS;
@@ -23,7 +23,7 @@ import static org.mockito.Mockito.when;
  */
 public abstract class AbstractStepBuilderTest {
 
-    private VelocityService velocityService;
+    private Velocity4dService velocity4dService;
     private StateEstimator stateEstimator;
 
     private PidParameters pidLinearX;
@@ -39,7 +39,7 @@ public abstract class AbstractStepBuilderTest {
 
     @Before
     public void setUp() {
-        velocityService = mock(VelocityService.class, RETURNS_MOCKS);
+        velocity4dService = mock(Velocity4dService.class, RETURNS_MOCKS);
         stateEstimator = mock(StateEstimator.class, RETURNS_MOCKS);
         when(stateEstimator.getCurrentState()).thenReturn(Optional.of(mock(DroneStateStamped.class, RETURNS_MOCKS)));
 
@@ -52,7 +52,7 @@ public abstract class AbstractStepBuilderTest {
     @Test
     public void testCorrectArgumentsCalled() {
         final ArgumentHolder argumentHolder = ArgumentHolder.builder()
-                .velocityService(velocityService)
+                .velocityService(velocity4dService)
                 .stateEstimator(stateEstimator)
                 .pidLinearX(pidLinearX)
                 .pidLinearY(pidLinearY)
@@ -64,7 +64,7 @@ public abstract class AbstractStepBuilderTest {
         createAndExecuteCommand(argumentHolder);
         checkCorrectExtraMethodsCalled();
 
-        checkCorrectServicesCalled(velocityService, stateEstimator);
+        checkCorrectServicesCalled(velocity4dService, stateEstimator);
         checkCorrectPidParametersCalled(pidLinearX);
         checkCorrectPidParametersCalled(pidLinearY);
         checkCorrectPidParametersCalled(pidLinearZ);
@@ -82,14 +82,14 @@ public abstract class AbstractStepBuilderTest {
         verify(pidParameters, atLeastOnce()).minVelocity();
     }
 
-    private static void checkCorrectServicesCalled(VelocityService velocityService, StateEstimator stateEstimator) {
-        verify(velocityService, atLeastOnce()).sendVelocityMessage(any(InertialFrameVelocity.class), any(Pose.class));
+    private static void checkCorrectServicesCalled(Velocity4dService velocity4dService, StateEstimator stateEstimator) {
+        verify(velocity4dService, atLeastOnce()).sendVelocityMessage(any(InertialFrameVelocity.class), any(Pose.class));
         verify(stateEstimator, atLeastOnce()).getCurrentState();
     }
 
     @AutoValue
     abstract static class ArgumentHolder {
-        abstract VelocityService velocityService();
+        abstract Velocity4dService velocityService();
 
         abstract StateEstimator stateEstimator();
 
@@ -109,7 +109,7 @@ public abstract class AbstractStepBuilderTest {
 
         @AutoValue.Builder
         public abstract static class Builder {
-            public abstract Builder velocityService(VelocityService value);
+            public abstract Builder velocityService(Velocity4dService value);
 
             public abstract Builder stateEstimator(StateEstimator value);
 

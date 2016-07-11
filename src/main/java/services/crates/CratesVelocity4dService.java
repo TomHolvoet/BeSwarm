@@ -7,7 +7,7 @@ import hal_quadrotor.VelocityResponse;
 import org.ros.node.service.ServiceClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import services.VelocityService;
+import services.Velocity4dService;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -15,16 +15,16 @@ import java.util.concurrent.TimeUnit;
 /**
  * @author Hoang Tung Dinh
  */
-final class CratesVelocityService implements VelocityService {
-    private static final Logger logger = LoggerFactory.getLogger(CratesVelocityService.class);
+final class CratesVelocity4dService implements Velocity4dService {
+    private static final Logger logger = LoggerFactory.getLogger(CratesVelocity4dService.class);
     private final ServiceClient<VelocityRequest, VelocityResponse> srvVelocity;
 
-    private CratesVelocityService(ServiceClient<VelocityRequest, VelocityResponse> srvVelocity) {
+    private CratesVelocity4dService(ServiceClient<VelocityRequest, VelocityResponse> srvVelocity) {
         this.srvVelocity = srvVelocity;
     }
 
-    public static CratesVelocityService create(ServiceClient<VelocityRequest, VelocityResponse> srvVelocity) {
-        return new CratesVelocityService(srvVelocity);
+    public static CratesVelocity4dService create(ServiceClient<VelocityRequest, VelocityResponse> srvVelocity) {
+        return new CratesVelocity4dService(srvVelocity);
     }
 
     @Override

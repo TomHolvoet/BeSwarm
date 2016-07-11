@@ -8,7 +8,7 @@ import geometry_msgs.Twist;
 import org.ros.node.topic.Publisher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import services.VelocityService;
+import services.Velocity4dService;
 import utils.math.Transformations;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -21,9 +21,9 @@ import static com.google.common.base.Preconditions.checkNotNull;
  *
  * @author Hoang Tung Dinh
  */
-final class ParrotVelocityService implements VelocityService {
-    private static final Logger logger = LoggerFactory.getLogger(ParrotVelocityService.class);
-    private static final Logger loggerVel = LoggerFactory.getLogger(ParrotVelocityService.class.getName() + ".vel");
+final class ParrotVelocity4dService implements Velocity4dService {
+    private static final Logger logger = LoggerFactory.getLogger(ParrotVelocity4dService.class);
+    private static final Logger loggerVel = LoggerFactory.getLogger(ParrotVelocity4dService.class.getName() + ".vel");
 
     private final Publisher<Twist> publisher;
 
@@ -37,7 +37,7 @@ final class ParrotVelocityService implements VelocityService {
     private final double maxLinearZ;
     private final double maxAngularZ;
 
-    private ParrotVelocityService(Builder builder) {
+    private ParrotVelocity4dService(Builder builder) {
         publisher = builder.publisher;
         minLinearX = builder.minLinearX;
         maxLinearX = builder.maxLinearX;
@@ -261,7 +261,7 @@ final class ParrotVelocityService implements VelocityService {
          *
          * @return a {@code VelocityPublisher} built with parameters of this {@code VelocityPublisher.Builder}
          */
-        public ParrotVelocityService build() {
+        public ParrotVelocity4dService build() {
             checkNotNull(publisher, "missing publisher");
             checkNotNull(minLinearX, "missing minLinearX");
             checkNotNull(minLinearY, "missing minLinearY");
@@ -271,7 +271,7 @@ final class ParrotVelocityService implements VelocityService {
             checkNotNull(maxLinearY, "missing maxLinearY");
             checkNotNull(maxLinearZ, "missing maxLinearZ");
             checkNotNull(maxAngularZ, "missing maxAngularZ");
-            return new ParrotVelocityService(this);
+            return new ParrotVelocity4dService(this);
         }
     }
 }

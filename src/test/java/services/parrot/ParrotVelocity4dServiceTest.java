@@ -14,7 +14,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.ros.node.topic.Publisher;
-import services.VelocityService;
+import services.Velocity4dService;
 import utils.TestUtils;
 import utils.math.VelocityProvider;
 import utils.math.VelocityProviderWithThreshold;
@@ -31,9 +31,7 @@ import static org.mockito.Mockito.when;
  * @author Hoang Tung Dinh
  */
 @RunWith(JUnitParamsRunner.class)
-public class ParrotVelocityServiceTest {
-
-    private static final double DELTA = 0.01;
+public class ParrotVelocity4dServiceTest {
 
     @Nullable private Publisher<Twist> publisher;
     @Nullable private Twist twist;
@@ -66,8 +64,8 @@ public class ParrotVelocityServiceTest {
     @Parameters(source = VelocityProvider.class)
     public void testSendVelocityMessageWithoutThreshold(Pose pose, BodyFrameVelocity bodyFrameVelocity,
             InertialFrameVelocity inertialFrameVelocity) {
-        final VelocityService parrotVelocityService = ParrotVelocityService.builder().publisher(publisher).build();
-        parrotVelocityService.sendVelocityMessage(inertialFrameVelocity, pose);
+        final Velocity4dService parrotVelocity4dService = ParrotVelocity4dService.builder().publisher(publisher).build();
+        parrotVelocity4dService.sendVelocityMessage(inertialFrameVelocity, pose);
         checkMessageSetUp(bodyFrameVelocity, linear, angular);
         checkCorrectTwistMessageSent(publisher, twist);
 
@@ -77,7 +75,7 @@ public class ParrotVelocityServiceTest {
     @Parameters(source = VelocityProviderWithThreshold.class)
     public void testSendVelocityMessageWithThreshold(Pose pose, BodyFrameVelocity bodyFrameVelocity,
             InertialFrameVelocity inertialFrameVelocity) {
-        final VelocityService parrotVelocityService = ParrotVelocityService.builder()
+        final Velocity4dService parrotVelocity4dService = ParrotVelocity4dService.builder()
                 .publisher(publisher)
                 .minLinearX(-0.25)
                 .minLinearY(-0.25)
@@ -88,7 +86,7 @@ public class ParrotVelocityServiceTest {
                 .maxLinearZ(0.25)
                 .maxAngularZ(0.25)
                 .build();
-        parrotVelocityService.sendVelocityMessage(inertialFrameVelocity, pose);
+        parrotVelocity4dService.sendVelocityMessage(inertialFrameVelocity, pose);
         checkMessageSetUp(bodyFrameVelocity, linear, angular);
         checkCorrectTwistMessageSent(publisher, twist);
 

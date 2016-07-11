@@ -9,7 +9,7 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.ros.node.service.ServiceClient;
 import org.ros.node.service.ServiceResponseListener;
-import services.VelocityService;
+import services.Velocity4dService;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -25,7 +25,7 @@ import static org.mockito.Mockito.when;
 /**
  * @author Hoang Tung Dinh
  */
-public abstract class CratesVelocityServiceTest {
+public abstract class CratesVelocity4dServiceTest {
 
     abstract void responseToMessage(ServiceResponseListener<VelocityResponse> serviceResponseListener);
 
@@ -35,9 +35,9 @@ public abstract class CratesVelocityServiceTest {
                 RETURNS_DEEP_STUBS);
         when(serviceClient.newMessage()).thenReturn(mock(VelocityRequest.class));
 
-        final VelocityService cratesVelocityService = CratesVelocityService.create(serviceClient);
+        final Velocity4dService cratesVelocity4dService = CratesVelocity4dService.create(serviceClient);
         final InertialFrameVelocity inertialFrameVelocity = getInertialFrameVelocity();
-        final Future<?> future = checkSendingMessageBeforeReponse(cratesVelocityService, inertialFrameVelocity);
+        final Future<?> future = checkSendingMessageBeforeReponse(cratesVelocity4dService, inertialFrameVelocity);
 
         final ArgumentCaptor<VelocityRequest> velocityRequestArgumentCaptor = ArgumentCaptor.forClass(
                 VelocityRequest.class);
@@ -59,12 +59,12 @@ public abstract class CratesVelocityServiceTest {
                     .build();
     }
 
-    private Future<?> checkSendingMessageBeforeReponse(final VelocityService cratesVelocityService,
+    private Future<?> checkSendingMessageBeforeReponse(final Velocity4dService cratesVelocity4dService,
             final InertialFrameVelocity inertialFrameVelocity) throws InterruptedException {
         final Future<?> future = Executors.newSingleThreadExecutor().submit(new Runnable() {
             @Override
             public void run() {
-                cratesVelocityService.sendVelocityMessage(inertialFrameVelocity, mock(Pose.class));
+                cratesVelocity4dService.sendVelocityMessage(inertialFrameVelocity, mock(Pose.class));
             }
         });
 

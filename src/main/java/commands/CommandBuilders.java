@@ -3,7 +3,7 @@ package commands;
 import control.DefaultPidParameters;
 import control.PidParameters;
 import control.localization.StateEstimator;
-import services.VelocityService;
+import services.Velocity4dService;
 
 /**
  * @author Hoang Tung Dinh
@@ -35,7 +35,7 @@ final class CommandBuilders {
     }
 
     public interface VelocityServiceStep<T> {
-        StateEstimatorStep<T> withVelocityService(VelocityService val);
+        StateEstimatorStep<T> withVelocityService(Velocity4dService val);
     }
 
     public interface CopyBuilderStep<T> {
@@ -51,7 +51,7 @@ final class CommandBuilders {
         private double controlRateInSeconds;
         private double droneStateLifeDurationInSeconds;
         private StateEstimator stateEstimator;
-        private VelocityService velocityService;
+        private Velocity4dService velocity4dService;
 
         private static final double DEFAULT_CONTROL_RATE_IN_SECONDS = 0.05;
         private static final double DEFAULT_DRONE_STATE_LIFE_DURATION_IN_SECONDS = 0.1;
@@ -74,8 +74,8 @@ final class CommandBuilders {
         }
 
         @Override
-        public StateEstimatorStep<T> withVelocityService(VelocityService val) {
-            velocityService = val;
+        public StateEstimatorStep<T> withVelocityService(Velocity4dService val) {
+            velocity4dService = val;
             return this;
         }
 
@@ -143,8 +143,8 @@ final class CommandBuilders {
             return stateEstimator;
         }
 
-        VelocityService getVelocityService() {
-            return velocityService;
+        Velocity4dService getVelocity4dService() {
+            return velocity4dService;
         }
 
         @Override
@@ -156,7 +156,7 @@ final class CommandBuilders {
             controlRateInSeconds = otherBuilder.getControlRateInSeconds();
             droneStateLifeDurationInSeconds = otherBuilder.getDroneStateLifeDurationInSeconds();
             stateEstimator = otherBuilder.getStateEstimator();
-            velocityService = otherBuilder.getVelocityService();
+            velocity4dService = otherBuilder.getVelocity4dService();
 
             return nextInterfaceInBuilderChain();
         }

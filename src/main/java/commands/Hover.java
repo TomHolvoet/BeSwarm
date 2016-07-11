@@ -6,7 +6,7 @@ import control.dto.Pose;
 import control.localization.StateEstimator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import services.VelocityService;
+import services.Velocity4dService;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
@@ -19,21 +19,21 @@ import static com.google.common.base.Preconditions.checkArgument;
 public final class Hover implements Command {
     private static final Logger logger = LoggerFactory.getLogger(Hover.class);
 
-    private final VelocityService velocityService;
+    private final Velocity4dService velocity4dService;
     private final StateEstimator stateEstimator;
     private final double durationInSeconds;
 
-    private Hover(VelocityService velocityService, StateEstimator stateEstimator, double durationInSeconds) {
-        this.velocityService = velocityService;
+    private Hover(Velocity4dService velocity4dService, StateEstimator stateEstimator, double durationInSeconds) {
+        this.velocity4dService = velocity4dService;
         this.stateEstimator = stateEstimator;
         this.durationInSeconds = durationInSeconds;
     }
 
-    public static Hover create(VelocityService velocityService, StateEstimator stateEstimator,
+    public static Hover create(Velocity4dService velocity4dService, StateEstimator stateEstimator,
             double durationInSeconds) {
         checkArgument(durationInSeconds > 0,
                 String.format("Duration must be a positive value, but it is %f", durationInSeconds));
-        return new Hover(velocityService, stateEstimator, durationInSeconds);
+        return new Hover(velocity4dService, stateEstimator, durationInSeconds);
     }
 
     @Override
@@ -48,7 +48,7 @@ public final class Hover implements Command {
         final Pose currentPose = currentState.get().pose();
         // TODO do we need customized pid params here?
         final Command moveToPose = MoveToPose.builder()
-                .withVelocityService(velocityService)
+                .withVelocityService(velocity4dService)
                 .withStateEstimator(stateEstimator)
                 .withGoalPose(currentPose)
                 .withDurationInSeconds(durationInSeconds)
