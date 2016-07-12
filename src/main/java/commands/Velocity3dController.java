@@ -1,6 +1,7 @@
 package commands;
 
 import applications.trajectory.TrajectoryUtils;
+import control.DefaultPidParameters;
 import control.PidController1d;
 import control.PidParameters;
 import control.Trajectory4d;
@@ -91,6 +92,11 @@ final class Velocity3dController implements VelocityController {
     abstract static class BuilderWithVelocity3dService<T extends BuilderWithVelocity3dService<T>> extends
             Velocity2dController.BuilderWithVelocity2dService<T> {
         PidParameters pidLinearZ;
+
+        BuilderWithVelocity3dService() {
+            super();
+            pidLinearZ = DefaultPidParameters.LINEAR_Z.getParameters();
+        }
 
         /**
          * Sets the {@code pidLinearZ} and returns a reference to this Builder so that the methods can be chained

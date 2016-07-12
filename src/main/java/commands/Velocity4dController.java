@@ -1,5 +1,6 @@
 package commands;
 
+import control.DefaultPidParameters;
 import control.PidController4d;
 import control.PidParameters;
 import control.dto.DroneStateStamped;
@@ -84,6 +85,11 @@ final class Velocity4dController implements VelocityController {
     abstract static class BuilderWithVelocity4dService<T extends BuilderWithVelocity4dService<T>> extends
             Velocity3dController.BuilderWithVelocity3dService<T> {
         PidParameters pidAngularZ;
+
+        BuilderWithVelocity4dService() {
+            super();
+            pidAngularZ = DefaultPidParameters.ANGULAR_Z.getParameters();
+        }
 
         /**
          * Sets the {@code pidAngularZ} and returns a reference to this Builder so that the methods can be chained

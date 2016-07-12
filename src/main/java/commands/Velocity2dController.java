@@ -1,6 +1,7 @@
 package commands;
 
 import applications.trajectory.TrajectoryUtils;
+import control.DefaultPidParameters;
 import control.PidController1d;
 import control.PidParameters;
 import control.Trajectory4d;
@@ -91,7 +92,10 @@ final class Velocity2dController implements VelocityController {
         PidParameters pidLinearX;
         PidParameters pidLinearY;
 
-        BuilderWithVelocity2dService() {}
+        BuilderWithVelocity2dService() {
+            pidLinearX = DefaultPidParameters.LINEAR_X.getParameters();
+            pidLinearY = DefaultPidParameters.LINEAR_Y.getParameters();
+        }
 
         abstract T self();
 
