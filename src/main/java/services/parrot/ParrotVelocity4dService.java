@@ -1,5 +1,6 @@
 package services.parrot;
 
+import commands.VelocityController;
 import commands.VelocityServiceVisitor;
 import control.dto.BodyFrameVelocity;
 import control.dto.InertialFrameVelocity;
@@ -132,8 +133,8 @@ final class ParrotVelocity4dService implements Velocity4dService {
     }
 
     @Override
-    public void accept(VelocityServiceVisitor visitor) {
-        visitor.visit(this);
+    public VelocityController accept(VelocityServiceVisitor visitor) {
+        return visitor.visit(this);
     }
 
     /**

@@ -11,7 +11,7 @@ import static org.mockito.Mockito.verify;
 /**
  * @author Hoang Tung Dinh
  */
-public class MoveToPoseBuilderTest extends AbstractStepBuilderTest {
+public class MoveToPoseBuilderTest extends AbstractBuilderTest {
 
     private Pose goalPose;
 
@@ -25,7 +25,7 @@ public class MoveToPoseBuilderTest extends AbstractStepBuilderTest {
     @Override
     void createAndExecuteCommand(ArgumentHolder argumentHolder) {
         final Command moveToPose = MoveToPose.builder()
-                .withVelocity4dService(argumentHolder.velocityService())
+                .withVelocityService(argumentHolder.velocityService())
                 .withStateEstimator(argumentHolder.stateEstimator())
                 .withGoalPose(goalPose)
                 .withDurationInSeconds(argumentHolder.durationInSeconds())

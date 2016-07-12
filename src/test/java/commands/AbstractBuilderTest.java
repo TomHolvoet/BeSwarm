@@ -9,6 +9,8 @@ import control.dto.Pose;
 import control.localization.StateEstimator;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 import services.Velocity4dService;
 
 import static org.mockito.Matchers.any;
@@ -21,7 +23,7 @@ import static org.mockito.Mockito.when;
 /**
  * @author Hoang Tung Dinh
  */
-public abstract class AbstractStepBuilderTest {
+public abstract class AbstractBuilderTest {
 
     private Velocity4dService velocity4dService;
     private StateEstimator stateEstimator;
@@ -40,6 +42,12 @@ public abstract class AbstractStepBuilderTest {
     @Before
     public void setUp() {
         velocity4dService = mock(Velocity4dService.class, RETURNS_MOCKS);
+        when(velocity4dService.accept(any(VelocityServiceVisitor.class))).thenAnswer(new Answer<VelocityController>() {
+            @Override
+            public VelocityController answer(InvocationOnMock invocation) throws Throwable {
+                return ((VelocityServiceVisitor) invocation.getArguments()[0]).visit(velocity4dService);
+            }
+        });
         stateEstimator = mock(StateEstimator.class, RETURNS_MOCKS);
         when(stateEstimator.getCurrentState()).thenReturn(Optional.of(mock(DroneStateStamped.class, RETURNS_MOCKS)));
 
@@ -83,7 +91,8 @@ public abstract class AbstractStepBuilderTest {
     }
 
     private static void checkCorrectServicesCalled(Velocity4dService velocity4dService, StateEstimator stateEstimator) {
-        verify(velocity4dService, atLeastOnce()).sendVelocity4dMessage(any(InertialFrameVelocity.class), any(Pose.class));
+        verify(velocity4dService, atLeastOnce()).sendVelocity4dMessage(any(InertialFrameVelocity.class),
+                any(Pose.class));
         verify(stateEstimator, atLeastOnce()).getCurrentState();
     }
 
@@ -104,7 +113,7 @@ public abstract class AbstractStepBuilderTest {
         abstract double durationInSeconds();
 
         public static Builder builder() {
-            return new AutoValue_AbstractStepBuilderTest_ArgumentHolder.Builder();
+            return new AutoValue_AbstractBuilderTest_ArgumentHolder.Builder();
         }
 
         @AutoValue.Builder

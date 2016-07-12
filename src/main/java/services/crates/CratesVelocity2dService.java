@@ -1,5 +1,6 @@
 package services.crates;
 
+import commands.VelocityController;
 import commands.VelocityServiceVisitor;
 import hal_quadrotor.VelocityHeightRequest;
 import hal_quadrotor.VelocityHeightResponse;
@@ -40,7 +41,7 @@ final class CratesVelocity2dService implements Velocity2dService {
     }
 
     @Override
-    public void accept(VelocityServiceVisitor visitor) {
-        visitor.visit(this);
+    public VelocityController accept(VelocityServiceVisitor visitor) {
+        return visitor.visit(this);
     }
 }

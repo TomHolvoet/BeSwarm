@@ -11,7 +11,7 @@ import static org.mockito.Mockito.verify;
 /**
  * @author Hoang Tung Dinh
  */
-public class FollowTrajectoryBuilderTest extends AbstractStepBuilderTest {
+public class FollowTrajectoryBuilderTest extends AbstractBuilderTest {
 
     private Trajectory4d trajectory4d;
 
@@ -25,7 +25,7 @@ public class FollowTrajectoryBuilderTest extends AbstractStepBuilderTest {
     @Override
     void createAndExecuteCommand(ArgumentHolder argumentHolder) {
         final Command followTrajectory = FollowTrajectory.builder()
-                .withVelocity4dService(argumentHolder.velocityService())
+                .withVelocityService(argumentHolder.velocityService())
                 .withStateEstimator(argumentHolder.stateEstimator())
                 .withTrajectory4d(trajectory4d)
                 .withDurationInSeconds(argumentHolder.durationInSeconds())

@@ -13,7 +13,7 @@ import static org.mockito.Mockito.when;
 /**
  * @author Hoang Tung Dinh
  */
-public class PerformChoreographyBuilderTest extends AbstractStepBuilderTest {
+public class PerformChoreographyBuilderTest extends AbstractBuilderTest {
 
     private FiniteTrajectory4d finiteTrajectory4d;
 
@@ -28,7 +28,7 @@ public class PerformChoreographyBuilderTest extends AbstractStepBuilderTest {
     @Override
     void createAndExecuteCommand(ArgumentHolder argumentHolder) {
         final Command performChoreography = PerformChoreography.builder()
-                .withVelocity4dService(argumentHolder.velocityService())
+                .withVelocityService(argumentHolder.velocityService())
                 .withStateEstimator(argumentHolder.stateEstimator())
                 .withFiniteTrajectory4d(finiteTrajectory4d)
                 .withPidLinearXParameters(argumentHolder.pidLinearX())

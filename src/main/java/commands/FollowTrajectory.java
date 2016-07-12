@@ -12,7 +12,7 @@ import control.dto.Velocity;
 import control.localization.StateEstimator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import services.Velocity4dService;
+import services.VelocityService;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -26,7 +26,7 @@ public final class FollowTrajectory implements Command {
     private static final Logger velocityLogger = LoggerFactory.getLogger(
             FollowTrajectory.class.getName() + ".velocitylogger");
 
-    private final Velocity4dService velocity4dService;
+    private final VelocityService velocityService;
     private final StateEstimator stateEstimator;
     private final PidParameters pidLinearXParameters;
     private final PidParameters pidLinearYParameters;
@@ -37,8 +37,10 @@ public final class FollowTrajectory implements Command {
     private final double controlRateInSeconds;
     private final double droneStateLifeDurationInSeconds;
 
+    private final VelocityController velocityController;
+
     private FollowTrajectory(Builder builder) {
-        velocity4dService = builder.velocity4dService;
+        velocityService = builder.velocityService;
         stateEstimator = builder.stateEstimator;
         pidLinearXParameters = builder.pidLinearXParameters;
         pidLinearYParameters = builder.pidLinearYParameters;
@@ -48,6 +50,16 @@ public final class FollowTrajectory implements Command {
         durationInSeconds = builder.durationInSeconds;
         controlRateInSeconds = builder.controlRateInSeconds;
         droneStateLifeDurationInSeconds = builder.droneStateLifeDurationInSeconds;
+
+        final CreateVelocityControllerVisitor controllerVisitor = CreateVelocityControllerVisitor.builder()
+                .withTrajectory4d(trajectory4d)
+                .withPidLinearXParameters(pidLinearXParameters)
+                .withPidLinearYParameters(pidLinearYParameters)
+                .withPidLinearZParameters(pidLinearZParameters)
+                .withPidAngularZParameters(pidAngularZParameters)
+                .build();
+
+        velocityController = velocityService.accept(controllerVisitor);
     }
 
     public static Builder builder() {
@@ -96,8 +108,7 @@ public final class FollowTrajectory implements Command {
             logger.trace("Start a control loop.");
             final Optional<DroneStateStamped> currentState = stateEstimator.getCurrentState();
             if (!currentState.isPresent()) {
-                logger.trace("Cannot get state. Send zero velocity.");
-                velocity4dService.sendVelocity4dMessage(zeroVelocity, zeroPose);
+                logger.trace("Cannot get state. Haven't sent any velocity.");
                 return;
             }
 
@@ -109,9 +120,7 @@ public final class FollowTrajectory implements Command {
                 logger.trace("Got pose and velocity. Start computing the next velocity response.");
                 final double currentTimeInSeconds = (System.nanoTime() - startTimeInNanoSeconds) /
                         NANO_SECOND_TO_SECOND;
-                final InertialFrameVelocity nextVelocity = pidController4d.compute(currentState.get().pose(),
-                        currentState.get().inertialFrameVelocity(), currentTimeInSeconds);
-                velocity4dService.sendVelocity4dMessage(nextVelocity, currentState.get().pose());
+                velocityController.computeAndSendVelocity(currentTimeInSeconds, currentState.get());
                 logDroneState(currentState.get(), currentTimeInSeconds);
             }
         }
@@ -176,7 +185,7 @@ public final class FollowTrajectory implements Command {
             checkNotNull(super.controlRateInSeconds);
             checkNotNull(super.droneStateLifeDurationInSeconds);
             checkNotNull(super.stateEstimator);
-            checkNotNull(super.velocity4dService);
+            checkNotNull(super.velocityService);
 
             return new FollowTrajectory(this);
         }

@@ -1,10 +1,11 @@
 package services;
 
+import commands.VelocityController;
 import commands.VelocityServiceVisitor;
 
 /**
  * @author Hoang Tung Dinh
  */
 public interface VelocityService {
-    void accept(VelocityServiceVisitor visitor);
+    VelocityController accept(VelocityServiceVisitor visitor);
 }

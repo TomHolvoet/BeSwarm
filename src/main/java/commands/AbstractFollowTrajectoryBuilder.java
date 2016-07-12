@@ -3,7 +3,7 @@ package commands;
 import control.DefaultPidParameters;
 import control.PidParameters;
 import control.localization.StateEstimator;
-import services.Velocity4dService;
+import services.VelocityService;
 
 /**
  * @author Hoang Tung Dinh
@@ -18,7 +18,7 @@ abstract class AbstractFollowTrajectoryBuilder<T extends AbstractFollowTrajector
     double controlRateInSeconds;
     double droneStateLifeDurationInSeconds;
     StateEstimator stateEstimator;
-    Velocity4dService velocity4dService;
+    VelocityService velocityService;
 
     private static final double DEFAULT_CONTROL_RATE_IN_SECONDS = 0.05;
     private static final double DEFAULT_DRONE_STATE_LIFE_DURATION_IN_SECONDS = 0.1;
@@ -121,14 +121,14 @@ abstract class AbstractFollowTrajectoryBuilder<T extends AbstractFollowTrajector
     }
 
     /**
-     * Sets the {@code velocity4dService} and returns a reference to an implementation of this class so that the methods
+     * Sets the {@code velocityService} and returns a reference to an implementation of this class so that the methods
      * can be chained together.
      *
-     * @param val the {@code velocity4dService} to set
+     * @param val the {@code velocityService} to set
      * @return a reference to an implementation of this class
      */
-    public final T withVelocity4dService(Velocity4dService val) {
-        velocity4dService = val;
+    public final T withVelocityService(VelocityService val) {
+        velocityService = val;
         return self();
     }
 
@@ -140,7 +140,7 @@ abstract class AbstractFollowTrajectoryBuilder<T extends AbstractFollowTrajector
         controlRateInSeconds = otherBuilder.controlRateInSeconds;
         droneStateLifeDurationInSeconds = otherBuilder.droneStateLifeDurationInSeconds;
         stateEstimator = otherBuilder.stateEstimator;
-        velocity4dService = otherBuilder.velocity4dService;
+        velocityService = otherBuilder.velocityService;
 
         return self();
     }
