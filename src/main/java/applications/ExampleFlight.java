@@ -16,7 +16,7 @@ import org.ros.node.ConnectedNode;
 import services.FlyingStateService;
 import services.LandService;
 import services.TakeOffService;
-import services.Velocity4dService;
+import services.VelocityService;
 import services.parrot.ParrotServiceFactory;
 import services.ros_subscribers.KeyboardSubscriber;
 import taskexecutor.Task;
@@ -29,8 +29,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 /**
- * This class illustrates an example flight. The drone will take off, hover
- * in 5 second, follow a trajectory and then
+ * This class illustrates an example flight. The drone will take off, hover in 5 second, follow a trajectory and then
  * land.
  *
  * @author Hoang Tung Dinh
@@ -39,7 +38,7 @@ public final class ExampleFlight {
 
     private final TakeOffService takeOffService;
     private final LandService landService;
-    private final Velocity4dService velocity4dService;
+    private final VelocityService velocityService;
     private final FlyingStateService flyingStateService;
     private final StateEstimator stateEstimator;
     private final FiniteTrajectory4d finiteTrajectory4d;
@@ -55,7 +54,7 @@ public final class ExampleFlight {
             PidParameters pidLinearY, PidParameters pidLinearZ, PidParameters pidAngularZ) {
         this.takeOffService = parrotServiceFactory.createTakeOffService();
         this.landService = parrotServiceFactory.createLandService();
-        this.velocity4dService = parrotServiceFactory.createVelocity4dService();
+        this.velocityService = parrotServiceFactory.createVelocity4dService();
         this.flyingStateService = parrotServiceFactory.createFlyingStateService();
         this.stateEstimator = stateEstimator;
         this.finiteTrajectory4d = finiteTrajectory4d;
@@ -99,11 +98,11 @@ public final class ExampleFlight {
         final Command takeOff = Takeoff.create(takeOffService);
         commands.add(takeOff);
 
-        final Command hoverFiveSecond = Hover.create(velocity4dService, stateEstimator, 5);
+        final Command hoverFiveSecond = Hover.create(velocityService, stateEstimator, 5);
         commands.add(hoverFiveSecond);
 
         final Command followTrajectory = FollowTrajectory.builder()
-                .withVelocityService(velocity4dService)
+                .withVelocityService(velocityService)
                 .withStateEstimator(stateEstimator)
                 .withTrajectory4d(finiteTrajectory4d)
                 .withDurationInSeconds(finiteTrajectory4d.getTrajectoryDuration())
