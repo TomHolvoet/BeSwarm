@@ -7,10 +7,12 @@ import control.Trajectory4d;
 import control.dto.DroneStateStamped;
 import services.Velocity3dService;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
  * @author Hoang Tung Dinh
  */
-public class Velocity3dController implements VelocityController {
+final class Velocity3dController implements VelocityController {
 
     private final Velocity3dService velocity3dService;
     private final Trajectory4d trajectory4d;
@@ -21,12 +23,15 @@ public class Velocity3dController implements VelocityController {
     private Velocity3dController(Builder builder) {
         velocity3dService = builder.velocity3dService;
         trajectory4d = builder.trajectory4d;
-        pidControllerLinearX = builder.pidControllerLinearX;
-        pidControllerLinearY = builder.pidControllerLinearY;
-        pidControllerLinearZ = builder.pidControllerLinearZ;
+        pidControllerLinearX = PidController1d.create(builder.pidLinearX,
+                TrajectoryUtils.getTrajectoryLinearX(trajectory4d));
+        pidControllerLinearY = PidController1d.create(builder.pidLinearY,
+                TrajectoryUtils.getTrajectoryLinearY(trajectory4d));
+        pidControllerLinearZ = PidController1d.create(builder.pidLinearZ,
+                TrajectoryUtils.getTrajectoryLinearZ(trajectory4d));
     }
 
-    public static Velocity3dServiceStep builder() {
+    public static Builder builder() {
         return new Builder();
     }
 
@@ -43,100 +48,27 @@ public class Velocity3dController implements VelocityController {
                 trajectory4d.getDesiredAngleZ(currentTimeInSeconds));
     }
 
-    interface BuildStep {
-        Velocity3dController build();
-    }
+    public static final class Builder extends BuilderWithVelocity3dService<Builder> {
 
-    interface PidLinearZStep {
-        BuildStep withPidLinearZ(PidParameters val);
-    }
-
-    interface PidLinearYStep {
-        PidLinearZStep withPidLinearY(PidParameters val);
-    }
-
-    interface PidLinearXStep {
-        PidLinearYStep withPidLinearX(PidParameters val);
-    }
-
-    interface Trajectory4dStep {
-        PidLinearXStep withTrajectory4d(Trajectory4d val);
-    }
-
-    interface Velocity3dServiceStep {
-        Trajectory4dStep withVelocity3dService(Velocity3dService val);
-    }
-
-    /**
-     * {@code Velocity3dController} builder static inner class.
-     */
-    public static final class Builder implements PidLinearZStep, PidLinearYStep, PidLinearXStep, Trajectory4dStep,
-            Velocity3dServiceStep, BuildStep {
-
-        private PidController1d pidControllerLinearZ;
-        private PidController1d pidControllerLinearY;
-        private PidController1d pidControllerLinearX;
-        private Trajectory4d trajectory4d;
         private Velocity3dService velocity3dService;
 
-        private Builder() {}
+        Builder() {
+            super();
+        }
 
-        /**
-         * Sets the {@code pidLinearZ} and returns a reference to {@code BuildStep}
-         *
-         * @param val the {@code pidLinearZ} to set
-         * @return a reference to this AbstractFollowTrajectoryBuilder
-         */
         @Override
-        public BuildStep withPidLinearZ(PidParameters val) {
-            pidControllerLinearZ = PidController1d.create(val, TrajectoryUtils.getTrajectoryLinearZ(trajectory4d));
+        Builder self() {
             return this;
         }
 
         /**
-         * Sets the {@code pidLinearY} and returns a reference to {@code PidLinearZStep}
-         *
-         * @param val the {@code pidLinearY} to set
-         * @return a reference to this AbstractFollowTrajectoryBuilder
-         */
-        @Override
-        public PidLinearZStep withPidLinearY(PidParameters val) {
-            pidControllerLinearY = PidController1d.create(val, TrajectoryUtils.getTrajectoryLinearY(trajectory4d));
-            return this;
-        }
-
-        /**
-         * Sets the {@code pidLinearX} and returns a reference to {@code PidLinearYStep}
-         *
-         * @param val the {@code pidLinearX} to set
-         * @return a reference to this AbstractFollowTrajectoryBuilder
-         */
-        @Override
-        public PidLinearYStep withPidLinearX(PidParameters val) {
-            pidControllerLinearX = PidController1d.create(val, TrajectoryUtils.getTrajectoryLinearX(trajectory4d));
-            return this;
-        }
-
-        /**
-         * Sets the {@code trajectory4d} and returns a reference to {@code PidLinearXStep}
-         *
-         * @param val the {@code trajectory4d} to set
-         * @return a reference to this AbstractFollowTrajectoryBuilder
-         */
-        @Override
-        public PidLinearXStep withTrajectory4d(Trajectory4d val) {
-            trajectory4d = val;
-            return this;
-        }
-
-        /**
-         * Sets the {@code velocity3dService} and returns a reference to {@code Trajectory4dStep}
+         * Sets the {@code velocity3dService} and returns a reference to this Builder so that the methods can be chained
+         * together.
          *
          * @param val the {@code velocity3dService} to set
-         * @return a reference to this AbstractFollowTrajectoryBuilder
+         * @return a reference to this Builder
          */
-        @Override
-        public Trajectory4dStep withVelocity3dService(Velocity3dService val) {
+        public Builder withVelocity3dService(Velocity3dService val) {
             velocity3dService = val;
             return this;
         }
@@ -144,8 +76,32 @@ public class Velocity3dController implements VelocityController {
         /**
          * Returns a {@code Velocity3dController} built from the parameters previously set.
          *
-         * @return a {@code Velocity3dController} built with parameters of this {@code Velocity3dController.AbstractFollowTrajectoryBuilder}
+         * @return a {@code Velocity3dController} built with parameters of this {@code Velocity3dController.Builder}
          */
-        public Velocity3dController build() {return new Velocity3dController(this);}
+        public Velocity3dController build() {
+            checkNotNull(velocity3dService);
+            checkNotNull(super.trajectory4d);
+            checkNotNull(super.pidLinearX);
+            checkNotNull(super.pidLinearY);
+            checkNotNull(super.pidLinearZ);
+            return new Velocity3dController(this);
+        }
+    }
+
+    abstract static class BuilderWithVelocity3dService<T extends BuilderWithVelocity3dService<T>> extends
+            Velocity2dController.BuilderWithVelocity2dService<T> {
+        PidParameters pidLinearZ;
+
+        /**
+         * Sets the {@code pidLinearZ} and returns a reference to this Builder so that the methods can be chained
+         * together.
+         *
+         * @param val the {@code pidLinearZ} to set
+         * @return a reference to this Builder
+         */
+        public final T withPidLinearZ(PidParameters val) {
+            pidLinearZ = val;
+            return self();
+        }
     }
 }

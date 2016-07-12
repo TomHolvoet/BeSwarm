@@ -54,7 +54,7 @@ public final class FollowTrajectory implements Command {
         return new Builder();
     }
 
-    public static Builder copyBuilder(CommandBuilders.AbstractFollowTrajectoryBuilder<?> otherBuilder) {
+    public static Builder copyBuilder(AbstractFollowTrajectoryBuilder<?> otherBuilder) {
         return new Builder().copyOf(otherBuilder);
     }
 
@@ -143,7 +143,7 @@ public final class FollowTrajectory implements Command {
         }
     }
 
-    public static final class Builder extends CommandBuilders.AbstractFollowTrajectoryBuilder<Builder> {
+    public static final class Builder extends AbstractFollowTrajectoryBuilder<Builder> {
         private Trajectory4d trajectory4d;
         private double durationInSeconds;
 

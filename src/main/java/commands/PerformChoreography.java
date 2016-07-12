@@ -26,7 +26,7 @@ public final class PerformChoreography implements Command {
         followTrajectoryCommand.execute();
     }
 
-    public static final class Builder extends CommandBuilders.AbstractFollowTrajectoryBuilder<Builder> {
+    public static final class Builder extends AbstractFollowTrajectoryBuilder<Builder> {
 
         private FiniteTrajectory4d finiteTrajectory4d;
 

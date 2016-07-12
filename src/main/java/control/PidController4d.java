@@ -24,10 +24,10 @@ public final class PidController4d {
 
     private PidController4d(Builder builder) {
 
-        angularTrajectoryZ = builder.getTrajectoryAngularZ();
-        pidLinearX = PidController1d.create(builder.linearXParameters, builder.getLinearTrajectoryX());
-        pidLinearY = PidController1d.create(builder.linearYParameters, builder.getTrajectoryLinearY());
-        pidLinearZ = PidController1d.create(builder.linearZParameters, builder.getTrajectoryLinearZ());
+        angularTrajectoryZ = builder.angularTrajectoryZ;
+        pidLinearX = PidController1d.create(builder.linearXParameters, builder.linearTrajectoryX);
+        pidLinearY = PidController1d.create(builder.linearYParameters, builder.linearTrajectoryY);
+        pidLinearZ = PidController1d.create(builder.linearZParameters, builder.linearTrajectoryZ);
         pidAngularZ = PidController1d.create(builder.angularZParameters, angularTrajectoryZ);
     }
 
@@ -72,22 +72,6 @@ public final class PidController4d {
         private Trajectory1d angularTrajectoryZ;
 
         private Builder() {}
-
-        public Trajectory1d getLinearTrajectoryX() {
-            return linearTrajectoryX;
-        }
-
-        public Trajectory1d getTrajectoryLinearY() {
-            return linearTrajectoryY;
-        }
-
-        public Trajectory1d getTrajectoryLinearZ() {
-            return linearTrajectoryZ;
-        }
-
-        public Trajectory1d getTrajectoryAngularZ() {
-            return angularTrajectoryZ;
-        }
 
         /**
          * Sets the {@code trajectory4d} and returns a reference to this Builder so that the methods can be chained
