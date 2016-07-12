@@ -6,7 +6,7 @@ import control.dto.Pose;
 /**
  * @author Hoang Tung Dinh
  */
-public interface Velocity4dService {
+public interface Velocity4dService extends VelocityService {
     /**
      * Sends a velocity-4d message to the drone. The velocity includes four components, including three velocity
      * components in the x-y-z coordinate and one velocity component for the yaw. This method requires the velocity

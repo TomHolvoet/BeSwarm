@@ -1,5 +1,6 @@
 package services.crates;
 
+import commands.VelocityServiceVisitor;
 import hal_quadrotor.VelocityRequest;
 import hal_quadrotor.VelocityResponse;
 import org.ros.node.service.ServiceClient;
@@ -33,5 +34,10 @@ final class CratesVelocity3dService implements Velocity3dService {
         logger.debug("Sending 3d velocity: [velX={} velY={} velZ={} posYaw={}]", inertialFrameVelocityX,
                 inertialFrameVelocityY, inertialFrameVelocityZ, angularPositionZ);
         CratesUtilities.sendRequest(srvVelocity, velocityRequest);
+    }
+
+    @Override
+    public void accept(VelocityServiceVisitor visitor) {
+        visitor.visit(this);
     }
 }

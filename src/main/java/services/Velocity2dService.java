@@ -3,7 +3,7 @@ package services;
 /**
  * @author Hoang Tung Dinh
  */
-public interface Velocity2dService {
+public interface Velocity2dService extends VelocityService {
     /**
      * Sends a velocity-2d message to the drone. This method requires the velocity in x-y plane, the desired z-axis
      * position (the altitude) and the desired angular-z position (the yaw).

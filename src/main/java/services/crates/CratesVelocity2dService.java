@@ -1,5 +1,6 @@
 package services.crates;
 
+import commands.VelocityServiceVisitor;
 import hal_quadrotor.VelocityHeightRequest;
 import hal_quadrotor.VelocityHeightResponse;
 import org.ros.node.service.ServiceClient;
@@ -36,5 +37,10 @@ final class CratesVelocity2dService implements Velocity2dService {
         logger.debug("Sending 2d velocity: [velX = {}, velY = {}, posZ = {}, posYaw = {}]", inertialFrameVelocityX,
                 inertialFrameVelocityY, linearPositionZ, angularPositionZ);
         CratesUtilities.sendRequest(srvVelocity, velocityHeightRequest);
+    }
+
+    @Override
+    public void accept(VelocityServiceVisitor visitor) {
+        visitor.visit(this);
     }
 }
