@@ -25,7 +25,7 @@ public abstract class ParrotServiceFactory implements CommonServiceFactory {
     }
 
     @Override
-    public TakeOffService createTakeOffService() {
+    public final TakeOffService createTakeOffService() {
         final String topicName = "/" + droneName + "/takeoff";
         final TakeOffService takeOffService = ParrotTakeOffService.create(
                 connectedNode.<Empty>newPublisher(topicName, Empty._TYPE));
@@ -34,7 +34,7 @@ public abstract class ParrotServiceFactory implements CommonServiceFactory {
     }
 
     @Override
-    public LandService createLandService() {
+    public final LandService createLandService() {
         final String topicName = "/" + droneName + "/land";
         final LandService landService = ParrotLandService.create(
                 connectedNode.<Empty>newPublisher(topicName, Empty._TYPE));

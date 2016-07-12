@@ -59,16 +59,7 @@ public final class FollowTrajectory implements Command {
     @Override
     public void execute() {
         logger.debug("Execute follow trajectory command: {}", trajectory4d);
-
-        final PidController4d pidController4d = PidController4d.builder()
-                .linearXParameters(pidLinearXParameters)
-                .linearYParameters(pidLinearYParameters)
-                .linearZParameters(pidLinearZParameters)
-                .angularZParameters(pidAngularZParameters)
-                .trajectory4d(trajectory4d)
-                .build();
-
-        final Runnable computeNextResponse = new ComputeNextResponse(pidController4d);
+        final Runnable computeNextResponse = new ComputeNextResponse();
         PeriodicTaskRunner.run(computeNextResponse, controlRateInSeconds, durationInSeconds);
     }
 
@@ -84,8 +75,15 @@ public final class FollowTrajectory implements Command {
 
         private static final double NANO_SECOND_TO_SECOND = 1.0E09;
 
-        private ComputeNextResponse(PidController4d pidController4d) {
-            this.pidController4d = pidController4d;
+        private ComputeNextResponse() {
+            this.pidController4d = PidController4d.builder()
+                    .linearXParameters(pidLinearXParameters)
+                    .linearYParameters(pidLinearYParameters)
+                    .linearZParameters(pidLinearZParameters)
+                    .angularZParameters(pidAngularZParameters)
+                    .trajectory4d(trajectory4d)
+                    .build();
+
             this.startTimeInNanoSeconds = System.nanoTime();
             this.stateLifeDurationInNumberOfControlLoops = (int) Math.ceil(
                     droneStateLifeDurationInSeconds / controlRateInSeconds);

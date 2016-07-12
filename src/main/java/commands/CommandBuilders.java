@@ -12,7 +12,7 @@ import services.Velocity4dService;
  */
 final class CommandBuilders {
 
-    CommandBuilders() {}
+    private CommandBuilders() {}
 
     public interface BuildStep<U> {
         BuildStep<U> withPidLinearXParameters(PidParameters val);

@@ -6,7 +6,7 @@ package control;
  * @author Hoang Tung Dinh
  * @see <a href="https://en.wikipedia.org/wiki/PID_controller">Equation</a>
  */
-final class PidController1d {
+public final class PidController1d {
 
     private final PidParameters parameters;
     private final Trajectory1d trajectory;
@@ -32,7 +32,7 @@ final class PidController1d {
      * @return the next velocity (response) of the drone
      * @see <a href="https://en.wikipedia.org/wiki/PID_controller">Equation</a>
      */
-    double compute(double currentPoint, double currentVelocity, double currentTimeInSeconds) {
+    public double compute(double currentPoint, double currentVelocity, double currentTimeInSeconds) {
         final double desiredTimeInSeconds = currentTimeInSeconds + parameters.lagTimeInSeconds();
         final double error = trajectory.getDesiredPosition(desiredTimeInSeconds) - currentPoint;
 
