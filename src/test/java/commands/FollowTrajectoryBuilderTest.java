@@ -25,7 +25,7 @@ public class FollowTrajectoryBuilderTest extends AbstractStepBuilderTest {
     @Override
     void createAndExecuteCommand(ArgumentHolder argumentHolder) {
         final Command followTrajectory = FollowTrajectory.builder()
-                .withVelocityService(argumentHolder.velocityService())
+                .withVelocity4dService(argumentHolder.velocityService())
                 .withStateEstimator(argumentHolder.stateEstimator())
                 .withTrajectory4d(trajectory4d)
                 .withDurationInSeconds(argumentHolder.durationInSeconds())

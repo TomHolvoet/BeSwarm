@@ -17,7 +17,7 @@ public final class MoveToPose implements Command {
         this.followTrajectoryCommand = followTrajectoryCommand;
     }
 
-    public static CommandBuilders.VelocityServiceStep<GoalPoseStep> builder() {
+    public static Builder builder() {
         return new Builder();
     }
 
@@ -26,16 +26,7 @@ public final class MoveToPose implements Command {
         followTrajectoryCommand.execute();
     }
 
-    public interface GoalPoseStep {
-        DurationInSecondsStep withGoalPose(Pose val);
-    }
-
-    public interface DurationInSecondsStep {
-        CommandBuilders.BuildStep<MoveToPose> withDurationInSeconds(double val);
-    }
-
-    public static final class Builder extends CommandBuilders.AbstractFollowTrajectoryBuilder<GoalPoseStep,
-            MoveToPose> implements GoalPoseStep, DurationInSecondsStep {
+    public static final class Builder extends CommandBuilders.AbstractFollowTrajectoryBuilder<Builder> {
         private Pose goalPose;
         private double durationInSeconds;
 
@@ -44,23 +35,20 @@ public final class MoveToPose implements Command {
         }
 
         @Override
-        GoalPoseStep nextInterfaceInBuilderChain() {
+        Builder self() {
             return this;
         }
 
-        @Override
-        public DurationInSecondsStep withGoalPose(Pose val) {
+        public Builder withGoalPose(Pose val) {
             goalPose = val;
             return this;
         }
 
-        @Override
-        public CommandBuilders.BuildStep<MoveToPose> withDurationInSeconds(double val) {
+        public Builder withDurationInSeconds(double val) {
             durationInSeconds = val;
             return this;
         }
 
-        @Override
         public MoveToPose build() {
             final InertialFrameVelocity zeroVelocity = Velocity.createZeroVelocity();
             final Trajectory4d trajectory4d = SinglePointTrajectory4d.create(goalPose, zeroVelocity);

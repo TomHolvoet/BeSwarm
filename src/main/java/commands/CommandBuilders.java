@@ -14,44 +14,18 @@ final class CommandBuilders {
 
     private CommandBuilders() {}
 
-    public interface BuildStep<U> {
-        BuildStep<U> withPidLinearXParameters(PidParameters val);
-
-        BuildStep<U> withPidLinearYParameters(PidParameters val);
-
-        BuildStep<U> withPidLinearZParameters(PidParameters val);
-
-        BuildStep<U> withPidAngularZParameters(PidParameters val);
-
-        BuildStep<U> withControlRateInSeconds(double val);
-
-        BuildStep<U> withDroneStateLifeDurationInSeconds(double val);
-
-        U build();
-    }
-
-    public interface StateEstimatorStep<T> {
-        T withStateEstimator(StateEstimator val);
-    }
-
-    public interface VelocityServiceStep<T> {
-        StateEstimatorStep<T> withVelocityService(Velocity4dService val);
-    }
-
-    public interface CopyBuilderStep<T> {
-        <N extends AbstractFollowTrajectoryBuilder<?, ?>> T copyOf(N otherBuilder);
-    }
-
-    abstract static class AbstractFollowTrajectoryBuilder<T, U> implements StateEstimatorStep<T>,
-            VelocityServiceStep<T>, BuildStep<U>, CopyBuilderStep<T> {
-        private PidParameters pidLinearXParameters;
-        private PidParameters pidLinearYParameters;
-        private PidParameters pidLinearZParameters;
-        private PidParameters pidAngularZParameters;
-        private double controlRateInSeconds;
-        private double droneStateLifeDurationInSeconds;
-        private StateEstimator stateEstimator;
-        private Velocity4dService velocity4dService;
+    /**
+     * {@code CommandBuilders} builder static inner class.
+     */
+    abstract static class AbstractFollowTrajectoryBuilder<T extends AbstractFollowTrajectoryBuilder<T>> {
+        PidParameters pidLinearXParameters;
+        PidParameters pidLinearYParameters;
+        PidParameters pidLinearZParameters;
+        PidParameters pidAngularZParameters;
+        double controlRateInSeconds;
+        double droneStateLifeDurationInSeconds;
+        StateEstimator stateEstimator;
+        Velocity4dService velocity4dService;
 
         private static final double DEFAULT_CONTROL_RATE_IN_SECONDS = 0.05;
         private static final double DEFAULT_DRONE_STATE_LIFE_DURATION_IN_SECONDS = 0.1;
@@ -65,100 +39,115 @@ final class CommandBuilders {
             droneStateLifeDurationInSeconds = DEFAULT_DRONE_STATE_LIFE_DURATION_IN_SECONDS;
         }
 
-        abstract T nextInterfaceInBuilderChain();
+        abstract T self();
 
-        @Override
-        public T withStateEstimator(StateEstimator val) {
-            stateEstimator = val;
-            return nextInterfaceInBuilderChain();
-        }
-
-        @Override
-        public StateEstimatorStep<T> withVelocityService(Velocity4dService val) {
-            velocity4dService = val;
-            return this;
-        }
-
-        @Override
-        public BuildStep<U> withPidLinearXParameters(PidParameters val) {
+        /**
+         * Sets the {@code pidLinearXParameters} and returns a reference to an implementation of this class so that the
+         * methods can be chained together.
+         *
+         * @param val the {@code pidLinearXParameters} to set
+         * @return a reference to an implementation of this class
+         */
+        public final T withPidLinearXParameters(PidParameters val) {
             pidLinearXParameters = val;
-            return this;
+            return self();
         }
 
-        @Override
-        public BuildStep<U> withPidLinearYParameters(PidParameters val) {
+        /**
+         * Sets the {@code pidLinearYParameters} and returns a reference to an implementation of this class so that the
+         * methods can be chained together.
+         *
+         * @param val the {@code pidLinearYParameters} to set
+         * @return a reference to an implementation of this class
+         */
+        public final T withPidLinearYParameters(PidParameters val) {
             pidLinearYParameters = val;
-            return this;
+            return self();
         }
 
-        @Override
-        public BuildStep<U> withPidLinearZParameters(PidParameters val) {
+        /**
+         * Sets the {@code pidLinearZParameters} and returns a reference to an implementation of this class so that the
+         * methods can be chained together.
+         *
+         * @param val the {@code pidLinearZParameters} to set
+         * @return a reference to an implementation of this class
+         */
+        public final T withPidLinearZParameters(PidParameters val) {
             pidLinearZParameters = val;
-            return this;
+            return self();
         }
 
-        @Override
-        public BuildStep<U> withPidAngularZParameters(PidParameters val) {
+        /**
+         * Sets the {@code pidAngularZParameters} and returns a reference to an implementation of this class so that the
+         * methods can be chained together.
+         *
+         * @param val the {@code pidAngularZParameters} to set
+         * @return a reference to an implementation of this class
+         */
+        public final T withPidAngularZParameters(PidParameters val) {
             pidAngularZParameters = val;
-            return this;
+            return self();
         }
 
-        @Override
-        public BuildStep<U> withControlRateInSeconds(double val) {
+        /**
+         * Sets the {@code controlRateInSeconds} and returns a reference to an implementation of this class so that the
+         * methods can be chained together.
+         *
+         * @param val the {@code controlRateInSeconds} to set
+         * @return a reference to an implementation of this class
+         */
+        public final T withControlRateInSeconds(double val) {
             controlRateInSeconds = val;
-            return this;
+            return self();
         }
 
-        @Override
-        public BuildStep<U> withDroneStateLifeDurationInSeconds(double val) {
+        /**
+         * Sets the {@code droneStateLifeDurationInSeconds} and returns a reference to this
+         * AbstractFollowTrajectoryBuilder so that the methods can be chained together.
+         *
+         * @param val the {@code droneStateLifeDurationInSeconds} to set
+         * @return a reference to an implementation of this class
+         */
+        public final T withDroneStateLifeDurationInSeconds(double val) {
             droneStateLifeDurationInSeconds = val;
-            return this;
+            return self();
         }
 
-        PidParameters getPidLinearXParameters() {
-            return pidLinearXParameters;
+        /**
+         * Sets the {@code stateEstimator} and returns a reference to an implementation of this class so that the
+         * methods can be chained together.
+         *
+         * @param val the {@code stateEstimator} to set
+         * @return a reference to an implementation of this class
+         */
+        public final T withStateEstimator(StateEstimator val) {
+            stateEstimator = val;
+            return self();
         }
 
-        PidParameters getPidLinearYParameters() {
-            return pidLinearYParameters;
+        /**
+         * Sets the {@code velocity4dService} and returns a reference to an implementation of this class so that the
+         * methods can be chained together.
+         *
+         * @param val the {@code velocity4dService} to set
+         * @return a reference to an implementation of this class
+         */
+        public final T withVelocity4dService(Velocity4dService val) {
+            velocity4dService = val;
+            return self();
         }
 
-        PidParameters getPidLinearZParameters() {
-            return pidLinearZParameters;
-        }
+        public <U extends AbstractFollowTrajectoryBuilder<?>> T copyOf(U otherBuilder) {
+            pidLinearXParameters = otherBuilder.pidLinearXParameters;
+            pidLinearYParameters = otherBuilder.pidLinearYParameters;
+            pidLinearZParameters = otherBuilder.pidLinearZParameters;
+            pidAngularZParameters = otherBuilder.pidAngularZParameters;
+            controlRateInSeconds = otherBuilder.controlRateInSeconds;
+            droneStateLifeDurationInSeconds = otherBuilder.droneStateLifeDurationInSeconds;
+            stateEstimator = otherBuilder.stateEstimator;
+            velocity4dService = otherBuilder.velocity4dService;
 
-        PidParameters getPidAngularZParameters() {
-            return pidAngularZParameters;
-        }
-
-        double getControlRateInSeconds() {
-            return controlRateInSeconds;
-        }
-
-        double getDroneStateLifeDurationInSeconds() {
-            return droneStateLifeDurationInSeconds;
-        }
-
-        StateEstimator getStateEstimator() {
-            return stateEstimator;
-        }
-
-        Velocity4dService getVelocity4dService() {
-            return velocity4dService;
-        }
-
-        @Override
-        public <N extends AbstractFollowTrajectoryBuilder<?, ?>> T copyOf(N otherBuilder) {
-            pidLinearXParameters = otherBuilder.getPidLinearXParameters();
-            pidLinearYParameters = otherBuilder.getPidLinearYParameters();
-            pidLinearZParameters = otherBuilder.getPidLinearZParameters();
-            pidAngularZParameters = otherBuilder.getPidAngularZParameters();
-            controlRateInSeconds = otherBuilder.getControlRateInSeconds();
-            droneStateLifeDurationInSeconds = otherBuilder.getDroneStateLifeDurationInSeconds();
-            stateEstimator = otherBuilder.getStateEstimator();
-            velocity4dService = otherBuilder.getVelocity4dService();
-
-            return nextInterfaceInBuilderChain();
+            return self();
         }
     }
 }

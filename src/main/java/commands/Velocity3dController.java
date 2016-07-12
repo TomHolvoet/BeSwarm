@@ -85,7 +85,7 @@ public class Velocity3dController implements VelocityController {
          * Sets the {@code pidLinearZ} and returns a reference to {@code BuildStep}
          *
          * @param val the {@code pidLinearZ} to set
-         * @return a reference to this Builder
+         * @return a reference to this AbstractFollowTrajectoryBuilder
          */
         @Override
         public BuildStep withPidLinearZ(PidParameters val) {
@@ -97,7 +97,7 @@ public class Velocity3dController implements VelocityController {
          * Sets the {@code pidLinearY} and returns a reference to {@code PidLinearZStep}
          *
          * @param val the {@code pidLinearY} to set
-         * @return a reference to this Builder
+         * @return a reference to this AbstractFollowTrajectoryBuilder
          */
         @Override
         public PidLinearZStep withPidLinearY(PidParameters val) {
@@ -109,7 +109,7 @@ public class Velocity3dController implements VelocityController {
          * Sets the {@code pidLinearX} and returns a reference to {@code PidLinearYStep}
          *
          * @param val the {@code pidLinearX} to set
-         * @return a reference to this Builder
+         * @return a reference to this AbstractFollowTrajectoryBuilder
          */
         @Override
         public PidLinearYStep withPidLinearX(PidParameters val) {
@@ -121,7 +121,7 @@ public class Velocity3dController implements VelocityController {
          * Sets the {@code trajectory4d} and returns a reference to {@code PidLinearXStep}
          *
          * @param val the {@code trajectory4d} to set
-         * @return a reference to this Builder
+         * @return a reference to this AbstractFollowTrajectoryBuilder
          */
         @Override
         public PidLinearXStep withTrajectory4d(Trajectory4d val) {
@@ -133,7 +133,7 @@ public class Velocity3dController implements VelocityController {
          * Sets the {@code velocity3dService} and returns a reference to {@code Trajectory4dStep}
          *
          * @param val the {@code velocity3dService} to set
-         * @return a reference to this Builder
+         * @return a reference to this AbstractFollowTrajectoryBuilder
          */
         @Override
         public Trajectory4dStep withVelocity3dService(Velocity3dService val) {
@@ -144,7 +144,7 @@ public class Velocity3dController implements VelocityController {
         /**
          * Returns a {@code Velocity3dController} built from the parameters previously set.
          *
-         * @return a {@code Velocity3dController} built with parameters of this {@code Velocity3dController.Builder}
+         * @return a {@code Velocity3dController} built with parameters of this {@code Velocity3dController.AbstractFollowTrajectoryBuilder}
          */
         public Velocity3dController build() {return new Velocity3dController(this);}
     }

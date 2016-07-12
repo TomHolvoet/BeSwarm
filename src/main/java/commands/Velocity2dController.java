@@ -76,7 +76,7 @@ public final class Velocity2dController implements VelocityController {
          * Sets the {@code pidControllerLinearY} and returns a reference to {@code BuildStep}
          *
          * @param val the {@code pidLinearY} to set
-         * @return a reference to this Builder
+         * @return a reference to this AbstractFollowTrajectoryBuilder
          */
         @Override
         public BuildStep withPidLinearY(PidParameters val) {
@@ -98,7 +98,7 @@ public final class Velocity2dController implements VelocityController {
          * Sets the {@code pidControllerLinearX} and returns a reference to {@code PidLinearYStep}
          *
          * @param val the {@code pidLinearX} to set
-         * @return a reference to this Builder
+         * @return a reference to this AbstractFollowTrajectoryBuilder
          */
         @Override
         public PidLinearYStep withPidLinearX(PidParameters val) {
@@ -120,7 +120,7 @@ public final class Velocity2dController implements VelocityController {
          * Sets the {@code trajectory4d} and returns a reference to {@code PidLinearXStep}
          *
          * @param val the {@code trajectory4d} to set
-         * @return a reference to this Builder
+         * @return a reference to this AbstractFollowTrajectoryBuilder
          */
         @Override
         public PidLinearXStep withTrajectory4d(Trajectory4d val) {
@@ -132,7 +132,7 @@ public final class Velocity2dController implements VelocityController {
          * Sets the {@code velocity2dService} and returns a reference to {@code Trajectory4dStep}
          *
          * @param val the {@code velocity2dService} to set
-         * @return a reference to this Builder
+         * @return a reference to this AbstractFollowTrajectoryBuilder
          */
         @Override
         public Trajectory4dStep withVelocity2dService(Velocity2dService val) {
@@ -143,7 +143,7 @@ public final class Velocity2dController implements VelocityController {
         /**
          * Returns a {@code Velocity2dController} built from the parameters previously set.
          *
-         * @return a {@code Velocity2dController} built with parameters of this {@code Velocity2dController.Builder}
+         * @return a {@code Velocity2dController} built with parameters of this {@code Velocity2dController.AbstractFollowTrajectoryBuilder}
          */
         public Velocity2dController build() {return new Velocity2dController(this);}
     }

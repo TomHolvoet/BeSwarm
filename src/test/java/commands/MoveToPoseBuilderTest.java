@@ -25,7 +25,7 @@ public class MoveToPoseBuilderTest extends AbstractStepBuilderTest {
     @Override
     void createAndExecuteCommand(ArgumentHolder argumentHolder) {
         final Command moveToPose = MoveToPose.builder()
-                .withVelocityService(argumentHolder.velocityService())
+                .withVelocity4dService(argumentHolder.velocityService())
                 .withStateEstimator(argumentHolder.stateEstimator())
                 .withGoalPose(goalPose)
                 .withDurationInSeconds(argumentHolder.durationInSeconds())

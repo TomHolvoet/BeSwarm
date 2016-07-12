@@ -14,6 +14,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import services.Velocity4dService;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
  * @author Hoang Tung Dinh
  */
@@ -36,23 +38,23 @@ public final class FollowTrajectory implements Command {
     private final double droneStateLifeDurationInSeconds;
 
     private FollowTrajectory(Builder builder) {
-        velocity4dService = builder.getVelocity4dService();
-        stateEstimator = builder.getStateEstimator();
-        pidLinearXParameters = builder.getPidLinearXParameters();
-        pidLinearYParameters = builder.getPidLinearYParameters();
-        pidLinearZParameters = builder.getPidLinearZParameters();
-        pidAngularZParameters = builder.getPidAngularZParameters();
-        trajectory4d = builder.getTrajectory4d();
-        durationInSeconds = builder.getDurationInSeconds();
-        controlRateInSeconds = builder.getControlRateInSeconds();
-        droneStateLifeDurationInSeconds = builder.getDroneStateLifeDurationInSeconds();
+        velocity4dService = builder.velocity4dService;
+        stateEstimator = builder.stateEstimator;
+        pidLinearXParameters = builder.pidLinearXParameters;
+        pidLinearYParameters = builder.pidLinearYParameters;
+        pidLinearZParameters = builder.pidLinearZParameters;
+        pidAngularZParameters = builder.pidAngularZParameters;
+        trajectory4d = builder.trajectory4d;
+        durationInSeconds = builder.durationInSeconds;
+        controlRateInSeconds = builder.controlRateInSeconds;
+        droneStateLifeDurationInSeconds = builder.droneStateLifeDurationInSeconds;
     }
 
-    public static CommandBuilders.VelocityServiceStep<Trajectory4dStep> builder() {
+    public static Builder builder() {
         return new Builder();
     }
 
-    public static Trajectory4dStep copyBuilder(CommandBuilders.AbstractFollowTrajectoryBuilder<?, ?> otherBuilder) {
+    public static Builder copyBuilder(CommandBuilders.AbstractFollowTrajectoryBuilder<?> otherBuilder) {
         return new Builder().copyOf(otherBuilder);
     }
 
@@ -141,16 +143,7 @@ public final class FollowTrajectory implements Command {
         }
     }
 
-    public interface Trajectory4dStep {
-        DurationInSecondsStep withTrajectory4d(Trajectory4d val);
-    }
-
-    public interface DurationInSecondsStep {
-        CommandBuilders.BuildStep<FollowTrajectory> withDurationInSeconds(double val);
-    }
-
-    public static final class Builder extends CommandBuilders.AbstractFollowTrajectoryBuilder<Trajectory4dStep,
-            FollowTrajectory> implements Trajectory4dStep, DurationInSecondsStep {
+    public static final class Builder extends CommandBuilders.AbstractFollowTrajectoryBuilder<Builder> {
         private Trajectory4d trajectory4d;
         private double durationInSeconds;
 
@@ -159,33 +152,33 @@ public final class FollowTrajectory implements Command {
         }
 
         @Override
-        Trajectory4dStep nextInterfaceInBuilderChain() {
+        Builder self() {
             return this;
         }
 
-        @Override
-        public DurationInSecondsStep withTrajectory4d(Trajectory4d val) {
+        public Builder withTrajectory4d(Trajectory4d val) {
             trajectory4d = val;
             return this;
         }
 
-        @Override
-        public CommandBuilders.BuildStep<FollowTrajectory> withDurationInSeconds(double val) {
+        public Builder withDurationInSeconds(double val) {
             durationInSeconds = val;
             return this;
         }
 
-        @Override
         public FollowTrajectory build() {
+            checkNotNull(trajectory4d);
+            checkNotNull(durationInSeconds);
+            checkNotNull(super.pidLinearXParameters);
+            checkNotNull(super.pidLinearYParameters);
+            checkNotNull(super.pidLinearZParameters);
+            checkNotNull(super.pidAngularZParameters);
+            checkNotNull(super.controlRateInSeconds);
+            checkNotNull(super.droneStateLifeDurationInSeconds);
+            checkNotNull(super.stateEstimator);
+            checkNotNull(super.velocity4dService);
+
             return new FollowTrajectory(this);
-        }
-
-        public Trajectory4d getTrajectory4d() {
-            return trajectory4d;
-        }
-
-        public double getDurationInSeconds() {
-            return durationInSeconds;
         }
     }
 }

@@ -103,7 +103,7 @@ public final class ExampleFlight {
         commands.add(hoverFiveSecond);
 
         final Command followTrajectory = FollowTrajectory.builder()
-                .withVelocityService(velocity4dService)
+                .withVelocity4dService(velocity4dService)
                 .withStateEstimator(stateEstimator)
                 .withTrajectory4d(finiteTrajectory4d)
                 .withDurationInSeconds(finiteTrajectory4d.getTrajectoryDuration())

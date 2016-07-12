@@ -28,7 +28,7 @@ public class PerformChoreographyBuilderTest extends AbstractStepBuilderTest {
     @Override
     void createAndExecuteCommand(ArgumentHolder argumentHolder) {
         final Command performChoreography = PerformChoreography.builder()
-                .withVelocityService(argumentHolder.velocityService())
+                .withVelocity4dService(argumentHolder.velocityService())
                 .withStateEstimator(argumentHolder.stateEstimator())
                 .withFiniteTrajectory4d(finiteTrajectory4d)
                 .withPidLinearXParameters(argumentHolder.pidLinearX())
