@@ -43,7 +43,9 @@ public abstract class ParrotServiceFactory implements CommonServiceFactory {
     }
 
     /**
-     * Creates a 4d-velocity service for parrot drones.
+     * Creates a 4d-velocity service for a parrot drone.
+     *
+     * @return a {@link Velocity4dService} instance for a parrot drone
      */
     public abstract Velocity4dService createVelocity4dService();
 

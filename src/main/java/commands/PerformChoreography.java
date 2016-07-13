@@ -17,7 +17,9 @@ public final class PerformChoreography implements Command {
     }
 
     /**
-     * Returns a builder of this class.
+     * Gets a builder of this class.
+     *
+     * @return a builder instance
      */
     public static Builder builder() {
         return new Builder();
@@ -47,6 +49,8 @@ public final class PerformChoreography implements Command {
 
         /**
          * Sets the finite trajectory.
+         *
+         * @return a reference to this builder
          */
         public Builder withFiniteTrajectory4d(FiniteTrajectory4d val) {
             finiteTrajectory4d = val;
@@ -55,6 +59,8 @@ public final class PerformChoreography implements Command {
 
         /**
          * Builds a {@link PerformChoreography} instance.
+         *
+         * @return a built {@link PerformChoreography} instance
          */
         public PerformChoreography build() {
             final FollowTrajectory followTrajectory = FollowTrajectory.copyBuilder(this)

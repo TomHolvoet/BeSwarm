@@ -18,7 +18,9 @@ public final class MoveToPose implements Command {
     }
 
     /**
-     * Returns a builder of this class.
+     * Gets a builder of this class.
+     *
+     * @return a builder instance
      */
     public static Builder builder() {
         return new Builder();
@@ -47,6 +49,8 @@ public final class MoveToPose implements Command {
 
         /**
          * Sets the goal pose needed to be reached.
+         *
+         * @return a reference to this Builder
          */
         public Builder withGoalPose(Pose val) {
             goalPose = val;
@@ -55,6 +59,8 @@ public final class MoveToPose implements Command {
 
         /**
          * Set the duration for executing this command.
+         *
+         * @return a reference to this Builder
          */
         public Builder withDurationInSeconds(double val) {
             durationInSeconds = val;
@@ -63,6 +69,8 @@ public final class MoveToPose implements Command {
 
         /**
          * Builds a {@link MoveToPose} instance.
+         *
+         * @return a built {@link MoveToPose} instance
          */
         public MoveToPose build() {
             final InertialFrameVelocity zeroVelocity = Velocity.createZeroVelocity();

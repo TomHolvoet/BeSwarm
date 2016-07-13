@@ -47,7 +47,9 @@ public final class FollowTrajectory implements Command {
     }
 
     /**
-     * Returns the builder of this class.
+     * Gets the builder of this class.
+     *
+     * @return a builder instance
      */
     public static Builder builder() {
         return new Builder();
@@ -152,6 +154,8 @@ public final class FollowTrajectory implements Command {
 
         /**
          * Sets the trajectory that the drone will follow.
+         *
+         * @return a reference to this Builder
          */
         public Builder withTrajectory4d(Trajectory4d val) {
             trajectory4d = val;
@@ -160,6 +164,8 @@ public final class FollowTrajectory implements Command {
 
         /**
          * Sets the duration that the {@link FollowTrajectory} will be executed.
+         *
+         * @return a reference to this Builder
          */
         public Builder withDurationInSeconds(double val) {
             durationInSeconds = val;
@@ -168,6 +174,8 @@ public final class FollowTrajectory implements Command {
 
         /**
          * Builds a {@link FollowTrajectory} instance.
+         *
+         * @return a built {@link FollowTrajectory} instance
          */
         public FollowTrajectory build() {
             checkNotNull(trajectory4d);

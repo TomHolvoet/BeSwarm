@@ -29,7 +29,9 @@ public final class CreateVelocityControllerVisitor {
     }
 
     /**
-     * Returns a builder for this class.
+     * Gets a builder for this class.
+     *
+     * @return a builder instance
      */
     public static Builder builder() {
         return new Builder();

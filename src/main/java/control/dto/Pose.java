@@ -20,22 +20,30 @@ public abstract class Pose {
     Pose() {}
 
     /**
-     * Returns the x position.
+     * Gets the x position.
+     *
+     * @return the x position
      */
     public abstract double x();
 
     /**
-     * Returns the y position.
+     * Gets the y position.
+     *
+     * @return the y position
      */
     public abstract double y();
 
     /**
-     * Returns the z position.
+     * Gets the z position.
+     *
+     * @return the z position
      */
     public abstract double z();
 
     /**
-     * Returns the yaw position.
+     * Gets the yaw position.
+     *
+     * @return the yaw position
      */
     public abstract double yaw();
 
@@ -62,7 +70,9 @@ public abstract class Pose {
     }
 
     /**
-     * Returns a zero pose with all components equal zero.
+     * Gets a zero pose.
+     *
+     * @return a pose with all components equal to zero
      */
     public static Pose createZeroPose() {
         return Pose.builder().setX(0).setY(0).setZ(0).setYaw(0).build();
@@ -87,26 +97,36 @@ public abstract class Pose {
     public abstract static class Builder {
         /**
          * Sets the x position.
+         *
+         * @return a reference to this Builder
          */
         public abstract Builder setX(double value);
 
         /**
          * Sets the y position.
+         *
+         * @return a reference to this Builder
          */
         public abstract Builder setY(double value);
 
         /**
          * Sets the z position.
+         *
+         * @return a reference to this Builder
          */
         public abstract Builder setZ(double value);
 
         /**
          * Sets the yaw position.
+         *
+         * @return a reference to this Builder
          */
         public abstract Builder setYaw(double value);
 
         /**
          * Builds a {@link Pose} instance.
+         *
+         * @return a built {@link Pose} instance
          */
         public abstract Pose build();
     }

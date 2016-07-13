@@ -11,42 +11,58 @@ import com.google.auto.value.AutoValue;
 public abstract class PidParameters {
 
     /**
-     * Returns the kp.
+     * Gets the kp.
+     *
+     * @return the kp
      */
     public abstract double kp();
 
     /**
-     * Returns the kd.
+     * Gets the kd.
+     *
+     * @return the kd
      */
     public abstract double kd();
 
     /**
-     * Returns the ki.
+     * Gets the ki.
+     *
+     * @return the ki
      */
     public abstract double ki();
 
     /**
-     * Returns the lag time in seconds.
+     * Gets the lag time in seconds.
+     *
+     * @return the lag time in seconds
      */
     public abstract double lagTimeInSeconds();
 
     /**
-     * Returns the minimum velocity.
+     * Gets the minimum velocity.
+     *
+     * @return the minimum velocity
      */
     public abstract double minVelocity();
 
     /**
-     * Returns the maximum velocity.
+     * Gets the maximum velocity.
+     *
+     * @return the maximum velocity
      */
     public abstract double maxVelocity();
 
     /**
-     * Returns the minimum integral error.
+     * Gets the minimum integral error.
+     *
+     * @return the minimum integral error
      */
     public abstract double minIntegralError();
 
     /**
-     * Returns the maximum integral error.
+     * Gets the maximum integral error.
+     *
+     * @return the maximum integral error
      */
     public abstract double maxIntegralError();
 
@@ -70,46 +86,64 @@ public abstract class PidParameters {
     public abstract static class Builder {
         /**
          * Set the kp.
+         *
+         * @return a reference to this Builder
          */
         public abstract Builder setKp(double value);
 
         /**
          * Set the kd.
+         *
+         * @return a reference to this Builder
          */
         public abstract Builder setKd(double value);
 
         /**
          * Set the ki.
+         *
+         * @return a reference to this Builder
          */
         public abstract Builder setKi(double value);
 
         /**
          * Set the kp.
+         *
+         * @return a reference to this Builder
          */
         public abstract Builder setLagTimeInSeconds(double value);
 
         /**
          * Set the lag time in seconds.
+         *
+         * @return a reference to this Builder
          */
         public abstract Builder setMinVelocity(double value);
 
         /**
          * Set the maximum velocity.
+         *
+         * @return a reference to this Builder
          */
         public abstract Builder setMaxVelocity(double value);
 
         /**
          * Set the minimum integral error.
+         *
+         * @return a reference to this Builder
          */
         public abstract Builder setMinIntegralError(double value);
 
         /**
          * Set the maximum integral error.
+         *
+         * @return a reference to this Builder
          */
         public abstract Builder setMaxIntegralError(double value);
 
         /**
          * Builds a {@link PidParameters} instance.
+         *
+         * @return a built {@link PidParameters} instance
          */
         public abstract PidParameters build();
     }

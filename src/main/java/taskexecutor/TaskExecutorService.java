@@ -19,7 +19,9 @@ public final class TaskExecutorService implements TaskExecutor {
     private TaskExecutorService() {}
 
     /**
-     * Returns an instace of this class.
+     * Gets an instace of this class.
+     *
+     * @return a builder instance
      */
     public static TaskExecutorService create() {
         return new TaskExecutorService();

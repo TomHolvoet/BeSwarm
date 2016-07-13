@@ -63,16 +63,22 @@ public abstract class EulerAngle {
     public abstract static class Builder {
         /**
          * Sets the angle of the X rotation.
+         *
+         * @return a reference to this Builder
          */
         public abstract Builder setAngleX(double value);
 
         /**
          * Sets the angle of the Y rotation.
+         *
+         * @return a reference to this Builder
          */
         public abstract Builder setAngleY(double value);
 
         /**
          * Sets the angle of the Z rotation.
+         *
+         * @return a reference to this Builder
          */
         public abstract Builder setAngleZ(double value);
 

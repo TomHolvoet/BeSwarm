@@ -23,12 +23,19 @@ public abstract class Velocity implements InertialFrameVelocity, BodyFrameVeloci
     public abstract double angularZ();
 
     /**
-     * Returns a builder of this class.
+     * Gets a builder of this class.
+     *
+     * @return a builder instance
      */
     public static Builder builder() {
         return new AutoValue_Velocity.Builder();
     }
 
+    /**
+     * Creates a zero velocity.
+     *
+     * @return a velocity with all components equal zero
+     */
     public static Velocity createZeroVelocity() {
         return builder().setLinearX(0).setLinearY(0).setLinearZ(0).setAngularZ(0).build();
     }
@@ -58,6 +65,7 @@ public abstract class Velocity implements InertialFrameVelocity, BodyFrameVeloci
          * Sets the velocity in the x coordinate.
          *
          * @param value the value of the velocity in the x coordinate
+         * @return a reference to this Builder
          */
         public abstract Builder setLinearX(double value);
 
@@ -65,6 +73,7 @@ public abstract class Velocity implements InertialFrameVelocity, BodyFrameVeloci
          * Sets the velocity in the y coordinate.
          *
          * @param value the value of the velocity in the y coordinate
+         * @return a reference to this Builder
          */
         public abstract Builder setLinearY(double value);
 
@@ -72,6 +81,7 @@ public abstract class Velocity implements InertialFrameVelocity, BodyFrameVeloci
          * Sets the velocity in the z coordinate.
          *
          * @param value the value of the velocity in the z coordinate
+         * @return a reference to this Builder
          */
         public abstract Builder setLinearZ(double value);
 
@@ -79,11 +89,14 @@ public abstract class Velocity implements InertialFrameVelocity, BodyFrameVeloci
          * Sets the velocity of the Z rotation (the yaw).
          *
          * @param value the value of the velocity of the Z rotation (the yaw)
+         * @return a reference to this Builder
          */
         public abstract Builder setAngularZ(double value);
 
         /**
          * Builds a {@link Velocity} instance.
+         *
+         * @return a {@link Velocity} instance
          */
         public abstract Velocity build();
     }

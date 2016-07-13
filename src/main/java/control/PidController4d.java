@@ -32,7 +32,9 @@ public final class PidController4d {
     }
 
     /**
-     * Returns the builder of this class.
+     * Gets the builder of this class.
+     *
+     * @return a builder instance
      */
     public static Builder builder() {
         return new Builder();

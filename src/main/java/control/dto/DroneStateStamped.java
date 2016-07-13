@@ -24,17 +24,23 @@ public abstract class DroneStateStamped {
     }
 
     /**
-     * Returns the pose of the drone.
+     * Gets the pose of the drone.
+     *
+     * @return the pose of the drone
      */
     public abstract Pose pose();
 
     /**
-     * Returns the velocity of the drone in the inertial frame.
+     * Gets the velocity of the drone in the inertial frame.
+     *
+     * @return the velocity of the drone in the inertial frame
      */
     public abstract InertialFrameVelocity inertialFrameVelocity();
 
     /**
-     * Returns the time stamp of the state.
+     * Gets the time stamp of the state.
+     *
+     * @return the time stamp of the state
      */
     public abstract double getTimeStampInSeconds();
 }
