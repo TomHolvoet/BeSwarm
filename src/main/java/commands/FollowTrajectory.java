@@ -155,6 +155,7 @@ public final class FollowTrajectory implements Command {
         /**
          * Sets the trajectory that the drone will follow.
          *
+         * @param val the value to set
          * @return a reference to this Builder
          */
         public Builder withTrajectory4d(Trajectory4d val) {
@@ -165,6 +166,7 @@ public final class FollowTrajectory implements Command {
         /**
          * Sets the duration that the {@link FollowTrajectory} will be executed.
          *
+         * @param val the value to set
          * @return a reference to this Builder
          */
         public Builder withDurationInSeconds(double val) {

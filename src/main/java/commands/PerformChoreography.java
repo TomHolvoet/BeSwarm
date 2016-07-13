@@ -50,6 +50,7 @@ public final class PerformChoreography implements Command {
         /**
          * Sets the finite trajectory.
          *
+         * @param val the value to set
          * @return a reference to this builder
          */
         public Builder withFiniteTrajectory4d(FiniteTrajectory4d val) {

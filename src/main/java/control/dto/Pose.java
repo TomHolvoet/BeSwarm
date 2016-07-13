@@ -48,7 +48,9 @@ public abstract class Pose {
     public abstract double yaw();
 
     /**
-     * Returns a builder of this class.
+     * Gets a builder of this class.
+     *
+     * @return a builder instance
      */
     public static Builder builder() {
         return new AutoValue_Pose.Builder();

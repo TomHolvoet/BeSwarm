@@ -13,22 +13,30 @@ public abstract class EulerAngle {
     EulerAngle() {}
 
     /**
-     * Returns the angle of the X rotation.
+     * Gets the angle of the X rotation.
+     *
+     * @return the angle of the X rotation
      */
     public abstract double angleX();
 
     /**
-     * Returns the angle of the Y rotation.
+     * Gets the angle of the Y rotation.
+     *
+     * @return the angle of the Y rotation
      */
     public abstract double angleY();
 
     /**
-     * Returns the angle of the Z rotation.
+     * Gets the angle of the Z rotation.
+     *
+     * @return the angle of the Z rotation
      */
     public abstract double angleZ();
 
     /**
-     * Returns the builder of this class.
+     * Gets the builder of this class.
+     *
+     * @return a builder instance
      */
     public static Builder builder() {
         return new AutoValue_EulerAngle.Builder();
@@ -64,6 +72,7 @@ public abstract class EulerAngle {
         /**
          * Sets the angle of the X rotation.
          *
+         * @param val the value to set
          * @return a reference to this Builder
          */
         public abstract Builder setAngleX(double value);
@@ -71,6 +80,7 @@ public abstract class EulerAngle {
         /**
          * Sets the angle of the Y rotation.
          *
+         * @param val the value to set
          * @return a reference to this Builder
          */
         public abstract Builder setAngleY(double value);
@@ -78,12 +88,15 @@ public abstract class EulerAngle {
         /**
          * Sets the angle of the Z rotation.
          *
+         * @param val the value to set
          * @return a reference to this Builder
          */
         public abstract Builder setAngleZ(double value);
 
         /**
          * Builds an {@link EulerAngle} instance.
+         *
+         * @return an {@link EulerAngle} instance
          */
         public abstract EulerAngle build();
     }

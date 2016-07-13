@@ -50,6 +50,7 @@ public final class MoveToPose implements Command {
         /**
          * Sets the goal pose needed to be reached.
          *
+         * @param val the value to set
          * @return a reference to this Builder
          */
         public Builder withGoalPose(Pose val) {
@@ -60,6 +61,7 @@ public final class MoveToPose implements Command {
         /**
          * Set the duration for executing this command.
          *
+         * @param val the value to set
          * @return a reference to this Builder
          */
         public Builder withDurationInSeconds(double val) {
