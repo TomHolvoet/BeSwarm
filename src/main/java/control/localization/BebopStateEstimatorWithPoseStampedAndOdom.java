@@ -10,7 +10,7 @@ import geometry_msgs.PoseStamped;
 import nav_msgs.Odometry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import services.ros_subscribers.MessagesSubscriberService;
+import services.rossubscribers.MessagesSubscriberService;
 import utils.math.Transformations;
 
 /**
@@ -29,6 +29,14 @@ public final class BebopStateEstimatorWithPoseStampedAndOdom implements StateEst
         this.odometrySubscriber = odometrySubscriber;
     }
 
+    /**
+     * Creates a state estimator for a bebop drone. The state estimator uses data from a pose topic and a odometry
+     * topic.
+     *
+     * @param poseSubscriber     the subscriber to the pose topic
+     * @param odometrySubscriber the subscriber to the odometry topic
+     * @return an instance of this class
+     */
     public static BebopStateEstimatorWithPoseStampedAndOdom create(
             MessagesSubscriberService<PoseStamped> poseSubscriber,
             MessagesSubscriberService<Odometry> odometrySubscriber) {

@@ -1,4 +1,4 @@
-package services.ros_subscribers;
+package services.rossubscribers;
 
 import keyboard.Key;
 import org.ros.node.topic.Subscriber;

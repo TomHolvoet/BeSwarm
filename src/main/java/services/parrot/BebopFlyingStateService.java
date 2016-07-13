@@ -6,9 +6,9 @@ import com.google.common.collect.ImmutableMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import services.FlyingStateService;
-import services.ros_subscribers.FlyingState;
-import services.ros_subscribers.MessageObserver;
-import services.ros_subscribers.MessagesSubscriberService;
+import services.rossubscribers.FlyingState;
+import services.rossubscribers.MessageObserver;
+import services.rossubscribers.MessagesSubscriberService;
 
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -19,7 +19,7 @@ public final class BebopFlyingStateService implements MessageObserver<Ardrone3Pi
         FlyingStateService {
 
     private static final Logger logger = LoggerFactory.getLogger(BebopFlyingStateService.class);
-    private AtomicReference<FlyingState> currentFlyingState = new AtomicReference<>();
+    private final AtomicReference<FlyingState> currentFlyingState = new AtomicReference<>();
     private static final ImmutableMap<Byte, FlyingState> FLYING_STATE_MAP = ImmutableMap.<Byte, FlyingState>builder()
             .put(
             (byte) 0, FlyingState.LANDED)

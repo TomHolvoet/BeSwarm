@@ -1,4 +1,4 @@
-package services.ros_subscribers;
+package services.rossubscribers;
 
 import bebop_msgs.Ardrone3PilotingStateFlyingStateChanged;
 import org.ros.node.topic.Subscriber;

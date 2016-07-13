@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
 import services.FlipService;
 import services.FlyingStateService;
 import services.Velocity4dService;
-import services.ros_subscribers.MessagesSubscriberService;
+import services.rossubscribers.MessagesSubscriberService;
 import std_msgs.UInt8;
 
 /**
@@ -51,6 +51,11 @@ public final class BebopServiceFactory extends ParrotServiceFactory {
         return velocity4dService;
     }
 
+    /**
+     * Creates the flip service for a bebop drone.
+     *
+     * @return a flip service instance
+     */
     public FlipService createFlipService() {
         final String topicName = "/" + getDroneName() + "/flip";
         final FlipService flipService = ParrotFlipService.create(

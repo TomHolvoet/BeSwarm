@@ -21,7 +21,7 @@ import services.TakeOffService;
 import services.Velocity4dService;
 import services.parrot.BebopServiceFactory;
 import services.parrot.ParrotServiceFactory;
-import services.ros_subscribers.MessagesSubscriberService;
+import services.rossubscribers.MessagesSubscriberService;
 import taskexecutor.Task;
 import taskexecutor.TaskExecutor;
 import taskexecutor.TaskExecutorService;

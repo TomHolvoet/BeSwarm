@@ -1,6 +1,8 @@
 package services;
 
 /**
+ * Represents velocity 3d service.
+ *
  * @author Hoang Tung Dinh
  */
 public interface Velocity3dService extends VelocityService {

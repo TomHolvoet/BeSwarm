@@ -17,7 +17,7 @@ import org.ros.node.service.ServiceResponseListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import services.crates.CratesServiceFactory;
-import services.ros_subscribers.MessagesSubscriberService;
+import services.rossubscribers.MessagesSubscriberService;
 import sim.Insert;
 import sim.InsertRequest;
 import sim.InsertResponse;

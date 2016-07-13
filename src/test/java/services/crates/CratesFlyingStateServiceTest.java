@@ -4,8 +4,8 @@ import com.google.common.collect.ImmutableMap;
 import hal_quadrotor.State;
 import services.FlyingStateService;
 import services.FlyingStateServiceTest;
-import services.ros_subscribers.FlyingState;
-import services.ros_subscribers.MessagesSubscriberService;
+import services.rossubscribers.FlyingState;
+import services.rossubscribers.MessagesSubscriberService;
 
 import static org.mockito.Mockito.RETURNS_MOCKS;
 import static org.mockito.Mockito.mock;

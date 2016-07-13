@@ -6,9 +6,8 @@ import org.mockito.ArgumentCaptor;
 import org.ros.internal.message.Message;
 import org.ros.message.MessageListener;
 import org.ros.node.topic.Subscriber;
-import services.FlyingStateService;
-import services.ros_subscribers.FlyingState;
-import services.ros_subscribers.MessagesSubscriberService;
+import services.rossubscribers.FlyingState;
+import services.rossubscribers.MessagesSubscriberService;
 
 import java.util.Map;
 

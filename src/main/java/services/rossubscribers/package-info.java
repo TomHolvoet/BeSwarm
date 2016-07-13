@@ -4,6 +4,6 @@
  * @author Hoang Tung Dinh
  */
 @ParametersAreNonnullByDefault
-package services.ros_subscribers;
+package services.rossubscribers;
 
 import javax.annotation.ParametersAreNonnullByDefault;

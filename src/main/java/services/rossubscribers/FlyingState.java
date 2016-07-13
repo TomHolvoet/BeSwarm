@@ -1,4 +1,4 @@
-package services.ros_subscribers;
+package services.rossubscribers;
 
 /**
  * @author Hoang Tung Dinh

@@ -7,7 +7,7 @@ import org.ros.node.AbstractNodeMain;
 import org.ros.node.ConnectedNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import services.ros_subscribers.MessagesSubscriberService;
+import services.rossubscribers.MessagesSubscriberService;
 
 public class PrintPose extends AbstractNodeMain {
 

@@ -1,7 +1,7 @@
 package taskexecutor.interruptors;
 
 import keyboard.Key;
-import services.ros_subscribers.RosKeyObserver;
+import services.rossubscribers.RosKeyObserver;
 import taskexecutor.EmergencyNotifier;
 import taskexecutor.Task;
 import taskexecutor.TaskExecutor;

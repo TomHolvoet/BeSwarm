@@ -9,7 +9,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import services.FlyingStateService;
 import services.LandService;
-import services.ros_subscribers.FlyingState;
+import services.rossubscribers.FlyingState;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;

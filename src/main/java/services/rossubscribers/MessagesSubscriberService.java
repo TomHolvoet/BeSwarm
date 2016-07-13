@@ -1,4 +1,4 @@
-package services.ros_subscribers;
+package services.rossubscribers;
 
 import com.google.common.base.Optional;
 import com.google.common.collect.EvictingQueue;

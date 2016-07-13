@@ -7,7 +7,7 @@ import control.dto.InertialFrameVelocity;
 import control.dto.Pose;
 import control.dto.Velocity;
 import hal_quadrotor.State;
-import services.ros_subscribers.MessagesSubscriberService;
+import services.rossubscribers.MessagesSubscriberService;
 import utils.math.Transformations;
 
 /**

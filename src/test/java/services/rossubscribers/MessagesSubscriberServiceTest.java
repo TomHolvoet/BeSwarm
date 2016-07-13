@@ -1,4 +1,4 @@
-package services.ros_subscribers;
+package services.rossubscribers;
 
 import org.junit.Before;
 import org.junit.Test;

@@ -9,7 +9,7 @@ import gazebo_msgs.ModelStates;
 import geometry_msgs.Point;
 import geometry_msgs.Quaternion;
 import geometry_msgs.Twist;
-import services.ros_subscribers.MessagesSubscriberService;
+import services.rossubscribers.MessagesSubscriberService;
 import utils.math.Transformations;
 
 /**

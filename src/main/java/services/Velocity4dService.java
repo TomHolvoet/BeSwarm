@@ -4,6 +4,8 @@ import control.dto.InertialFrameVelocity;
 import control.dto.Pose;
 
 /**
+ * Represents velocity 4d service.
+ *
  * @author Hoang Tung Dinh
  */
 public interface Velocity4dService extends VelocityService {

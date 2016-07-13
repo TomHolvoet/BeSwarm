@@ -23,7 +23,7 @@ import services.LandService;
 import services.TakeOffService;
 import services.Velocity2dService;
 import services.Velocity3dService;
-import services.ros_subscribers.MessagesSubscriberService;
+import services.rossubscribers.MessagesSubscriberService;
 
 /**
  * @author Hoang Tung Dinh

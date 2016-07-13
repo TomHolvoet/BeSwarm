@@ -5,7 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import services.FlyingStateService;
 import services.LandService;
-import services.ros_subscribers.FlyingState;
+import services.rossubscribers.FlyingState;
 
 import java.util.concurrent.TimeUnit;
 

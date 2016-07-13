@@ -132,6 +132,14 @@ abstract class AbstractFollowTrajectoryBuilder<T extends AbstractFollowTrajector
         return self();
     }
 
+    /**
+     * Copies the parameter of another builder.
+     *
+     * @param otherBuilder the builder that parameters will be copied
+     * @param <U>          the type of the other builder, which must be a subclass of {@link
+     *                     AbstractFollowTrajectoryBuilder}
+     * @return a concrete implementation of this abstract builder with all parameters copied from {@code otherBuilder}
+     */
     public <U extends AbstractFollowTrajectoryBuilder<?>> T copyOf(U otherBuilder) {
         pidLinearXParameters = otherBuilder.pidLinearXParameters;
         pidLinearYParameters = otherBuilder.pidLinearYParameters;

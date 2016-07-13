@@ -15,7 +15,6 @@ public abstract class Point3D {
      * @param x     the x coordinate.
      * @param y     the Y coordinate.
      * @param z     the Z coordinate.
-     * @param angle the yaw angle.
      * @return A value class representing the given coordinates.
      */
     public static Point3D create(double x, double y, double z) {

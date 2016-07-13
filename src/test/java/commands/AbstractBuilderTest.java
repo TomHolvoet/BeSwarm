@@ -9,8 +9,6 @@ import control.dto.Pose;
 import control.localization.StateEstimator;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 import services.Velocity4dService;
 
 import static org.mockito.Matchers.any;

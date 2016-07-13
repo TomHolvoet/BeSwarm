@@ -6,9 +6,9 @@ import hal_quadrotor.State;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import services.FlyingStateService;
-import services.ros_subscribers.FlyingState;
-import services.ros_subscribers.MessageObserver;
-import services.ros_subscribers.MessagesSubscriberService;
+import services.rossubscribers.FlyingState;
+import services.rossubscribers.MessageObserver;
+import services.rossubscribers.MessagesSubscriberService;
 
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
@@ -35,6 +35,12 @@ final class CratesFlyingStateService implements MessageObserver<State>, FlyingSt
 
     private CratesFlyingStateService() {}
 
+    /**
+     * Creates the flying state service for a drone in the Crates simulator.
+     *
+     * @param flyingStateSubscriber the subscriber to a state topic of the drone
+     * @return an flying state service instance
+     */
     public static CratesFlyingStateService create(MessagesSubscriberService<State> flyingStateSubscriber) {
         final CratesFlyingStateService cratesFlyingStateService = new CratesFlyingStateService();
         flyingStateSubscriber.registerMessageObserver(cratesFlyingStateService);
