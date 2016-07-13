@@ -44,6 +44,14 @@ public final class CratesServiceFactory implements CommonServiceFactory {
         this.namePrefix = "/hal/quadrotor/" + modelName + "/" + droneName + "/";
     }
 
+    /**
+     * Creates a service factory for the Crates simulator.
+     *
+     * @param droneName     the name of the drone
+     * @param modelName     the model of the drone
+     * @param connectedNode the connected ros node
+     * @return a service factory for the drone
+     */
     public static CratesServiceFactory create(String droneName, String modelName, ConnectedNode connectedNode) {
         return new CratesServiceFactory(droneName, modelName, connectedNode);
     }
@@ -56,7 +64,7 @@ public final class CratesServiceFactory implements CommonServiceFactory {
                             Takeoff._TYPE));
         } catch (ServiceNotFoundException e) {
             logger.info("Take off service not found. Drone: {}. Model: {}. Exception: {}", droneName, modelName, e);
-            throw new RuntimeException(
+            throw new IllegalStateException(
                     String.format("Take off service not found. Drone: %s. Model: %s", droneName, modelName));
         }
     }
@@ -68,7 +76,7 @@ public final class CratesServiceFactory implements CommonServiceFactory {
                     connectedNode.<LandRequest, LandResponse>newServiceClient(namePrefix + "controller/Land",
                             Land._TYPE));
         } catch (ServiceNotFoundException e) {
-            throw new RuntimeException(
+            throw new IllegalStateException(
                     String.format("Land service not found. Drone: %s. Model: %s", droneName, modelName));
         }
     }
@@ -81,23 +89,33 @@ public final class CratesServiceFactory implements CommonServiceFactory {
         return CratesFlyingStateService.create(flyingStateSubscriber);
     }
 
+    /**
+     * Creates a velocity3d service for the drone.
+     *
+     * @return a velocity3d service for the drone
+     */
     public Velocity3dService createVelocity3dService() {
         try {
             return CratesVelocity3dService.create(connectedNode.<VelocityRequest, VelocityResponse>newServiceClient(
                     namePrefix + "controller/Velocity", Velocity._TYPE));
         } catch (ServiceNotFoundException e) {
-            throw new RuntimeException(
+            throw new IllegalStateException(
                     String.format("Velocity service not found. Drone: %s. Model: %s", droneName, modelName));
         }
     }
 
+    /**
+     * Creates a velocity2d service for the drone.
+     *
+     * @return a velocity2d service for the drone
+     */
     public Velocity2dService createVelocity2dService() {
         try {
             return CratesVelocity2dService.create(
                     connectedNode.<VelocityHeightRequest, VelocityHeightResponse>newServiceClient(
                             namePrefix + "controller/VelocityHeight", VelocityHeight._TYPE));
         } catch (ServiceNotFoundException e) {
-            throw new RuntimeException(
+            throw new IllegalStateException(
                     String.format("Velocity height service not found. Drone: %s. Model: %s", droneName, modelName));
         }
     }

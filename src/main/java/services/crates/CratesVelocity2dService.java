@@ -20,6 +20,12 @@ final class CratesVelocity2dService implements Velocity2dService {
         this.srvVelocity = srvVelocity;
     }
 
+    /**
+     * Create a 2d-velocity service for a drone in the Crates simualtor.
+     *
+     * @param srvVelocity the service client connected to the {@code VelocityHeight} rosservice of the drone
+     * @return a 2d-velocity service
+     */
     public static CratesVelocity2dService create(
             ServiceClient<VelocityHeightRequest, VelocityHeightResponse> srvVelocity) {
         return new CratesVelocity2dService(srvVelocity);

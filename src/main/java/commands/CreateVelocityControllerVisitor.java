@@ -28,10 +28,19 @@ public final class CreateVelocityControllerVisitor {
         trajectory4d = builder.trajectory4d;
     }
 
+    /**
+     * Returns a builder for this class.
+     */
     public static Builder builder() {
         return new Builder();
     }
 
+    /**
+     * Creates a velocity controller using the {@code velocityService}
+     *
+     * @param velocityService the velocity service used to create the velocity controller
+     * @return a velocity controller
+     */
     public VelocityController createVelocityController(VelocityService velocityService) {
         if (velocityService instanceof Velocity2dService) {
             return create2dVelocityController((Velocity2dService) velocityService);

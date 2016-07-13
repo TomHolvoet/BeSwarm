@@ -21,6 +21,12 @@ public final class CratesSimStateEstimator implements StateEstimator {
         this.stateSubscriber = stateSubscriber;
     }
 
+    /**
+     * Creates a new state estimator for a drone in the Crates simulator.
+     *
+     * @param stateSubscriber the state subscriber
+     * @return a state estimator
+     */
     public static CratesSimStateEstimator create(MessagesSubscriberService<State> stateSubscriber) {
         return new CratesSimStateEstimator(stateSubscriber);
     }

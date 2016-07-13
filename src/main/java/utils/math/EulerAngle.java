@@ -12,16 +12,36 @@ public abstract class EulerAngle {
 
     EulerAngle() {}
 
+    /**
+     * Returns the angle of the X rotation.
+     */
     public abstract double angleX();
 
+    /**
+     * Returns the angle of the Y rotation.
+     */
     public abstract double angleY();
 
+    /**
+     * Returns the angle of the Z rotation.
+     */
     public abstract double angleZ();
 
+    /**
+     * Returns the builder of this class.
+     */
     public static Builder builder() {
         return new AutoValue_EulerAngle.Builder();
     }
 
+    /**
+     * Computes the distance between two angles. The distance will be in range [-pi, pi]. The distance is negative if
+     * the {@code secondAngle} is on the left of the {@code firstAngle}.
+     *
+     * @param firstAngle  the first angle
+     * @param secondAngle the second angle
+     * @return the distance between the two angles
+     */
     public static double computeAngleDistance(double firstAngle, double secondAngle) {
         double distance = secondAngle - firstAngle;
 
@@ -36,14 +56,29 @@ public abstract class EulerAngle {
         return distance;
     }
 
+    /**
+     * The builder of the {@link EulerAngle} value class.
+     */
     @AutoValue.Builder
     public abstract static class Builder {
-        public abstract Builder angleX(double value);
+        /**
+         * Sets the angle of the X rotation.
+         */
+        public abstract Builder setAngleX(double value);
 
-        public abstract Builder angleY(double value);
+        /**
+         * Sets the angle of the Y rotation.
+         */
+        public abstract Builder setAngleY(double value);
 
-        public abstract Builder angleZ(double value);
+        /**
+         * Sets the angle of the Z rotation.
+         */
+        public abstract Builder setAngleZ(double value);
 
+        /**
+         * Builds an {@link EulerAngle} instance.
+         */
         public abstract EulerAngle build();
     }
 }
