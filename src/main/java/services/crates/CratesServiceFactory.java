@@ -8,6 +8,8 @@ import hal_quadrotor.Takeoff;
 import hal_quadrotor.TakeoffRequest;
 import hal_quadrotor.TakeoffResponse;
 import hal_quadrotor.Velocity;
+import hal_quadrotor.VelocityHeightRequest;
+import hal_quadrotor.VelocityHeightResponse;
 import hal_quadrotor.VelocityRequest;
 import hal_quadrotor.VelocityResponse;
 import org.ros.exception.ServiceNotFoundException;
@@ -18,6 +20,7 @@ import services.CommonServiceFactory;
 import services.FlyingStateService;
 import services.LandService;
 import services.TakeOffService;
+import services.Velocity2dService;
 import services.Velocity3dService;
 import services.ros_subscribers.MessagesSubscriberService;
 
@@ -81,6 +84,17 @@ public final class CratesServiceFactory implements CommonServiceFactory {
         try {
             return CratesVelocity3dService.create(connectedNode.<VelocityRequest, VelocityResponse>newServiceClient(
                     namePrefix + "controller/Velocity", Velocity._TYPE));
+        } catch (ServiceNotFoundException e) {
+            throw new RuntimeException(
+                    String.format("Velocity service not found. Drone: %s. Model: %s", droneName, modelName));
+        }
+    }
+
+    public Velocity2dService createVelocity2dService() {
+        try {
+            return CratesVelocity2dService.create(
+                    connectedNode.<VelocityHeightRequest, VelocityHeightResponse>newServiceClient(
+                            namePrefix + "controller/VelocityHeight", Velocity._TYPE));
         } catch (ServiceNotFoundException e) {
             throw new RuntimeException(
                     String.format("Velocity service not found. Drone: %s. Model: %s", droneName, modelName));

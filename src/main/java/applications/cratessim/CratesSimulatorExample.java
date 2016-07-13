@@ -53,7 +53,7 @@ public final class CratesSimulatorExample extends AbstractNodeMain {
                 .withLandService(cratesServiceFactory.createLandService())
                 .withStateEstimator(stateEstimator)
                 .withTakeOffService(cratesServiceFactory.createTakeOffService())
-                .withVelocityService(cratesServiceFactory.createVelocity3dService())
+                .withVelocityService(cratesServiceFactory.createVelocity2dService())
                 .build();
         exampleFlight.fly();
     }

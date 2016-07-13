@@ -26,7 +26,7 @@ final class CratesServiceResponseListener<T extends Message> implements ServiceR
 
     @Override
     public void onSuccess(T t) {
-        logger.info("Successfully sent message!!!");
+        logger.trace("Successfully sent message!!!");
         countDownLatch.countDown();
     }
 

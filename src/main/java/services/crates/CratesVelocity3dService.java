@@ -32,7 +32,7 @@ final class CratesVelocity3dService implements Velocity3dService {
         velocityRequest.setDy(inertialFrameVelocityY);
         velocityRequest.setDz(inertialFrameVelocityZ);
         velocityRequest.setYaw(angularPositionZ);
-        logger.debug("Sending 3d velocity: [velX={} velY={} velZ={} posYaw={}]", inertialFrameVelocityX,
+        logger.trace("Sending 3d velocity: [velX={} velY={} velZ={} posYaw={}]", inertialFrameVelocityX,
                 inertialFrameVelocityY, inertialFrameVelocityZ, angularPositionZ);
         CratesUtilities.sendRequest(srvVelocity, velocityRequest);
     }
