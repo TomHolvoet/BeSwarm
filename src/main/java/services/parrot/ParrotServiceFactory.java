@@ -3,8 +3,8 @@ package services.parrot;
 import org.ros.node.ConnectedNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import services.LandService;
 import services.CommonServiceFactory;
+import services.LandService;
 import services.TakeOffService;
 import services.Velocity4dService;
 import std_msgs.Empty;
@@ -42,6 +42,9 @@ public abstract class ParrotServiceFactory implements CommonServiceFactory {
         return landService;
     }
 
+    /**
+     * Creates a 4d-velocity service for parrot drones.
+     */
     public abstract Velocity4dService createVelocity4dService();
 
     ConnectedNode getConnectedNode() {

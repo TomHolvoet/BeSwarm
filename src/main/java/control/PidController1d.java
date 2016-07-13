@@ -19,6 +19,13 @@ public final class PidController1d {
         this.trajectory = trajectory;
     }
 
+    /**
+     * Creates a {@link PidController1d} instance.
+     *
+     * @param parameters the pid parameters for this pid controller
+     * @param trajectory the trajectory that this pid controller will try to follow
+     * @return an instance of this class
+     */
     public static PidController1d create(PidParameters parameters, Trajectory1d trajectory) {
         return new PidController1d(parameters, trajectory);
     }

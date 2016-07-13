@@ -41,7 +41,12 @@ public final class CratesSimStateEstimator implements StateEstimator {
 
         final State state = stateOptional.get();
 
-        final Pose pose = Pose.builder().x(state.getX()).y(state.getY()).z(state.getZ()).yaw(state.getYaw()).build();
+        final Pose pose = Pose.builder()
+                .setX(state.getX())
+                .setY(state.getY())
+                .setZ(state.getZ())
+                .setYaw(state.getYaw())
+                .build();
 
         final BodyFrameVelocity bodyFrameVelocity = Velocity.builder()
                 .setLinearX(state.getU())

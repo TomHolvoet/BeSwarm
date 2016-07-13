@@ -21,6 +21,12 @@ public final class Takeoff implements Command {
         this.takeOffService = takeOffService;
     }
 
+    /**
+     * Creates a take off command.
+     *
+     * @param takeOffService the take off service of the drone
+     * @return a take off command
+     */
     public static Takeoff create(TakeOffService takeOffService) {
         return new Takeoff(takeOffService);
     }
@@ -32,8 +38,7 @@ public final class Takeoff implements Command {
         try {
             TimeUnit.SECONDS.sleep(10);
         } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            logger.debug("Waiting after sending taking off message is interrupted.");
         }
     }
 }

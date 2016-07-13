@@ -13,54 +13,101 @@ import utils.math.Transformations;
 @AutoValue
 public abstract class Pose {
     /**
-     * Default epsilon used for pose comparison
+     * Default epsilon used for pose comparison.
      */
     private static final double EPS = 0.001;
 
     Pose() {}
 
+    /**
+     * Returns the x position.
+     */
     public abstract double x();
 
+    /**
+     * Returns the y position.
+     */
     public abstract double y();
 
+    /**
+     * Returns the z position.
+     */
     public abstract double z();
 
+    /**
+     * Returns the yaw position.
+     */
     public abstract double yaw();
 
+    /**
+     * Returns a builder of this class.
+     */
     public static Builder builder() {
         return new AutoValue_Pose.Builder();
     }
 
+    /**
+     * Creates a {@link Pose} instance from a {@link PoseStamped} instance.
+     *
+     * @param poseStamped the pose stamped used to create the pose
+     * @return a {@link Pose} instance equivalent to the {@code poseStamped}
+     */
     public static Pose create(PoseStamped poseStamped) {
         return Pose.builder()
-                .x(poseStamped.getPose().getPosition().getX())
-                .y(poseStamped.getPose().getPosition().getY())
-                .z(poseStamped.getPose().getPosition().getZ())
-                .yaw(Transformations.quaternionToEulerAngle(poseStamped.getPose().getOrientation()).angleZ())
+                .setX(poseStamped.getPose().getPosition().getX())
+                .setY(poseStamped.getPose().getPosition().getY())
+                .setZ(poseStamped.getPose().getPosition().getZ())
+                .setYaw(Transformations.quaternionToEulerAngle(poseStamped.getPose().getOrientation()).angleZ())
                 .build();
     }
 
+    /**
+     * Returns a zero pose with all components equal zero.
+     */
     public static Pose createZeroPose() {
-        return Pose.builder().x(0).y(0).z(0).yaw(0).build();
+        return Pose.builder().setX(0).setY(0).setZ(0).setYaw(0).build();
     }
 
+    /**
+     * Checks whether two poses are similar with in a tolerance.
+     *
+     * @param p1 the first pose
+     * @param p2 the second pose
+     * @return true if two poses are similar within a tolerance
+     */
     public static boolean areSamePoseWithinEps(Pose p1, Pose p2) {
-        return StrictMath.abs(p1.x() - p2.x()) < EPS &&
-                StrictMath.abs(p1.y() - p2.y()) < EPS &&
-                StrictMath.abs(p1.z() - p2.z()) < EPS &&
-                StrictMath.abs(p1.yaw() - p2.yaw()) < EPS;
+        return StrictMath.abs(p1.x() - p2.x()) < EPS && StrictMath.abs(p1.y() - p2.y()) < EPS && StrictMath.abs(
+                p1.z() - p2.z()) < EPS && StrictMath.abs(p1.yaw() - p2.yaw()) < EPS;
     }
 
+    /**
+     * Builds a {@link Pose} instance.
+     */
     @AutoValue.Builder
     public abstract static class Builder {
-        public abstract Builder x(double value);
+        /**
+         * Sets the x position.
+         */
+        public abstract Builder setX(double value);
 
-        public abstract Builder y(double value);
+        /**
+         * Sets the y position.
+         */
+        public abstract Builder setY(double value);
 
-        public abstract Builder z(double value);
+        /**
+         * Sets the z position.
+         */
+        public abstract Builder setZ(double value);
 
-        public abstract Builder yaw(double value);
+        /**
+         * Sets the yaw position.
+         */
+        public abstract Builder setYaw(double value);
 
+        /**
+         * Builds a {@link Pose} instance.
+         */
         public abstract Pose build();
     }
 }

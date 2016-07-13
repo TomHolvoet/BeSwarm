@@ -20,9 +20,9 @@ final class TumSimFlyingStateService implements MessageObserver<Navdata>, Flying
 
     private static final Logger logger = LoggerFactory.getLogger(TumSimFlyingStateService.class);
     @Nullable private FlyingState currentFlyingState;
-    private static final Map<Integer, ArDroneFlyingState> FLYING_STATE_MAP = ImmutableMap.<Integer, ArDroneFlyingState>builder()
-            .put(
-            0, ArDroneFlyingState.UNKNOWN)
+    private static final Map<Integer, ArDroneFlyingState> FLYING_STATE_MAP = ImmutableMap.<Integer,
+            ArDroneFlyingState>builder()
+            .put(0, ArDroneFlyingState.UNKNOWN)
             .put(1, ArDroneFlyingState.INITED)
             .put(2, ArDroneFlyingState.LANDED)
             .put(3, ArDroneFlyingState.FLYING)
@@ -36,6 +36,12 @@ final class TumSimFlyingStateService implements MessageObserver<Navdata>, Flying
 
     private TumSimFlyingStateService() {}
 
+    /**
+     * Creates a flying state service for the Tum simulator.
+     *
+     * @param flyingStateSubscriber the subscriber to the rostopic that provides the drone's state
+     * @return a flying state service instance
+     */
     public static TumSimFlyingStateService create(MessagesSubscriberService<Navdata> flyingStateSubscriber) {
         final TumSimFlyingStateService tumSimFlyingStateService = new TumSimFlyingStateService();
         flyingStateSubscriber.registerMessageObserver(tumSimFlyingStateService);

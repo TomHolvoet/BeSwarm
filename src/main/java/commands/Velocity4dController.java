@@ -22,6 +22,9 @@ final class Velocity4dController implements VelocityController {
         this.pidController4d = pidController4d;
     }
 
+    /**
+     * Returns a builder of this class.
+     */
     public static Builder builder() {
         return new Builder();
     }
@@ -33,6 +36,9 @@ final class Velocity4dController implements VelocityController {
         velocity4dService.sendVelocity4dMessage(nextVelocity, currentState.pose());
     }
 
+    /**
+     * Builds a {@link Velocity4dController} instance.
+     */
     public static final class Builder extends BuilderWithVelocity4dService<Builder> {
 
         private Velocity4dService velocity4dService;

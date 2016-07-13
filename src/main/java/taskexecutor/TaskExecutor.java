@@ -12,6 +12,10 @@ public interface TaskExecutor {
      */
     Status submitTask(Task newTask);
 
+    /**
+     * Represents the status of a task after it was submitted. The task can be accepted and executed or it can be
+     * rejected.
+     */
     enum Status {
         ACCEPTED, REJECTED
     }

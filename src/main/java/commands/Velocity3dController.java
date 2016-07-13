@@ -32,6 +32,9 @@ final class Velocity3dController implements VelocityController {
                 TrajectoryUtils.getTrajectoryLinearZ(trajectory4d));
     }
 
+    /**
+     * Returns a builder of this class.
+     */
     public static Builder builder() {
         return new Builder();
     }
@@ -49,6 +52,9 @@ final class Velocity3dController implements VelocityController {
                 trajectory4d.getDesiredAngleZ(currentTimeInSeconds));
     }
 
+    /**
+     * Builds a {@link Velocity3dController} instance.
+     */
     public static final class Builder extends BuilderWithVelocity3dService<Builder> {
 
         private Velocity3dService velocity3dService;

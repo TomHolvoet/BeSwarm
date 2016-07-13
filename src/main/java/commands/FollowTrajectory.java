@@ -46,10 +46,19 @@ public final class FollowTrajectory implements Command {
         velocityController = controllerVisitor.createVelocityController(builder.velocityService);
     }
 
+    /**
+     * Returns the builder of this class.
+     */
     public static Builder builder() {
         return new Builder();
     }
 
+    /**
+     * Copies the parameters of another builder.
+     *
+     * @param otherBuilder the other builder
+     * @return a builder instance of this class with all copied parameters from the other builder
+     */
     public static Builder copyBuilder(AbstractFollowTrajectoryBuilder<?> otherBuilder) {
         return new Builder().copyOf(otherBuilder);
     }
@@ -125,6 +134,9 @@ public final class FollowTrajectory implements Command {
         }
     }
 
+    /**
+     * Builder for {@link FollowTrajectory}.
+     */
     public static final class Builder extends AbstractFollowTrajectoryBuilder<Builder> {
         private Trajectory4d trajectory4d;
         private double durationInSeconds;
@@ -138,16 +150,25 @@ public final class FollowTrajectory implements Command {
             return this;
         }
 
+        /**
+         * Sets the trajectory that the drone will follow.
+         */
         public Builder withTrajectory4d(Trajectory4d val) {
             trajectory4d = val;
             return this;
         }
 
+        /**
+         * Sets the duration that the {@link FollowTrajectory} will be executed.
+         */
         public Builder withDurationInSeconds(double val) {
             durationInSeconds = val;
             return this;
         }
 
+        /**
+         * Builds a {@link FollowTrajectory} instance.
+         */
         public FollowTrajectory build() {
             checkNotNull(trajectory4d);
             checkNotNull(durationInSeconds);

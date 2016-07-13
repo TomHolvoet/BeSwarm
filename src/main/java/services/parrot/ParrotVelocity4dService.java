@@ -22,7 +22,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * @author Hoang Tung Dinh
  */
 final class ParrotVelocity4dService implements Velocity4dService {
-    private static final Logger logger = LoggerFactory.getLogger(ParrotVelocity4dService.class);
     private static final Logger loggerVel = LoggerFactory.getLogger(ParrotVelocity4dService.class.getName() + ".vel");
 
     private final Publisher<Twist> publisher;

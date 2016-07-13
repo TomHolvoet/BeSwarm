@@ -18,6 +18,7 @@ import java.util.Queue;
 import static com.google.common.base.Preconditions.checkArgument;
 
 /**
+ * @param <T> the type of the messages
  * @author mhct
  */
 public class MessagesSubscriberService<T extends Message> {
@@ -35,27 +36,58 @@ public class MessagesSubscriberService<T extends Message> {
         subscriber.addMessageListener(messagesListener);
     }
 
-    public static <Type extends Message> MessagesSubscriberService<Type> create(Subscriber<Type> subscriber) {
+    /**
+     * Creates an instance of this class with the queue size of one.
+     *
+     * @param subscriber the rostopic subscriber
+     * @param <U>        the type of the messages
+     * @return an instance of this class
+     */
+    public static <U extends Message> MessagesSubscriberService<U> create(Subscriber<U> subscriber) {
         return new MessagesSubscriberService<>(subscriber, DEFAULT_MESSAGE_QUEUE_SIZE);
     }
 
-    public static <Type extends Message> MessagesSubscriberService<Type> create(Subscriber<Type> subscriber,
+    /**
+     * Creates an instance of this class.
+     *
+     * @param subscriber          the rostopic subscriber
+     * @param maxMessageQueueSize the maximum queue of most recent messages
+     * @param <U>                 the type of the messages
+     * @return an instance of this class
+     */
+    public static <U extends Message> MessagesSubscriberService<U> create(Subscriber<U> subscriber,
             int maxMessageQueueSize) {
         return new MessagesSubscriberService<>(subscriber, maxMessageQueueSize);
     }
 
+    /**
+     * Returns the most recent message received.
+     */
     public Optional<T> getMostRecentMessage() {
         return messagesListener.getMostRecentMessage();
     }
 
+    /**
+     * Returns the queue of most recent messages.
+     */
     public Queue<T> getMessageQueue() {
         return messagesListener.getMessageQueue();
     }
 
+    /**
+     * Registers a message observer.
+     *
+     * @param messageObserver the message observer to be registered
+     */
     public void registerMessageObserver(MessageObserver<T> messageObserver) {
         messagesListener.registerMessageObserver(messageObserver);
     }
 
+    /**
+     * Removed a message observer.
+     *
+     * @param messageObserver the message observer to be removed
+     */
     public void removeMessageObserver(MessageObserver<T> messageObserver) {
         messagesListener.removeMessageObserver(messageObserver);
     }
@@ -70,7 +102,14 @@ public class MessagesSubscriberService<T extends Message> {
             messageObservers = new ArrayList<>();
         }
 
-        public static <Type extends Message> MessagesListener<Type> create(int maxQueueSize) {
+        /**
+         * Creates an instance of this class.
+         *
+         * @param maxQueueSize the maximum size of the queue storing most recent messages
+         * @param <U>          the type of the message
+         * @return an instance of this class
+         */
+        public static <U extends Message> MessagesListener<U> create(int maxQueueSize) {
             return new MessagesListener<>(maxQueueSize);
         }
 
@@ -88,10 +127,20 @@ public class MessagesSubscriberService<T extends Message> {
             }
         }
 
+        /**
+         * Registers a message observer.
+         *
+         * @param messageObserver the message observer to be registered
+         */
         public void registerMessageObserver(MessageObserver<K> messageObserver) {
             messageObservers.add(messageObserver);
         }
 
+        /**
+         * Removed a message observer.
+         *
+         * @param messageObserver the message observer to be removed
+         */
         public void removeMessageObserver(MessageObserver<K> messageObserver) {
             messageObservers.remove(messageObserver);
         }

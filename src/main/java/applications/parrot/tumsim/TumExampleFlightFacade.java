@@ -42,10 +42,21 @@ final class TumExampleFlightFacade {
                 .build();
     }
 
+    /**
+     * Creates a facade to run the drone in the Tum simulator. The drone will take off, follow a provided trajectory
+     * and then land.
+     *
+     * @param trajectory4d  the trajectory which the drone will follow
+     * @param connectedNode the connected node
+     * @return a facade for flying with the drone in the Tum simulator
+     */
     public static TumExampleFlightFacade create(FiniteTrajectory4d trajectory4d, ConnectedNode connectedNode) {
         return new TumExampleFlightFacade(trajectory4d, connectedNode);
     }
 
+    /**
+     * Starts flying.
+     */
     public void fly() {
         // without this code, the take off message cannot be sent properly (I
         // don't understand why).

@@ -22,6 +22,9 @@ public abstract class Velocity implements InertialFrameVelocity, BodyFrameVeloci
     @Override
     public abstract double angularZ();
 
+    /**
+     * Returns a builder of this class.
+     */
     public static Builder builder() {
         return new AutoValue_Velocity.Builder();
     }
@@ -31,10 +34,10 @@ public abstract class Velocity implements InertialFrameVelocity, BodyFrameVeloci
     }
 
     /**
-     * Converts a Twist velocity (given in NED coordinates) to a local velocity using XYZ frame
-     * TODO fix frame of reference for local velocity
+     * Converts a Twist velocity (given in NED coordinates) a {@link Velocity} instance.
      *
-     * @return
+     * @param twist the twist velocity
+     * @return a {@link Velocity} instance.
      */
     public static Velocity createLocalVelocityFrom(Twist twist) {
         final double twistX = twist.getLinear().getX();
@@ -45,16 +48,43 @@ public abstract class Velocity implements InertialFrameVelocity, BodyFrameVeloci
         return builder().setLinearX(twistX).setLinearY(twistY).setLinearZ(twistZ).setAngularZ(twistAngularZ).build();
     }
 
+    /**
+     * Builds a {@link Velocity} instance.
+     */
     @AutoValue.Builder
     public abstract static class Builder {
+
+        /**
+         * Sets the velocity in the x coordinate.
+         *
+         * @param value the value of the velocity in the x coordinate
+         */
         public abstract Builder setLinearX(double value);
 
+        /**
+         * Sets the velocity in the y coordinate.
+         *
+         * @param value the value of the velocity in the y coordinate
+         */
         public abstract Builder setLinearY(double value);
 
+        /**
+         * Sets the velocity in the z coordinate.
+         *
+         * @param value the value of the velocity in the z coordinate
+         */
         public abstract Builder setLinearZ(double value);
 
+        /**
+         * Sets the velocity of the Z rotation (the yaw).
+         *
+         * @param value the value of the velocity of the Z rotation (the yaw)
+         */
         public abstract Builder setAngularZ(double value);
 
+        /**
+         * Builds a {@link Velocity} instance.
+         */
         public abstract Velocity build();
     }
 }

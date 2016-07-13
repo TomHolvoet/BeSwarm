@@ -31,6 +31,9 @@ public final class PidController4d {
         pidAngularZ = PidController1d.create(builder.angularZParameters, angularTrajectoryZ);
     }
 
+    /**
+     * Returns the builder of this class.
+     */
     public static Builder builder() {
         return new Builder();
     }

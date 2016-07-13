@@ -20,6 +20,13 @@ public final class KeyboardEmergency implements EmergencyNotifier, RosKeyObserve
         this.task = task;
     }
 
+    /**
+     * Creates a keyboard emergency notifier. It will notify all the subscribed {@link TaskExecutor} when key "x" is
+     * pressed.
+     *
+     * @param task the emergency task to be executed when key "x" is pressed
+     * @return a keyboard emergency notifier
+     */
     public static KeyboardEmergency create(Task task) {
         return new KeyboardEmergency(task);
     }

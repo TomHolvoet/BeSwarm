@@ -33,6 +33,13 @@ public final class Transformations {
         return EulerAngle.builder().setAngleX(eulerX).setAngleY(eulerY).setAngleZ(eulerZ).build();
     }
 
+    /**
+     * Transforms the velocity in the inertial frame to the velocity in the body frame.
+     *
+     * @param inertialFrameVelocity the velocity in the inertial frame
+     * @param pose                  the pose associated with the velocity in the inertial frame
+     * @return the velocity in the body frame
+     */
     public static BodyFrameVelocity inertialFrameVelocityToBodyFrameVelocity(
             InertialFrameVelocity inertialFrameVelocity, Pose pose) {
         // same linearZ
@@ -47,10 +54,21 @@ public final class Transformations {
         final double linearX = inertialFrameVelocity.linearX() * cos - inertialFrameVelocity.linearY() * sin;
         final double linearY = inertialFrameVelocity.linearX() * sin + inertialFrameVelocity.linearY() * cos;
 
-        return Velocity.builder().setLinearX(linearX).setLinearY(linearY).setLinearZ(linearZ).setAngularZ(angularZ)
+        return Velocity.builder()
+                .setLinearX(linearX)
+                .setLinearY(linearY)
+                .setLinearZ(linearZ)
+                .setAngularZ(angularZ)
                 .build();
     }
 
+    /**
+     * Transforms the velocity in the body frame to the velocity in the inertial frame.
+     *
+     * @param bodyFrameVelocity the velocity in the body frame
+     * @param pose              the pose associated with the velocity
+     * @return the velocity in the inertial frame
+     */
     public static InertialFrameVelocity bodyFrameVelocityToInertialFrameVelocity(BodyFrameVelocity bodyFrameVelocity,
             Pose pose) {
         // same linearZ
@@ -66,7 +84,11 @@ public final class Transformations {
         final double linearX = bodyFrameVelocity.linearX() * cos - bodyFrameVelocity.linearY() * sin;
         final double linearY = bodyFrameVelocity.linearX() * sin + bodyFrameVelocity.linearY() * cos;
 
-        return Velocity.builder().setLinearX(linearX).setLinearY(linearY).setLinearZ(linearZ).setAngularZ(angularZ)
+        return Velocity.builder()
+                .setLinearX(linearX)
+                .setLinearY(linearY)
+                .setLinearZ(linearZ)
+                .setAngularZ(angularZ)
                 .build();
     }
 }

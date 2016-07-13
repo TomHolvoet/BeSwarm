@@ -26,6 +26,14 @@ public class GazeboModelStateEstimator implements StateEstimator {
         this.modelName = modelName;
     }
 
+    /**
+     * Creates a state estimator that use the ModelStates topics in Gazebo to get the current state of the drone.
+     *
+     * @param modelStateSubscriber the rostopic subscriber to a topic publishing model state messages
+     * @param modelName            the name of the drone model. A model state topic in Gazebo contains the states of all
+     *                             models in the simulation environment, while the drone is one of those models.
+     * @return a state estimator instance
+     */
     public static GazeboModelStateEstimator create(MessagesSubscriberService<ModelStates> modelStateSubscriber,
             String modelName) {
         return new GazeboModelStateEstimator(modelStateSubscriber, modelName);
@@ -71,10 +79,10 @@ public class GazeboModelStateEstimator implements StateEstimator {
         final Quaternion currentOrientation = gazeboPose.getOrientation();
         final double currentYaw = Transformations.quaternionToEulerAngle(currentOrientation).angleZ();
         return Pose.builder()
-                .x(currentPoint.getX())
-                .y(currentPoint.getY())
-                .z(currentPoint.getZ())
-                .yaw(currentYaw)
+                .setX(currentPoint.getX())
+                .setY(currentPoint.getY())
+                .setZ(currentPoint.getZ())
+                .setYaw(currentYaw)
                 .build();
     }
 }

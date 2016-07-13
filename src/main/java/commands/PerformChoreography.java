@@ -16,6 +16,9 @@ public final class PerformChoreography implements Command {
         this.followTrajectoryCommand = followTrajectoryCommand;
     }
 
+    /**
+     * Returns a builder of this class.
+     */
     public static Builder builder() {
         return new Builder();
     }
@@ -26,6 +29,9 @@ public final class PerformChoreography implements Command {
         followTrajectoryCommand.execute();
     }
 
+    /**
+     * Builder for {@link PerformChoreography}.
+     */
     public static final class Builder extends AbstractFollowTrajectoryBuilder<Builder> {
 
         private FiniteTrajectory4d finiteTrajectory4d;
@@ -39,11 +45,17 @@ public final class PerformChoreography implements Command {
             return this;
         }
 
+        /**
+         * Sets the finite trajectory.
+         */
         public Builder withFiniteTrajectory4d(FiniteTrajectory4d val) {
             finiteTrajectory4d = val;
             return this;
         }
 
+        /**
+         * Builds a {@link PerformChoreography} instance.
+         */
         public PerformChoreography build() {
             final FollowTrajectory followTrajectory = FollowTrajectory.copyBuilder(this)
                     .withTrajectory4d(finiteTrajectory4d)

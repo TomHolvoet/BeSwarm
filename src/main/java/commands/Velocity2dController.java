@@ -29,6 +29,9 @@ final class Velocity2dController implements VelocityController {
                 TrajectoryUtils.getTrajectoryLinearY(trajectory4d));
     }
 
+    /**
+     * Returns the builder of this class.
+     */
     public static Builder builder() {
         return new Builder();
     }
@@ -45,6 +48,9 @@ final class Velocity2dController implements VelocityController {
                 trajectory4d.getDesiredAngleZ(currentTimeInSeconds));
     }
 
+    /**
+     * Builds a {@link Velocity2dController} instance.
+     */
     static final class Builder extends BuilderWithVelocity2dService<Builder> {
 
         private Velocity2dService velocity2dService;

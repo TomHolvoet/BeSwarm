@@ -21,6 +21,12 @@ public final class TumSimServiceFactory extends ParrotServiceFactory {
         super(connectedNode, DRONE_NAME);
     }
 
+    /**
+     * Creates a service factory for the Tum simulator.
+     *
+     * @param connectedNode the connected ros node
+     * @return a service factory instance
+     */
     public static TumSimServiceFactory create(ConnectedNode connectedNode) {
         return new TumSimServiceFactory(connectedNode);
     }

@@ -18,6 +18,14 @@ public final class PeriodicTaskRunner {
 
     private PeriodicTaskRunner() {}
 
+    /**
+     * Runs a java task. Note that this task is a {@link Runnable} object, and is different from the {@link
+     * taskexecutor.Task} which defines a list of drone's commands.
+     *
+     * @param task              the {@link Runnable} task
+     * @param rateInSeconds     the rate of executing this task
+     * @param durationInSeconds the duration in which the task will be executed
+     */
     public static void run(Runnable task, double rateInSeconds, double durationInSeconds) {
         final long initialDelay = 0;
         final long rateInMilliSeconds = (long) (rateInSeconds * 1000);
@@ -33,8 +41,8 @@ public final class PeriodicTaskRunner {
             logger.debug("The executing task is interrupted. Stop executing the task.");
             // the task is cancelled if time ran out or the current thread is interrupted while waiting.
             future.cancel(true);
-        } catch (TimeoutException ignored) {
-            logger.debug("The executing task is run out of time. Stop executing the task");
+        } catch (TimeoutException e) {
+            logger.debug("The executing task is run out of time. Stop executing the task", e);
             future.cancel(true);
         } catch (ExecutionException e) {
             logger.debug("An execution exception occurs.", e);

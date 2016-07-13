@@ -29,11 +29,19 @@ public final class Hover implements Command {
         this.durationInSeconds = durationInSeconds;
     }
 
-    public static Hover create(VelocityService velocity4dService, StateEstimator stateEstimator,
+    /**
+     * Creates a hover command.
+     *
+     * @param velocityService   the velocity service of the drone
+     * @param stateEstimator    the state estimator of the drone
+     * @param durationInSeconds the duration that the drone will hover
+     * @return a hover command
+     */
+    public static Hover create(VelocityService velocityService, StateEstimator stateEstimator,
             double durationInSeconds) {
         checkArgument(durationInSeconds > 0,
                 String.format("Duration must be a positive value, but it is %f", durationInSeconds));
-        return new Hover(velocity4dService, stateEstimator, durationInSeconds);
+        return new Hover(velocityService, stateEstimator, durationInSeconds);
     }
 
     @Override

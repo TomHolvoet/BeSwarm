@@ -1,5 +1,7 @@
 package taskexecutor.interruptors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import taskexecutor.EmergencyNotifier;
 import taskexecutor.Task;
 import taskexecutor.TaskExecutor;
@@ -13,6 +15,9 @@ import static java.util.concurrent.TimeUnit.SECONDS;
  * @author Hoang Tung Dinh
  */
 public final class SimpleEmergencyAfterOneMinute implements EmergencyNotifier {
+
+    private static final Logger logger = LoggerFactory.getLogger(SimpleEmergencyAfterOneMinute.class);
+
     private final Task task;
     private final Collection<TaskExecutor> taskExecutors = new ArrayList<>();
 
@@ -20,10 +25,19 @@ public final class SimpleEmergencyAfterOneMinute implements EmergencyNotifier {
         this.task = task;
     }
 
+    /**
+     * Creates an emergency notifier that will notify an emergency situation after one minute.
+     *
+     * @param task the emergency task to be executed in the emergency situation.
+     * @return an emergency notifier instance
+     */
     public static SimpleEmergencyAfterOneMinute create(Task task) {
         return new SimpleEmergencyAfterOneMinute(task);
     }
 
+    /**
+     * Starts waiting for one minutes and then submits the emergency task to all subscribed {@link TaskExecutor}.
+     */
     public void run() {
         try {
             SECONDS.sleep(60);
@@ -31,7 +45,10 @@ public final class SimpleEmergencyAfterOneMinute implements EmergencyNotifier {
                 taskExecutor.submitTask(task);
             }
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            logger.debug(
+                    "Waiting until sending emergency notification is interrupted. No emergency notification will be "
+                            + "sent.",
+                    e);
         }
     }
 

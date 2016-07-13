@@ -76,6 +76,7 @@ public final class CratesServiceFactory implements CommonServiceFactory {
                     connectedNode.<LandRequest, LandResponse>newServiceClient(namePrefix + "controller/Land",
                             Land._TYPE));
         } catch (ServiceNotFoundException e) {
+            logger.debug("Service not found.", e);
             throw new IllegalStateException(
                     String.format("Land service not found. Drone: %s. Model: %s", droneName, modelName));
         }
@@ -99,6 +100,7 @@ public final class CratesServiceFactory implements CommonServiceFactory {
             return CratesVelocity3dService.create(connectedNode.<VelocityRequest, VelocityResponse>newServiceClient(
                     namePrefix + "controller/Velocity", Velocity._TYPE));
         } catch (ServiceNotFoundException e) {
+            logger.debug("Service not found.", e);
             throw new IllegalStateException(
                     String.format("Velocity service not found. Drone: %s. Model: %s", droneName, modelName));
         }
@@ -115,6 +117,7 @@ public final class CratesServiceFactory implements CommonServiceFactory {
                     connectedNode.<VelocityHeightRequest, VelocityHeightResponse>newServiceClient(
                             namePrefix + "controller/VelocityHeight", VelocityHeight._TYPE));
         } catch (ServiceNotFoundException e) {
+            logger.debug("Service not found.", e);
             throw new IllegalStateException(
                     String.format("Velocity height service not found. Drone: %s. Model: %s", droneName, modelName));
         }

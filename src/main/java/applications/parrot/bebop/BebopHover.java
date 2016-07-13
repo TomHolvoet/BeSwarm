@@ -76,7 +76,8 @@ public class BebopHover extends AbstractNodeMain {
         Command moveToPose = MoveToPose.builder()
                 .withVelocityService(velocity4dService)
                 .withStateEstimator(stateEstimator)
-                .withGoalPose(Pose.builder().x(locationX).y(locationY).z(locationZ).yaw(locationYaw).build())
+                .withGoalPose(
+                        Pose.builder().setX(locationX).setY(locationY).setZ(locationZ).setYaw(locationYaw).build())
                 .withDurationInSeconds(flightDuration)
                 .withPidLinearXParameters(
                         PidParameters.builder().setKp(pidLinearXKP).setKi(pidLinearXKI).setKd(pidLinearXKD).build())

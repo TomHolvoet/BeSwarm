@@ -1,9 +1,9 @@
 /**
- * This package contains classes that initialize a ros node to control the bebop drone.
+ * This package contains all the emergency notifiers.
  *
  * @author Hoang Tung Dinh
  */
 @ParametersAreNonnullByDefault
-package applications.parrot.bebop;
+package taskexecutor.interruptors;
 
 import javax.annotation.ParametersAreNonnullByDefault;

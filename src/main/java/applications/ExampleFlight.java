@@ -64,10 +64,16 @@ public final class ExampleFlight {
         pidAngularZ = builder.pidAngularZ;
     }
 
+    /**
+     * Returns a builder of this class.
+     */
     public static Builder builder() {
         return new Builder();
     }
 
+    /**
+     * Starts flying.
+     */
     public void fly() {
         // task to execute in case of emergency
         final Task emergencyTask = createEmergencyTask();

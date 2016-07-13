@@ -17,6 +17,12 @@ public final class KeyboardSubscriber extends MessagesSubscriberService<Key> imp
         super(subscriber, MESSAGE_QUEUE_SIZE);
     }
 
+    /**
+     * Creates a keyboard subscriber.
+     *
+     * @param subscriber the rostopic subscriber for the keyboard topic
+     * @return a keyboard subscriber
+     */
     public static KeyboardSubscriber createKeyboardSubscriber(Subscriber<Key> subscriber) {
         return new KeyboardSubscriber(subscriber);
     }

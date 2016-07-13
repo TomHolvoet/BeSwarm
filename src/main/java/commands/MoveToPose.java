@@ -17,6 +17,9 @@ public final class MoveToPose implements Command {
         this.followTrajectoryCommand = followTrajectoryCommand;
     }
 
+    /**
+     * Returns a builder of this class.
+     */
     public static Builder builder() {
         return new Builder();
     }
@@ -26,6 +29,9 @@ public final class MoveToPose implements Command {
         followTrajectoryCommand.execute();
     }
 
+    /**
+     * Builder for this class.
+     */
     public static final class Builder extends AbstractFollowTrajectoryBuilder<Builder> {
         private Pose goalPose;
         private double durationInSeconds;
@@ -39,16 +45,25 @@ public final class MoveToPose implements Command {
             return this;
         }
 
+        /**
+         * Sets the goal pose needed to be reached.
+         */
         public Builder withGoalPose(Pose val) {
             goalPose = val;
             return this;
         }
 
+        /**
+         * Set the duration for executing this command.
+         */
         public Builder withDurationInSeconds(double val) {
             durationInSeconds = val;
             return this;
         }
 
+        /**
+         * Builds a {@link MoveToPose} instance.
+         */
         public MoveToPose build() {
             final InertialFrameVelocity zeroVelocity = Velocity.createZeroVelocity();
             final Trajectory4d trajectory4d = SinglePointTrajectory4d.create(goalPose, zeroVelocity);
