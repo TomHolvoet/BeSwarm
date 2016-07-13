@@ -25,7 +25,15 @@ final class TumExampleFlightFacade {
     private TumExampleFlightFacade(FiniteTrajectory4d trajectory4d, ConnectedNode connectedNode) {
         final ParrotServiceFactory parrotServiceFactory = TumSimServiceFactory.create(connectedNode);
         final StateEstimator stateEstimator = getStateEstimator(connectedNode);
-        exampleFlight = ExampleFlight.create(parrotServiceFactory, stateEstimator, trajectory4d, connectedNode);
+        exampleFlight = ExampleFlight.builder()
+                .withConnectedNode(connectedNode)
+                .withFiniteTrajectory4d(trajectory4d)
+                .withFlyingStateService(parrotServiceFactory.createFlyingStateService())
+                .withLandService(parrotServiceFactory.createLandService())
+                .withStateEstimator(stateEstimator)
+                .withTakeOffService(parrotServiceFactory.createTakeOffService())
+                .withVelocityService(parrotServiceFactory.createVelocity4dService())
+                .build();
     }
 
     public static TumExampleFlightFacade create(FiniteTrajectory4d trajectory4d, ConnectedNode connectedNode) {

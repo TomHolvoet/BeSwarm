@@ -53,8 +53,19 @@ public class BebopKristofComplexExample extends AbstractNodeMain {
 
         final FiniteTrajectory4d trajectory4d = TrajectoriesForTesting.getSlowIndoorPendulum();
 
-        final ExampleFlight exampleFlight = ExampleFlight.create(parrotServiceFactory, stateEstimator, trajectory4d,
-                connectedNode, pidLinearX, pidLinearY, pidLinearZ, pidAngularZ);
+        final ExampleFlight exampleFlight = ExampleFlight.builder()
+                .withConnectedNode(connectedNode)
+                .withFiniteTrajectory4d(trajectory4d)
+                .withFlyingStateService(parrotServiceFactory.createFlyingStateService())
+                .withLandService(parrotServiceFactory.createLandService())
+                .withPidLinearX(pidLinearX)
+                .withPidLinearY(pidLinearY)
+                .withPidLinearZ(pidLinearZ)
+                .withPidAngularZ(pidAngularZ)
+                .withStateEstimator(stateEstimator)
+                .withTakeOffService(parrotServiceFactory.createTakeOffService())
+                .withVelocityService(parrotServiceFactory.createVelocity4dService())
+                .build();
 
         // without this code, the take off message cannot be sent properly (I don't understand why).
         try {

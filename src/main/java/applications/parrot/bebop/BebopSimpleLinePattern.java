@@ -42,8 +42,15 @@ public class BebopSimpleLinePattern extends AbstractNodeMain {
                 .withTrajectory(LineTrajectory.create(flightDuration, 2.0))
                 .forTime(flightDuration)
                 .build();
-        final ExampleFlight exampleFlight = ExampleFlight.create(parrotServiceFactory, stateEstimator, choreography,
-                connectedNode);
+        final ExampleFlight exampleFlight = ExampleFlight.builder()
+                .withConnectedNode(connectedNode)
+                .withFiniteTrajectory4d(choreography)
+                .withFlyingStateService(parrotServiceFactory.createFlyingStateService())
+                .withLandService(parrotServiceFactory.createLandService())
+                .withStateEstimator(stateEstimator)
+                .withTakeOffService(parrotServiceFactory.createTakeOffService())
+                .withVelocityService(parrotServiceFactory.createVelocity4dService())
+                .build();
 
         // without this code, the take off message cannot be sent properly (I
         // don't understand why).
