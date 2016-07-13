@@ -35,7 +35,7 @@ final class CratesVelocity2dService implements Velocity2dService {
         velocityHeightRequest.setDy(inertialFrameVelocityY);
         velocityHeightRequest.setZ(linearPositionZ);
         velocityHeightRequest.setYaw(angularPositionZ);
-        logger.debug("Sending 2d velocity: [velX = {}, velY = {}, posZ = {}, posYaw = {}]", inertialFrameVelocityX,
+        logger.trace("Sending 2d velocity: [velX = {}, velY = {}, posZ = {}, posYaw = {}]", inertialFrameVelocityX,
                 inertialFrameVelocityY, linearPositionZ, angularPositionZ);
         CratesUtilities.sendRequest(srvVelocity, velocityHeightRequest);
     }

@@ -26,13 +26,13 @@ abstract class QuaternionAngle {
 
     @AutoValue.Builder
     public abstract static class Builder {
-        abstract Builder w(double value);
+        abstract Builder setW(double value);
 
-        abstract Builder x(double value);
+        abstract Builder setX(double value);
 
-        abstract Builder y(double value);
+        abstract Builder setY(double value);
 
-        abstract Builder z(double value);
+        abstract Builder setZ(double value);
 
         abstract QuaternionAngle build();
     }

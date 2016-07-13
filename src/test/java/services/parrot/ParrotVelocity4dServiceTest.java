@@ -114,10 +114,10 @@ public class ParrotVelocity4dServiceTest {
         final double angularZ = argumentCaptor.getValue();
 
         final BodyFrameVelocity sentBodyFrameVelocity = Velocity.builder()
-                .linearX(linearX)
-                .linearY(linearY)
-                .linearZ(linearZ)
-                .angularZ(angularZ)
+                .setLinearX(linearX)
+                .setLinearY(linearY)
+                .setLinearZ(linearZ)
+                .setAngularZ(angularZ)
                 .build();
         TestUtils.assertVelocityEqual(bodyFrameVelocity, sentBodyFrameVelocity);
     }

@@ -80,10 +80,10 @@ final class ParrotVelocity4dService implements Velocity4dService {
 
     private BodyFrameVelocity getRefinedVelocity(BodyFrameVelocity velocity) {
         return Velocity.builder()
-                .linearX(getRefinedLinearX(velocity.linearX()))
-                .linearY(getRefinedLinearY(velocity.linearY()))
-                .linearZ(getRefinedLinearZ(velocity.linearZ()))
-                .angularZ(getRefinedAngularZ(velocity.angularZ()))
+                .setLinearX(getRefinedLinearX(velocity.linearX()))
+                .setLinearY(getRefinedLinearY(velocity.linearY()))
+                .setLinearZ(getRefinedLinearZ(velocity.linearZ()))
+                .setAngularZ(getRefinedAngularZ(velocity.angularZ()))
                 .build();
     }
 

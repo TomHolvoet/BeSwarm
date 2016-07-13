@@ -82,7 +82,7 @@ public class BebopKristofComplexExample extends AbstractNodeMain {
         final double pidLinearXKp = connectedNode.getParameterTree().getDouble(argKp);
         final double pidLinearXKd = connectedNode.getParameterTree().getDouble(argKd);
         final double pidLinearXKi = connectedNode.getParameterTree().getDouble(argKi);
-        return PidParameters.builder().kp(pidLinearXKp).kd(pidLinearXKd).ki(pidLinearXKi).build();
+        return PidParameters.builder().setKp(pidLinearXKp).setKd(pidLinearXKd).setKi(pidLinearXKi).build();
     }
 
     private static MessagesSubscriberService<PoseStamped> getPoseSubscriber(ConnectedNode connectedNode) {

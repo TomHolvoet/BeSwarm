@@ -55,7 +55,12 @@ public final class PidController4d {
         final double angularZ = pidAngularZ.compute(adaptedCurrentYaw, currentVelocity.angularZ(),
                 currentTimeInSeconds);
 
-        return Velocity.builder().linearX(linearX).linearY(linearY).linearZ(linearZ).angularZ(angularZ).build();
+        return Velocity.builder()
+                .setLinearX(linearX)
+                .setLinearY(linearY)
+                .setLinearZ(linearZ)
+                .setAngularZ(angularZ)
+                .build();
     }
 
     /**

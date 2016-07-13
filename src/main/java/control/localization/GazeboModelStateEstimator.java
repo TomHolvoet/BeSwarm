@@ -54,10 +54,10 @@ public class GazeboModelStateEstimator implements StateEstimator {
     private static InertialFrameVelocity getInertialFrameVelocity(ModelStates modelStates, int index, Pose pose) {
         final Twist gazeboTwist = modelStates.getTwist().get(index);
         return Velocity.builder()
-                .linearX(gazeboTwist.getLinear().getX())
-                .linearY(gazeboTwist.getLinear().getY())
-                .linearZ(gazeboTwist.getLinear().getZ())
-                .angularZ(gazeboTwist.getAngular().getZ())
+                .setLinearX(gazeboTwist.getLinear().getX())
+                .setLinearY(gazeboTwist.getLinear().getY())
+                .setLinearZ(gazeboTwist.getLinear().getZ())
+                .setAngularZ(gazeboTwist.getAngular().getZ())
                 .build();
     }
 

@@ -47,7 +47,8 @@ public final class Transformations {
         final double linearX = inertialFrameVelocity.linearX() * cos - inertialFrameVelocity.linearY() * sin;
         final double linearY = inertialFrameVelocity.linearX() * sin + inertialFrameVelocity.linearY() * cos;
 
-        return Velocity.builder().linearX(linearX).linearY(linearY).linearZ(linearZ).angularZ(angularZ).build();
+        return Velocity.builder().setLinearX(linearX).setLinearY(linearY).setLinearZ(linearZ).setAngularZ(angularZ)
+                .build();
     }
 
     public static InertialFrameVelocity bodyFrameVelocityToInertialFrameVelocity(BodyFrameVelocity bodyFrameVelocity,
@@ -65,6 +66,7 @@ public final class Transformations {
         final double linearX = bodyFrameVelocity.linearX() * cos - bodyFrameVelocity.linearY() * sin;
         final double linearY = bodyFrameVelocity.linearX() * sin + bodyFrameVelocity.linearY() * cos;
 
-        return Velocity.builder().linearX(linearX).linearY(linearY).linearZ(linearZ).angularZ(angularZ).build();
+        return Velocity.builder().setLinearX(linearX).setLinearY(linearY).setLinearZ(linearZ).setAngularZ(angularZ)
+                .build();
     }
 }

@@ -32,30 +32,31 @@ public abstract class PidParameters {
      * @return a builder
      */
     public static Builder builder() {
-        return new AutoValue_PidParameters.Builder().lagTimeInSeconds(0)
-                .minVelocity(-Double.MAX_VALUE)
-                .maxVelocity(Double.MAX_VALUE)
-                .minIntegralError(-Double.MAX_VALUE)
-                .maxIntegralError(Double.MAX_VALUE);
+        return new AutoValue_PidParameters.Builder()
+                .setLagTimeInSeconds(0)
+                .setMinVelocity(-Double.MAX_VALUE)
+                .setMaxVelocity(Double.MAX_VALUE)
+                .setMinIntegralError(-Double.MAX_VALUE)
+                .setMaxIntegralError(Double.MAX_VALUE);
     }
 
     @AutoValue.Builder
     public abstract static class Builder {
-        public abstract Builder kp(double value);
+        public abstract Builder setKp(double value);
 
-        public abstract Builder kd(double value);
+        public abstract Builder setKd(double value);
 
-        public abstract Builder ki(double value);
+        public abstract Builder setKi(double value);
 
-        public abstract Builder lagTimeInSeconds(double value);
+        public abstract Builder setLagTimeInSeconds(double value);
 
-        public abstract Builder minVelocity(double value);
+        public abstract Builder setMinVelocity(double value);
 
-        public abstract Builder maxVelocity(double value);
+        public abstract Builder setMaxVelocity(double value);
 
-        public abstract Builder minIntegralError(double value);
+        public abstract Builder setMinIntegralError(double value);
 
-        public abstract Builder maxIntegralError(double value);
+        public abstract Builder setMaxIntegralError(double value);
 
         public abstract PidParameters build();
     }
