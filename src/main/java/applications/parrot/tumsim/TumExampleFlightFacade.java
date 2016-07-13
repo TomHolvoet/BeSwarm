@@ -2,6 +2,7 @@ package applications.parrot.tumsim;
 
 import applications.ExampleFlight;
 import control.FiniteTrajectory4d;
+import control.PidParameters;
 import control.localization.GazeboModelStateEstimator;
 import control.localization.StateEstimator;
 import gazebo_msgs.ModelStates;
@@ -33,6 +34,11 @@ final class TumExampleFlightFacade {
                 .withStateEstimator(stateEstimator)
                 .withTakeOffService(parrotServiceFactory.createTakeOffService())
                 .withVelocityService(parrotServiceFactory.createVelocity4dService())
+                .withPidLinearX(PidParameters.builder().setKp(2).setKd(1).setKi(0).setLagTimeInSeconds(0.2).build())
+                .withPidLinearY(PidParameters.builder().setKp(2).setKd(1).setKi(0).setLagTimeInSeconds(0.2).build())
+                .withPidLinearZ(PidParameters.builder().setKp(2).setKd(1).setKi(0).setLagTimeInSeconds(0.2).build())
+                .withPidAngularZ(
+                        PidParameters.builder().setKp(1.5).setKd(0.75).setKi(0).setLagTimeInSeconds(0.2).build())
                 .build();
     }
 

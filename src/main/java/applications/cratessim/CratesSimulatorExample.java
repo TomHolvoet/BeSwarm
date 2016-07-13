@@ -3,6 +3,7 @@ package applications.cratessim;
 import applications.ExampleFlight;
 import applications.TrajectoriesForTesting;
 import control.FiniteTrajectory4d;
+import control.PidParameters;
 import control.localization.CratesSimStateEstimator;
 import control.localization.StateEstimator;
 import hal_quadrotor.State;
@@ -54,6 +55,11 @@ public final class CratesSimulatorExample extends AbstractNodeMain {
                 .withStateEstimator(stateEstimator)
                 .withTakeOffService(cratesServiceFactory.createTakeOffService())
                 .withVelocityService(cratesServiceFactory.createVelocity2dService())
+                .withPidLinearX(PidParameters.builder().setKp(2).setKd(1).setKi(0).setLagTimeInSeconds(0.2).build())
+                .withPidLinearY(PidParameters.builder().setKp(2).setKd(1).setKi(0).setLagTimeInSeconds(0.2).build())
+                .withPidLinearZ(PidParameters.builder().setKp(2).setKd(1).setKi(0).setLagTimeInSeconds(0.2).build())
+                .withPidAngularZ(
+                        PidParameters.builder().setKp(1.5).setKd(0.75).setKi(0).setLagTimeInSeconds(0.2).build())
                 .build();
         exampleFlight.fly();
     }
