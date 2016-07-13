@@ -1,7 +1,5 @@
 package services.parrot;
 
-import commands.VelocityController;
-import commands.VelocityServiceVisitor;
 import control.dto.BodyFrameVelocity;
 import control.dto.InertialFrameVelocity;
 import control.dto.Pose;
@@ -130,11 +128,6 @@ final class ParrotVelocity4dService implements Velocity4dService {
                 .maxLinearY(Double.MAX_VALUE)
                 .maxLinearZ(Double.MAX_VALUE)
                 .maxAngularZ(Double.MAX_VALUE);
-    }
-
-    @Override
-    public VelocityController accept(VelocityServiceVisitor visitor) {
-        return visitor.visit(this);
     }
 
     /**

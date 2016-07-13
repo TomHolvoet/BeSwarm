@@ -42,12 +42,6 @@ public abstract class AbstractBuilderTest {
     @Before
     public void setUp() {
         velocity4dService = mock(Velocity4dService.class, RETURNS_MOCKS);
-        when(velocity4dService.accept(any(VelocityServiceVisitor.class))).thenAnswer(new Answer<VelocityController>() {
-            @Override
-            public VelocityController answer(InvocationOnMock invocation) throws Throwable {
-                return ((VelocityServiceVisitor) invocation.getArguments()[0]).visit(velocity4dService);
-            }
-        });
         stateEstimator = mock(StateEstimator.class, RETURNS_MOCKS);
         when(stateEstimator.getCurrentState()).thenReturn(Optional.of(mock(DroneStateStamped.class, RETURNS_MOCKS)));
 

@@ -59,7 +59,7 @@ public final class FollowTrajectory implements Command {
                 .withPidAngularZParameters(pidAngularZParameters)
                 .build();
 
-        velocityController = velocityService.accept(controllerVisitor);
+        velocityController = controllerVisitor.createVelocityController(velocityService);
     }
 
     public static Builder builder() {

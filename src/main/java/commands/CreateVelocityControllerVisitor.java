@@ -5,13 +5,14 @@ import control.Trajectory4d;
 import services.Velocity2dService;
 import services.Velocity3dService;
 import services.Velocity4dService;
+import services.VelocityService;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * @author Hoang Tung Dinh
  */
-public class CreateVelocityControllerVisitor implements VelocityServiceVisitor {
+public final class CreateVelocityControllerVisitor {
 
     private final PidParameters pidLinearXParameters;
     private final PidParameters pidLinearYParameters;
@@ -27,10 +28,23 @@ public class CreateVelocityControllerVisitor implements VelocityServiceVisitor {
         trajectory4d = builder.trajectory4d;
     }
 
-    public static Builder builder() {return new Builder();}
+    public static Builder builder() {
+        return new Builder();
+    }
 
-    @Override
-    public VelocityController visit(Velocity2dService velocity2dService) {
+    public VelocityController createVelocityController(VelocityService velocityService) {
+        if (velocityService instanceof Velocity2dService) {
+            return create2dVelocityController((Velocity2dService) velocityService);
+        } else if (velocityService instanceof Velocity3dService) {
+            return create3dVelocityController((Velocity3dService) velocityService);
+        } else if (velocityService instanceof Velocity4dService) {
+            return create4dVelocityController((Velocity4dService) velocityService);
+        } else {
+            throw new IllegalArgumentException("Service type not found." + velocityService);
+        }
+    }
+
+    private VelocityController create2dVelocityController(Velocity2dService velocity2dService) {
         return Velocity2dController.builder()
                 .withTrajectory4d(trajectory4d)
                 .withVelocity2dService(velocity2dService)
@@ -39,8 +53,7 @@ public class CreateVelocityControllerVisitor implements VelocityServiceVisitor {
                 .build();
     }
 
-    @Override
-    public VelocityController visit(Velocity3dService velocity3dService) {
+    private VelocityController create3dVelocityController(Velocity3dService velocity3dService) {
         return Velocity3dController.builder()
                 .withTrajectory4d(trajectory4d)
                 .withVelocity3dService(velocity3dService)
@@ -50,8 +63,7 @@ public class CreateVelocityControllerVisitor implements VelocityServiceVisitor {
                 .build();
     }
 
-    @Override
-    public VelocityController visit(Velocity4dService velocity4dService) {
+    private VelocityController create4dVelocityController(Velocity4dService velocity4dService) {
         return Velocity4dController.builder()
                 .withTrajectory4d(trajectory4d)
                 .withVelocity4dService(velocity4dService)
