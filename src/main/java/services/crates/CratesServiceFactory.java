@@ -8,6 +8,7 @@ import hal_quadrotor.Takeoff;
 import hal_quadrotor.TakeoffRequest;
 import hal_quadrotor.TakeoffResponse;
 import hal_quadrotor.Velocity;
+import hal_quadrotor.VelocityHeight;
 import hal_quadrotor.VelocityHeightRequest;
 import hal_quadrotor.VelocityHeightResponse;
 import hal_quadrotor.VelocityRequest;
@@ -94,10 +95,10 @@ public final class CratesServiceFactory implements CommonServiceFactory {
         try {
             return CratesVelocity2dService.create(
                     connectedNode.<VelocityHeightRequest, VelocityHeightResponse>newServiceClient(
-                            namePrefix + "controller/VelocityHeight", Velocity._TYPE));
+                            namePrefix + "controller/VelocityHeight", VelocityHeight._TYPE));
         } catch (ServiceNotFoundException e) {
             throw new RuntimeException(
-                    String.format("Velocity service not found. Drone: %s. Model: %s", droneName, modelName));
+                    String.format("Velocity height service not found. Drone: %s. Model: %s", droneName, modelName));
         }
     }
 }
