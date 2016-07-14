@@ -5,7 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import services.FlyingStateService;
 import services.LandService;
-import services.ros_subscribers.FlyingState;
+import services.rossubscribers.FlyingState;
 
 import java.util.concurrent.TimeUnit;
 
@@ -27,6 +27,13 @@ public final class Land implements Command {
         this.flyingStateService = flyingStateService;
     }
 
+    /**
+     * Creates a land command.
+     *
+     * @param landService        the land service of the drone
+     * @param flyingStateService the flying state service of the drone
+     * @return a land command
+     */
     public static Land create(LandService landService, FlyingStateService flyingStateService) {
         return new Land(landService, flyingStateService);
     }

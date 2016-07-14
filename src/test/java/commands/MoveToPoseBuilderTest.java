@@ -11,7 +11,7 @@ import static org.mockito.Mockito.verify;
 /**
  * @author Hoang Tung Dinh
  */
-public class MoveToPoseBuilderTest extends AbstractStepBuilderTest {
+public class MoveToPoseBuilderTest extends AbstractBuilderTest {
 
     private Pose goalPose;
 

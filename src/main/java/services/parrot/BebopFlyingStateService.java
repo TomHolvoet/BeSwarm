@@ -6,11 +6,11 @@ import com.google.common.collect.ImmutableMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import services.FlyingStateService;
-import services.ros_subscribers.FlyingState;
-import services.ros_subscribers.MessageObserver;
-import services.ros_subscribers.MessagesSubscriberService;
+import services.rossubscribers.FlyingState;
+import services.rossubscribers.MessageObserver;
+import services.rossubscribers.MessagesSubscriberService;
 
-import javax.annotation.Nullable;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * @author Hoang Tung Dinh
@@ -19,7 +19,7 @@ public final class BebopFlyingStateService implements MessageObserver<Ardrone3Pi
         FlyingStateService {
 
     private static final Logger logger = LoggerFactory.getLogger(BebopFlyingStateService.class);
-    @Nullable private FlyingState currentFlyingState;
+    private final AtomicReference<FlyingState> currentFlyingState = new AtomicReference<>();
     private static final ImmutableMap<Byte, FlyingState> FLYING_STATE_MAP = ImmutableMap.<Byte, FlyingState>builder()
             .put(
             (byte) 0, FlyingState.LANDED)
@@ -48,16 +48,16 @@ public final class BebopFlyingStateService implements MessageObserver<Ardrone3Pi
 
     @Override
     public void onNewMessage(Ardrone3PilotingStateFlyingStateChanged message) {
-        currentFlyingState = FLYING_STATE_MAP.get(message.getState());
-        logger.info("Current flying state: {}", currentFlyingState.getStateName());
+        currentFlyingState.set(FLYING_STATE_MAP.get(message.getState()));
+        logger.info("Current flying state: {}", currentFlyingState.get().getStateName());
     }
 
     @Override
     public Optional<FlyingState> getCurrentFlyingState() {
-        if (currentFlyingState == null) {
+        if (currentFlyingState.get() == null) {
             return Optional.absent();
         } else {
-            return Optional.of(currentFlyingState);
+            return Optional.of(currentFlyingState.get());
         }
     }
 }

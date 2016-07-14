@@ -1,11 +1,9 @@
 package services;
 
-import control.dto.InertialFrameVelocity;
-import control.dto.Pose;
-
 /**
+ * A marker interface for all velocity services
+ *
  * @author Hoang Tung Dinh
  */
 public interface VelocityService {
-    void sendVelocityMessage(InertialFrameVelocity inertialFrameVelocity, Pose pose);
 }

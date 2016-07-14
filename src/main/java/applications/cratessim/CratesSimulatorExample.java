@@ -1,9 +1,9 @@
 package applications.cratessim;
 
 import applications.ExampleFlight;
-import applications.ExampleTrajectory;
-import choreo.Choreography;
+import applications.TrajectoriesForTesting;
 import control.FiniteTrajectory4d;
+import control.PidParameters;
 import control.localization.CratesSimStateEstimator;
 import control.localization.StateEstimator;
 import hal_quadrotor.State;
@@ -16,9 +16,8 @@ import org.ros.node.service.ServiceClient;
 import org.ros.node.service.ServiceResponseListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import services.ServiceFactory;
 import services.crates.CratesServiceFactory;
-import services.ros_subscribers.MessagesSubscriberService;
+import services.rossubscribers.MessagesSubscriberService;
 import sim.Insert;
 import sim.InsertRequest;
 import sim.InsertResponse;
@@ -44,15 +43,24 @@ public final class CratesSimulatorExample extends AbstractNodeMain {
     @Override
     public void onStart(final ConnectedNode connectedNode) {
         addDroneModel(connectedNode);
-        final double defaultTime = 60;
-        final ServiceFactory serviceFactory = CratesServiceFactory.create(DRONE_NAME, MODEL_NAME, connectedNode);
-        final StateEstimator stateEstimator = getStateEstimator(connectedNode);
-        final FiniteTrajectory4d trajectory = Choreography.builder()
-                .withTrajectory(ExampleTrajectory.create())
-                .forTime(defaultTime)
-                .build();
-        final ExampleFlight exampleFlight = ExampleFlight.create(serviceFactory, stateEstimator, trajectory,
+        final CratesServiceFactory cratesServiceFactory = CratesServiceFactory.create(DRONE_NAME, MODEL_NAME,
                 connectedNode);
+        final StateEstimator stateEstimator = getStateEstimator(connectedNode);
+        final FiniteTrajectory4d trajectory = TrajectoriesForTesting.getFastCircle();
+        final ExampleFlight exampleFlight = ExampleFlight.builder()
+                .withConnectedNode(connectedNode)
+                .withFiniteTrajectory4d(trajectory)
+                .withFlyingStateService(cratesServiceFactory.createFlyingStateService())
+                .withLandService(cratesServiceFactory.createLandService())
+                .withStateEstimator(stateEstimator)
+                .withTakeOffService(cratesServiceFactory.createTakeOffService())
+                .withVelocityService(cratesServiceFactory.createVelocity2dService())
+                .withPidLinearX(PidParameters.builder().setKp(2).setKd(1).setKi(0).setLagTimeInSeconds(0.2).build())
+                .withPidLinearY(PidParameters.builder().setKp(2).setKd(1).setKi(0).setLagTimeInSeconds(0.2).build())
+                .withPidLinearZ(PidParameters.builder().setKp(2).setKd(1).setKi(0).setLagTimeInSeconds(0.2).build())
+                .withPidAngularZ(
+                        PidParameters.builder().setKp(1.5).setKd(0.75).setKi(0).setLagTimeInSeconds(0.2).build())
+                .build();
         exampleFlight.fly();
     }
 

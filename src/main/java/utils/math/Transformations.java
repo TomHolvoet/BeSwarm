@@ -30,9 +30,16 @@ public final class Transformations {
         final double eulerY = StrictMath.asin(2 * (q0 * q2 - q3 * q1));
         final double eulerZ = StrictMath.atan2(2 * (q0 * q3 + q1 * q2), 1 - 2 * (q2 * q2 + q3 * q3));
 
-        return EulerAngle.builder().angleX(eulerX).angleY(eulerY).angleZ(eulerZ).build();
+        return EulerAngle.builder().setAngleX(eulerX).setAngleY(eulerY).setAngleZ(eulerZ).build();
     }
 
+    /**
+     * Transforms the velocity in the inertial frame to the velocity in the body frame.
+     *
+     * @param inertialFrameVelocity the velocity in the inertial frame
+     * @param pose                  the pose associated with the velocity in the inertial frame
+     * @return the velocity in the body frame
+     */
     public static BodyFrameVelocity inertialFrameVelocityToBodyFrameVelocity(
             InertialFrameVelocity inertialFrameVelocity, Pose pose) {
         // same linearZ
@@ -47,9 +54,21 @@ public final class Transformations {
         final double linearX = inertialFrameVelocity.linearX() * cos - inertialFrameVelocity.linearY() * sin;
         final double linearY = inertialFrameVelocity.linearX() * sin + inertialFrameVelocity.linearY() * cos;
 
-        return Velocity.builder().linearX(linearX).linearY(linearY).linearZ(linearZ).angularZ(angularZ).build();
+        return Velocity.builder()
+                .setLinearX(linearX)
+                .setLinearY(linearY)
+                .setLinearZ(linearZ)
+                .setAngularZ(angularZ)
+                .build();
     }
 
+    /**
+     * Transforms the velocity in the body frame to the velocity in the inertial frame.
+     *
+     * @param bodyFrameVelocity the velocity in the body frame
+     * @param pose              the pose associated with the velocity
+     * @return the velocity in the inertial frame
+     */
     public static InertialFrameVelocity bodyFrameVelocityToInertialFrameVelocity(BodyFrameVelocity bodyFrameVelocity,
             Pose pose) {
         // same linearZ
@@ -65,6 +84,11 @@ public final class Transformations {
         final double linearX = bodyFrameVelocity.linearX() * cos - bodyFrameVelocity.linearY() * sin;
         final double linearY = bodyFrameVelocity.linearX() * sin + bodyFrameVelocity.linearY() * cos;
 
-        return Velocity.builder().linearX(linearX).linearY(linearY).linearZ(linearZ).angularZ(angularZ).build();
+        return Velocity.builder()
+                .setLinearX(linearX)
+                .setLinearY(linearY)
+                .setLinearZ(linearZ)
+                .setAngularZ(angularZ)
+                .build();
     }
 }

@@ -17,11 +17,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import services.FlyingStateService;
 import services.LandService;
-import services.ServiceFactory;
 import services.TakeOffService;
-import services.VelocityService;
+import services.Velocity4dService;
 import services.parrot.BebopServiceFactory;
-import services.ros_subscribers.MessagesSubscriberService;
+import services.parrot.ParrotServiceFactory;
+import services.rossubscribers.MessagesSubscriberService;
 import taskexecutor.Task;
 import taskexecutor.TaskExecutor;
 import taskexecutor.TaskExecutorService;
@@ -57,11 +57,11 @@ public class BebopHover extends AbstractNodeMain {
 
         logger.info("target location: (x,y,z,yaw) ({},{}, {}, {})", locationX, locationY, locationZ, locationYaw);
 
-        final ServiceFactory serviceFactory = BebopServiceFactory.create(connectedNode, DRONE_NAME);
-        TakeOffService takeoffService = serviceFactory.createTakeOffService();
-        VelocityService velocityService = serviceFactory.createVelocityService();
-        LandService landService = serviceFactory.createLandService();
-        final FlyingStateService flyingStateService = serviceFactory.createFlyingStateService();
+        final ParrotServiceFactory parrotServiceFactory = BebopServiceFactory.create(connectedNode, DRONE_NAME);
+        TakeOffService takeoffService = parrotServiceFactory.createTakeOffService();
+        Velocity4dService velocity4dService = parrotServiceFactory.createVelocity4dService();
+        LandService landService = parrotServiceFactory.createLandService();
+        final FlyingStateService flyingStateService = parrotServiceFactory.createFlyingStateService();
 
         final StateEstimator stateEstimator = BebopStateEstimatorWithPoseStampedAndOdom.create(
                 getPoseSubscriber(connectedNode), getOdometrySubscriber(connectedNode));
@@ -74,14 +74,15 @@ public class BebopHover extends AbstractNodeMain {
 
         Command takeoff = Takeoff.create(takeoffService);
         Command moveToPose = MoveToPose.builder()
-                .withVelocityService(velocityService)
+                .withVelocityService(velocity4dService)
                 .withStateEstimator(stateEstimator)
-                .withGoalPose(Pose.builder().x(locationX).y(locationY).z(locationZ).yaw(locationYaw).build())
+                .withGoalPose(
+                        Pose.builder().setX(locationX).setY(locationY).setZ(locationZ).setYaw(locationYaw).build())
                 .withDurationInSeconds(flightDuration)
                 .withPidLinearXParameters(
-                        PidParameters.builder().kp(pidLinearXKP).ki(pidLinearXKI).kd(pidLinearXKD).build())
+                        PidParameters.builder().setKp(pidLinearXKP).setKi(pidLinearXKI).setKd(pidLinearXKD).build())
                 .withPidLinearYParameters(
-                        PidParameters.builder().kp(pidLinearYKP).ki(pidLinearYKI).kd(pidLinearYKD).build())
+                        PidParameters.builder().setKp(pidLinearYKP).setKi(pidLinearYKI).setKd(pidLinearYKD).build())
                 .build();
         Command land = Land.create(landService, flyingStateService);
 

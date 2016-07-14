@@ -18,6 +18,11 @@ public final class TaskExecutorService implements TaskExecutor {
 
     private TaskExecutorService() {}
 
+    /**
+     * Gets an instace of this class.
+     *
+     * @return a builder instance
+     */
     public static TaskExecutorService create() {
         return new TaskExecutorService();
     }
@@ -25,7 +30,7 @@ public final class TaskExecutorService implements TaskExecutor {
     private void runTask() {
         checkNotNull(task, "Task must not be null when this method is called");
         final ExecutorService executorService = Executors.newSingleThreadExecutor();
-        final Runnable runnable = RunCommands.create(task.getCommands());
+        final Runnable runnable = new RunCommands(task.getCommands());
         future = executorService.submit(runnable);
     }
 
@@ -48,10 +53,6 @@ public final class TaskExecutorService implements TaskExecutor {
 
         private RunCommands(Iterable<Command> commands) {
             this.commands = commands;
-        }
-
-        public static RunCommands create(Iterable<Command> commands) {
-            return new RunCommands(commands);
         }
 
         @Override

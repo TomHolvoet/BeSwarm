@@ -29,6 +29,14 @@ public final class Hover implements Command {
         this.durationInSeconds = durationInSeconds;
     }
 
+    /**
+     * Creates a hover command.
+     *
+     * @param velocityService   the velocity service of the drone
+     * @param stateEstimator    the state estimator of the drone
+     * @param durationInSeconds the duration that the drone will hover
+     * @return a hover command
+     */
     public static Hover create(VelocityService velocityService, StateEstimator stateEstimator,
             double durationInSeconds) {
         checkArgument(durationInSeconds > 0,

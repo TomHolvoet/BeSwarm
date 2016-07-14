@@ -10,6 +10,8 @@ import javax.annotation.Nullable;
 import java.util.concurrent.TimeUnit;
 
 /**
+ * Waits until receiving a valid pose and then executes a {@link Command}
+ *
  * @author Hoang Tung Dinh
  */
 public final class WaitForLocalizationDecorator implements Command {
@@ -27,6 +29,14 @@ public final class WaitForLocalizationDecorator implements Command {
         this.command = command;
     }
 
+    /**
+     * Creates an instance of this class.
+     *
+     * @param stateEstimator the state estimator of the drone
+     * @param command        the command to be decorated
+     * @return a decorated command which will wait until receiving a valid pose from the {@code stateEstimator} and the
+     * execute the {@code command}
+     */
     public static WaitForLocalizationDecorator create(StateEstimator stateEstimator,
             Command command) {return new WaitForLocalizationDecorator(stateEstimator, command);}
 

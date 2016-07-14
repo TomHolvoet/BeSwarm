@@ -13,7 +13,7 @@ import static org.mockito.Mockito.when;
 /**
  * @author Hoang Tung Dinh
  */
-public class PerformChoreographyBuilderTest extends AbstractStepBuilderTest {
+public class PerformChoreographyBuilderTest extends AbstractBuilderTest {
 
     private FiniteTrajectory4d finiteTrajectory4d;
 

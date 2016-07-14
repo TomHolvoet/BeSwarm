@@ -7,11 +7,15 @@ import org.ros.node.AbstractNodeMain;
 import org.ros.node.ConnectedNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import services.ros_subscribers.MessagesSubscriberService;
+import services.rossubscribers.MessagesSubscriberService;
 
+/**
+ * Print the poses published to the {@code /arlocros/pose} topic.
+ */
 public class PrintPose extends AbstractNodeMain {
 
     private static Logger logger = LoggerFactory.getLogger(PrintPose.class);
+    private static final String POSE_TOPIC = "/arlocros/pose";
 
     @Override
     public GraphName getDefaultNodeName() {
@@ -20,7 +24,6 @@ public class PrintPose extends AbstractNodeMain {
 
     @Override
     public void onStart(final ConnectedNode connectedNode) {
-        String POSE_TOPIC = "/arlocros/pose";
         MessagesSubscriberService<PoseStamped> poseSubscriber = MessagesSubscriberService.<PoseStamped>create(
                 connectedNode.<PoseStamped>newSubscriber(POSE_TOPIC, PoseStamped._TYPE));
 
@@ -40,7 +43,7 @@ public class PrintPose extends AbstractNodeMain {
                 Thread.sleep(100);
             }
         } catch (Exception e) {
-            //bla
+            logger.debug("An exception occurred while updating pose.", e);
         }
     }
 

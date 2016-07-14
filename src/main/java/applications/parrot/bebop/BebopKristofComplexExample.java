@@ -1,7 +1,7 @@
 package applications.parrot.bebop;
 
 import applications.ExampleFlight;
-import applications.parrot.tumsim.TumSimulatorCircleExample;
+import applications.TrajectoriesForTesting;
 import applications.trajectory.Trajectories;
 import applications.trajectory.points.Point3D;
 import applications.trajectory.points.Point4D;
@@ -18,9 +18,9 @@ import org.ros.node.AbstractNodeMain;
 import org.ros.node.ConnectedNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import services.ServiceFactory;
 import services.parrot.BebopServiceFactory;
-import services.ros_subscribers.MessagesSubscriberService;
+import services.parrot.ParrotServiceFactory;
+import services.rossubscribers.MessagesSubscriberService;
 
 import java.util.concurrent.TimeUnit;
 
@@ -44,19 +44,28 @@ public class BebopKristofComplexExample extends AbstractNodeMain {
                 "beswarm/pid_linear_y_kd", "beswarm/pid_linear_y_ki");
         final PidParameters pidLinearZ = getPidParameters(connectedNode, "beswarm/pid_linear_z_kp",
                 "beswarm/pid_linear_z_kd", "beswarm/pid_linear_z_ki");
-        final PidParameters pidAngularZ = getPidParameters(connectedNode,
-                "beswarm/pid_angular_z_kp",
+        final PidParameters pidAngularZ = getPidParameters(connectedNode, "beswarm/pid_angular_z_kp",
                 "beswarm/pid_angular_z_kd", "beswarm/pid_angular_z_ki");
 
-        final ServiceFactory serviceFactory = BebopServiceFactory.create(connectedNode, DRONE_NAME);
+        final ParrotServiceFactory parrotServiceFactory = BebopServiceFactory.create(connectedNode, DRONE_NAME);
         final StateEstimator stateEstimator = BebopStateEstimatorWithPoseStampedAndOdom.create(
                 getPoseSubscriber(connectedNode), getOdometrySubscriber(connectedNode));
 
-        final FiniteTrajectory4d trajectory4d = TestedTrajectories.getFastCircle();
+        final FiniteTrajectory4d trajectory4d = TrajectoriesForTesting.getSlowIndoorPendulum();
 
-        final ExampleFlight exampleFlight = ExampleFlight
-                .create(serviceFactory, stateEstimator, trajectory4d,
-                        connectedNode, pidLinearX, pidLinearY, pidLinearZ, pidAngularZ);
+        final ExampleFlight exampleFlight = ExampleFlight.builder()
+                .withConnectedNode(connectedNode)
+                .withFiniteTrajectory4d(trajectory4d)
+                .withFlyingStateService(parrotServiceFactory.createFlyingStateService())
+                .withLandService(parrotServiceFactory.createLandService())
+                .withPidLinearX(pidLinearX)
+                .withPidLinearY(pidLinearY)
+                .withPidLinearZ(pidLinearZ)
+                .withPidAngularZ(pidAngularZ)
+                .withStateEstimator(stateEstimator)
+                .withTakeOffService(parrotServiceFactory.createTakeOffService())
+                .withVelocityService(parrotServiceFactory.createVelocity4dService())
+                .build();
 
         // without this code, the take off message cannot be sent properly (I don't understand why).
         try {
@@ -68,34 +77,28 @@ public class BebopKristofComplexExample extends AbstractNodeMain {
         exampleFlight.fly();
     }
 
-    private static PidParameters getPidParameters(ConnectedNode connectedNode, String argKp,
-            String argKd,
+    private static PidParameters getPidParameters(ConnectedNode connectedNode, String argKp, String argKd,
             String argKi) {
         final double pidLinearXKp = connectedNode.getParameterTree().getDouble(argKp);
         final double pidLinearXKd = connectedNode.getParameterTree().getDouble(argKd);
         final double pidLinearXKi = connectedNode.getParameterTree().getDouble(argKi);
-        return PidParameters.builder().kp(pidLinearXKp).kd(pidLinearXKd).ki(pidLinearXKi).build();
+        return PidParameters.builder().setKp(pidLinearXKp).setKd(pidLinearXKd).setKi(pidLinearXKi).build();
     }
 
-    private static MessagesSubscriberService<PoseStamped> getPoseSubscriber(
-            ConnectedNode connectedNode) {
+    private static MessagesSubscriberService<PoseStamped> getPoseSubscriber(ConnectedNode connectedNode) {
         final String poseTopic = "/arlocros/pose";
         logger.info("Subscribed to {} for getting pose.", poseTopic);
-        return MessagesSubscriberService
-                .create(connectedNode.<PoseStamped>newSubscriber(poseTopic, PoseStamped._TYPE));
+        return MessagesSubscriberService.create(connectedNode.<PoseStamped>newSubscriber(poseTopic, PoseStamped._TYPE));
     }
 
-    private static MessagesSubscriberService<Odometry> getOdometrySubscriber(
-            ConnectedNode connectedNode) {
+    private static MessagesSubscriberService<Odometry> getOdometrySubscriber(ConnectedNode connectedNode) {
         final String odometryTopic = "/" + DRONE_NAME + "/odom";
         logger.info("Subscribed to {} for getting odometry", odometryTopic);
-        return MessagesSubscriberService
-                .create(connectedNode.<Odometry>newSubscriber(odometryTopic, Odometry._TYPE));
+        return MessagesSubscriberService.create(connectedNode.<Odometry>newSubscriber(odometryTopic, Odometry._TYPE));
     }
 
     private static FiniteTrajectory4d getFiniteTrajectory(ConnectedNode connectedNode) {
-        final String trajectoryName = connectedNode.getParameterTree()
-                .getString("beswarm/trajectory");
+        final String trajectoryName = connectedNode.getParameterTree().getString("beswarm/trajectory");
         if ("straight_line".equals(trajectoryName)) {
             return getStraightLineTrajectory();
         } else {
@@ -105,18 +108,13 @@ public class BebopKristofComplexExample extends AbstractNodeMain {
 
     private static FiniteTrajectory4d getComplexTrajectory() {
         Trajectory4d init = Trajectories.newHoldPositionTrajectory(Point4D.create(0, 0, 1, 0));
-        FiniteTrajectory4d first = Trajectories
-                .newStraightLineTrajectory(Point4D.create(0, 0, 1, 0),
-                        Point4D.create(1.5, -3.0, 1.5, 0), 0.1);
-        Trajectory4d inter = Trajectories
-                .newHoldPositionTrajectory(Point4D.create(1.5, -3.0, 1.5, 0));
-        Trajectory4d second = Trajectories
-                .newCircleTrajectory4D(Point3D.create(1.0, -3.0, 1.5), 0.5, 0.05,
-                        Math.PI / 8);
-        Trajectory4d third = Trajectories
-                .newHoldPositionTrajectory(Point4D.create(1.5, -3.5, 1.5, 0));
-        Trajectory4d fourth = Trajectories
-                .newHoldPositionTrajectory(Point4D.create(1.5, -3.5, 1.0, 0));
+        FiniteTrajectory4d first = Trajectories.newStraightLineTrajectory(Point4D.create(0, 0, 1, 0),
+                Point4D.create(1.5, -3.0, 1.5, 0), 0.1);
+        Trajectory4d inter = Trajectories.newHoldPositionTrajectory(Point4D.create(1.5, -3.0, 1.5, 0));
+        Trajectory4d second = Trajectories.newCircleTrajectory4D(Point3D.create(1.0, -3.0, 1.5), 0.5, 0.05,
+                Math.PI / 8);
+        Trajectory4d third = Trajectories.newHoldPositionTrajectory(Point4D.create(1.5, -3.5, 1.5, 0));
+        Trajectory4d fourth = Trajectories.newHoldPositionTrajectory(Point4D.create(1.5, -3.5, 1.0, 0));
         return Choreography.builder()
                 .withTrajectory(init)
                 .forTime(4)

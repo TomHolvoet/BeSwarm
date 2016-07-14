@@ -13,7 +13,7 @@ import static com.google.common.base.Preconditions.checkArgument;
  *
  * @author Hoang Tung Dinh
  */
-public final class ParrotLandService implements LandService {
+final class ParrotLandService implements LandService {
 
     private static final Logger logger = LoggerFactory.getLogger(ParrotLandService.class);
 

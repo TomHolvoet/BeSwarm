@@ -11,7 +11,7 @@ import static org.mockito.Mockito.verify;
 /**
  * @author Hoang Tung Dinh
  */
-public class FollowTrajectoryBuilderTest extends AbstractStepBuilderTest {
+public class FollowTrajectoryBuilderTest extends AbstractBuilderTest {
 
     private Trajectory4d trajectory4d;
 

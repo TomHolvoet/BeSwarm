@@ -20,19 +20,27 @@ abstract class QuaternionAngle {
 
     abstract double z();
 
+    /**
+     * Gets a builder of this class.
+     *
+     * @return a builder instance
+     */
     public static Builder builder() {
         return new AutoValue_QuaternionAngle.Builder();
     }
 
+    /**
+     * Builds a {@link QuaternionAngle} instance.
+     */
     @AutoValue.Builder
     public abstract static class Builder {
-        abstract Builder w(double value);
+        abstract Builder setW(double value);
 
-        abstract Builder x(double value);
+        abstract Builder setX(double value);
 
-        abstract Builder y(double value);
+        abstract Builder setY(double value);
 
-        abstract Builder z(double value);
+        abstract Builder setZ(double value);
 
         abstract QuaternionAngle build();
     }

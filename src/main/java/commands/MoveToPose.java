@@ -17,7 +17,12 @@ public final class MoveToPose implements Command {
         this.followTrajectoryCommand = followTrajectoryCommand;
     }
 
-    public static CommandBuilders.VelocityServiceStep<GoalPoseStep> builder() {
+    /**
+     * Gets a builder of this class.
+     *
+     * @return a builder instance
+     */
+    public static Builder builder() {
         return new Builder();
     }
 
@@ -26,16 +31,10 @@ public final class MoveToPose implements Command {
         followTrajectoryCommand.execute();
     }
 
-    public interface GoalPoseStep {
-        DurationInSecondsStep withGoalPose(Pose val);
-    }
-
-    public interface DurationInSecondsStep {
-        CommandBuilders.BuildStep<MoveToPose> withDurationInSeconds(double val);
-    }
-
-    public static final class Builder extends CommandBuilders.AbstractFollowTrajectoryBuilder<GoalPoseStep,
-            MoveToPose> implements GoalPoseStep, DurationInSecondsStep {
+    /**
+     * Builder for this class.
+     */
+    public static final class Builder extends AbstractFollowTrajectoryBuilder<Builder> {
         private Pose goalPose;
         private double durationInSeconds;
 
@@ -44,23 +43,37 @@ public final class MoveToPose implements Command {
         }
 
         @Override
-        GoalPoseStep nextInterfaceInBuilderChain() {
+        Builder self() {
             return this;
         }
 
-        @Override
-        public DurationInSecondsStep withGoalPose(Pose val) {
+        /**
+         * Sets the goal pose needed to be reached.
+         *
+         * @param val the value to set
+         * @return a reference to this Builder
+         */
+        public Builder withGoalPose(Pose val) {
             goalPose = val;
             return this;
         }
 
-        @Override
-        public CommandBuilders.BuildStep<MoveToPose> withDurationInSeconds(double val) {
+        /**
+         * Set the duration for executing this command.
+         *
+         * @param val the value to set
+         * @return a reference to this Builder
+         */
+        public Builder withDurationInSeconds(double val) {
             durationInSeconds = val;
             return this;
         }
 
-        @Override
+        /**
+         * Builds a {@link MoveToPose} instance.
+         *
+         * @return a built {@link MoveToPose} instance
+         */
         public MoveToPose build() {
             final InertialFrameVelocity zeroVelocity = Velocity.createZeroVelocity();
             final Trajectory4d trajectory4d = SinglePointTrajectory4d.create(goalPose, zeroVelocity);

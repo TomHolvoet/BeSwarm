@@ -16,7 +16,12 @@ public final class PerformChoreography implements Command {
         this.followTrajectoryCommand = followTrajectoryCommand;
     }
 
-    public static CommandBuilders.VelocityServiceStep<FiniteTrajectory4dStep> builder() {
+    /**
+     * Gets a builder of this class.
+     *
+     * @return a builder instance
+     */
+    public static Builder builder() {
         return new Builder();
     }
 
@@ -26,12 +31,10 @@ public final class PerformChoreography implements Command {
         followTrajectoryCommand.execute();
     }
 
-    public interface FiniteTrajectory4dStep {
-        CommandBuilders.BuildStep<PerformChoreography> withFiniteTrajectory4d(FiniteTrajectory4d val);
-    }
-
-    public static final class Builder extends CommandBuilders.AbstractFollowTrajectoryBuilder<FiniteTrajectory4dStep,
-            PerformChoreography> implements FiniteTrajectory4dStep {
+    /**
+     * Builder for {@link PerformChoreography}.
+     */
+    public static final class Builder extends AbstractFollowTrajectoryBuilder<Builder> {
 
         private FiniteTrajectory4d finiteTrajectory4d;
 
@@ -40,17 +43,26 @@ public final class PerformChoreography implements Command {
         }
 
         @Override
-        FiniteTrajectory4dStep nextInterfaceInBuilderChain() {
+        Builder self() {
             return this;
         }
 
-        @Override
-        public CommandBuilders.BuildStep<PerformChoreography> withFiniteTrajectory4d(FiniteTrajectory4d val) {
+        /**
+         * Sets the finite trajectory.
+         *
+         * @param val the value to set
+         * @return a reference to this builder
+         */
+        public Builder withFiniteTrajectory4d(FiniteTrajectory4d val) {
             finiteTrajectory4d = val;
             return this;
         }
 
-        @Override
+        /**
+         * Builds a {@link PerformChoreography} instance.
+         *
+         * @return a built {@link PerformChoreography} instance
+         */
         public PerformChoreography build() {
             final FollowTrajectory followTrajectory = FollowTrajectory.copyBuilder(this)
                     .withTrajectory4d(finiteTrajectory4d)

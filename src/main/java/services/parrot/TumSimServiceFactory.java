@@ -5,10 +5,9 @@ import geometry_msgs.Twist;
 import org.ros.node.ConnectedNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import services.FlipService;
 import services.FlyingStateService;
-import services.VelocityService;
-import services.ros_subscribers.MessagesSubscriberService;
+import services.Velocity4dService;
+import services.rossubscribers.MessagesSubscriberService;
 
 /**
  * @author Hoang Tung Dinh
@@ -22,14 +21,20 @@ public final class TumSimServiceFactory extends ParrotServiceFactory {
         super(connectedNode, DRONE_NAME);
     }
 
+    /**
+     * Creates a service factory for the Tum simulator.
+     *
+     * @param connectedNode the connected ros node
+     * @return a service factory instance
+     */
     public static TumSimServiceFactory create(ConnectedNode connectedNode) {
         return new TumSimServiceFactory(connectedNode);
     }
 
     @Override
-    public VelocityService createVelocityService() {
+    public Velocity4dService createVelocity4dService() {
         final String topicName = "/cmd_vel";
-        final VelocityService velocityService = ParrotVelocityService.builder()
+        final Velocity4dService velocity4dService = ParrotVelocity4dService.builder()
                 .publisher(getConnectedNode().<Twist>newPublisher(topicName, Twist._TYPE))
                 .minLinearX(-1)
                 .minLinearY(-1)
@@ -41,12 +46,7 @@ public final class TumSimServiceFactory extends ParrotServiceFactory {
                 .maxAngularZ(1)
                 .build();
         logger.info("Velocity service connected to {}", topicName);
-        return velocityService;
-    }
-
-    @Override
-    public FlipService createFlipService() {
-        throw new UnsupportedOperationException("Tum simulator does not support flip service.");
+        return velocity4dService;
     }
 
     @Override

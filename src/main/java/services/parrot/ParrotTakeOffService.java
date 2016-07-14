@@ -11,7 +11,7 @@ import static com.google.common.base.Preconditions.checkArgument;
  *
  * @author Hoang Tung Dinh
  */
-public final class ParrotTakeOffService implements TakeOffService {
+final class ParrotTakeOffService implements TakeOffService {
 
     private final Publisher<Empty> publisher;
 

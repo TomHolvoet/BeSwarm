@@ -1,5 +1,6 @@
 package control;
 
+import applications.trajectory.TrajectoryUtils;
 import control.dto.InertialFrameVelocity;
 import control.dto.Pose;
 import control.dto.Velocity;
@@ -8,9 +9,8 @@ import utils.math.EulerAngle;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * A four-dimensional PID controller for the drone. It is the composition of 4 one-dimensional PID controllers
- * {@link PidController1d} (three controllers for the three linear velocities, one controller for the
- * angular velocity).
+ * A four-dimensional PID controller for the drone. It is the composition of 4 one-dimensional PID controllers {@link
+ * PidController1d} (three controllers for the three linear velocities, one controller for the angular velocity).
  *
  * @author Hoang Tung Dinh
  */
@@ -24,13 +24,18 @@ public final class PidController4d {
 
     private PidController4d(Builder builder) {
 
-        angularTrajectoryZ = builder.getTrajectoryAngularZ();
-        pidLinearX = PidController1d.create(builder.linearXParameters, builder.getLinearTrajectoryX());
-        pidLinearY = PidController1d.create(builder.linearYParameters, builder.getTrajectoryLinearY());
-        pidLinearZ = PidController1d.create(builder.linearZParameters, builder.getTrajectoryLinearZ());
+        angularTrajectoryZ = builder.angularTrajectoryZ;
+        pidLinearX = PidController1d.create(builder.linearXParameters, builder.linearTrajectoryX);
+        pidLinearY = PidController1d.create(builder.linearYParameters, builder.linearTrajectoryY);
+        pidLinearZ = PidController1d.create(builder.linearZParameters, builder.linearTrajectoryZ);
         pidAngularZ = PidController1d.create(builder.angularZParameters, angularTrajectoryZ);
     }
 
+    /**
+     * Gets the builder of this class.
+     *
+     * @return a builder instance
+     */
     public static Builder builder() {
         return new Builder();
     }
@@ -55,7 +60,12 @@ public final class PidController4d {
         final double angularZ = pidAngularZ.compute(adaptedCurrentYaw, currentVelocity.angularZ(),
                 currentTimeInSeconds);
 
-        return Velocity.builder().linearX(linearX).linearY(linearY).linearZ(linearZ).angularZ(angularZ).build();
+        return Velocity.builder()
+                .setLinearX(linearX)
+                .setLinearY(linearY)
+                .setLinearZ(linearZ)
+                .setAngularZ(angularZ)
+                .build();
     }
 
     /**
@@ -73,22 +83,6 @@ public final class PidController4d {
 
         private Builder() {}
 
-        public Trajectory1d getLinearTrajectoryX() {
-            return linearTrajectoryX;
-        }
-
-        public Trajectory1d getTrajectoryLinearY() {
-            return linearTrajectoryY;
-        }
-
-        public Trajectory1d getTrajectoryLinearZ() {
-            return linearTrajectoryZ;
-        }
-
-        public Trajectory1d getTrajectoryAngularZ() {
-            return angularTrajectoryZ;
-        }
-
         /**
          * Sets the {@code trajectory4d} and returns a reference to this Builder so that the methods can be chained
          * together.
@@ -97,65 +91,17 @@ public final class PidController4d {
          * @return a reference to this Builder
          */
         public Builder trajectory4d(final Trajectory4d val) {
-
-            linearTrajectoryX = new Trajectory1d() {
-
-                @Override
-                public double getDesiredVelocity(double timeInSeconds) {
-                    return val.getDesiredVelocityX(timeInSeconds);
-                }
-
-                @Override
-                public double getDesiredPosition(double timeInSeconds) {
-                    return val.getDesiredPositionX(timeInSeconds);
-                }
-            };
-
-            linearTrajectoryY = new Trajectory1d() {
-
-                @Override
-                public double getDesiredVelocity(double timeInSeconds) {
-                    return val.getDesiredVelocityY(timeInSeconds);
-                }
-
-                @Override
-                public double getDesiredPosition(double timeInSeconds) {
-                    return val.getDesiredPositionY(timeInSeconds);
-                }
-            };
-
-            linearTrajectoryZ = new Trajectory1d() {
-
-                @Override
-                public double getDesiredVelocity(double timeInSeconds) {
-                    return val.getDesiredVelocityZ(timeInSeconds);
-                }
-
-                @Override
-                public double getDesiredPosition(double timeInSeconds) {
-                    return val.getDesiredPositionZ(timeInSeconds);
-                }
-            };
-
-            angularTrajectoryZ = new Trajectory1d() {
-
-                @Override
-                public double getDesiredVelocity(double timeInSeconds) {
-                    return val.getDesiredAngularVelocityZ(timeInSeconds);
-                }
-
-                @Override
-                public double getDesiredPosition(double timeInSeconds) {
-                    return val.getDesiredAngleZ(timeInSeconds);
-                }
-            };
+            linearTrajectoryX = TrajectoryUtils.getTrajectoryLinearX(val);
+            linearTrajectoryY = TrajectoryUtils.getTrajectoryLinearY(val);
+            linearTrajectoryZ = TrajectoryUtils.getTrajectoryLinearZ(val);
+            angularTrajectoryZ = TrajectoryUtils.getTrajectoryAngularZ(val);
 
             return this;
         }
 
         /**
-         * Sets the {@code linearXParameters} and returns a reference to this Builder so that the methods can be
-         * chained together.
+         * Sets the {@code linearXParameters} and returns a reference to this Builder so that the methods can be chained
+         * together.
          *
          * @param val the {@code linearXParameters} to set
          * @return a reference to this Builder
@@ -166,8 +112,8 @@ public final class PidController4d {
         }
 
         /**
-         * Sets the {@code linearYParameters} and returns a reference to this Builder so that the methods can be
-         * chained together.
+         * Sets the {@code linearYParameters} and returns a reference to this Builder so that the methods can be chained
+         * together.
          *
          * @param val the {@code linearYParameters} to set
          * @return a reference to this Builder
@@ -178,8 +124,8 @@ public final class PidController4d {
         }
 
         /**
-         * Sets the {@code linearZParameters} and returns a reference to this Builder so that the methods can be
-         * chained together.
+         * Sets the {@code linearZParameters} and returns a reference to this Builder so that the methods can be chained
+         * together.
          *
          * @param val the {@code linearZParameters} to set
          * @return a reference to this Builder

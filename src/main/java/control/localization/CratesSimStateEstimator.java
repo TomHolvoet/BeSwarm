@@ -7,7 +7,7 @@ import control.dto.InertialFrameVelocity;
 import control.dto.Pose;
 import control.dto.Velocity;
 import hal_quadrotor.State;
-import services.ros_subscribers.MessagesSubscriberService;
+import services.rossubscribers.MessagesSubscriberService;
 import utils.math.Transformations;
 
 /**
@@ -21,6 +21,12 @@ public final class CratesSimStateEstimator implements StateEstimator {
         this.stateSubscriber = stateSubscriber;
     }
 
+    /**
+     * Creates a new state estimator for a drone in the Crates simulator.
+     *
+     * @param stateSubscriber the state subscriber
+     * @return a state estimator
+     */
     public static CratesSimStateEstimator create(MessagesSubscriberService<State> stateSubscriber) {
         return new CratesSimStateEstimator(stateSubscriber);
     }
@@ -35,13 +41,18 @@ public final class CratesSimStateEstimator implements StateEstimator {
 
         final State state = stateOptional.get();
 
-        final Pose pose = Pose.builder().x(state.getX()).y(state.getY()).z(state.getZ()).yaw(state.getYaw()).build();
+        final Pose pose = Pose.builder()
+                .setX(state.getX())
+                .setY(state.getY())
+                .setZ(state.getZ())
+                .setYaw(state.getYaw())
+                .build();
 
         final BodyFrameVelocity bodyFrameVelocity = Velocity.builder()
-                .linearX(state.getU())
-                .linearY(state.getV())
-                .linearZ(state.getW())
-                .angularZ(state.getR())
+                .setLinearX(state.getU())
+                .setLinearY(state.getV())
+                .setLinearZ(state.getW())
+                .setAngularZ(state.getR())
                 .build();
 
         final InertialFrameVelocity inertialFrameVelocity = Transformations.bodyFrameVelocityToInertialFrameVelocity(

@@ -9,7 +9,7 @@ import gazebo_msgs.ModelStates;
 import geometry_msgs.Point;
 import geometry_msgs.Quaternion;
 import geometry_msgs.Twist;
-import services.ros_subscribers.MessagesSubscriberService;
+import services.rossubscribers.MessagesSubscriberService;
 import utils.math.Transformations;
 
 /**
@@ -26,6 +26,14 @@ public class GazeboModelStateEstimator implements StateEstimator {
         this.modelName = modelName;
     }
 
+    /**
+     * Creates a state estimator that use the ModelStates topics in Gazebo to get the current state of the drone.
+     *
+     * @param modelStateSubscriber the rostopic subscriber to a topic publishing model state messages
+     * @param modelName            the name of the drone model. A model state topic in Gazebo contains the states of all
+     *                             models in the simulation environment, while the drone is one of those models.
+     * @return a state estimator instance
+     */
     public static GazeboModelStateEstimator create(MessagesSubscriberService<ModelStates> modelStateSubscriber,
             String modelName) {
         return new GazeboModelStateEstimator(modelStateSubscriber, modelName);
@@ -54,10 +62,10 @@ public class GazeboModelStateEstimator implements StateEstimator {
     private static InertialFrameVelocity getInertialFrameVelocity(ModelStates modelStates, int index, Pose pose) {
         final Twist gazeboTwist = modelStates.getTwist().get(index);
         return Velocity.builder()
-                .linearX(gazeboTwist.getLinear().getX())
-                .linearY(gazeboTwist.getLinear().getY())
-                .linearZ(gazeboTwist.getLinear().getZ())
-                .angularZ(gazeboTwist.getAngular().getZ())
+                .setLinearX(gazeboTwist.getLinear().getX())
+                .setLinearY(gazeboTwist.getLinear().getY())
+                .setLinearZ(gazeboTwist.getLinear().getZ())
+                .setAngularZ(gazeboTwist.getAngular().getZ())
                 .build();
     }
 
@@ -71,10 +79,10 @@ public class GazeboModelStateEstimator implements StateEstimator {
         final Quaternion currentOrientation = gazeboPose.getOrientation();
         final double currentYaw = Transformations.quaternionToEulerAngle(currentOrientation).angleZ();
         return Pose.builder()
-                .x(currentPoint.getX())
-                .y(currentPoint.getY())
-                .z(currentPoint.getZ())
-                .yaw(currentYaw)
+                .setX(currentPoint.getX())
+                .setY(currentPoint.getY())
+                .setZ(currentPoint.getZ())
+                .setYaw(currentYaw)
                 .build();
     }
 }
