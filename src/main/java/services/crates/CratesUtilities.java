@@ -12,14 +12,15 @@ import java.util.concurrent.TimeUnit;
 /**
  * @author Hoang Tung Dinh
  */
-final class CratesUtilities {
+public final class CratesUtilities {
 
     private static final Logger logger = LoggerFactory.getLogger(CratesUtilities.class);
     private static final long ROS_SERVICE_WAITING_TIME_IN_MILLISECONDS = 200;
 
     private CratesUtilities() {}
 
-    static <T extends Message, U extends Message> void sendRequest(ServiceClient<T, U> serviceClient, T request) {
+    public static <T extends Message, U extends Message> void sendRequest(ServiceClient<T, U> serviceClient, T
+            request) {
         final CountDownLatch countDownLatch = new CountDownLatch(1);
         final ServiceResponseListener<U> serviceResponseListener = CratesServiceResponseListener.create(
                 countDownLatch);

@@ -54,7 +54,6 @@ public final class Hover implements Command {
         }
 
         final Pose currentPose = currentState.get().pose();
-        // TODO do we need customized pid params here?
         final Command moveToPose = MoveToPose.builder()
                 .withVelocityService(velocityService)
                 .withStateEstimator(stateEstimator)

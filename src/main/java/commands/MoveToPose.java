@@ -1,5 +1,7 @@
 package commands;
 
+import applications.trajectory.Trajectories;
+import applications.trajectory.points.Point4D;
 import control.Trajectory4d;
 import control.dto.InertialFrameVelocity;
 import control.dto.Pose;
@@ -76,7 +78,7 @@ public final class MoveToPose implements Command {
          */
         public MoveToPose build() {
             final InertialFrameVelocity zeroVelocity = Velocity.createZeroVelocity();
-            final Trajectory4d trajectory4d = SinglePointTrajectory4d.create(goalPose, zeroVelocity);
+            final Trajectory4d trajectory4d = Trajectories.newHoldPositionTrajectory(Point4D.from(goalPose));
             final FollowTrajectory followTrajectory = FollowTrajectory.copyBuilder(this)
                     .withTrajectory4d(trajectory4d)
                     .withDurationInSeconds(durationInSeconds)

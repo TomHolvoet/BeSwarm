@@ -1,6 +1,7 @@
 package applications.trajectory.points;
 
 import com.google.auto.value.AutoValue;
+import control.dto.Pose;
 
 /**
  * Point class for grouping a point in 4d space with angular orientation.
@@ -23,6 +24,14 @@ public abstract class Point4D {
      */
     public static Point4D from(Point3D arg, double angle) {
         return new AutoValue_Point4D(arg.getX(), arg.getY(), arg.getZ(), 0);
+    }
+
+    /**
+     * @param pose the pose to use to create the point 4D
+     * @return a 4D point created from a pose
+     */
+    public static Point4D from(Pose pose) {
+        return new AutoValue_Point4D(pose.x(), pose.y(), pose.z(), pose.yaw());
     }
 
     /**

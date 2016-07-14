@@ -2,33 +2,40 @@ package applications;
 
 import control.Trajectory1d;
 import control.Trajectory4d;
-
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author mhct
  */
 public final class LineTrajectory implements Trajectory4d {
 
+    private static final Logger logger = LoggerFactory.getLogger(LineTrajectory.class);
+
     private final Trajectory1d trajectoryLinearX;
     private final Trajectory1d trajectoryLinearY;
     private final Trajectory1d trajectoryLinearZ;
 
-    private final Trajectory1d trajectoryAngularZ = new TrajectoryAngularZ();
+    private final Trajectory1d trajectoryAngularZ = new ZeroTrajectory();
 
     private double startTime = -1;
 
     private LineTrajectory(double flightDuration, double length) {
-        this.trajectoryLinearX = new TrajectoryLinearX();
+        this.trajectoryLinearX = new ZeroTrajectory();
         this.trajectoryLinearY = new TrajectoryLinearY(flightDuration, length);
-        this.trajectoryLinearZ = new TrajectoryLinearZ();
+        this.trajectoryLinearZ = new ZeroTrajectory();
     }
 
+    /**
+     * Creates a line trajectory.
+     *
+     * @param flightDuration the duration of the trajectory
+     * @param length         the length of the trajectory
+     * @return a line trajectory instance
+     */
     public static LineTrajectory create(double flightDuration, double length) {
         return new LineTrajectory(flightDuration, length);
     }
-
-    private static final Logger logger = Logger.getLogger("Trajectory");
 
     @Override
     public double getDesiredPositionX(double timeInSeconds) {
@@ -73,7 +80,7 @@ public final class LineTrajectory implements Trajectory4d {
     private final class TrajectoryLinearY implements Trajectory1d {
 
         private final double flightDuration;
-        private double length;
+        private final double length;
 
         public TrajectoryLinearY(double flightDuration, double length) {
             this.flightDuration = flightDuration;
@@ -112,47 +119,9 @@ public final class LineTrajectory implements Trajectory4d {
         }
     }
 
-    private final class TrajectoryLinearX implements Trajectory1d {
+    private final class ZeroTrajectory implements Trajectory1d {
 
-        private TrajectoryLinearX() {}
-
-        @Override
-        public double getDesiredPosition(double timeInSeconds) {
-            return 1.5;
-        }
-
-        @Override
-        public double getDesiredVelocity(double timeInSeconds) {
-            return 0.0;
-        }
-    }
-
-    private final class TrajectoryLinearZ implements Trajectory1d {
-
-        private TrajectoryLinearZ() {}
-
-        @Override
-        public double getDesiredPosition(double timeInSeconds) {
-            if (startTime < 0) {
-                startTime = timeInSeconds;
-            }
-
-            return 1.5;
-        }
-
-        @Override
-        public double getDesiredVelocity(double timeInSeconds) {
-            if (startTime < 0) {
-                startTime = timeInSeconds;
-            }
-
-            return 0.0;
-        }
-    }
-
-    private final class TrajectoryAngularZ implements Trajectory1d {
-
-        private TrajectoryAngularZ() {}
+        private ZeroTrajectory() {}
 
         @Override
         public double getDesiredPosition(double timeInSeconds) {

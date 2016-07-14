@@ -17,6 +17,7 @@ import org.ros.node.service.ServiceResponseListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import services.crates.CratesServiceFactory;
+import services.crates.CratesUtilities;
 import services.rossubscribers.MessagesSubscriberService;
 import sim.Insert;
 import sim.InsertRequest;
@@ -87,30 +88,10 @@ public final class CratesSimulatorExample extends AbstractNodeMain {
             final InsertRequest insertRequest = insertSrv.newMessage();
             insertRequest.setModelName(DRONE_NAME);
             insertRequest.setModelType("model://" + MODEL_NAME);
-            insertSrv.call(insertRequest, InsertServiceResponseListener.create());
+            CratesUtilities.sendRequest(insertSrv, insertRequest);
             warmUp();
         } catch (ServiceNotFoundException e) {
             logger.info("Cannot connect to insert service.", e);
-        }
-    }
-
-    private static final class InsertServiceResponseListener implements ServiceResponseListener<InsertResponse> {
-        private InsertServiceResponseListener() {
-        }
-
-        public static InsertServiceResponseListener create() {
-            return new InsertServiceResponseListener();
-        }
-
-        @Override
-        public void onSuccess(InsertResponse insertResponse) {
-            logger.info("Successfully inserted the drone model!!!");
-            logger.info(insertResponse.getStatusMessage());
-        }
-
-        @Override
-        public void onFailure(RemoteException e) {
-            logger.info("Cannot insert the drone model!!!", e);
         }
     }
 }
