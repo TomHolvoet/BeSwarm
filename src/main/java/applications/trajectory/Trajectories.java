@@ -55,16 +55,17 @@ public final class Trajectories {
     /**
      * @return A builder instance for Circle trajectories for custom build.
      */
-    public static CircleTrajectory4D.Builder CircleTrajectoryBuilder() {
+    public static CircleTrajectory4D.Builder circleTrajectoryBuilder() {
         return CircleTrajectory4D.builder();
     }
 
     /**
-     * @param origin     the linear displacement in space.
-     * @param radius     the radius of the circle.
-     * @param frequency  the frequency in time of completing the circle.
-     * @param planeAngle The angle of the circle trajectory plane with the
-     *                   xy-plane.
+     * @param origin              the linear displacement in space.
+     * @param radius              the radius of the circle.
+     * @param frequency           the frequency in time of completing the circle.
+     * @param planeAngle          The angle of the circle trajectory plane with the
+     *                            xy-plane.
+     * @param fixedYawOrientation the yaw orientation around the z-axis to maintain (in radians).
      * @return a circle trajectory in space with constant yaw as a Trajectory4d object.
      */
     public static Trajectory4d newConstantYawCircleTrajectory4D(Point3D origin, double radius,
@@ -84,7 +85,7 @@ public final class Trajectories {
         return SwingTrajectory4D.builder().build();
     }
 
-    public static SwingTrajectory4D.Builder SwingTrajectoryBuilder() {
+    public static SwingTrajectory4D.Builder swingTrajectoryBuilder() {
         return SwingTrajectory4D.builder();
     }
 

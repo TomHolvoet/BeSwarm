@@ -19,7 +19,7 @@ public final class TestedTrajectories {
      * This trajectory has been tested and worked well.
      */
     public static FiniteTrajectory4d getSlowCircle() {
-        Trajectory4d second = Trajectories.CircleTrajectoryBuilder()
+        Trajectory4d second = Trajectories.circleTrajectoryBuilder()
                 .setLocation(Point3D.create(1, -2, 1.5))
                 .setRadius(0.5)
                 .setFrequency(0.05)
@@ -29,7 +29,7 @@ public final class TestedTrajectories {
     }
 
     public static FiniteTrajectory4d getFastCircle() {
-        Trajectory4d second = Trajectories.CircleTrajectoryBuilder()
+        Trajectory4d second = Trajectories.circleTrajectoryBuilder()
                 .setLocation(Point3D.create(1, -2, 1.5))
                 .setRadius(0.5)
                 .setFrequency(0.2)
@@ -40,7 +40,7 @@ public final class TestedTrajectories {
 
     public static FiniteTrajectory4d getIndoorPendulum() {
         double yawAngle = 0;
-        Trajectory4d target1 = Trajectories.SwingTrajectoryBuilder()
+        Trajectory4d target1 = Trajectories.swingTrajectoryBuilder()
                 .setOrigin(Point4D.create(1.5, -2, 2.5, yawAngle))
                 .setFrequency(0.067)
                 .setRadius(1.5)
