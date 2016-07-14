@@ -3,9 +3,7 @@ package commands;
 import applications.trajectory.Trajectories;
 import applications.trajectory.points.Point4D;
 import control.Trajectory4d;
-import control.dto.InertialFrameVelocity;
 import control.dto.Pose;
-import control.dto.Velocity;
 
 /**
  * Command for moving to a predefined pose. It is a facade which uses {@link FollowTrajectory}.
