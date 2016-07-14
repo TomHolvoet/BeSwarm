@@ -77,7 +77,6 @@ public final class MoveToPose implements Command {
          * @return a built {@link MoveToPose} instance
          */
         public MoveToPose build() {
-            final InertialFrameVelocity zeroVelocity = Velocity.createZeroVelocity();
             final Trajectory4d trajectory4d = Trajectories.newHoldPositionTrajectory(Point4D.from(goalPose));
             final FollowTrajectory followTrajectory = FollowTrajectory.copyBuilder(this)
                     .withTrajectory4d(trajectory4d)
