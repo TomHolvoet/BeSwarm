@@ -75,7 +75,7 @@ public class SwingTrajectory4DTest {
     @Test
     public void testYawAngleFixed() {
         double yawAngle = 0.5;
-        Trajectory4d target1 = Trajectories.SwingTrajectoryBuilder()
+        Trajectory4d target1 = Trajectories.swingTrajectoryBuilder()
                 .setOrigin(Point4D.create(1.5, -2, 2.5, yawAngle))
                 .setFrequency(0.067)
                 .setRadius(1.5)

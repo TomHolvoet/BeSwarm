@@ -16,12 +16,17 @@ public abstract class Point4D {
         return new AutoValue_Point4D(0, 0, 0, 0);
     }
 
+    /**
+     * @param arg   the 3d point to use for information about x,y,z coordinates.
+     * @param angle the concrete angle as a 4th dimension value.
+     * @return A 4D point created from a 3D point and a specified angle.
+     */
     public static Point4D from(Point3D arg, double angle) {
         return new AutoValue_Point4D(arg.getX(), arg.getY(), arg.getZ(), 0);
     }
 
     /**
-     * @param targetPoint The destination of the vector.
+     * @param targetPoint the destination of the vector.
      * @param sourcePoint the source of the vector.
      * @return A point instance representing the difference or distance
      * between the given points.

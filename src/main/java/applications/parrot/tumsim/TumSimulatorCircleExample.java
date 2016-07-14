@@ -31,7 +31,7 @@ public class TumSimulatorCircleExample extends AbstractNodeMain {
 //        Trajectory4d second = Trajectories
 //                .newConstantYawCircleTrajectory4D(Point3D.create(1, -2, 1.5), 0.5, 0.05, 0, 0);
         //Alternatively, the builder api can also be used like this, to create circle trajectory.
-        Trajectory4d second = Trajectories.CircleTrajectoryBuilder()
+        Trajectory4d second = Trajectories.circleTrajectoryBuilder()
                 .setLocation(Point3D.create(1, -2, 1.5))
                 .setRadius(0.5)
                 .setFrequency(0.05)

@@ -188,7 +188,7 @@ public final class Choreography extends BasicTrajectory
         /**
          * @return A fully built choreography instance.
          */
-        public Choreography build();
+        Choreography build();
     }
 
     /**
