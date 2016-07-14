@@ -53,7 +53,7 @@ public final class Trajectories {
     }
 
     /**
-     * @return A builder instance for Circle trajectories for custom build.
+     * @return A builder instance for Circle trajectories for custom builds.
      */
     public static CircleTrajectory4D.Builder circleTrajectoryBuilder() {
         return CircleTrajectory4D.builder();
@@ -85,6 +85,9 @@ public final class Trajectories {
         return SwingTrajectory4D.builder().build();
     }
 
+    /**
+     * @return A builder instance for pendulum swing trajectories for custom builds.
+     */
     public static SwingTrajectory4D.Builder swingTrajectoryBuilder() {
         return SwingTrajectory4D.builder();
     }
