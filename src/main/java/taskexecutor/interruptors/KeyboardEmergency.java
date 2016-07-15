@@ -1,7 +1,7 @@
 package taskexecutor.interruptors;
 
 import keyboard.Key;
-import services.rossubscribers.RosKeyObserver;
+import services.rossubscribers.MessageObserver;
 import taskexecutor.EmergencyNotifier;
 import taskexecutor.Task;
 import taskexecutor.TaskExecutor;
@@ -12,7 +12,7 @@ import java.util.Collection;
 /**
  * @author Hoang Tung Dinh
  */
-public final class KeyboardEmergency implements EmergencyNotifier, RosKeyObserver {
+public final class KeyboardEmergency implements EmergencyNotifier, MessageObserver<Key> {
     private final Task task;
     private final Collection<TaskExecutor> taskExecutors = new ArrayList<>();
 
@@ -42,8 +42,8 @@ public final class KeyboardEmergency implements EmergencyNotifier, RosKeyObserve
     }
 
     @Override
-    public void update(Key key) {
-        if (key.getCode() == Key.KEY_x) {
+    public void onNewMessage(Key message) {
+        if (message.getCode() == Key.KEY_x) {
             for (final TaskExecutor taskExecutor : taskExecutors) {
                 taskExecutor.submitTask(task);
             }

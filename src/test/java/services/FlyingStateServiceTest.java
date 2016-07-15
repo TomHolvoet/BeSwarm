@@ -42,6 +42,8 @@ public abstract class FlyingStateServiceTest<T, U extends Message> {
 
         for (final Map.Entry<T, FlyingState> entry : flyingStateMap.entrySet()) {
             checkUpdateNewState(messageListener, flyingStateService, entry.getKey(), entry.getValue());
+            // this is for the case receiving the same state
+            checkUpdateNewState(messageListener, flyingStateService, entry.getKey(), entry.getValue());
         }
     }
 

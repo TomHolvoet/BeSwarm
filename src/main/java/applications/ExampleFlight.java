@@ -17,7 +17,7 @@ import services.FlyingStateService;
 import services.LandService;
 import services.TakeOffService;
 import services.VelocityService;
-import services.rossubscribers.KeyboardSubscriber;
+import services.rossubscribers.MessagesSubscriberService;
 import taskexecutor.Task;
 import taskexecutor.TaskExecutor;
 import taskexecutor.TaskExecutorService;
@@ -126,10 +126,10 @@ public final class ExampleFlight {
     }
 
     private KeyboardEmergency createKeyboardEmergencyNotifier(Task emergencyTask) {
-        final KeyboardSubscriber keyboardSubscriber = KeyboardSubscriber.createKeyboardSubscriber(
+        final MessagesSubscriberService<Key> keyboardSubscriber = MessagesSubscriberService.create(
                 connectedNode.<Key>newSubscriber("/keyboard/keydown", Key._TYPE));
         final KeyboardEmergency keyboardEmergency = KeyboardEmergency.create(emergencyTask);
-        keyboardSubscriber.registerObserver(keyboardEmergency);
+        keyboardSubscriber.registerMessageObserver(keyboardEmergency);
         return keyboardEmergency;
     }
 
