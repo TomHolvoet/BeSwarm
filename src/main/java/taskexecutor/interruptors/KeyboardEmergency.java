@@ -1,5 +1,6 @@
 package taskexecutor.interruptors;
 
+import com.google.common.annotations.VisibleForTesting;
 import keyboard.Key;
 import services.rossubscribers.MessageObserver;
 import taskexecutor.EmergencyNotifier;
@@ -15,6 +16,11 @@ import java.util.Collection;
 public final class KeyboardEmergency implements EmergencyNotifier, MessageObserver<Key> {
     private final Task task;
     private final Collection<TaskExecutor> taskExecutors = new ArrayList<>();
+
+    /**
+     * The code of the emergency key.
+     */
+    @VisibleForTesting public static final short EMERGENCY_KEY = Key.KEY_x;
 
     private KeyboardEmergency(Task task) {
         this.task = task;
@@ -43,7 +49,7 @@ public final class KeyboardEmergency implements EmergencyNotifier, MessageObserv
 
     @Override
     public void onNewMessage(Key message) {
-        if (message.getCode() == Key.KEY_x) {
+        if (message.getCode() == EMERGENCY_KEY) {
             for (final TaskExecutor taskExecutor : taskExecutors) {
                 taskExecutor.submitTask(task);
             }
