@@ -142,14 +142,14 @@ public final class Trajectories {
      * @param sourcePoint origin point of motion.
      * @param targetPoint destination point of motion.
      * @param velocity    the velocity to move with.
-     * @param brakingMark the percentage of the trajectory to perform at the given velocity.
+     * @param brakeOnsetMark the percentage of the trajectory to perform at the given velocity.
      * @return A new trajectory instance representing a straight line in space between two given
      * points at a given velocity for a specified percentage of the trajectory and an implicit
      * smoothing towards 0 velocity afterwards.
      */
-    public static FiniteTrajectory4d newStraightLineWithSmoothBrakingTrajectory(Point4D before,
-            Point4D after, double speed, double brakingMark) {
-        return new StraightLineTrajectory4D(before, after, speed, brakingMark);
+    public static FiniteTrajectory4d newStraightLineWithSmoothBrakingTrajectory(Point4D sourcePoint,
+            Point4D targetPoint, double velocity, double brakeOnsetMark) {
+        return new StraightLineTrajectory4D(sourcePoint, targetPoint, velocity, brakeOnsetMark);
     }
 
     /**
@@ -160,8 +160,9 @@ public final class Trajectories {
      * @param dropDistance The distance to perform drop over.
      * @return a new straight line trajectory in xy plane with sudden drops in the z dimension.
      */
-    public static Trajectory4d newZDropLineTrajectory(Point4D before, Point4D after, double speed,
+    public static Trajectory4d newZDropLineTrajectory(Point4D sourcePoint, Point4D targetPoint,
+            double velocity,
             double drops, double dropDistance) {
-        return new ZDropLineTrajectory(before, after, speed, drops, dropDistance);
+        return new ZDropLineTrajectory(sourcePoint, targetPoint, velocity, drops, dropDistance);
     }
 }

@@ -14,7 +14,7 @@ public class ZDropLineTrajectory extends BasicTrajectory implements FiniteTrajec
     private final LinearTrajectory1D zComp;
     private final double segmentLength;
 
-    public ZDropLineTrajectory(Point4D before, Point4D after, double speed, double drops,
+    ZDropLineTrajectory(Point4D before, Point4D after, double speed, double drops,
             double dropDistance) {
         checkArgument(before.getZ() == after.getZ(),
                 "Origin and destination should be in the same horizontal plane.");
@@ -84,11 +84,11 @@ public class ZDropLineTrajectory extends BasicTrajectory implements FiniteTrajec
         return getTargetTrajectory().getTrajectoryDuration();
     }
 
-    public StraightLineTrajectory4D getTargetTrajectory() {
+    private StraightLineTrajectory4D getTargetTrajectory() {
         return this.target;
     }
 
-    public LinearTrajectory1D getZcomponent() {
+    private LinearTrajectory1D getZcomponent() {
         return this.zComp;
     }
 }
