@@ -20,7 +20,7 @@ public class ZDropLineTrajectory extends BasicTrajectory implements FiniteTrajec
                 "Origin and destination should be in the same horizontal plane.");
         this.target = new StraightLineTrajectory4D(before, after, speed, 1);
         this.segmentLength = target.getTotalDistance() / drops;
-        this.zComp = new LinearTrajectory1D(-target.getTotalDistance(),
+        this.zComp = new LinearTrajectory1D(after.getZ() - dropDistance,
                 segmentLength);
     }
 
