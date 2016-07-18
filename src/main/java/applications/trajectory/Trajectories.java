@@ -143,4 +143,18 @@ public final class Trajectories {
             Point4D targetPoint, double velocity) {
         return new StraightLineTrajectory4D(sourcePoint, targetPoint, velocity);
     }
+
+    /**
+     * @param sourcePoint origin point of motion.
+     * @param targetPoint destination point of motion.
+     * @param velocity    the velocity to move with.
+     * @param brakingMark the percentage of the trajectory to perform at the given velocity.
+     * @return A new trajectory instance representing a straight line in space between two given
+     * points at a given velocity for a specified percentage of the trajectory and an implicit
+     * smoothing towards 0 velocity afterwards.
+     */
+    public static Trajectory4d newStraightLineWithSmoothBrakingTrajectory(Point4D before,
+            Point4D afterNotOrigin, double speed, double brakingMark) {
+        return new StraightLineTrajectory4D(before, afterNotOrigin, speed, brakingMark);
+    }
 }

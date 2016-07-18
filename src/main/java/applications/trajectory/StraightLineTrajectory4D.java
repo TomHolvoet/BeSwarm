@@ -12,6 +12,12 @@ import static com.google.common.base.Preconditions.checkArgument;
  * Once the destination point has been reached, the trajectory enforces to
  * hold position
  * at the destination point.
+ * The optional parameter velocityCutoffTimePercentage represents the percentage of the
+ * tragjectory ( in time) to perform at the given velocity.
+ * The default value is 1, representing the trajectory will reach its destination with a positive
+ * velocity in the direction of travel.
+ * This will cause overshooting behavior.
+ * Choose a value < 1 to trigger the controller to start braking sooner.
  *
  * @author Kristof Coninx <kristof.coninx AT cs.kuleuven.be>
  */
@@ -25,21 +31,26 @@ class StraightLineTrajectory4D extends BasicTrajectory
     private Trajectory4d currentTraj;
     private final double endTime;
 
-    StraightLineTrajectory4D(Point4D srcpoint, Point4D targetpoint,
-            double velocity) {
+    StraightLineTrajectory4D(Point4D srcpoint, Point4D targetpoint, double velocity) {
+        this(srcpoint, targetpoint, velocity, 1);
+    }
+
+    StraightLineTrajectory4D(Point4D srcpoint, Point4D targetpoint, double velocity,
+            double velocityCutoffTimePercentage) {
         this.srcpoint = srcpoint;
         this.targetpoint = targetpoint;
         this.velocity = velocity;
-        checkArgument(velocity > 0,
-                "The provided velocity should be strictly greater than 0.");
+        checkArgument(velocity > 0, "The provided velocity should be strictly greater than 0.");
         checkArgument(velocity <= BasicTrajectory.MAX_ABSOLUTE_VELOCITY,
                 "The provided velocity should be smaller than BasicTrajectory"
                         + ".MAX_ABSOLUTE_VELOCITY");
+        checkArgument(velocityCutoffTimePercentage < 1 && velocityCutoffTimePercentage > 0,
+                "Velocity cutoff percentage should represent a percantage between 0 and 1.");
         double speed = velocity;
         Point4D diff = Point4D.minus(targetpoint, srcpoint);
-        double totalDistance = StrictMath.sqrt(StrictMath.pow(diff.getX(), 2) +
-                StrictMath.pow(diff.getY(), 2) + StrictMath
-                .pow(diff.getZ(), 2));
+        double totalDistance = StrictMath
+                .sqrt(StrictMath.pow(diff.getX(), 2) + StrictMath.pow(diff.getY(), 2) + StrictMath
+                        .pow(diff.getZ(), 2));
         this.endTime = totalDistance / speed;
         checkArgument(totalDistance > 0, "Distance to travel cannot be zero.");
         Point4D speedComponent = Point4D
@@ -49,7 +60,7 @@ class StraightLineTrajectory4D extends BasicTrajectory
                         diff.getAngle() / endTime);
         this.holdTraj = new HoldPositionTrajectory4D(targetpoint);
         this.moveTraj = new HoldPositionForwarder(srcpoint, speedComponent,
-                endTime);
+                endTime * velocityCutoffTimePercentage);
         this.currentTraj = moveTraj;
     }
 
