@@ -17,8 +17,7 @@ import static com.google.common.base.Preconditions.checkArgument;
  *
  * @author Kristof Coninx <kristof.coninx AT cs.kuleuven.be>
  */
-final class CircleTrajectory4D extends PeriodicTrajectory
-        implements Trajectory4d {
+final class CircleTrajectory4D extends PeriodicTrajectory implements Trajectory4d {
     private final Point3D location;
     private final CircleTrajectory2D xycircle;
     private final double scaleFactor;
@@ -94,12 +93,8 @@ final class CircleTrajectory4D extends PeriodicTrajectory
 
     @Override
     public String toString() {
-        return "CircleTrajectory4D{" +
-                "origin=" + location +
-                " frequency=" + getFrequency() +
-                ", radius=" + getRadius() +
-                ", planeAngle=" + StrictMath.atan(scaleFactor) +
-                '}';
+        return "CircleTrajectory4D{" + "origin=" + location + " frequency=" + getFrequency()
+                + ", radius=" + getRadius() + ", planeAngle=" + StrictMath.atan(scaleFactor) + '}';
     }
 
     /**
