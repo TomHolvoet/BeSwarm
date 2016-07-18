@@ -25,8 +25,8 @@ public abstract class PeriodicTrajectory extends BasicTrajectory {
         this(phase, Point4D.origin(), 1, 1);
     }
 
-    protected PeriodicTrajectory(double phase, Point4D displacement,
-            double radius, double frequency) {
+    protected PeriodicTrajectory(double phase, Point4D displacement, double radius,
+            double frequency) {
         super(displacement);
         this.phaseDisplacement = phase;
         this.radius = radius;
@@ -50,9 +50,6 @@ public abstract class PeriodicTrajectory extends BasicTrajectory {
 
     @Override
     public String toString() {
-        return "PeriodicTrajectory{" +
-                "frequency=" + frequency +
-                ", radius=" + radius +
-                '}';
+        return "PeriodicTrajectory{" + "frequency=" + frequency + ", radius=" + radius + '}';
     }
 }

@@ -10,8 +10,7 @@ import control.Trajectory4d;
  *
  * @author Kristof Coninx <kristof.coninx AT cs.kuleuven.be>
  */
-class LinearTrajectory4D extends BasicTrajectory
-        implements Trajectory4d {
+class LinearTrajectory4D extends BasicTrajectory implements Trajectory4d {
 
     private final Trajectory1d linearX;
     private final Trajectory1d linearY;

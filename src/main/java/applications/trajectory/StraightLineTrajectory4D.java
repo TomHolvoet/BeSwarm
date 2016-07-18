@@ -21,8 +21,7 @@ import static com.google.common.base.Preconditions.checkArgument;
  *
  * @author Kristof Coninx <kristof.coninx AT cs.kuleuven.be>
  */
-class StraightLineTrajectory4D extends BasicTrajectory
-        implements FiniteTrajectory4d {
+class StraightLineTrajectory4D extends BasicTrajectory implements FiniteTrajectory4d {
     private final Point4D srcpoint;
     private final Point4D targetpoint;
     private final double velocity;
@@ -122,11 +121,8 @@ class StraightLineTrajectory4D extends BasicTrajectory
 
     @Override
     public String toString() {
-        return "StraightLineTrajectory4D{" +
-                "velocity=" + velocity +
-                ", src point=" + srcpoint +
-                ", target point=" + targetpoint +
-                '}';
+        return "StraightLineTrajectory4D{" + "velocity=" + velocity + ", src point=" + srcpoint
+                + ", target point=" + targetpoint + '}';
     }
 
     @Override

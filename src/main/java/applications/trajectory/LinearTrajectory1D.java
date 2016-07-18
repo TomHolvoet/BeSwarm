@@ -7,8 +7,7 @@ import control.Trajectory1d;
  *
  * @author Kristof Coninx <kristof.coninx AT cs.kuleuven.be>
  */
-class LinearTrajectory1D extends BasicTrajectory
-        implements Trajectory1d {
+class LinearTrajectory1D extends BasicTrajectory implements Trajectory1d {
     private final double startComp;
     private final double speedComp;
 

@@ -15,8 +15,7 @@ import static com.google.common.base.Preconditions.checkArgument;
  *
  * @author Kristof Coninx <kristof.coninx AT cs.kuleuven.be>
  */
-class PendulumSwingTrajectory1D extends PeriodicTrajectory
-        implements Trajectory1d {
+class PendulumSwingTrajectory1D extends PeriodicTrajectory implements Trajectory1d {
     private static final double MAXRANGE_VELOCITY_PERIODIC_PART = 0.649091;
     private final double freq2pi;
 
@@ -31,8 +30,7 @@ class PendulumSwingTrajectory1D extends PeriodicTrajectory
         this(Point4D.origin(), radius, frequency, 0);
     }
 
-    PendulumSwingTrajectory1D(Point4D origin, double radius, double frequency,
-            double phase) {
+    PendulumSwingTrajectory1D(Point4D origin, double radius, double frequency, double phase) {
         super((HALFPI * 3) + phase, origin, radius, frequency);
         this.freq2pi = frequency * TWOPI;
         checkArgument(Math.abs(radius * frequency) < MAX_ABSOLUTE_VELOCITY / (
@@ -46,18 +44,15 @@ class PendulumSwingTrajectory1D extends PeriodicTrajectory
     @Override
     public double getDesiredPosition(double timeInSeconds) {
         final double currentTime = getRelativeTime(timeInSeconds);
-        return getLinearDisplacement().getX() + getRadius() * StrictMath
-                .cos(TrajectoryUtils
-                        .pendulumAngleFromTime(currentTime, getFrequency())
-                        + getPhaseDisplacement());
+        return getLinearDisplacement().getX() + getRadius() * StrictMath.cos(TrajectoryUtils
+                .pendulumAngleFromTime(currentTime, getFrequency()) + getPhaseDisplacement());
     }
 
     @Override
     public double getDesiredVelocity(double timeInSeconds) {
         final double currentTime = getRelativeTime(timeInSeconds);
         return PISQUARED * getFrequency() * getRadius() * StrictMath
-                .sin(freq2pi * currentTime + getPhaseDisplacement())
-                * StrictMath.sin(HALFPI * StrictMath
-                .cos(freq2pi * currentTime + getPhaseDisplacement()));
+                .sin(freq2pi * currentTime + getPhaseDisplacement()) * StrictMath
+                .sin(HALFPI * StrictMath.cos(freq2pi * currentTime + getPhaseDisplacement()));
     }
 }

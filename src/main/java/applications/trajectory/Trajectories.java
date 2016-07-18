@@ -29,11 +29,10 @@ public final class Trajectories {
      * @return a simple flat circle trajectory in the xy-plane in a
      * Trajectory4D format.
      */
-    public static Trajectory4d newFlatCircleTrajectory4D(Point3D origin,
-            double radius,
+    public static Trajectory4d newFlatCircleTrajectory4D(Point3D origin, double radius,
             double frequency) {
-        return CircleTrajectory4D.builder().setRadius(radius)
-                .setFrequency(frequency).setLocation(origin).build();
+        return CircleTrajectory4D.builder().setRadius(radius).setFrequency(frequency)
+                .setLocation(origin).build();
     }
 
     /**
@@ -44,12 +43,10 @@ public final class Trajectories {
      *                   xy-plane.
      * @return a circle trajectory in space as a Trajectory4d object.
      */
-    public static Trajectory4d newCircleTrajectory4D(Point3D origin,
-            double radius,
+    public static Trajectory4d newCircleTrajectory4D(Point3D origin, double radius,
             double frequency, double planeAngle) {
-        return CircleTrajectory4D.builder().setRadius(radius)
-                .setFrequency(frequency).setPlaneAngle(planeAngle)
-                .setLocation(origin).build();
+        return CircleTrajectory4D.builder().setRadius(radius).setFrequency(frequency)
+                .setPlaneAngle(planeAngle).setLocation(origin).build();
     }
 
     /**
@@ -101,9 +98,8 @@ public final class Trajectories {
      */
     public static Trajectory4d newSimplePendulumSwingTrajectory(Point4D origin,
             double radius, double frequency) {
-        return SwingTrajectory4D.builder().setRadius(radius)
-                .setFrequency(frequency).setOrigin(origin).setXzPlaneAngle(0)
-                .build();
+        return SwingTrajectory4D.builder().setRadius(radius).setFrequency(frequency)
+                .setOrigin(origin).setXzPlaneAngle(0).build();
     }
 
     /**
@@ -116,10 +112,8 @@ public final class Trajectories {
      */
     public static Trajectory4d newPendulumSwingTrajectory(Point4D origin,
             double radius, double frequency, double planeAngle) {
-        return SwingTrajectory4D.builder().setRadius(radius)
-                .setFrequency(frequency).setOrigin(origin)
-                .setXzPlaneAngle(planeAngle)
-                .build();
+        return SwingTrajectory4D.builder().setRadius(radius).setFrequency(frequency)
+                .setOrigin(origin).setXzPlaneAngle(planeAngle).build();
     }
 
     /**
