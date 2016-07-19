@@ -32,8 +32,12 @@ public class ZDropTrajectoryTest {
     }
 
     @Test
-    public void testDropRate() {
-        testParamDropRate();
+    public void testDropRateAfter() {
+        before = Point4D.create(0, 0, 10, 0);
+        after = Point4D.create(10, 0, 10, Math.PI / 2);
+        target = Trajectories.newZDropLineTrajectory(before, after, speed, freq, negDrop);
+        init();
+        testParamDropRate(10, 20, 0);
     }
 
     @Test
@@ -41,16 +45,17 @@ public class ZDropTrajectoryTest {
         before = Point4D.create(0, 0, 10, 0);
         after = Point4D.create(10, 0, 10, Math.PI / 2);
         target = Trajectories.newZDropLineTrajectory(before, after, speed, freq, negDrop);
-        testParamDropRate();
+        init();
+        testParamDropRate(0, 10, freq);
     }
 
-    private void testParamDropRate() {
+    private void testParamDropRate(double start, double duration, double expected) {
         List<Double> zresults = Lists.newArrayList();
-        for (double i = 0; i < 10; i += 0.1d) {
+        for (double i = start; i < duration; i += 0.1d) {
             zresults.add(target.getDesiredPositionZ(i));
         }
         int count = countOccurrence(zresults, after.getZ() - negDrop + bounddelta);
-        assertEquals(freq, count, 0);
+        assertEquals(expected, count, 0);
     }
 
     private void init() {
