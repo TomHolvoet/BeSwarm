@@ -30,7 +30,9 @@ public class TumSimulatorZDropExample extends AbstractNodeMain {
     private FiniteTrajectory4d getConcreteTrajectory() {
         Point4D start = Point4D.create(0, 0, 10, 0);
         Point4D end = Point4D.create(0, 15, 10, 0);
-        Trajectory4d target1 = Trajectories.newZDropLineTrajectory(start, end, 1, 4, 2);
-        return Choreography.builder().withTrajectory(target1).forTime(120).build();
+        FiniteTrajectory4d target1 = Trajectories.newZDropLineTrajectory(start, end, 0.5, 4, 2);
+        Trajectory4d hold1 = Trajectories.newHoldPositionTrajectory(start);
+        return Choreography.builder().withTrajectory(hold1).forTime(30).withTrajectory(target1)
+                .build();
     }
 }
