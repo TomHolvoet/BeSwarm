@@ -126,7 +126,7 @@ public class ZDropLineTrajectory extends BasicTrajectory implements FiniteTrajec
 
     private class ObservingRingForwarder implements Trajectory1d {
 
-        private double endTime;
+        private final double endTime;
         private final Trajectory1d target;
 
         ObservingRingForwarder(Trajectory1d target, double endTime) {
