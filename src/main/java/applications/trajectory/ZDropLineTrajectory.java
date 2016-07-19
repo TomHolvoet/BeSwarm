@@ -24,12 +24,12 @@ public class ZDropLineTrajectory extends BasicTrajectory implements FiniteTrajec
             double dropDistance) {
         checkArgument(before.getZ() == after.getZ(),
                 "Origin and destination should be in the same horizontal plane.");
-        concreteTarget = new StraightLineTrajectory4D(before, after, speed, 1);
+        this.concreteTarget = new StraightLineTrajectory4D(before, after, speed, 1);
         this.segmentLength = concreteTarget.getTotalDistance() / drops;
         this.zComp = new ObservingRingForwarder(new LinearTrajectory1D(after.getZ() - dropDistance,
                 dropDistance / segmentLength * concreteTarget.getVelocity()),
                 concreteTarget.getTrajectoryDuration());
-        atEnd = false;
+        this.atEnd = false;
     }
 
     @Override
@@ -104,7 +104,7 @@ public class ZDropLineTrajectory extends BasicTrajectory implements FiniteTrajec
         return this.zComp;
     }
 
-    public void setHoldPosition(boolean holdPosition) {
+    private void setHoldPosition(boolean holdPosition) {
         boolean previous = atEnd;
         this.atEnd = holdPosition;
         if (previous != atEnd) {
@@ -129,7 +129,7 @@ public class ZDropLineTrajectory extends BasicTrajectory implements FiniteTrajec
         private double endTime;
         private final Trajectory1d target;
 
-        public ObservingRingForwarder(Trajectory1d target, double endTime) {
+        ObservingRingForwarder(Trajectory1d target, double endTime) {
             this.target = target;
             this.endTime = endTime;
         }
