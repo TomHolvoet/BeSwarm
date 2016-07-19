@@ -18,6 +18,7 @@ public class ZDropLineTrajectory extends BasicTrajectory implements FiniteTrajec
     private Trajectory1d zComp;
     private final double segmentLength;
     private boolean atEnd;
+    private double EPS = 0.001;
 
     ZDropLineTrajectory(Point4D before, Point4D after, double speed, double drops,
             double dropDistance) {
@@ -26,7 +27,8 @@ public class ZDropLineTrajectory extends BasicTrajectory implements FiniteTrajec
         concreteTarget = new StraightLineTrajectory4D(before, after, speed, 1);
         this.segmentLength = concreteTarget.getTotalDistance() / drops;
         this.zComp = new ObservingRingForwarder(new LinearTrajectory1D(after.getZ() - dropDistance,
-                dropDistance / segmentLength), concreteTarget.getTrajectoryDuration());
+                dropDistance / segmentLength * concreteTarget.getVelocity()),
+                concreteTarget.getTrajectoryDuration());
         atEnd = false;
     }
 
@@ -113,12 +115,12 @@ public class ZDropLineTrajectory extends BasicTrajectory implements FiniteTrajec
     private class HoldForwarder implements Trajectory1d {
         @Override
         public double getDesiredPosition(double timeInSeconds) {
-            return getTargetTrajectory().getDesiredPositionZ(timeInSeconds);
+            return getTargetTrajectory().getDesiredPositionZ(timeInSeconds - EPS);
         }
 
         @Override
         public double getDesiredVelocity(double timeInSeconds) {
-            return getTargetTrajectory().getDesiredVelocityZ(timeInSeconds);
+            return getTargetTrajectory().getDesiredVelocityZ(timeInSeconds - EPS);
         }
     }
 
@@ -147,13 +149,15 @@ public class ZDropLineTrajectory extends BasicTrajectory implements FiniteTrajec
         @Override
         public double getDesiredPosition(double timeInSeconds) {
             positionDelegate(timeInSeconds);
-            return target.getDesiredPosition(timeInSeconds % segmentLength);
+            return target.getDesiredPosition(
+                    (timeInSeconds - EPS) % (segmentLength / concreteTarget.getVelocity()));
         }
 
         @Override
         public double getDesiredVelocity(double timeInSeconds) {
             positionDelegate(timeInSeconds);
-            return target.getDesiredVelocity(timeInSeconds % segmentLength);
+            return target.getDesiredVelocity(
+                    (timeInSeconds - EPS) % (segmentLength / concreteTarget.getVelocity()));
         }
     }
 }

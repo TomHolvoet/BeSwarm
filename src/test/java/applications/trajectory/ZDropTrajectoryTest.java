@@ -37,7 +37,8 @@ public class ZDropTrajectoryTest {
         after = Point4D.create(10, 0, 10, Math.PI / 2);
         target = Trajectories.newZDropLineTrajectory(before, after, speed, freq, negDrop);
         init();
-        testParamDropRate(10, 20, 0);
+        target.getDesiredPositionZ(10);
+        testParamDropRate(11, 20, 0);
     }
 
     @Test
@@ -47,6 +48,18 @@ public class ZDropTrajectoryTest {
         target = Trajectories.newZDropLineTrajectory(before, after, speed, freq, negDrop);
         init();
         testParamDropRate(0, 10, freq);
+    }
+
+    @Test
+    public void testComplexCase() {
+        before = Point4D.create(0, 0, 10, 0);
+        after = Point4D.create(0, 15, 10, 0);
+        speed = 0.5d;
+        freq = 4;
+        negDrop = 2;
+        target = Trajectories.newZDropLineTrajectory(before, after, speed, freq, negDrop);
+        init();
+        testParamDropRate(0, 60, freq);
     }
 
     private void testParamDropRate(double start, double duration, double expected) {
