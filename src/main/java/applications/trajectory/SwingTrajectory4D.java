@@ -10,8 +10,7 @@ import control.Trajectory4d;
  *
  * @author Kristof Coninx <kristof.coninx AT cs.kuleuven.be>
  */
-class SwingTrajectory4D extends PeriodicTrajectory
-        implements Trajectory4d {
+class SwingTrajectory4D extends PeriodicTrajectory implements Trajectory4d {
     private final Trajectory2d swing;
     private final double yFactor;
     private final double xFactor;
@@ -23,8 +22,8 @@ class SwingTrajectory4D extends PeriodicTrajectory
         super(phase, origin, radius, frequency);
         xFactor = StrictMath.cos(xzPlaneAngle);
         yFactor = StrictMath.sin(xzPlaneAngle);
-        this.swing = PendulumTrajectory2D.builder().setRadius(radius)
-                .setFrequency(frequency).setOrigin(origin).build();
+        this.swing = PendulumTrajectory2D.builder().setRadius(radius).setFrequency(frequency)
+                .setOrigin(origin).build();
         //keep constant yaw: use ConstantVelocityAngularTrajectory1D(0, 0)
         this.angularMotion = new LinearTrajectory1D(origin.getAngle(), 0);
     }
@@ -40,8 +39,7 @@ class SwingTrajectory4D extends PeriodicTrajectory
 
     @Override
     public double getDesiredVelocityX(double timeInSeconds) {
-        return xFactor * swing.getDesiredVelocityAbscissa
-                (timeInSeconds);
+        return xFactor * swing.getDesiredVelocityAbscissa(timeInSeconds);
     }
 
     @Override
@@ -77,12 +75,9 @@ class SwingTrajectory4D extends PeriodicTrajectory
 
     @Override
     public String toString() {
-        return "CircleTrajectory4D{" +
-                "origin=" + getLinearDisplacement() +
-                " frequency=" + getFrequency() +
-                ", radius=" + getRadius() +
-                ", xzPlaneAngle=" + StrictMath.acos(xFactor) +
-                '}';
+        return "CircleTrajectory4D{" + "origin=" + getLinearDisplacement() + " frequency="
+                + getFrequency() + ", radius=" + getRadius() + ", xzPlaneAngle=" + StrictMath
+                .acos(xFactor) + '}';
     }
 
     /**
@@ -124,9 +119,7 @@ class SwingTrajectory4D extends PeriodicTrajectory
          * @return A new trajectory instance that represents a swing motion.
          */
         public SwingTrajectory4D build() {
-            return new SwingTrajectory4D(origin, phase, xzPlaneAngle, radius,
-                    frequency
-            );
+            return new SwingTrajectory4D(origin, phase, xzPlaneAngle, radius, frequency);
         }
     }
 }

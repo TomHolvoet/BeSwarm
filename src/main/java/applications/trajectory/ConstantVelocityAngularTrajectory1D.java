@@ -13,8 +13,7 @@ import static com.google.common.base.Preconditions.checkArgument;
  *
  * @author Kristof Coninx <kristof.coninx AT cs.kuleuven.be>
  */
-class ConstantVelocityAngularTrajectory1D extends PeriodicTrajectory
-        implements Trajectory1d {
+class ConstantVelocityAngularTrajectory1D extends PeriodicTrajectory implements Trajectory1d {
     private static final double TWOPI = Math.PI * 2;
 
     /**
@@ -25,13 +24,11 @@ class ConstantVelocityAngularTrajectory1D extends PeriodicTrajectory
      * @param phase     The phase shift phi.
      */
     @VisibleForTesting
-    ConstantVelocityAngularTrajectory1D(
-            double frequency, double phase) {
+    ConstantVelocityAngularTrajectory1D(double frequency, double phase) {
         this(Math.PI, frequency, phase);
     }
 
-    ConstantVelocityAngularTrajectory1D(double radius, double frequency,
-            double phase) {
+    ConstantVelocityAngularTrajectory1D(double radius, double frequency, double phase) {
         super(phase, Point4D.origin(), radius, frequency);
         checkArgument(Math.abs(frequency * TWOPI) < MAX_ABSOLUTE_VELOCITY,
                 "Absolute speed should not be larger than "

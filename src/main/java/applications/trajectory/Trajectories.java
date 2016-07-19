@@ -29,11 +29,10 @@ public final class Trajectories {
      * @return a simple flat circle trajectory in the xy-plane in a
      * Trajectory4D format.
      */
-    public static Trajectory4d newFlatCircleTrajectory4D(Point3D origin,
-            double radius,
+    public static Trajectory4d newFlatCircleTrajectory4D(Point3D origin, double radius,
             double frequency) {
-        return CircleTrajectory4D.builder().setRadius(radius)
-                .setFrequency(frequency).setLocation(origin).build();
+        return CircleTrajectory4D.builder().setRadius(radius).setFrequency(frequency)
+                .setLocation(origin).build();
     }
 
     /**
@@ -44,12 +43,10 @@ public final class Trajectories {
      *                   xy-plane.
      * @return a circle trajectory in space as a Trajectory4d object.
      */
-    public static Trajectory4d newCircleTrajectory4D(Point3D origin,
-            double radius,
+    public static Trajectory4d newCircleTrajectory4D(Point3D origin, double radius,
             double frequency, double planeAngle) {
-        return CircleTrajectory4D.builder().setRadius(radius)
-                .setFrequency(frequency).setPlaneAngle(planeAngle)
-                .setLocation(origin).build();
+        return CircleTrajectory4D.builder().setRadius(radius).setFrequency(frequency)
+                .setPlaneAngle(planeAngle).setLocation(origin).build();
     }
 
     /**
@@ -99,11 +96,10 @@ public final class Trajectories {
      * @param frequency the frequency in time of completing the motion.
      * @return A new simple pendulum trajectory in the xz plane.
      */
-    public static Trajectory4d newSimplePendulumSwingTrajectory(Point4D origin,
-            double radius, double frequency) {
-        return SwingTrajectory4D.builder().setRadius(radius)
-                .setFrequency(frequency).setOrigin(origin).setXzPlaneAngle(0)
-                .build();
+    public static Trajectory4d newSimplePendulumSwingTrajectory(Point4D origin, double radius,
+            double frequency) {
+        return SwingTrajectory4D.builder().setRadius(radius).setFrequency(frequency)
+                .setOrigin(origin).setXzPlaneAngle(0).build();
     }
 
     /**
@@ -116,10 +112,8 @@ public final class Trajectories {
      */
     public static Trajectory4d newPendulumSwingTrajectory(Point4D origin,
             double radius, double frequency, double planeAngle) {
-        return SwingTrajectory4D.builder().setRadius(radius)
-                .setFrequency(frequency).setOrigin(origin)
-                .setXzPlaneAngle(planeAngle)
-                .build();
+        return SwingTrajectory4D.builder().setRadius(radius).setFrequency(frequency)
+                .setOrigin(origin).setXzPlaneAngle(planeAngle).build();
     }
 
     /**
@@ -142,5 +136,32 @@ public final class Trajectories {
             Point4D sourcePoint,
             Point4D targetPoint, double velocity) {
         return new StraightLineTrajectory4D(sourcePoint, targetPoint, velocity);
+    }
+
+    /**
+     * @param sourcePoint    origin point of motion.
+     * @param targetPoint    destination point of motion.
+     * @param velocity       the velocity to move with.
+     * @param brakeOnsetMark the percentage of the trajectory to perform at the given velocity.
+     * @return A new trajectory instance representing a straight line in space between two given
+     * points at a given velocity for a specified percentage of the trajectory and an implicit
+     * smoothing towards 0 velocity afterwards.
+     */
+    public static FiniteTrajectory4d newStraightLineWithSmoothBrakingTrajectory(Point4D sourcePoint,
+            Point4D targetPoint, double velocity, double brakeOnsetMark) {
+        return new StraightLineTrajectory4D(sourcePoint, targetPoint, velocity, brakeOnsetMark);
+    }
+
+    /**
+     * @param sourcePoint  origin point of motion.
+     * @param targetPoint  destination point of motion.
+     * @param velocity     the velocity to move with.
+     * @param drops        the amount of drops to perform over the length of the trajectory.
+     * @param dropDistance The distance to perform drop over.
+     * @return a new straight line trajectory in xy plane with sudden drops in the z dimension.
+     */
+    public static FiniteTrajectory4d newZDropLineTrajectory(Point4D sourcePoint,
+            Point4D targetPoint, double velocity, double drops, double dropDistance) {
+        return new ZDropLineTrajectory(sourcePoint, targetPoint, velocity, drops, dropDistance);
     }
 }

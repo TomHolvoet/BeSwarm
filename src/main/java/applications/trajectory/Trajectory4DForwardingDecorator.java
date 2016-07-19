@@ -4,7 +4,7 @@ import control.Trajectory4d;
 
 /**
  * Forwarding decorator for trajectory4D instances with
- * inner-trajectory1D hooks.
+ * inner-trajectory4D hooks.
  *
  * @author Kristof Coninx <kristof.coninx AT cs.kuleuven.be>
  */
