@@ -18,7 +18,7 @@ public class ZDropLineTrajectory extends BasicTrajectory implements FiniteTrajec
     private Trajectory1d zComp;
     private final double segmentLength;
     private final boolean atEnd;
-    private static finaldouble EPS = 0.001;
+    private static final double EPS = 0.001;
 
     ZDropLineTrajectory(Point4D before, Point4D after, double speed, double drops,
             double dropDistance) {
