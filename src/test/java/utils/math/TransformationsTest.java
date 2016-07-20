@@ -1,5 +1,6 @@
 package utils.math;
 
+import applications.trajectory.points.Point3D;
 import control.dto.BodyFrameVelocity;
 import control.dto.InertialFrameVelocity;
 import control.dto.Pose;
@@ -60,5 +61,43 @@ public class TransformationsTest {
         TestUtils.assertVelocityEqual(
                 Transformations.inertialFrameVelocityToBodyFrameVelocity(inertialFrameVelocity, pose),
                 bodyFrameVelocity);
+    }
+
+    private static void assertPoint3DEqual(Point3D p0, Point3D p1) {
+        assertThat(p0.getX()).isWithin(DELTA).of(p1.getX());
+        assertThat(p0.getY()).isWithin(DELTA).of(p1.getY());
+        assertThat(p0.getZ()).isWithin(DELTA).of(p1.getZ());
+    }
+
+    @Test
+    public void testTranslate() {
+        final Point3D point3D = Point3D.create(1, 2.5, 3.2);
+        final Point3D translatedPoint = Transformations.translate(point3D, -3.2, -10.3, 20);
+        final Point3D desiredTranslatedPoint = Point3D.create(-2.2, -7.8, 23.2);
+        assertPoint3DEqual(translatedPoint, desiredTranslatedPoint);
+    }
+
+    private Object[] rotationPointValues() {
+        return new Object[]{new Object[]{Point3D.create(1, 0, 0), 0, 0, StrictMath.PI, Point3D.create(-1, 0, 0)},
+                new Object[]{Point3D.create(1, 0, 0), 0, StrictMath.PI / 2, 0, Point3D.create(0, 0, -1)},
+                new Object[]{Point3D.create(0, 0, 1), StrictMath.PI / 2, 0, 0, Point3D.create(0, -1, 0)},
+                new Object[]{Point3D.create(0, 1, 0),
+                        StrictMath.PI / 2,
+                        StrictMath.PI / 2,
+                        StrictMath.PI / 2,
+                        Point3D.create(0, 1, 0)},
+                new Object[]{Point3D.create(1, 1, 0),
+                        StrictMath.PI / 2,
+                        StrictMath.PI / 2,
+                        StrictMath.PI / 2,
+                        Point3D.create(0, 1, -1)}};
+    }
+
+    @Test
+    @Parameters(method = "rotationPointValues")
+    public void testRotate(Point3D initialPoint, double rotationAngleX, double rotationAngleY, double rotationAngleZ,
+            Point3D rotatedPoint) {
+        final Point3D p = Transformations.rotate(initialPoint, rotationAngleX, rotationAngleY, rotationAngleZ);
+        assertPoint3DEqual(p, rotatedPoint);
     }
 }
