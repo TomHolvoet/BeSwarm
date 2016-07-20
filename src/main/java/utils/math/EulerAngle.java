@@ -72,7 +72,7 @@ public abstract class EulerAngle {
         /**
          * Sets the angle of the X rotation.
          *
-         * @param val the value to set
+         * @param value the value to set
          * @return a reference to this Builder
          */
         public abstract Builder setAngleX(double value);
@@ -80,7 +80,7 @@ public abstract class EulerAngle {
         /**
          * Sets the angle of the Y rotation.
          *
-         * @param val the value to set
+         * @param value the value to set
          * @return a reference to this Builder
          */
         public abstract Builder setAngleY(double value);
@@ -88,7 +88,7 @@ public abstract class EulerAngle {
         /**
          * Sets the angle of the Z rotation.
          *
-         * @param val the value to set
+         * @param value the value to set
          * @return a reference to this Builder
          */
         public abstract Builder setAngleZ(double value);

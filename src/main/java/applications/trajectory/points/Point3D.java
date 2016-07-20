@@ -12,9 +12,9 @@ public abstract class Point3D {
     /**
      * Create a new point object
      *
-     * @param x     the x coordinate.
-     * @param y     the Y coordinate.
-     * @param z     the Z coordinate.
+     * @param x the x coordinate.
+     * @param y the Y coordinate.
+     * @param z the Z coordinate.
      * @return A value class representing the given coordinates.
      */
     public static Point3D create(double x, double y, double z) {
@@ -34,6 +34,19 @@ public abstract class Point3D {
      */
     public static Point3D project(Point4D arg) {
         return new AutoValue_Point3D(arg.getX(), arg.getY(), arg.getZ());
+    }
+
+    /**
+     * Gets the euclidean distance between two points.
+     *
+     * @param p0 the first point
+     * @param p1 the second point
+     * @return the euclidean distance between {@code p0} and {@code p1}
+     */
+    public static double distance(Point3D p0, Point3D p1) {
+        return StrictMath.sqrt(
+                (p0.getX() - p1.getX()) * (p0.getX() - p1.getX()) + (p0.getY() - p1.getY()) * (p0.getY() - p1.getY())
+                        + (p0.getZ() - p1.getZ()) * (p0.getZ() - p1.getZ()));
     }
 
     /**
