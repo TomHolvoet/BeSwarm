@@ -3,6 +3,8 @@ package applications.trajectory.points;
 import com.google.auto.value.AutoValue;
 import control.dto.Pose;
 
+import static applications.trajectory.points.Point3D.project;
+
 /**
  * Point class for grouping a point in 4d space with angular orientation.
  *
@@ -45,6 +47,17 @@ public abstract class Point4D {
                 targetPoint.getY() - sourcePoint.getY(),
                 targetPoint.getZ() - sourcePoint.getZ(),
                 targetPoint.getAngle() - sourcePoint.getAngle());
+    }
+
+    /**
+     * Gets the euclidean distance between two points.
+     *
+     * @param p0 the first point
+     * @param p1 the second point
+     * @return the euclidean distance between {@code p0} and {@code p1}
+     */
+    public static double distance(Point4D p0, Point4D p1) {
+        return Point3D.distance(project(p0), project(p1));
     }
 
     /**
