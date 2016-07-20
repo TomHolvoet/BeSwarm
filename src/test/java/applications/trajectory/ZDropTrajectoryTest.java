@@ -2,7 +2,7 @@ package applications.trajectory;
 
 import applications.trajectory.points.Point4D;
 import com.google.common.collect.Lists;
-import control.Trajectory4d;
+import control.FiniteTrajectory4d;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -17,7 +17,7 @@ public class ZDropTrajectoryTest {
 
     private Point4D before;
     private Point4D after;
-    private Trajectory4d target;
+    private FiniteTrajectory4d target;
     private double negDrop = 2;
     private double freq = 3;
     private double speed = 1;
@@ -37,8 +37,17 @@ public class ZDropTrajectoryTest {
         after = Point4D.create(10, 0, 10, Math.PI / 2);
         target = Trajectories.newZDropLineTrajectory(before, after, speed, freq, negDrop);
         init();
+        cycle2(freq);
         target.getDesiredPositionZ(10);
-        testParamDropRate(11, 20, 0);
+        testParamDropRate(target.getTrajectoryDuration() + 1, target.getTrajectoryDuration() + 20,
+                0);
+    }
+
+    private void cycle2(double n) {
+        double t = target.getTrajectoryDuration();
+        for (int i = 1; i <= 2 * n; i++) {
+            target.getDesiredPositionZ(t);
+        }
     }
 
     @Test
@@ -47,7 +56,7 @@ public class ZDropTrajectoryTest {
         after = Point4D.create(10, 0, 10, Math.PI / 2);
         target = Trajectories.newZDropLineTrajectory(before, after, speed, freq, negDrop);
         init();
-        testParamDropRate(0, 10, freq);
+        testParamDropRate(0, target.getTrajectoryDuration(), freq);
     }
 
     @Test
@@ -59,7 +68,7 @@ public class ZDropTrajectoryTest {
         negDrop = 2;
         target = Trajectories.newZDropLineTrajectory(before, after, speed, freq, negDrop);
         init();
-        testParamDropRate(0, 60, freq);
+        testParamDropRate(0, target.getTrajectoryDuration() * 2, freq);
     }
 
     private void testParamDropRate(double start, double duration, double expected) {

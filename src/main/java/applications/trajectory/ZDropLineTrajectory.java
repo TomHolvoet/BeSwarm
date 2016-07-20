@@ -1,8 +1,12 @@
 package applications.trajectory;
 
 import applications.trajectory.points.Point4D;
+import choreo.Choreography;
+import com.google.common.collect.Lists;
 import control.FiniteTrajectory4d;
-import control.Trajectory1d;
+import control.Trajectory4d;
+
+import java.util.List;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
@@ -14,22 +18,50 @@ import static com.google.common.base.Preconditions.checkArgument;
  */
 public class ZDropLineTrajectory extends BasicTrajectory implements FiniteTrajectory4d {
 
-    private final StraightLineTrajectory4D concreteTarget;
-    private Trajectory1d zComp;
-    private final double segmentLength;
-    private boolean atEnd;
-    private static final double EPS = 0.001;
+    private final FiniteTrajectory4d target;
+    private final Point4D src;
+    private final Point4D dst;
+    private final double velocity;
 
     ZDropLineTrajectory(Point4D before, Point4D after, double speed, double drops,
             double dropDistance) {
         checkArgument(before.getZ() == after.getZ(),
                 "Origin and destination should be in the same horizontal plane.");
-        this.concreteTarget = new StraightLineTrajectory4D(before, after, speed, 1);
-        this.segmentLength = concreteTarget.getTotalDistance() / drops;
-        this.zComp = new ObservingRingForwarder(new LinearTrajectory1D(after.getZ() - dropDistance,
-                dropDistance / segmentLength * concreteTarget.getVelocity()),
-                concreteTarget.getTrajectoryDuration());
-        this.atEnd = false;
+        this.src = before;
+        this.dst = after;
+        this.velocity = speed;
+        Choreography.Builder builder = Choreography.builder();
+
+        List<Point4D> points = Lists.newArrayList();
+        List<Point4D> dropPoints = Lists.newArrayList();
+        FiniteTrajectory4d traj = Trajectories.newStraightLineTrajectory(before, after, 1);
+        double duration = traj.getTrajectoryDuration();
+        initTraj(traj);
+        for (int i = 0; i < drops; i++) {
+            double mark = (duration / drops) * i;
+            points.add(
+                    Point4D.create(traj.getDesiredPositionX(mark), traj.getDesiredPositionY(mark),
+                            traj.getDesiredPositionZ(mark), traj.getDesiredAngleZ(mark)));
+        }
+        points.add(after);
+        for (Point4D p : points) {
+            dropPoints
+                    .add(Point4D.create(p.getX(), p.getY(), p.getZ() - dropDistance, p.getAngle()));
+        }
+        for (int i = 0; i < drops; i++) {
+            builder.withTrajectory(
+                    Trajectories.newStraightLineTrajectory(points.get(i), dropPoints.get(i), 1));
+            builder.withTrajectory(Trajectories
+                    .newStraightLineTrajectory(dropPoints.get(i), points.get(i + 1), 1));
+        }
+        target = builder.build();
+    }
+
+    private static final void initTraj(Trajectory4d traj) {
+        traj.getDesiredVelocityX(0);
+        traj.getDesiredVelocityY(0);
+        traj.getDesiredVelocityZ(0);
+        traj.getDesiredAngleZ(0);
     }
 
     @Override
@@ -59,13 +91,13 @@ public class ZDropLineTrajectory extends BasicTrajectory implements FiniteTrajec
     @Override
     public double getDesiredPositionZ(double timeInSeconds) {
         final double currentTime = getRelativeTime(timeInSeconds);
-        return getZcomponent().getDesiredPosition(currentTime);
+        return getTargetTrajectory().getDesiredPositionZ(currentTime);
     }
 
     @Override
     public double getDesiredVelocityZ(double timeInSeconds) {
         final double currentTime = getRelativeTime(timeInSeconds);
-        return getZcomponent().getDesiredVelocity(currentTime);
+        return getTargetTrajectory().getDesiredVelocityZ(currentTime);
     }
 
     @Override
@@ -82,9 +114,9 @@ public class ZDropLineTrajectory extends BasicTrajectory implements FiniteTrajec
 
     @Override
     public String toString() {
-        return "ZDropLineTrajectory{" + "velocity=" + getConcreteTarget().getVelocity()
-                + ", src point=" + getConcreteTarget().getSrcpoint() + ", target point="
-                + getConcreteTarget().getTargetpoint() + '}';
+        return "ZDropLineTrajectory{" + "velocity=" + velocity
+                + ", src point=" + src + ", target point="
+                + dst + '}';
     }
 
     @Override
@@ -93,71 +125,6 @@ public class ZDropLineTrajectory extends BasicTrajectory implements FiniteTrajec
     }
 
     private FiniteTrajectory4d getTargetTrajectory() {
-        return getConcreteTarget();
-    }
-
-    private StraightLineTrajectory4D getConcreteTarget() {
-        return this.concreteTarget;
-    }
-
-    private Trajectory1d getZcomponent() {
-        return this.zComp;
-    }
-
-    private void setHoldPosition(boolean holdPosition) {
-        boolean previous = atEnd;
-        this.atEnd = holdPosition;
-        if (previous != atEnd) {
-            zComp = new HoldForwarder();
-        }
-    }
-
-    private class HoldForwarder implements Trajectory1d {
-        @Override
-        public double getDesiredPosition(double timeInSeconds) {
-            return getTargetTrajectory().getDesiredPositionZ(timeInSeconds - EPS);
-        }
-
-        @Override
-        public double getDesiredVelocity(double timeInSeconds) {
-            return getTargetTrajectory().getDesiredVelocityZ(timeInSeconds - EPS);
-        }
-    }
-
-    private class ObservingRingForwarder implements Trajectory1d {
-
-        private final double endTime;
-        private final Trajectory1d target;
-
-        ObservingRingForwarder(Trajectory1d target, double endTime) {
-            this.target = target;
-            this.endTime = endTime;
-        }
-
-        protected void velocityDelegate(double timeInSeconds) {
-            if (timeInSeconds >= endTime) {
-                setHoldPosition(true);
-            }
-        }
-
-        protected void positionDelegate(double timeInSeconds) {
-            if (timeInSeconds >= endTime) {
-                setHoldPosition(true);
-            }
-        }
-
-        @Override
-        public double getDesiredPosition(double timeInSeconds) {
-            positionDelegate(timeInSeconds);
-            return target.getDesiredPosition(
-                    (timeInSeconds - EPS) % (segmentLength / concreteTarget.getVelocity()));
-        }
-
-        @Override
-        public double getDesiredVelocity(double timeInSeconds) {
-            positionDelegate(timeInSeconds);
-            return target.getDesiredVelocity(
-                    (timeInSeconds - EPS) % (segmentLength / concreteTarget.getVelocity()));
-        }
+        return target;
     }
 }
