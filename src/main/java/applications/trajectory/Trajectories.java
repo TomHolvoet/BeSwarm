@@ -162,7 +162,7 @@ public final class Trajectories {
      */
     public static FiniteTrajectory4d newZDropLineTrajectory(Point4D sourcePoint,
             Point4D targetPoint, double velocity, double drops, double dropDistance) {
-        return new ZDropLineTrajectoryAlternative(sourcePoint, targetPoint, velocity, drops,
+        return new ZDropLineTrajectory(sourcePoint, targetPoint, velocity, drops,
                 dropDistance);
     }
 }
