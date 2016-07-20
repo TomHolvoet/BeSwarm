@@ -83,6 +83,7 @@ dependencies {
     compile 'ch.qos.logback:logback-classic:1.1.7'
     compile 'org.codehaus.groovy:groovy-all:2.4.6'
     compile 'com.google.guava:guava:11.0.2'
+    compile 'org.ejml:all:0.29'
     // crates messages
     compile 'org.ros.rosjava_messages:hal:0.1.0'
     compile 'org.ros.rosjava_messages:hal_quadrotor:0.1.0'
