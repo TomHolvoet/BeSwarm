@@ -50,7 +50,7 @@ final class CratesFlyingStateService implements MessageObserver<State>, FlyingSt
     @Override
     public void onNewMessage(State message) {
         final String controllerStateName = message.getController();
-        if (currentFlyingState.get() == null || !currentFlyingState.get().equals(controllerStateName)) {
+        if (currentFlyingState.get() == null || !currentFlyingState.get().getStateName().equals(controllerStateName)) {
             currentFlyingState.set(FLYING_STATE_MAP.get(controllerStateName).getConvertedFlyingState());
         }
         logger.trace("Current crates state: {}. Current standard flying state: {}.", controllerStateName,
