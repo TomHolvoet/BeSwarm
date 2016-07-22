@@ -8,19 +8,22 @@ import control.Trajectory2d;
 import utils.math.Transformations;
 
 /**
+ * Corkscrew motion around a straight line trajectory defined by an origin and destination point,
+ * a radius as perpendicular distance to the straight line (origin-destination) and a frequency
+ * to specify the number of revolutions.
+ *
  * @author Kristof Coninx <kristof.coninx AT cs.kuleuven.be>
  */
 public class CorkscrewTrajectory4D extends PeriodicTrajectory implements FiniteTrajectory4d {
 
     private static final double EPSILON = 0.00000001d;
-    private FiniteTrajectory4d unitTrajectory;
-    //    private final FiniteTrajectory4d trajectory;
+    private final FiniteTrajectory4d unitTrajectory;
     private final double aroundX;
     private final double aroundY;
     private Point4DCache cache;
     private final Point4D origin;
 
-    public CorkscrewTrajectory4D(Point4D origin, Point4D destination, double speed, double radius,
+    CorkscrewTrajectory4D(Point4D origin, Point4D destination, double speed, double radius,
             double frequency, double phase) {
         this.origin = origin;
         double distance = Point4D.distance(origin, destination);
@@ -28,27 +31,25 @@ public class CorkscrewTrajectory4D extends PeriodicTrajectory implements FiniteT
                 CircleTrajectory2D.builder().setRadius(radius).setFrequency(frequency)
                         .setPhase(phase).build(), speed, distance);
 
-        //translate origin
+        //translate origin to get angles.
         Point4D translated = destination.minus(origin);
 
-        //find rotation and set UnitTrajectory
+        //find angles to unit trajectory
         double x = translated.getX();
         double y = translated.getY();
         double z = translated.getZ();
 
-        double alpha = (Math.PI / 2) - Math.asin(z / Math.sqrt(Math.pow(y, 2) + Math.pow(z, 2)));
-        double beta = (Math.PI * 2) - Math.asin(z / Math.sqrt(Math.pow(x, 2) + Math.pow(z, 2)));
+        this.aroundX = (Math.PI / 2) - Math.asin(z / Math.sqrt(Math.pow(y, 2) + Math.pow(z, 2)));
+        //        this.aroundY = -Math.PI - Math.asin(z / Math.sqrt(Math.pow(x, 2) + Math.pow(z,
+        // 2)));
+        this.aroundY = Math.acos(x / Math.sqrt(Math.pow(x, 2) + Math.pow(z, 2)));
 
-        aroundX = -alpha;
-        aroundY = -beta;
-
-        //translate origin back and rote back decorator.
-        this.cache = newCache(Point4D.origin(), -1);
-
+        //set initial cache
+        this.cache = newCache(Point4D.origin(), Point4D.origin(), -1);
     }
 
-    private static Point4DCache newCache(Point4D point, double timeMark) {
-        return new AutoValue_TwirlTrajectory4D_Point4DCache(point, timeMark);
+    static Point4DCache newCache(Point4D point, Point4D velocity, double timeMark) {
+        return new AutoValue_CorkscrewTrajectory4D_Point4DCache(point, velocity, timeMark);
     }
 
     private static boolean isEqual(double a, double b) {
@@ -57,80 +58,101 @@ public class CorkscrewTrajectory4D extends PeriodicTrajectory implements FiniteT
 
     private void refreshCache(double time) {
         if (!isEqual(cache.getTimeMark(), time)) {
-            Point4D beforeTrans = Point4D
+            Point4D beforeTransPoint = Point4D
                     .create(unitTrajectory.getDesiredPositionX(time),
                             unitTrajectory.getDesiredPositionY(time),
                             unitTrajectory.getDesiredPositionZ(time),
                             unitTrajectory.getDesiredAngleZ(time));
-            setCache(beforeTrans, time);
+            Point4D beforeTransVelocity = Point4D
+                    .create(unitTrajectory.getDesiredVelocityX(time),
+                            unitTrajectory.getDesiredVelocityY(time),
+                            unitTrajectory.getDesiredVelocityZ(time),
+                            unitTrajectory.getDesiredAngularVelocityZ(time));
+            setCache(beforeTransPoint, beforeTransVelocity, time);
         }
     }
 
-    private void setCache(Point4D beforeTrans, double time) {
-        this.cache = newCache(beforeTrans, time);
+    private void setCache(Point4D beforeTransPoint, Point4D beforeTransVelocity, double time) {
+        this.cache = newCache(beforeTransPoint, beforeTransVelocity, time);
     }
 
     private Point4D getCachePoint() {
-        return this.cache.getPoint();
+        return this.cache.getDestinationPoint();
     }
 
-    private Point4D transformToReal(Point4D toTrans) {
-        Point4D rotated = Point4D
-                .from(Transformations.rotate(Point3D.project(toTrans), aroundX, aroundY, 0), 0);
-        return rotated.plus(origin);
+    private Point4D getCacheVelocity() {
+        return this.cache.getVelocityPoint();
+    }
+
+    private Point4D transformToRealPosition(Point4D toTrans) {
+        return transformToRealVelocity(toTrans).plus(origin);
+    }
+
+    private Point4D transformToRealVelocity(Point4D toTrans) {
+        Point4D rotated = Point4D.from(Transformations
+                .reverseRotationXYZ(Point3D.project(toTrans), aroundX, aroundY, 0), 0);
+        return rotated;
     }
 
     @Override
     public double getTrajectoryDuration() {
-        return 0;
+        return unitTrajectory.getTrajectoryDuration();
     }
 
     @Override
     public double getDesiredPositionX(double timeInSeconds) {
         final double currentTime = getRelativeTime(timeInSeconds);
         refreshCache(timeInSeconds);
-        return transformToReal(getCachePoint()).getX();
+        return transformToRealPosition(getCachePoint()).getX();
     }
 
     @Override
     public double getDesiredVelocityX(double timeInSeconds) {
-        return 0;
+        final double currentTime = getRelativeTime(timeInSeconds);
+        refreshCache(timeInSeconds);
+        return transformToRealVelocity(getCacheVelocity()).getX();
     }
 
     @Override
     public double getDesiredPositionY(double timeInSeconds) {
         final double currentTime = getRelativeTime(timeInSeconds);
         refreshCache(timeInSeconds);
-        return transformToReal(getCachePoint()).getY();
+        return transformToRealPosition(getCachePoint()).getY();
     }
 
     @Override
     public double getDesiredVelocityY(double timeInSeconds) {
-        return 0;
+        final double currentTime = getRelativeTime(timeInSeconds);
+        refreshCache(timeInSeconds);
+        return transformToRealVelocity(getCacheVelocity()).getY();
     }
 
     @Override
     public double getDesiredPositionZ(double timeInSeconds) {
         final double currentTime = getRelativeTime(timeInSeconds);
         refreshCache(timeInSeconds);
-        return transformToReal(getCachePoint()).getZ();
+        return transformToRealPosition(getCachePoint()).getZ();
     }
 
     @Override
     public double getDesiredVelocityZ(double timeInSeconds) {
-        return 0;
+        final double currentTime = getRelativeTime(timeInSeconds);
+        refreshCache(timeInSeconds);
+        return transformToRealVelocity(getCacheVelocity()).getZ();
     }
 
     @Override
     public double getDesiredAngleZ(double timeInSeconds) {
         final double currentTime = getRelativeTime(timeInSeconds);
         refreshCache(timeInSeconds);
-        return transformToReal(getCachePoint()).getAngle();
+        return transformToRealPosition(getCachePoint()).getAngle();
     }
 
     @Override
     public double getDesiredAngularVelocityZ(double timeInSeconds) {
-        return 0;
+        final double currentTime = getRelativeTime(timeInSeconds);
+        refreshCache(timeInSeconds);
+        return transformToRealVelocity(getCacheVelocity()).getAngle();
     }
 
     private final class UntransformedUsage implements FiniteTrajectory4d {
@@ -232,7 +254,9 @@ public class CorkscrewTrajectory4D extends PeriodicTrajectory implements FiniteT
 
     @AutoValue
     static abstract class Point4DCache {
-        public abstract Point4D getPoint();
+        public abstract Point4D getDestinationPoint();
+
+        public abstract Point4D getVelocityPoint();
 
         public abstract double getTimeMark();
     }

@@ -55,10 +55,10 @@ public abstract class Point4D {
      * @return A point instance representing the sum of the given points.
      */
     public static Point4D plus(Point4D targetPoint, Point4D sourcePoint) {
-        return create(targetPoint.getX() - sourcePoint.getX(),
-                targetPoint.getY() - sourcePoint.getY(),
-                targetPoint.getZ() - sourcePoint.getZ(),
-                targetPoint.getAngle() - sourcePoint.getAngle());
+        return create(targetPoint.getX() + sourcePoint.getX(),
+                targetPoint.getY() + sourcePoint.getY(),
+                targetPoint.getZ() + sourcePoint.getZ(),
+                targetPoint.getAngle() + sourcePoint.getAngle());
     }
 
     /**
