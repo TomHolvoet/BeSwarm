@@ -10,7 +10,7 @@ import utils.math.Transformations;
 /**
  * @author Kristof Coninx <kristof.coninx AT cs.kuleuven.be>
  */
-public class TwirlTrajectory4D extends PeriodicTrajectory implements FiniteTrajectory4d {
+public class CorkscrewTrajectory4D extends PeriodicTrajectory implements FiniteTrajectory4d {
 
     private static final double EPSILON = 0.00000001d;
     private FiniteTrajectory4d unitTrajectory;
@@ -20,7 +20,7 @@ public class TwirlTrajectory4D extends PeriodicTrajectory implements FiniteTraje
     private Point4DCache cache;
     private final Point4D origin;
 
-    public TwirlTrajectory4D(Point4D origin, Point4D destination, double speed, double radius,
+    public CorkscrewTrajectory4D(Point4D origin, Point4D destination, double speed, double radius,
             double frequency, double phase) {
         this.origin = origin;
         double distance = Point4D.distance(origin, destination);

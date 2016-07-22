@@ -13,7 +13,7 @@ import static applications.trajectory.TestUtils.assertBounds;
 /**
  * @author Kristof Coninx <kristof.coninx AT cs.kuleuven.be>
  */
-public class TwirlTrajectory4DTest {
+public class CorkscrewTrajectory4DTest {
     private final double speed = 1;
     private final double radius = 0.5;
     private final double frequency = 0.3;
@@ -23,7 +23,7 @@ public class TwirlTrajectory4DTest {
 
     @Before
     public void setUp() throws Exception {
-        this.trajectory = new TwirlTrajectory4D(Point4D.origin(),
+        this.trajectory = new CorkscrewTrajectory4D(Point4D.origin(),
                 Point4D.create(0, 0, zDistance, 0),
                 speed, radius, frequency, phase);
     }
