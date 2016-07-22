@@ -147,7 +147,7 @@ public final class Choreography extends BasicTrajectory
     /**
      * @return A choreography builder instance.
      */
-    public static Builder builder() {
+    public static final Builder builder() {
         return new Builder();
     }
 

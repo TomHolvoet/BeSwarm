@@ -165,4 +165,18 @@ public final class Trajectories {
         return new ZDropLineTrajectory(sourcePoint, targetPoint, velocity, drops,
                 dropDistance);
     }
+
+    /**
+     * @param sourcePoint origin point of motion.
+     * @param targetPoint destination point of motion.
+     * @param velocity    the velocity to move with.
+     * @param radius      the radius of the corkscrew motion
+     * @param frequency   the frequency in time of completing the circular motion.
+     * @return a new straight line trajectory in xy plane with sudden drops in the z dimension.
+     */
+    public static FiniteTrajectory4d newCorkscrewTrajectory(Point4D sourcePoint,
+            Point4D targetPoint, double velocity, double radius, double frequency, double phase) {
+        return new CorkscrewTrajectory4D(sourcePoint, targetPoint, velocity, radius, frequency,
+                phase);
+    }
 }

@@ -45,9 +45,11 @@ public abstract class Point3D {
      */
     public static double distance(Point3D p0, Point3D p1) {
         return StrictMath.sqrt(
-                (p0.getX() - p1.getX()) * (p0.getX() - p1.getX()) + (p0.getY() - p1.getY()) * (p0.getY() - p1.getY())
+                (p0.getX() - p1.getX()) * (p0.getX() - p1.getX()) + (p0.getY() - p1.getY()) * (
+                        p0.getY() - p1.getY())
                         + (p0.getZ() - p1.getZ()) * (p0.getZ() - p1.getZ()));
     }
+
 
     /**
      * @return The X coordinate.

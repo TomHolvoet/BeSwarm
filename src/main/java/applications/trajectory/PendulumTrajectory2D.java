@@ -67,7 +67,7 @@ public final class PendulumTrajectory2D extends PeriodicTrajectory implements Tr
     /**
      * Builder class for 2D pendulum trajectories.
      */
-    public static class Builder {
+    public static final class Builder {
         private double radius = 1;
         private double frequency = 5;
         private Point4D origin = Point4D.origin();
