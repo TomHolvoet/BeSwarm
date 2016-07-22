@@ -5,6 +5,7 @@ import applications.trajectory.points.Point4D;
 import com.google.auto.value.AutoValue;
 import control.FiniteTrajectory4d;
 import control.Trajectory2d;
+import utils.math.RotationOrder;
 import utils.math.Transformations;
 
 /**
@@ -88,7 +89,7 @@ public class CorkscrewTrajectory4D extends PeriodicTrajectory implements FiniteT
 
     private Point4D transformToRealVelocity(Point4D toTrans) {
         Point4D rotated = Point4D.from(Transformations
-                .reverseRotationXYZ(Point3D.project(toTrans), aroundX, aroundY, 0), 0);
+                .reverseRotation(Point3D.project(toTrans), aroundX, aroundY, 0, RotationOrder.XYZ), 0);
         return rotated;
     }
 

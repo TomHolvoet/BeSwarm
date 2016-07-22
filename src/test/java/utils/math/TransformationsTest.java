@@ -97,7 +97,8 @@ public class TransformationsTest {
     @Parameters(method = "rotationPointValues")
     public void testRotateXYZ(Point3D initialPoint, double rotationAngleX, double rotationAngleY, double rotationAngleZ,
             Point3D rotatedPoint) {
-        final Point3D p = Transformations.rotateXYZ(initialPoint, rotationAngleX, rotationAngleY, rotationAngleZ);
+        final Point3D p = Transformations.rotate(initialPoint, rotationAngleX, rotationAngleY, rotationAngleZ,
+                RotationOrder.XYZ);
         assertPoint3DEqual(p, rotatedPoint);
     }
 
@@ -105,7 +106,8 @@ public class TransformationsTest {
     @Parameters(method = "rotationPointValues")
     public void testReverseRotationXYZ(Point3D initialPoint, double rotationAngleX, double rotationAngleY,
             double rotationAngleZ, Point3D rotatedPoint) {
-        final Point3D p = Transformations.reverseRotationXYZ(rotatedPoint, rotationAngleX, rotationAngleY, rotationAngleZ);
+        final Point3D p = Transformations.reverseRotation(rotatedPoint, rotationAngleX, rotationAngleY,
+                rotationAngleZ, RotationOrder.XYZ);
         assertPoint3DEqual(p, initialPoint);
     }
 }
