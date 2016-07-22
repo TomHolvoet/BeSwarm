@@ -15,7 +15,7 @@ import utils.math.Transformations;
 /**
  * @author Hoang Tung Dinh
  */
-public class GazeboModelStateEstimator implements StateEstimator {
+public final class GazeboModelStateEstimator implements StateEstimator {
     private final MessagesSubscriberService<ModelStates> modelStateSubscriber;
     private final String modelName;
 
