@@ -15,8 +15,8 @@ abstract class AbstractFollowTrajectoryBuilder<T extends AbstractFollowTrajector
     PidParameters pidLinearYParameters;
     PidParameters pidLinearZParameters;
     PidParameters pidAngularZParameters;
-    double controlRateInSeconds;
-    double droneStateLifeDurationInSeconds;
+    Double controlRateInSeconds;
+    Double droneStateLifeDurationInSeconds;
     StateEstimator stateEstimator;
     VelocityService velocityService;
 

@@ -141,7 +141,7 @@ public final class FollowTrajectory implements Command {
      */
     public static final class Builder extends AbstractFollowTrajectoryBuilder<Builder> {
         private Trajectory4d trajectory4d;
-        private double durationInSeconds;
+        private Double durationInSeconds;
 
         private Builder() {
             super();
