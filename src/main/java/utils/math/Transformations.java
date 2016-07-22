@@ -119,7 +119,8 @@ public final class Transformations {
      * @see <a href="https://en.wikipedia.org/wiki/Euler_angles">Euler angles and Euler rotations</a>
      * @see <a href="https://en.wikipedia.org/wiki/Rotation_matrix">Rotation matrix</a>
      */
-    public static Point3D rotate(Point3D point, double rotationAngleX, double rotationAngleY, double rotationAngleZ) {
+    public static Point3D rotateXYZ(Point3D point, double rotationAngleX, double rotationAngleY,
+            double rotationAngleZ) {
         // This method invokes some matrix multiplications and it could be a computational bottleneck. Currently,
         // three rotation matrices are computed separately and then multiplied all together after that. This allows
         // the rotation order to be changed later. However, if the rotation order is decided and fixed, all matrix
@@ -127,10 +128,43 @@ public final class Transformations {
         final SimpleMatrix rotationMatrixX = getRotationMatrixX(rotationAngleX);
         final SimpleMatrix rotationMatrixY = getRotationMatrixY(rotationAngleY);
         final SimpleMatrix rotationMatrixZ = getRotationMatrixZ(rotationAngleZ);
+
         final SimpleMatrix rotationMatrixXYZ = rotationMatrixZ.mult(rotationMatrixY).mult(rotationMatrixX);
+        return rotateWithRotationMatrix(point, rotationMatrixXYZ);
+    }
+
+    /**
+     * Reverses the rotation having been done by {@link Transformations#rotateXYZ(Point3D, double, double, double)}.
+     *
+     * @param point          the point to be rotated in 3D coordinate
+     * @param rotationAngleX the initial rotation angle about the x-axis
+     * @param rotationAngleY the initial rotation angle about the y-axis
+     * @param rotationAngleZ the initial rotation angle about the z-axis
+     * @return the initial point before the rotation {@link Transformations#rotateXYZ(Point3D, double, double, double)}
+     */
+    public static Point3D reverseRotationXYZ(Point3D point, double rotationAngleX, double rotationAngleY,
+            double rotationAngleZ) {
+        final double reverseRotationAngleX = 2 * StrictMath.PI - rotationAngleX;
+        final double reverseRotationAngleY = 2 * StrictMath.PI - rotationAngleY;
+        final double reverseRotationAngleZ = 2 * StrictMath.PI - rotationAngleZ;
+
+        return rotateZYX(point, reverseRotationAngleX, reverseRotationAngleY, reverseRotationAngleZ);
+    }
+
+    private static Point3D rotateZYX(Point3D point, double rotationAngleX, double rotationAngleY,
+            double rotationAngleZ) {
+        final SimpleMatrix rotationMatrixX = getRotationMatrixX(rotationAngleX);
+        final SimpleMatrix rotationMatrixY = getRotationMatrixY(rotationAngleY);
+        final SimpleMatrix rotationMatrixZ = getRotationMatrixZ(rotationAngleZ);
+
+        final SimpleMatrix rotationMatrixZYX = rotationMatrixX.mult(rotationMatrixY).mult(rotationMatrixZ);
+        return rotateWithRotationMatrix(point, rotationMatrixZYX);
+    }
+
+    private static Point3D rotateWithRotationMatrix(Point3D point, SimpleMatrix rotationMatrix) {
         final SimpleMatrix originalPoint = new SimpleMatrix(
                 new double[][]{{point.getX()}, {point.getY()}, {point.getZ()}});
-        final SimpleMatrix rotatedPoint = rotationMatrixXYZ.mult(originalPoint);
+        final SimpleMatrix rotatedPoint = rotationMatrix.mult(originalPoint);
 
         return Point3D.create(rotatedPoint.get(0, 0), rotatedPoint.get(1, 0), rotatedPoint.get(2, 0));
     }
