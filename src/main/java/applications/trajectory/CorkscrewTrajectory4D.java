@@ -40,8 +40,6 @@ public class CorkscrewTrajectory4D extends PeriodicTrajectory implements FiniteT
         double z = translated.getZ();
 
         this.aroundX = (Math.PI / 2) - Math.asin(z / Math.sqrt(Math.pow(y, 2) + Math.pow(z, 2)));
-        //        this.aroundY = -Math.PI - Math.asin(z / Math.sqrt(Math.pow(x, 2) + Math.pow(z,
-        // 2)));
         this.aroundY = Math.acos(x / Math.sqrt(Math.pow(x, 2) + Math.pow(z, 2)));
 
         //set initial cache
