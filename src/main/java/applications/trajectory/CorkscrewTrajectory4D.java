@@ -100,56 +100,56 @@ public class CorkscrewTrajectory4D extends PeriodicTrajectory implements FiniteT
     @Override
     public double getDesiredPositionX(double timeInSeconds) {
         final double currentTime = getRelativeTime(timeInSeconds);
-        refreshCache(timeInSeconds);
+        refreshCache(currentTime);
         return transformToRealPosition(getCachePoint()).getX();
     }
 
     @Override
     public double getDesiredVelocityX(double timeInSeconds) {
         final double currentTime = getRelativeTime(timeInSeconds);
-        refreshCache(timeInSeconds);
+        refreshCache(currentTime);
         return transformToRealVelocity(getCacheVelocity()).getX();
     }
 
     @Override
     public double getDesiredPositionY(double timeInSeconds) {
         final double currentTime = getRelativeTime(timeInSeconds);
-        refreshCache(timeInSeconds);
+        refreshCache(currentTime);
         return transformToRealPosition(getCachePoint()).getY();
     }
 
     @Override
     public double getDesiredVelocityY(double timeInSeconds) {
         final double currentTime = getRelativeTime(timeInSeconds);
-        refreshCache(timeInSeconds);
+        refreshCache(currentTime);
         return transformToRealVelocity(getCacheVelocity()).getY();
     }
 
     @Override
     public double getDesiredPositionZ(double timeInSeconds) {
         final double currentTime = getRelativeTime(timeInSeconds);
-        refreshCache(timeInSeconds);
+        refreshCache(currentTime);
         return transformToRealPosition(getCachePoint()).getZ();
     }
 
     @Override
     public double getDesiredVelocityZ(double timeInSeconds) {
         final double currentTime = getRelativeTime(timeInSeconds);
-        refreshCache(timeInSeconds);
+        refreshCache(currentTime);
         return transformToRealVelocity(getCacheVelocity()).getZ();
     }
 
     @Override
     public double getDesiredAngleZ(double timeInSeconds) {
         final double currentTime = getRelativeTime(timeInSeconds);
-        refreshCache(timeInSeconds);
+        refreshCache(currentTime);
         return transformToRealPosition(getCachePoint()).getAngle();
     }
 
     @Override
     public double getDesiredAngularVelocityZ(double timeInSeconds) {
         final double currentTime = getRelativeTime(timeInSeconds);
-        refreshCache(timeInSeconds);
+        refreshCache(currentTime);
         return transformToRealVelocity(getCacheVelocity()).getAngle();
     }
 
