@@ -46,17 +46,17 @@ class StraightLineTrajectory4D extends BasicTrajectory implements FiniteTrajecto
                         + ".MAX_ABSOLUTE_VELOCITY");
         checkArgument(velocityCutoffTimePercentage <= 1 && velocityCutoffTimePercentage > 0,
                 "Velocity cutoff percentage should represent a percantage between 0 and 1.");
-        double speed = velocity;
         Point4D diff = Point4D.minus(targetpoint, srcpoint);
         this.totalDistance = StrictMath
                 .sqrt(StrictMath.pow(diff.getX(), 2) + StrictMath.pow(diff.getY(), 2) + StrictMath
                         .pow(diff.getZ(), 2));
-        this.endTime = getTotalDistance() / speed;
-        checkArgument(getTotalDistance() > 0, "Distance to travel cannot be zero.");
+        double speed = velocity;
+        checkArgument(totalDistance > 0, "Distance to travel cannot be zero.");
+        this.endTime = totalDistance / speed;
         Point4D speedComponent = Point4D
-                .create(velocity * (diff.getX() / getTotalDistance()),
-                        velocity * (diff.getY() / getTotalDistance()),
-                        velocity * (diff.getZ() / getTotalDistance()),
+                .create(velocity * (diff.getX() / totalDistance),
+                        velocity * (diff.getY() / totalDistance),
+                        velocity * (diff.getZ() / totalDistance),
                         diff.getAngle() / endTime);
         this.holdTraj = new HoldPositionTrajectory4D(targetpoint);
         this.moveTraj = new HoldPositionForwarder(srcpoint, speedComponent,
@@ -148,7 +148,7 @@ class StraightLineTrajectory4D extends BasicTrajectory implements FiniteTrajecto
         return velocity;
     }
 
-    public double getTotalDistance() {
+    public final double getTotalDistance() {
         return totalDistance;
     }
 

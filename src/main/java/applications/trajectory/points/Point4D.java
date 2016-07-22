@@ -50,6 +50,35 @@ public abstract class Point4D {
     }
 
     /**
+     * @param targetPoint the destination of the vector.
+     * @param sourcePoint the source of the vector.
+     * @return A point instance representing the sum of the given points.
+     */
+    public static Point4D plus(Point4D targetPoint, Point4D sourcePoint) {
+        return create(targetPoint.getX() - sourcePoint.getX(),
+                targetPoint.getY() - sourcePoint.getY(),
+                targetPoint.getZ() - sourcePoint.getZ(),
+                targetPoint.getAngle() - sourcePoint.getAngle());
+    }
+
+    /**
+     * @param targetPoint the destination of the vector.
+     * @return A point instance representing the sum of the given points.
+     */
+    public Point4D plus(Point4D targetPoint) {
+        return plus(this, targetPoint);
+    }
+
+    /**
+     * @param targetPoint the destination of the vector.
+     * @return A point instance representing the difference or distance
+     * between the given point and this point.
+     */
+    public Point4D minus(Point4D targetPoint) {
+        return minus(this, targetPoint);
+    }
+
+    /**
      * Gets the euclidean distance between two points.
      *
      * @param p0 the first point

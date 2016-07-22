@@ -11,7 +11,7 @@ import static com.google.common.base.Preconditions.checkArgument;
  * (How many revolutions per second) and a radius.
  * Created by Kristof Coninx.
  */
-class CircleTrajectory2D extends PeriodicTrajectory implements Trajectory2d {
+final class CircleTrajectory2D extends PeriodicTrajectory implements Trajectory2d {
     private final double freq2pi;
     private final double rfreq2pi;
 
