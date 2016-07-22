@@ -12,8 +12,8 @@ public interface Velocity2dService extends VelocityService {
      *
      * @param inertialFrameVelocityX the x-component velocity in the inertial frame
      * @param inertialFrameVelocityY the y-component velocity in the inertial frame
-     * @param linearPositionZ        the desired z position (altitude)
-     * @param angularPositionZ       the desired angular-z position (yaw)
+     * @param linearPositionZ the desired z position (altitude)
+     * @param angularPositionZ the desired angular-z position (yaw)
      */
     void sendVelocityHeightMessage(double inertialFrameVelocityX, double inertialFrameVelocityY, double linearPositionZ,
             double angularPositionZ);

@@ -22,18 +22,15 @@ public class TumSimulatorCorkscrewExample extends AbstractNodeMain {
     @Override
     public void onStart(final ConnectedNode connectedNode) {
         final FiniteTrajectory4d trajectory = getConcreteTrajectory();
-        final TumExampleFlightFacade flight = TumExampleFlightFacade
-                .create(trajectory, connectedNode);
+        final TumExampleFlightFacade flight = TumExampleFlightFacade.create(trajectory, connectedNode);
         flight.fly();
     }
 
     private FiniteTrajectory4d getConcreteTrajectory() {
         Point4D start = Point4D.create(0, 0, 10, 0);
         Point4D end = Point4D.create(0, 15, 25, 0);
-        FiniteTrajectory4d target1 = Trajectories
-                .newCorkscrewTrajectory(start, end, 1, 0.5, 0.3, 0);
+        FiniteTrajectory4d target1 = Trajectories.newCorkscrewTrajectory(start, end, 1, 0.5, 0.3, 0);
         Trajectory4d hold1 = Trajectories.newHoldPositionTrajectory(start);
-        return Choreography.builder().withTrajectory(hold1).forTime(30).withTrajectory(target1)
-                .build();
+        return Choreography.builder().withTrajectory(hold1).forTime(30).withTrajectory(target1).build();
     }
 }

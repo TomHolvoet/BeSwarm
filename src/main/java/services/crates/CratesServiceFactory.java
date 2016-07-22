@@ -48,8 +48,8 @@ public final class CratesServiceFactory implements CommonServiceFactory {
     /**
      * Creates a service factory for the Crates simulator.
      *
-     * @param droneName     the name of the drone
-     * @param modelName     the model of the drone
+     * @param droneName the name of the drone
+     * @param modelName the model of the drone
      * @param connectedNode the connected ros node
      * @return a service factory for the drone
      */

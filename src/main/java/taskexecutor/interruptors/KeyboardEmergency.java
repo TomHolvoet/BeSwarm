@@ -20,7 +20,7 @@ public final class KeyboardEmergency implements EmergencyNotifier, MessageObserv
     /**
      * The code of the emergency key.
      */
-    @VisibleForTesting public static final short EMERGENCY_KEY = Key.KEY_x;
+    @VisibleForTesting static final short EMERGENCY_KEY = Key.KEY_x;
 
     private KeyboardEmergency(Task task) {
         this.task = task;

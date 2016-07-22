@@ -46,7 +46,7 @@ public abstract class EulerAngle {
      * Computes the distance between two angles. The distance will be in range [-pi, pi]. The distance is negative if
      * the {@code secondAngle} is on the left of the {@code firstAngle}.
      *
-     * @param firstAngle  the first angle
+     * @param firstAngle the first angle
      * @param secondAngle the second angle
      * @return the distance between the two angles
      */

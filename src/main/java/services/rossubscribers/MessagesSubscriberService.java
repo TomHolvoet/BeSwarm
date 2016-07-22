@@ -40,7 +40,7 @@ public class MessagesSubscriberService<T extends Message> {
      * Creates an instance of this class with the queue size of one.
      *
      * @param subscriber the rostopic subscriber
-     * @param <U>        the type of the messages
+     * @param <U> the type of the messages
      * @return an instance of this class
      */
     public static <U extends Message> MessagesSubscriberService<U> create(Subscriber<U> subscriber) {
@@ -50,9 +50,9 @@ public class MessagesSubscriberService<T extends Message> {
     /**
      * Creates an instance of this class.
      *
-     * @param subscriber          the rostopic subscriber
+     * @param subscriber the rostopic subscriber
      * @param maxMessageQueueSize the maximum queue of most recent messages
-     * @param <U>                 the type of the messages
+     * @param <U> the type of the messages
      * @return an instance of this class
      */
     public static <U extends Message> MessagesSubscriberService<U> create(Subscriber<U> subscriber,
@@ -106,7 +106,7 @@ public class MessagesSubscriberService<T extends Message> {
          * Creates an instance of this class.
          *
          * @param maxQueueSize the maximum size of the queue storing most recent messages
-         * @param <U>          the type of the message
+         * @param <U> the type of the message
          * @return an instance of this class
          */
         public static <U extends Message> MessagesListener<U> create(int maxQueueSize) {

@@ -33,8 +33,8 @@ public final class PidController1d {
     /**
      * Compute the next velocity (response) of the control loop.
      *
-     * @param currentPoint         the current position of the drone
-     * @param currentVelocity      the current velocity of the drone
+     * @param currentPoint the current position of the drone
+     * @param currentVelocity the current velocity of the drone
      * @param currentTimeInSeconds the current time
      * @return the next velocity (response) of the drone
      * @see <a href="https://en.wikipedia.org/wiki/PID_controller">Equation</a>

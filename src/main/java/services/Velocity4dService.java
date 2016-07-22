@@ -18,7 +18,7 @@ public interface Velocity4dService extends VelocityService {
      * the body frame.
      *
      * @param inertialFrameVelocity The desired velocity in the inertial frame
-     * @param pose                  The current pose of the drone
+     * @param pose The current pose of the drone
      */
     void sendVelocity4dMessage(InertialFrameVelocity inertialFrameVelocity, Pose pose);
 }

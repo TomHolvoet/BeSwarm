@@ -25,8 +25,7 @@ public class TumSimulatorComplexExample extends AbstractNodeMain {
     @Override
     public void onStart(final ConnectedNode connectedNode) {
         final FiniteTrajectory4d trajectory = getConcreteTrajectory();
-        final TumExampleFlightFacade flight = TumExampleFlightFacade
-                .create(trajectory, connectedNode);
+        final TumExampleFlightFacade flight = TumExampleFlightFacade.create(trajectory, connectedNode);
         flight.fly();
     }
 
@@ -34,15 +33,11 @@ public class TumSimulatorComplexExample extends AbstractNodeMain {
         Trajectory4d init = Trajectories.newHoldPositionTrajectory(Point4D.create(0, 0, 1, 0));
         FiniteTrajectory4d first = newStraightLineTrajectory(Point4D.create(0, 0, 1, 0),
                 Point4D.create(1.5, -3.0, 1.5, 0), 0.1);
-        Trajectory4d inter = Trajectories
-                .newHoldPositionTrajectory(Point4D.create(1.5, -3.0, 1.5, 0));
-        Trajectory4d second = Trajectories
-                .newCircleTrajectory4D(Point3D.create(1.0, -3.0, 1.5), 0.5, 0.05,
-                        Math.PI / 8);
-        Trajectory4d third = Trajectories
-                .newHoldPositionTrajectory(Point4D.create(1.5, -3.5, 1.5, 0));
-        Trajectory4d fourth = Trajectories
-                .newHoldPositionTrajectory(Point4D.create(1.5, -3.5, 1.0, 0));
+        Trajectory4d inter = Trajectories.newHoldPositionTrajectory(Point4D.create(1.5, -3.0, 1.5, 0));
+        Trajectory4d second = Trajectories.newCircleTrajectory4D(Point3D.create(1.0, -3.0, 1.5), 0.5, 0.05,
+                Math.PI / 8);
+        Trajectory4d third = Trajectories.newHoldPositionTrajectory(Point4D.create(1.5, -3.5, 1.5, 0));
+        Trajectory4d fourth = Trajectories.newHoldPositionTrajectory(Point4D.create(1.5, -3.5, 1.0, 0));
         return Choreography.builder()
                 .withTrajectory(init)
                 .forTime(4)

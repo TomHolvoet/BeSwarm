@@ -8,10 +8,7 @@ package control.dto;
  * documentations</a>
  */
 public enum FlipDirection {
-    FORWARD((byte) 0),
-    BACKWARD((byte) 1),
-    RIGHT((byte) 2),
-    LEFT((byte) 3);
+    FORWARD((byte) 0), BACKWARD((byte) 1), RIGHT((byte) 2), LEFT((byte) 3);
 
     private final byte code;
 

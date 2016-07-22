@@ -24,7 +24,7 @@ final class CratesServiceResponseListener<T extends Message> implements ServiceR
      * Creates a service response listener for the Crates simulator.
      *
      * @param countDownLatch the countdown latch for thread synchronization
-     * @param <T>            the response message type
+     * @param <T> the response message type
      * @return a new instance of the service response listener
      */
     public static <T extends Message> CratesServiceResponseListener<T> create(CountDownLatch countDownLatch) {

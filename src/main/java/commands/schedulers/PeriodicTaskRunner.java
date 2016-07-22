@@ -22,8 +22,8 @@ public final class PeriodicTaskRunner {
      * Runs a java task. Note that this task is a {@link Runnable} object, and is different from the {@link
      * taskexecutor.Task} which defines a list of drone's commands.
      *
-     * @param task              the {@link Runnable} task
-     * @param rateInSeconds     the rate of executing this task
+     * @param task the {@link Runnable} task
+     * @param rateInSeconds the rate of executing this task
      * @param durationInSeconds the duration in which the task will be executed
      */
     public static void run(Runnable task, double rateInSeconds, double durationInSeconds) {

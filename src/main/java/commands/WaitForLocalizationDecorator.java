@@ -33,7 +33,7 @@ public final class WaitForLocalizationDecorator implements Command {
      * Creates an instance of this class.
      *
      * @param stateEstimator the state estimator of the drone
-     * @param command        the command to be decorated
+     * @param command the command to be decorated
      * @return a decorated command which will wait until receiving a valid pose from the {@code stateEstimator} and the
      * execute the {@code command}
      */

@@ -8,9 +8,9 @@ import org.ros.node.AbstractNodeMain;
 import org.ros.node.ConnectedNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import services.CommonServiceFactory;
 import services.FlyingStateService;
 import services.LandService;
-import services.CommonServiceFactory;
 import services.TakeOffService;
 import services.parrot.BebopServiceFactory;
 

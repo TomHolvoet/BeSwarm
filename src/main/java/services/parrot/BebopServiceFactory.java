@@ -26,7 +26,7 @@ public final class BebopServiceFactory extends ParrotServiceFactory {
      * Creates a service factory for the bebop drone.
      *
      * @param connectedNode the ros node
-     * @param droneName     the name of the drone
+     * @param droneName the name of the drone
      * @return a service factory for the bebop drone
      */
     public static BebopServiceFactory create(ConnectedNode connectedNode, String droneName) {

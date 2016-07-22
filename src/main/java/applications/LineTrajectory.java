@@ -30,7 +30,7 @@ public final class LineTrajectory implements Trajectory4d {
      * Creates a line trajectory.
      *
      * @param flightDuration the duration of the trajectory
-     * @param length         the length of the trajectory
+     * @param length the length of the trajectory
      * @return a line trajectory instance
      */
     public static LineTrajectory create(double flightDuration, double length) {

@@ -32,8 +32,8 @@ public final class Hover implements Command {
     /**
      * Creates a hover command.
      *
-     * @param velocityService   the velocity service of the drone
-     * @param stateEstimator    the state estimator of the drone
+     * @param velocityService the velocity service of the drone
+     * @param stateEstimator the state estimator of the drone
      * @param durationInSeconds the duration that the drone will hover
      * @return a hover command
      */

@@ -19,8 +19,7 @@ public class TumSimulatorPendulumExample extends AbstractNodeMain {
     @Override
     public void onStart(final ConnectedNode connectedNode) {
         final FiniteTrajectory4d trajectory = getConcreteTrajectory();
-        final TumExampleFlightFacade flight = TumExampleFlightFacade
-                .create(trajectory, connectedNode);
+        final TumExampleFlightFacade flight = TumExampleFlightFacade.create(trajectory, connectedNode);
         flight.fly();
     }
 

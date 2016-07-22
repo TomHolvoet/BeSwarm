@@ -46,7 +46,7 @@ final class TumExampleFlightFacade {
      * Creates a facade to run the drone in the Tum simulator. The drone will take off, follow a provided trajectory
      * and then land.
      *
-     * @param trajectory4d  the trajectory which the drone will follow
+     * @param trajectory4d the trajectory which the drone will follow
      * @param connectedNode the connected node
      * @return a facade for flying with the drone in the Tum simulator
      */

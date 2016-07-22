@@ -13,7 +13,7 @@ public interface Velocity3dService extends VelocityService {
      * @param inertialFrameVelocityX the x-component velocity in the inertial frame
      * @param inertialFrameVelocityY the y-component velocity in the inertial frame
      * @param inertialFrameVelocityZ the z-component velocity in the inertial frame
-     * @param angularPositionZ       the desired angular-z position (the yaw)
+     * @param angularPositionZ the desired angular-z position (the yaw)
      */
     void sendVelocity3dMessage(double inertialFrameVelocityX, double inertialFrameVelocityY,
             double inertialFrameVelocityZ, double angularPositionZ);

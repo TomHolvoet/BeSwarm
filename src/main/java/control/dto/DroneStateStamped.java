@@ -13,9 +13,9 @@ public abstract class DroneStateStamped {
     /**
      * Creates a drone state stamped with time.
      *
-     * @param pose                  the pose of the drone
+     * @param pose the pose of the drone
      * @param inertialFrameVelocity the velocity of the drone in the inertial frame
-     * @param timeStampInSeconds    the time stamp of the state
+     * @param timeStampInSeconds the time stamp of the state
      * @return a state of the drone stamped with time
      */
     public static DroneStateStamped create(Pose pose, InertialFrameVelocity inertialFrameVelocity,

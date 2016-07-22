@@ -25,9 +25,9 @@ public final class CratesUtilities {
      * if no response is received, the message will be sent again.
      *
      * @param serviceClient the service client
-     * @param request       the request message
-     * @param <T>           the type of the request message
-     * @param <U>           the type of the response message
+     * @param request the request message
+     * @param <T> the type of the request message
+     * @param <U> the type of the response message
      */
     public static <T extends Message, U extends Message> void sendRequest(ServiceClient<T, U> serviceClient,
             T request) {

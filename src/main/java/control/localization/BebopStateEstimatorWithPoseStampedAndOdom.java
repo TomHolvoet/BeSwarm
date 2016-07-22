@@ -33,7 +33,7 @@ public final class BebopStateEstimatorWithPoseStampedAndOdom implements StateEst
      * Creates a state estimator for a bebop drone. The state estimator uses data from a pose topic and a odometry
      * topic.
      *
-     * @param poseSubscriber     the subscriber to the pose topic
+     * @param poseSubscriber the subscriber to the pose topic
      * @param odometrySubscriber the subscriber to the odometry topic
      * @return an instance of this class
      */

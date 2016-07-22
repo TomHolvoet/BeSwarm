@@ -30,7 +30,7 @@ public final class Land implements Command {
     /**
      * Creates a land command.
      *
-     * @param landService        the land service of the drone
+     * @param landService the land service of the drone
      * @param flyingStateService the flying state service of the drone
      * @return a land command
      */

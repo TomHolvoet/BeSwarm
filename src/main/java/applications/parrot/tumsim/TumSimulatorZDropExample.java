@@ -22,8 +22,7 @@ public class TumSimulatorZDropExample extends AbstractNodeMain {
     @Override
     public void onStart(final ConnectedNode connectedNode) {
         final FiniteTrajectory4d trajectory = getConcreteTrajectory();
-        final TumExampleFlightFacade flight = TumExampleFlightFacade
-                .create(trajectory, connectedNode);
+        final TumExampleFlightFacade flight = TumExampleFlightFacade.create(trajectory, connectedNode);
         flight.fly();
     }
 
@@ -32,7 +31,6 @@ public class TumSimulatorZDropExample extends AbstractNodeMain {
         Point4D end = Point4D.create(0, 15, 10, 0);
         FiniteTrajectory4d target1 = Trajectories.newZDropLineTrajectory(start, end, 0.5, 4, 2);
         Trajectory4d hold1 = Trajectories.newHoldPositionTrajectory(start);
-        return Choreography.builder().withTrajectory(hold1).forTime(30).withTrajectory(target1)
-                .build();
+        return Choreography.builder().withTrajectory(hold1).forTime(30).withTrajectory(target1).build();
     }
 }

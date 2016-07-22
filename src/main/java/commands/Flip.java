@@ -21,7 +21,7 @@ public final class Flip implements Command {
     /**
      * Create a flipping command.
      *
-     * @param flipService   the flip publisher
+     * @param flipService the flip publisher
      * @param flipDirection the flipping flipDirection
      * @return an instance of the flipping command
      */

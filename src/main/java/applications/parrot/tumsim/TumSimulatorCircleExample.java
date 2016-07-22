@@ -34,9 +34,6 @@ public class TumSimulatorCircleExample extends AbstractNodeMain {
                 .setFrequency(0.05)
                 .fixYawAt(-Math.PI / 2)
                 .build();
-        return Choreography.builder()
-                .withTrajectory(second)
-                .forTime(120)
-                .build();
+        return Choreography.builder().withTrajectory(second).forTime(120).build();
     }
 }
