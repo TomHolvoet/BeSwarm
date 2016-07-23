@@ -59,10 +59,11 @@ final class CratesFlyingStateService implements MessageObserver<State>, FlyingSt
 
     @Override
     public Optional<FlyingState> getCurrentFlyingState() {
-        if (currentFlyingState.get() == null) {
+        final FlyingState flyingState = currentFlyingState.get();
+        if (flyingState == null) {
             return Optional.absent();
         } else {
-            return Optional.of(currentFlyingState.get());
+            return Optional.of(flyingState);
         }
     }
 

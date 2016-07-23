@@ -10,8 +10,8 @@ import services.rossubscribers.FlyingState;
 import services.rossubscribers.MessageObserver;
 import services.rossubscribers.MessagesSubscriberService;
 
-import javax.annotation.Nullable;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * @author Hoang Tung Dinh
@@ -19,7 +19,7 @@ import java.util.Map;
 final class TumSimFlyingStateService implements MessageObserver<Navdata>, FlyingStateService {
 
     private static final Logger logger = LoggerFactory.getLogger(TumSimFlyingStateService.class);
-    @Nullable private FlyingState currentFlyingState;
+    private final AtomicReference<FlyingState> currentFlyingState = new AtomicReference<>();
     private static final Map<Integer, ArDroneFlyingState> FLYING_STATE_MAP = ImmutableMap.<Integer,
             ArDroneFlyingState>builder()
             .put(0, ArDroneFlyingState.UNKNOWN)
@@ -50,16 +50,17 @@ final class TumSimFlyingStateService implements MessageObserver<Navdata>, Flying
 
     @Override
     public void onNewMessage(Navdata message) {
-        currentFlyingState = FLYING_STATE_MAP.get(message.getState()).getConvertedFlyingState();
-        logger.trace("Current flying state: {}", currentFlyingState.getStateName());
+        currentFlyingState.set(FLYING_STATE_MAP.get(message.getState()).getConvertedFlyingState());
+        logger.trace("Current flying state: {}", currentFlyingState.get().getStateName());
     }
 
     @Override
     public Optional<FlyingState> getCurrentFlyingState() {
-        if (currentFlyingState == null) {
+        final FlyingState flyingState = currentFlyingState.get();
+        if (flyingState == null) {
             return Optional.absent();
         } else {
-            return Optional.of(currentFlyingState);
+            return Optional.of(flyingState);
         }
     }
 
