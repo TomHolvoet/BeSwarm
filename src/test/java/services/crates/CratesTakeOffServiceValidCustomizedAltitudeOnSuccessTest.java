@@ -8,7 +8,8 @@ import static org.mockito.Mockito.mock;
 /**
  * @author Hoang Tung Dinh
  */
-public class CratesTakeOffServiceValidCustomizedAltitudeOnSuccessTest extends CratesTakeOffServiceValidCustomizedAltitudeTest {
+public class CratesTakeOffServiceValidCustomizedAltitudeOnSuccessTest extends
+        CratesTakeOffServiceValidCustomizedAltitudeTest {
     @Override
     void responseToMessage(ServiceResponseListener<TakeoffResponse> serviceResponseListener) {
         serviceResponseListener.onSuccess(mock(TakeoffResponse.class));

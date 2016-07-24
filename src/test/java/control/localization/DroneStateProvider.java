@@ -14,7 +14,11 @@ public final class DroneStateProvider {
 
     public static Object[] provideDroneStateValues() {
         final Pose pose1 = Pose.builder().setX(0).setY(0).setZ(10).setYaw(0.7853981633974483).build();
-        final BodyFrameVelocity bVel1 = Velocity.builder().setLinearX(1).setLinearY(0).setLinearZ(0).setAngularZ(0)
+        final BodyFrameVelocity bVel1 = Velocity.builder()
+                .setLinearX(1)
+                .setLinearY(0)
+                .setLinearZ(0)
+                .setAngularZ(0)
                 .build();
         final InertialFrameVelocity iVel1 = Velocity.builder()
                 .setLinearX(0.707)
@@ -25,14 +29,26 @@ public final class DroneStateProvider {
         final QuaternionAngle quAngle1 = QuaternionAngle.builder().setW(0.92388).setX(0).setY(0).setZ(0.38268).build();
 
         final Pose pose2 = Pose.builder().setX(0).setY(0).setZ(10).setYaw(0).build();
-        final BodyFrameVelocity bVel2 = Velocity.builder().setLinearX(1).setLinearY(2).setLinearZ(3).setAngularZ(4)
+        final BodyFrameVelocity bVel2 = Velocity.builder()
+                .setLinearX(1)
+                .setLinearY(2)
+                .setLinearZ(3)
+                .setAngularZ(4)
                 .build();
-        final InertialFrameVelocity iVel2 = Velocity.builder().setLinearX(1).setLinearY(2).setLinearZ(3).setAngularZ(4)
+        final InertialFrameVelocity iVel2 = Velocity.builder()
+                .setLinearX(1)
+                .setLinearY(2)
+                .setLinearZ(3)
+                .setAngularZ(4)
                 .build();
         final QuaternionAngle quAngle2 = QuaternionAngle.builder().setW(1).setX(0).setY(0).setZ(0).build();
 
         final Pose pose3 = Pose.builder().setX(0).setY(0).setZ(10).setYaw(1).build();
-        final BodyFrameVelocity bVel3 = Velocity.builder().setLinearX(1).setLinearY(2).setLinearZ(3).setAngularZ(4)
+        final BodyFrameVelocity bVel3 = Velocity.builder()
+                .setLinearX(1)
+                .setLinearY(2)
+                .setLinearZ(3)
+                .setAngularZ(4)
                 .build();
         final InertialFrameVelocity iVel3 = Velocity.builder()
                 .setLinearX(-1.14)

@@ -9,7 +9,8 @@ import static org.mockito.Mockito.mock;
 /**
  * @author Hoang Tung Dinh
  */
-public class CratesTakeOffServiceValidCustomizedAltitudeOnFailureTest extends CratesTakeOffServiceValidCustomizedAltitudeTest {
+public class CratesTakeOffServiceValidCustomizedAltitudeOnFailureTest extends
+        CratesTakeOffServiceValidCustomizedAltitudeTest {
     @Override
     void responseToMessage(ServiceResponseListener<TakeoffResponse> serviceResponseListener) {
         serviceResponseListener.onFailure(mock(RemoteException.class));

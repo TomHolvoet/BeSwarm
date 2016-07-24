@@ -52,8 +52,8 @@ public abstract class CratesTakeOffServiceTest {
         final TakeoffRequest sentTakeoffRequest = getTakeoffRequest(future);
         checkCorrectSentAltitude(sentTakeoffRequest);
 
-        final ServiceResponseListener<TakeoffResponse> serviceResponseListener = serviceResponseListenerArgumentCaptor
-                .getValue();
+        final ServiceResponseListener<TakeoffResponse> serviceResponseListener =
+                serviceResponseListenerArgumentCaptor.getValue();
         responseToMessage(serviceResponseListener);
 
         TimeUnit.MILLISECONDS.sleep(50);

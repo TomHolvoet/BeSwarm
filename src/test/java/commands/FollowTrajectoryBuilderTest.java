@@ -6,7 +6,6 @@ import utils.TestUtils;
 
 import static org.mockito.Mockito.RETURNS_MOCKS;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
 
 /**
  * @author Hoang Tung Dinh

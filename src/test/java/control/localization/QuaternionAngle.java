@@ -1,12 +1,10 @@
 package control.localization;
 
 import com.google.auto.value.AutoValue;
-import com.google.common.annotations.VisibleForTesting;
 
 /**
  * @author Hoang Tung Dinh
  */
-@VisibleForTesting
 @AutoValue
 abstract class QuaternionAngle {
 

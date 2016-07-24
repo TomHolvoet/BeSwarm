@@ -64,7 +64,9 @@ public class ParrotVelocity4dServiceTest {
     @Parameters(source = VelocityProvider.class)
     public void testSendVelocityMessageWithoutThreshold(Pose pose, BodyFrameVelocity bodyFrameVelocity,
             InertialFrameVelocity inertialFrameVelocity) {
-        final Velocity4dService parrotVelocity4dService = ParrotVelocity4dService.builder().publisher(publisher).build();
+        final Velocity4dService parrotVelocity4dService = ParrotVelocity4dService.builder()
+                .publisher(publisher)
+                .build();
         parrotVelocity4dService.sendVelocity4dMessage(inertialFrameVelocity, pose);
         checkMessageSetUp(bodyFrameVelocity, linear, angular);
         checkCorrectTwistMessageSent(publisher, twist);

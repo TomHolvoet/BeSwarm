@@ -7,7 +7,7 @@ import org.ros.node.topic.Publisher;
 import services.FlipService;
 import std_msgs.UInt8;
 
-import static com.google.common.truth.Truth.*;
+import static com.google.common.truth.Truth.assertThat;
 import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
@@ -23,7 +23,6 @@ public class ParrotFlipServiceTest {
     public void testSendFlipMessage() {
         final Publisher<UInt8> publisher = mock(Publisher.class, RETURNS_DEEP_STUBS);
         when(publisher.getTopicName().toString()).thenReturn("/bebop/flip");
-
 
         final FlipService parrotFlipService = ParrotFlipService.create(publisher);
 
