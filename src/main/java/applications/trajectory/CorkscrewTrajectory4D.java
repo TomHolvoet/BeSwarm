@@ -17,7 +17,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  *
  * @author Kristof Coninx <kristof.coninx AT cs.kuleuven.be>
  */
-public class CorkscrewTrajectory4D extends PeriodicTrajectory implements FiniteTrajectory4d {
+public final class CorkscrewTrajectory4D extends PeriodicTrajectory implements FiniteTrajectory4d {
 
     private static final double EPSILON = 0.00000001d;
     private final FiniteTrajectory4d unitTrajectory;
@@ -26,7 +26,7 @@ public class CorkscrewTrajectory4D extends PeriodicTrajectory implements FiniteT
     private Point4DCache cache;
     private final Point4D origin;
 
-    CorkscrewTrajectory4D(Point4D origin, Point3D destination, double speed, double radius,
+    private CorkscrewTrajectory4D(Point4D origin, Point3D destination, double speed, double radius,
             double frequency, double phase) {
         this.origin = origin;
         Point4D destinationProjection = Point4D.from(destination, 0);
@@ -48,6 +48,10 @@ public class CorkscrewTrajectory4D extends PeriodicTrajectory implements FiniteT
 
         //set initial cache
         this.cache = newCache(Point4D.origin(), Point4D.origin(), -1);
+    }
+
+    static Builder builder() {
+        return new Builder();
     }
 
     static Point4DCache newCache(Point4D point, Point4D velocity, double timeMark) {
@@ -164,6 +168,7 @@ public class CorkscrewTrajectory4D extends PeriodicTrajectory implements FiniteT
         private final LinearTrajectory1D linear;
         private final double endPoint;
         private final double speed;
+
         private boolean atEnd;
 
         private UnitTrajectory(Trajectory2d circlePlane, double speed, double endPoint) {
@@ -235,6 +240,7 @@ public class CorkscrewTrajectory4D extends PeriodicTrajectory implements FiniteT
         }
 
         private class NoMovement2DTrajectory implements Trajectory2d {
+
             @Override
             public double getDesiredPositionAbscissa(double timeInSeconds) {
                 return 0;
@@ -255,19 +261,18 @@ public class CorkscrewTrajectory4D extends PeriodicTrajectory implements FiniteT
                 return 0;
             }
         }
+
     }
 
     @AutoValue
-    static abstract class Point4DCache {
+    abstract static class Point4DCache {
+
         public abstract Point4D getDestinationPoint();
 
         public abstract Point4D getVelocityPoint();
 
         public abstract double getTimeMark();
-    }
 
-    static Builder builder() {
-        return new Builder();
     }
 
     /**
@@ -315,6 +320,9 @@ public class CorkscrewTrajectory4D extends PeriodicTrajectory implements FiniteT
             return this;
         }
 
+        /**
+         * @return a new Corkscrew trajectory instance.
+         */
         public CorkscrewTrajectory4D build() {
             checkNotNull(this.origin, "You have to Supply an origin with setOrigin()");
             checkNotNull(this.destination, "You have to Supply a destination with setOrigin()");
