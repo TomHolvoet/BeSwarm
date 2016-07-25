@@ -1,5 +1,6 @@
 package applications.trajectory;
 
+import applications.trajectory.points.Point3D;
 import applications.trajectory.points.Point4D;
 import com.google.common.collect.Lists;
 import control.FiniteTrajectory4d;
@@ -27,9 +28,12 @@ public class CorkscrewTrajectory4DTest {
 
     @Before
     public void setUp() throws Exception {
-        this.trajectory = new CorkscrewTrajectory4D(Point4D.create(0, 0, startDistance, 0),
-                Point4D.create(0, 0, startDistance + zDistance, 0),
-                speed, radius, frequency, phase);
+        this.trajectory = CorkscrewTrajectory4D.builder()
+                .setOrigin(Point4D.create(0, 0, startDistance, Math.PI))
+                .setDestination(Point3D.create(0, 0, startDistance + zDistance))
+                .setSpeed(speed)
+                .setRadius(radius).setFrequency(frequency).setPhase(phase)
+                .build();
         initialize();
     }
 
@@ -81,7 +85,6 @@ public class CorkscrewTrajectory4DTest {
             // TestUtils.EPSILON);
             l.add(trajectory.getDesiredVelocityZ(i / 10d));
         }
-        System.out.println(l);
         assertBounds(l, speed, speed);
     }
 
@@ -91,5 +94,23 @@ public class CorkscrewTrajectory4DTest {
                 Point4D.create(5, 5, 5, 5), 1);
         assertEquals(2, c.getDestinationPoint().getX(), 0);
         assertEquals(5, c.getVelocityPoint().getX(), 0);
+    }
+
+    @Test
+    public void testDefault() {
+        trajectory = CorkscrewTrajectory4D.builder().build();
+        assertEquals(0, trajectory.getTrajectoryDuration(), 0);
+    }
+
+    @Test
+    public void testAngularMovement() {
+        List<Double> l = Lists.newArrayList();
+        for (int i = 0; i < trajectory.getTrajectoryDuration() * 10; i++) {
+            //            assertEquals(0.01 * i, trajectory.getDesiredPositionZ(i / 10d),
+            // TestUtils.EPSILON);
+            l.add(trajectory.getDesiredAngleZ(i / 10d));
+        }
+        System.out.println(l);
+        assertBounds(l, Math.PI, Math.PI);
     }
 }

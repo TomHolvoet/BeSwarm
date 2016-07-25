@@ -8,6 +8,8 @@ import control.Trajectory2d;
 import utils.math.RotationOrder;
 import utils.math.Transformations;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
  * Corkscrew motion around a straight line trajectory defined by an origin and destination point,
  * a radius as perpendicular distance to the straight line (origin-destination) and a frequency
@@ -24,16 +26,17 @@ public class CorkscrewTrajectory4D extends PeriodicTrajectory implements FiniteT
     private Point4DCache cache;
     private final Point4D origin;
 
-    CorkscrewTrajectory4D(Point4D origin, Point4D destination, double speed, double radius,
+    CorkscrewTrajectory4D(Point4D origin, Point3D destination, double speed, double radius,
             double frequency, double phase) {
         this.origin = origin;
-        double distance = Point4D.distance(origin, destination);
-        unitTrajectory = new UntransformedUsage(
+        Point4D destinationProjection = Point4D.from(destination, 0);
+        double distance = Point4D.distance(origin, destinationProjection);
+        unitTrajectory = new UnitTrajectory(
                 CircleTrajectory2D.builder().setRadius(radius).setFrequency(frequency)
                         .setPhase(phase).build(), speed, distance);
 
         //translate origin to get angles.
-        Point4D translated = destination.minus(origin);
+        Point4D translated = destinationProjection.minus(origin);
 
         //find angles to unit trajectory
         double x = translated.getX();
@@ -156,14 +159,14 @@ public class CorkscrewTrajectory4D extends PeriodicTrajectory implements FiniteT
         return transformToRealVelocity(getCacheVelocity()).getAngle();
     }
 
-    private final class UntransformedUsage implements FiniteTrajectory4d {
+    private final class UnitTrajectory implements FiniteTrajectory4d {
         private Trajectory2d circlePlane;
         private final LinearTrajectory1D linear;
         private final double endPoint;
         private final double speed;
         private boolean atEnd;
 
-        private UntransformedUsage(Trajectory2d circlePlane, double speed, double endPoint) {
+        private UnitTrajectory(Trajectory2d circlePlane, double speed, double endPoint) {
             this.linear = new LinearTrajectory1D(0, speed);
             this.circlePlane = circlePlane;
             this.endPoint = endPoint;
@@ -263,4 +266,59 @@ public class CorkscrewTrajectory4D extends PeriodicTrajectory implements FiniteT
         public abstract double getTimeMark();
     }
 
+    static Builder builder() {
+        return new Builder();
+    }
+
+    /**
+     * Builder for corkscrew trajectories.
+     */
+    public static final class Builder {
+        private Point4D origin = Point4D.origin();
+        private Point3D destination = Point3D.origin();
+        private double speed = 1;
+        private double radius = 0.5;
+        private double frequency = 0.3;
+        private double phase = 0;
+
+        private Builder() {
+        }
+
+        public Builder setOrigin(Point4D origin) {
+            this.origin = origin;
+            return this;
+        }
+
+        public Builder setDestination(
+                Point3D destination) {
+            this.destination = destination;
+            return this;
+        }
+
+        public Builder setSpeed(double speed) {
+            this.speed = speed;
+            return this;
+        }
+
+        public Builder setRadius(double radius) {
+            this.radius = radius;
+            return this;
+        }
+
+        public Builder setFrequency(double frequency) {
+            this.frequency = frequency;
+            return this;
+        }
+
+        public Builder setPhase(double phase) {
+            this.phase = phase;
+            return this;
+        }
+
+        public CorkscrewTrajectory4D build() {
+            checkNotNull(this.origin, "You have to Supply an origin with setOrigin()");
+            checkNotNull(this.destination, "You have to Supply a destination with setOrigin()");
+            return new CorkscrewTrajectory4D(origin, destination, speed, radius, frequency, phase);
+        }
+    }
 }

@@ -100,7 +100,7 @@ final class CircleTrajectory4D extends PeriodicTrajectory implements Trajectory4
     /**
      * Builder class for 4D circle trajectories.
      */
-    public final static class Builder {
+    public static final class Builder {
         private Point3D location = Point3D.origin();
         private double radius = 1;
         private double frequency = 0.05;
