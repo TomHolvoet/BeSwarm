@@ -25,12 +25,14 @@ public class CorkscrewTrajectory4DTest {
     private FiniteTrajectory4d trajectory;
     private final double zDistance = 10;
     private final double startDistance = 10;
+    private final double x = 0;
+    private final double y = 0;
 
     @Before
     public void setUp() throws Exception {
         this.trajectory = CorkscrewTrajectory4D.builder()
-                .setOrigin(Point4D.create(0, 0, startDistance, Math.PI))
-                .setDestination(Point3D.create(0, 0, startDistance + zDistance))
+                .setOrigin(Point4D.create(x, y, startDistance, Math.PI))
+                .setDestination(Point3D.create(x, y, startDistance + zDistance))
                 .setSpeed(speed)
                 .setRadius(radius).setFrequency(frequency).setPhase(phase)
                 .build();
@@ -50,7 +52,7 @@ public class CorkscrewTrajectory4DTest {
         for (int i = 0; i < 1000; i++) {
             l.add(trajectory.getDesiredPositionX(i / 10d));
         }
-        assertBounds(l, 0 - radius, 0 + radius);
+        assertBounds(l, x - radius, x + radius);
     }
 
     @Test
@@ -59,7 +61,7 @@ public class CorkscrewTrajectory4DTest {
         for (int i = 0; i < 1000; i++) {
             l.add(trajectory.getDesiredPositionY(i / 10d));
         }
-        assertBounds(l, 0 - radius, 0 + radius);
+        assertBounds(l, y - radius, y + radius);
     }
 
     @Test
@@ -110,7 +112,59 @@ public class CorkscrewTrajectory4DTest {
             // TestUtils.EPSILON);
             l.add(trajectory.getDesiredAngleZ(i / 10d));
         }
-        System.out.println(l);
         assertBounds(l, Math.PI, Math.PI);
     }
+
+    @Test
+    public void testTrajectoryVelocityBoundsSimple() {
+        testVelocity(this.trajectory);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testTrajectoryVelocityBoundsComplexTrajectory1() {
+        this.trajectory = CorkscrewTrajectory4D.builder()
+                .setOrigin(Point4D.create(x, y, startDistance, Math.PI))
+                .setDestination(Point3D.create(x, y + 15, startDistance + zDistance))
+                .setSpeed(speed)
+                .setRadius(radius).setFrequency(frequency).setPhase(phase)
+                .build();
+        testVelocity(this.trajectory);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testTrajectoryVelocityBoundsComplexTrajectory2() {
+        this.trajectory = CorkscrewTrajectory4D.builder()
+                .setOrigin(Point4D.create(0, 0, 0, Math.PI))
+                .setDestination(Point3D.create(15, 15, 15))
+                .setSpeed(speed)
+                .setRadius(radius).setFrequency(frequency).setPhase(phase)
+                .build();
+        testVelocity(this.trajectory);
+    }
+
+    @Test
+    public void testTrajectoryVelocityBoundsAngle() {
+        List<Double> l = Lists.newArrayList();
+        for (int i = 0; i < 1000; i++) {
+            l.add(trajectory.getDesiredAngularVelocityZ(i / 10d));
+        }
+        assertBounds(l, 0, 0);
+    }
+
+    private void testVelocity(FiniteTrajectory4d trajectory) {
+        List<Double> lx = Lists.newArrayList();
+        List<Double> ly = Lists.newArrayList();
+        List<Double> lz = Lists.newArrayList();
+        for (int i = 0; i < 1000; i++) {
+            lx.add(trajectory.getDesiredVelocityX(i / 10d));
+            ly.add(trajectory.getDesiredVelocityY(i / 10d));
+            lz.add(trajectory.getDesiredVelocityZ(i / 10d));
+
+        }
+        assertBounds(lx, -1, 1);
+        assertBounds(ly, -1, 1);
+        assertBounds(lz, -1, 1);
+
+    }
+
 }

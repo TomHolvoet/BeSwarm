@@ -8,6 +8,7 @@ import control.Trajectory2d;
 import utils.math.RotationOrder;
 import utils.math.Transformations;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
@@ -28,6 +29,7 @@ public final class CorkscrewTrajectory4D extends PeriodicTrajectory implements F
 
     private CorkscrewTrajectory4D(Point4D origin, Point3D destination, double speed, double radius,
             double frequency, double phase) {
+        super(phase, Point4D.origin(), radius, frequency);
         this.origin = origin;
         Point4D destinationProjection = Point4D.from(destination, 0);
         double distance = Point4D.distance(origin, destinationProjection);
@@ -35,7 +37,7 @@ public final class CorkscrewTrajectory4D extends PeriodicTrajectory implements F
                 CircleTrajectory2D.builder().setRadius(radius).setFrequency(frequency)
                         .setPhase(phase).build(), speed, distance);
 
-        //translate origin to get angles.
+        //translate origin to get angles to unit vectors.
         Point4D translated = destinationProjection.minus(origin);
 
         //find angles to unit trajectory
@@ -43,11 +45,49 @@ public final class CorkscrewTrajectory4D extends PeriodicTrajectory implements F
         double y = translated.getY();
         double z = translated.getZ();
 
+        //check components for excessive speeds.
+        Point3D speedComponent = Point3D
+                .create(speed * (x / distance), speed * (y / distance), speed * (z / distance));
+
+        checkArgument(isValidVelocity(speedComponent.getX(), speed, radius, frequency),
+                "X velocity component is higher than 1 for the given origin-destination points, "
+                        + "velocity, radius and frequency values.");
+        checkArgument(isValidVelocity(speedComponent.getY(), speed, radius, frequency),
+                "Y velocity component is higher than 1 for the given origin-destination points, "
+                        + "velocity, radius and frequency values.");
+        checkArgument(isValidVelocity(speedComponent.getZ(), speed, radius, frequency),
+                "Z velocity component is higher than 1 for the given origin-destination points, "
+                        + "velocity, radius and frequency values.");
+
         this.aroundX = (Math.PI / 2) - Math.asin(z / Math.sqrt(Math.pow(y, 2) + Math.pow(z, 2)));
         this.aroundY = Math.acos(x / Math.sqrt(Math.pow(x, 2) + Math.pow(z, 2)));
 
         //set initial cache
         this.cache = newCache(Point4D.origin(), Point4D.origin(), -1);
+    }
+
+    /**
+     * Calculates whether for a given velocity vector component, magnitude and perpendicular
+     * velocity magnitude from the circle movement parameters, the velocity component is still
+     * within acceptable bounds.
+     *
+     * @param speedcomp    the component of the velocity. (eg. Vx as speed*cos(phi) with phi the
+     *                     angle of the vector with regards to the component unit vector.)
+     * @param speed        the speed or magnitude of the velocity vector |v|.
+     * @param radius       the radius of the circle that attains greatest magnitude perpendicular to
+     *                     the current component.
+     * @param frequencythe frequency of the circle that attains greatest magnitude perpendicular to
+     *                     the current component.
+     * @return false if for the given arguments, the component velocity is >1.
+     */
+    private static boolean isValidVelocity(double speedcomp, double speed, double radius,
+            double frequency) {
+        double rfreq2pi = radius * frequency * TWOPI;
+        double vcomp = speedcomp + rfreq2pi * Math.sqrt(1 - Math.pow(speedcomp / speed, 2));
+        if (vcomp > 1) {
+            return false;
+        }
+        return true;
     }
 
     static Builder builder() {
@@ -90,15 +130,14 @@ public final class CorkscrewTrajectory4D extends PeriodicTrajectory implements F
         return this.cache.getVelocityPoint();
     }
 
-    private Point4D transformToRealPosition(Point4D toTrans) {
-        return transformToRealVelocity(toTrans).plus(origin);
+    private Point4D translationTransform(Point4D toTrans) {
+        return rotationTransform(toTrans, aroundX, aroundY).plus(origin);
     }
 
-    private Point4D transformToRealVelocity(Point4D toTrans) {
+    private static Point4D rotationTransform(Point4D toTrans, double aroundX, double aroundY) {
         Point4D rotated = Point4D.from(Transformations
-                        .reverseRotation(Point3D.project(toTrans), aroundX, aroundY, 0,
-                                RotationOrder.XYZ),
-                0);
+                .reverseRotation(Point3D.project(toTrans), aroundX, aroundY, 0,
+                        RotationOrder.XYZ), 0);
         return rotated;
     }
 
@@ -111,56 +150,56 @@ public final class CorkscrewTrajectory4D extends PeriodicTrajectory implements F
     public double getDesiredPositionX(double timeInSeconds) {
         final double currentTime = getRelativeTime(timeInSeconds);
         refreshCache(currentTime);
-        return transformToRealPosition(getCachePoint()).getX();
+        return translationTransform(getCachePoint()).getX();
     }
 
     @Override
     public double getDesiredVelocityX(double timeInSeconds) {
         final double currentTime = getRelativeTime(timeInSeconds);
         refreshCache(currentTime);
-        return transformToRealVelocity(getCacheVelocity()).getX();
+        return rotationTransform(getCacheVelocity(), aroundX, aroundY).getX();
     }
 
     @Override
     public double getDesiredPositionY(double timeInSeconds) {
         final double currentTime = getRelativeTime(timeInSeconds);
         refreshCache(currentTime);
-        return transformToRealPosition(getCachePoint()).getY();
+        return translationTransform(getCachePoint()).getY();
     }
 
     @Override
     public double getDesiredVelocityY(double timeInSeconds) {
         final double currentTime = getRelativeTime(timeInSeconds);
         refreshCache(currentTime);
-        return transformToRealVelocity(getCacheVelocity()).getY();
+        return rotationTransform(getCacheVelocity(), aroundX, aroundY).getY();
     }
 
     @Override
     public double getDesiredPositionZ(double timeInSeconds) {
         final double currentTime = getRelativeTime(timeInSeconds);
         refreshCache(currentTime);
-        return transformToRealPosition(getCachePoint()).getZ();
+        return translationTransform(getCachePoint()).getZ();
     }
 
     @Override
     public double getDesiredVelocityZ(double timeInSeconds) {
         final double currentTime = getRelativeTime(timeInSeconds);
         refreshCache(currentTime);
-        return transformToRealVelocity(getCacheVelocity()).getZ();
+        return rotationTransform(getCacheVelocity(), aroundX, aroundY).getZ();
     }
 
     @Override
     public double getDesiredAngleZ(double timeInSeconds) {
         final double currentTime = getRelativeTime(timeInSeconds);
         refreshCache(currentTime);
-        return transformToRealPosition(getCachePoint()).getAngle();
+        return translationTransform(getCachePoint()).getAngle();
     }
 
     @Override
     public double getDesiredAngularVelocityZ(double timeInSeconds) {
         final double currentTime = getRelativeTime(timeInSeconds);
         refreshCache(currentTime);
-        return transformToRealVelocity(getCacheVelocity()).getAngle();
+        return rotationTransform(getCacheVelocity(), aroundX, aroundY).getAngle();
     }
 
     private final class UnitTrajectory implements FiniteTrajectory4d {
