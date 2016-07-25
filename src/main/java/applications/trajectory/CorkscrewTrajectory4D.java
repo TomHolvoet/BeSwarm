@@ -89,7 +89,9 @@ public class CorkscrewTrajectory4D extends PeriodicTrajectory implements FiniteT
 
     private Point4D transformToRealVelocity(Point4D toTrans) {
         Point4D rotated = Point4D.from(Transformations
-                .reverseRotation(Point3D.project(toTrans), aroundX, aroundY, 0, RotationOrder.XYZ), 0);
+                        .reverseRotation(Point3D.project(toTrans), aroundX, aroundY, 0,
+                                RotationOrder.XYZ),
+                0);
         return rotated;
     }
 
@@ -159,7 +161,6 @@ public class CorkscrewTrajectory4D extends PeriodicTrajectory implements FiniteT
         private final LinearTrajectory1D linear;
         private final double endPoint;
         private final double speed;
-
         private boolean atEnd;
 
         private UntransformedUsage(Trajectory2d circlePlane, double speed, double endPoint) {
@@ -183,27 +184,8 @@ public class CorkscrewTrajectory4D extends PeriodicTrajectory implements FiniteT
         }
 
         private void markEnd() {
-            this.circlePlane = new Trajectory2d() {
-                @Override
-                public double getDesiredPositionAbscissa(double timeInSeconds) {
-                    return 0;
-                }
-
-                @Override
-                public double getDesiredVelocityAbscissa(double timeInSeconds) {
-                    return 0;
-                }
-
-                @Override
-                public double getDesiredPositionOrdinate(double timeInSeconds) {
-                    return 0;
-                }
-
-                @Override
-                public double getDesiredVelocityOrdinate(double timeInSeconds) {
-                    return 0;
-                }
-            };
+            this.atEnd = true;
+            this.circlePlane = new NoMovement2DTrajectory();
         }
 
         @Override
@@ -249,6 +231,27 @@ public class CorkscrewTrajectory4D extends PeriodicTrajectory implements FiniteT
             return endPoint / speed;
         }
 
+        private class NoMovement2DTrajectory implements Trajectory2d {
+            @Override
+            public double getDesiredPositionAbscissa(double timeInSeconds) {
+                return 0;
+            }
+
+            @Override
+            public double getDesiredVelocityAbscissa(double timeInSeconds) {
+                return 0;
+            }
+
+            @Override
+            public double getDesiredPositionOrdinate(double timeInSeconds) {
+                return 0;
+            }
+
+            @Override
+            public double getDesiredVelocityOrdinate(double timeInSeconds) {
+                return 0;
+            }
+        }
     }
 
     @AutoValue

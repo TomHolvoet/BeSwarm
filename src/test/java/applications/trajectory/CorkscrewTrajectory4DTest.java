@@ -64,7 +64,6 @@ public class CorkscrewTrajectory4DTest {
         for (int i = 0; i < 1000; i++) {
             l.add(trajectory.getDesiredPositionZ(i / 10d));
         }
-        System.out.println(l);
         assertBounds(l, startDistance, startDistance + zDistance);
     }
 
@@ -77,11 +76,12 @@ public class CorkscrewTrajectory4DTest {
     @Test
     public void testTrajectoryBoundsZVelocity() {
         List<Double> l = Lists.newArrayList();
-        for (int i = 0; i < 1000; i++) {
+        for (int i = 0; i < trajectory.getTrajectoryDuration() * 10; i++) {
             //            assertEquals(0.01 * i, trajectory.getDesiredPositionZ(i / 10d),
             // TestUtils.EPSILON);
             l.add(trajectory.getDesiredVelocityZ(i / 10d));
         }
+        System.out.println(l);
         assertBounds(l, speed, speed);
     }
 
