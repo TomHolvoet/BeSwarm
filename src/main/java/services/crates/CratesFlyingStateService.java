@@ -5,21 +5,18 @@ import com.google.common.collect.ImmutableMap;
 import hal_quadrotor.State;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import services.FlyingStateService;
+import services.AbstractFlyingStateService;
 import services.rossubscribers.FlyingState;
-import services.rossubscribers.MessageObserver;
 import services.rossubscribers.MessagesSubscriberService;
 
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * @author Hoang Tung Dinh
  */
-final class CratesFlyingStateService implements MessageObserver<State>, FlyingStateService {
+final class CratesFlyingStateService extends AbstractFlyingStateService<State> {
 
     private static final Logger logger = LoggerFactory.getLogger(CratesFlyingStateService.class);
-    private final AtomicReference<FlyingState> currentFlyingState = new AtomicReference<>();
     private static final Map<String, CratesFlyingState> FLYING_STATE_MAP = ImmutableMap.<String,
             CratesFlyingState>builder()
             .put("AnglesHeight", CratesFlyingState.ANGLES_HEIGHT)
@@ -50,20 +47,12 @@ final class CratesFlyingStateService implements MessageObserver<State>, FlyingSt
     @Override
     public void onNewMessage(State message) {
         final String controllerStateName = message.getController();
-        if (currentFlyingState.get() == null || !currentFlyingState.get().getStateName().equals(controllerStateName)) {
-            currentFlyingState.set(FLYING_STATE_MAP.get(controllerStateName).getConvertedFlyingState());
-        }
-        logger.trace("Current crates state: {}. Current standard flying state: {}.", controllerStateName,
-                currentFlyingState.get().getStateName());
-    }
-
-    @Override
-    public Optional<FlyingState> getCurrentFlyingState() {
-        final FlyingState flyingState = currentFlyingState.get();
-        if (flyingState == null) {
-            return Optional.absent();
-        } else {
-            return Optional.of(flyingState);
+        final Optional<FlyingState> currentFlyingState = getCurrentFlyingState();
+        if (!currentFlyingState.isPresent() || !currentFlyingState.get().getStateName().equals(controllerStateName)) {
+            final FlyingState newFlyingState = FLYING_STATE_MAP.get(controllerStateName).getConvertedFlyingState();
+            setCurrentFlyingState(newFlyingState);
+            logger.trace("Current crates state: {}. Current standard flying state: {}.", controllerStateName,
+                    newFlyingState.getStateName());
         }
     }
 

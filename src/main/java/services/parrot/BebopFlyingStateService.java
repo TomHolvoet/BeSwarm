@@ -1,25 +1,19 @@
 package services.parrot;
 
 import bebop_msgs.Ardrone3PilotingStateFlyingStateChanged;
-import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import services.FlyingStateService;
+import services.AbstractFlyingStateService;
 import services.rossubscribers.FlyingState;
-import services.rossubscribers.MessageObserver;
 import services.rossubscribers.MessagesSubscriberService;
-
-import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * @author Hoang Tung Dinh
  */
-public final class BebopFlyingStateService implements MessageObserver<Ardrone3PilotingStateFlyingStateChanged>,
-        FlyingStateService {
+public final class BebopFlyingStateService extends AbstractFlyingStateService<Ardrone3PilotingStateFlyingStateChanged> {
 
     private static final Logger logger = LoggerFactory.getLogger(BebopFlyingStateService.class);
-    private final AtomicReference<FlyingState> currentFlyingState = new AtomicReference<>();
     private static final ImmutableMap<Byte, FlyingState> FLYING_STATE_MAP = ImmutableMap.<Byte, FlyingState>builder()
             .put(
             (byte) 0, FlyingState.LANDED)
@@ -48,17 +42,7 @@ public final class BebopFlyingStateService implements MessageObserver<Ardrone3Pi
 
     @Override
     public void onNewMessage(Ardrone3PilotingStateFlyingStateChanged message) {
-        currentFlyingState.set(FLYING_STATE_MAP.get(message.getState()));
-        logger.info("Current flying state: {}", currentFlyingState.get().getStateName());
-    }
-
-    @Override
-    public Optional<FlyingState> getCurrentFlyingState() {
-        final FlyingState flyingState = currentFlyingState.get();
-        if (flyingState == null) {
-            return Optional.absent();
-        } else {
-            return Optional.of(flyingState);
-        }
+        setCurrentFlyingState(FLYING_STATE_MAP.get(message.getState()));
+        logger.info("Current flying state: {}", getCurrentFlyingState().get().getStateName());
     }
 }

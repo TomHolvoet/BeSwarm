@@ -1,25 +1,21 @@
 package services.parrot;
 
 import ardrone_autonomy.Navdata;
-import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import services.FlyingStateService;
+import services.AbstractFlyingStateService;
 import services.rossubscribers.FlyingState;
-import services.rossubscribers.MessageObserver;
 import services.rossubscribers.MessagesSubscriberService;
 
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * @author Hoang Tung Dinh
  */
-final class TumSimFlyingStateService implements MessageObserver<Navdata>, FlyingStateService {
+final class TumSimFlyingStateService extends AbstractFlyingStateService<Navdata> {
 
     private static final Logger logger = LoggerFactory.getLogger(TumSimFlyingStateService.class);
-    private final AtomicReference<FlyingState> currentFlyingState = new AtomicReference<>();
     private static final Map<Integer, ArDroneFlyingState> FLYING_STATE_MAP = ImmutableMap.<Integer,
             ArDroneFlyingState>builder()
             .put(0, ArDroneFlyingState.UNKNOWN)
@@ -50,18 +46,8 @@ final class TumSimFlyingStateService implements MessageObserver<Navdata>, Flying
 
     @Override
     public void onNewMessage(Navdata message) {
-        currentFlyingState.set(FLYING_STATE_MAP.get(message.getState()).getConvertedFlyingState());
-        logger.trace("Current flying state: {}", currentFlyingState.get().getStateName());
-    }
-
-    @Override
-    public Optional<FlyingState> getCurrentFlyingState() {
-        final FlyingState flyingState = currentFlyingState.get();
-        if (flyingState == null) {
-            return Optional.absent();
-        } else {
-            return Optional.of(flyingState);
-        }
+        setCurrentFlyingState(FLYING_STATE_MAP.get(message.getState()).getConvertedFlyingState());
+        logger.trace("Current flying state: {}", getCurrentFlyingState().get().getStateName());
     }
 
     private enum ArDroneFlyingState {
