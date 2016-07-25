@@ -57,9 +57,7 @@ final class Velocity2dController implements VelocityController {
 
         private Velocity2dService velocity2dService;
 
-        Builder() {
-            super();
-        }
+        Builder() {}
 
         @Override
         Builder self() {
@@ -85,9 +83,9 @@ final class Velocity2dController implements VelocityController {
          */
         public Velocity2dController build() {
             checkNotNull(velocity2dService);
-            checkNotNull(super.trajectory4d);
-            checkNotNull(super.pidLinearX);
-            checkNotNull(super.pidLinearY);
+            checkNotNull(trajectory4d);
+            checkNotNull(pidLinearX);
+            checkNotNull(pidLinearY);
             return new Velocity2dController(this);
         }
     }

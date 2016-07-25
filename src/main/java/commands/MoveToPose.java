@@ -38,9 +38,7 @@ public final class MoveToPose implements Command {
         private Pose goalPose;
         private double durationInSeconds;
 
-        private Builder() {
-            super();
-        }
+        private Builder() {}
 
         @Override
         Builder self() {

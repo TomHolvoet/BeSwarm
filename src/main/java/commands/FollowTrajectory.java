@@ -143,9 +143,7 @@ public final class FollowTrajectory implements Command {
         private Trajectory4d trajectory4d;
         private Double durationInSeconds;
 
-        private Builder() {
-            super();
-        }
+        private Builder() {}
 
         @Override
         Builder self() {
@@ -182,14 +180,14 @@ public final class FollowTrajectory implements Command {
         public FollowTrajectory build() {
             checkNotNull(trajectory4d);
             checkNotNull(durationInSeconds);
-            checkNotNull(super.pidLinearXParameters);
-            checkNotNull(super.pidLinearYParameters);
-            checkNotNull(super.pidLinearZParameters);
-            checkNotNull(super.pidAngularZParameters);
-            checkNotNull(super.controlRateInSeconds);
-            checkNotNull(super.droneStateLifeDurationInSeconds);
-            checkNotNull(super.stateEstimator);
-            checkNotNull(super.velocityService);
+            checkNotNull(pidLinearXParameters);
+            checkNotNull(pidLinearYParameters);
+            checkNotNull(pidLinearZParameters);
+            checkNotNull(pidAngularZParameters);
+            checkNotNull(controlRateInSeconds);
+            checkNotNull(droneStateLifeDurationInSeconds);
+            checkNotNull(stateEstimator);
+            checkNotNull(velocityService);
 
             return new FollowTrajectory(this);
         }

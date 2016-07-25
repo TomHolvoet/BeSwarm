@@ -45,9 +45,7 @@ final class Velocity4dController implements VelocityController {
 
         private Velocity4dService velocity4dService;
 
-        Builder() {
-            super();
-        }
+        Builder() {}
 
         @Override
         Builder self() {
@@ -73,10 +71,10 @@ final class Velocity4dController implements VelocityController {
          */
         public Velocity4dController build() {
             checkNotNull(velocity4dService);
-            checkNotNull(super.trajectory4d);
-            checkNotNull(super.pidLinearX);
-            checkNotNull(super.pidLinearY);
-            checkNotNull(super.pidLinearZ);
+            checkNotNull(trajectory4d);
+            checkNotNull(pidLinearX);
+            checkNotNull(pidLinearY);
+            checkNotNull(pidLinearZ);
 
             final PidController4d pidController4d = PidController4d.builder()
                     .trajectory4d(trajectory4d)
@@ -95,7 +93,6 @@ final class Velocity4dController implements VelocityController {
         PidParameters pidAngularZ;
 
         BuilderWithVelocity4dService() {
-            super();
             pidAngularZ = DefaultPidParameters.ANGULAR_Z.getParameters();
         }
 

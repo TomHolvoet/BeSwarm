@@ -61,9 +61,7 @@ final class Velocity3dController implements VelocityController {
 
         private Velocity3dService velocity3dService;
 
-        Builder() {
-            super();
-        }
+        Builder() {}
 
         @Override
         Builder self() {
@@ -89,10 +87,10 @@ final class Velocity3dController implements VelocityController {
          */
         public Velocity3dController build() {
             checkNotNull(velocity3dService);
-            checkNotNull(super.trajectory4d);
-            checkNotNull(super.pidLinearX);
-            checkNotNull(super.pidLinearY);
-            checkNotNull(super.pidLinearZ);
+            checkNotNull(trajectory4d);
+            checkNotNull(pidLinearX);
+            checkNotNull(pidLinearY);
+            checkNotNull(pidLinearZ);
             return new Velocity3dController(this);
         }
     }
@@ -102,7 +100,6 @@ final class Velocity3dController implements VelocityController {
         PidParameters pidLinearZ;
 
         BuilderWithVelocity3dService() {
-            super();
             pidLinearZ = DefaultPidParameters.LINEAR_Z.getParameters();
         }
 
