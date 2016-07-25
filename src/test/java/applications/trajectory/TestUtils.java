@@ -22,8 +22,8 @@ public final class TestUtils {
     public static void assertBounds(List<Double> results, double min,
             double max) {
         for (Double d : results) {
-            Assert.assertTrue(Collections.min(results) + EPSILON >= min);
-            Assert.assertTrue(Collections.max(results) - EPSILON <= max);
+            Assert.assertTrue(Collections.min(results) + EPSILON >= min - EPSILON);
+            Assert.assertTrue(Collections.max(results) - EPSILON <= max + EPSILON);
         }
     }
 

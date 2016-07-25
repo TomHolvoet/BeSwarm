@@ -8,6 +8,8 @@ import control.Trajectory2d;
 import utils.math.RotationOrder;
 import utils.math.Transformations;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
  * Corkscrew motion around a straight line trajectory defined by an origin and destination point,
  * a radius as perpendicular distance to the straight line (origin-destination) and a frequency
@@ -15,7 +17,7 @@ import utils.math.Transformations;
  *
  * @author Kristof Coninx <kristof.coninx AT cs.kuleuven.be>
  */
-public class CorkscrewTrajectory4D extends PeriodicTrajectory implements FiniteTrajectory4d {
+public final class CorkscrewTrajectory4D extends PeriodicTrajectory implements FiniteTrajectory4d {
 
     private static final double EPSILON = 0.00000001d;
     private final FiniteTrajectory4d unitTrajectory;
@@ -24,16 +26,17 @@ public class CorkscrewTrajectory4D extends PeriodicTrajectory implements FiniteT
     private Point4DCache cache;
     private final Point4D origin;
 
-    CorkscrewTrajectory4D(Point4D origin, Point4D destination, double speed, double radius,
+    private CorkscrewTrajectory4D(Point4D origin, Point3D destination, double speed, double radius,
             double frequency, double phase) {
         this.origin = origin;
-        double distance = Point4D.distance(origin, destination);
-        unitTrajectory = new UntransformedUsage(
+        Point4D destinationProjection = Point4D.from(destination, 0);
+        double distance = Point4D.distance(origin, destinationProjection);
+        unitTrajectory = new UnitTrajectory(
                 CircleTrajectory2D.builder().setRadius(radius).setFrequency(frequency)
                         .setPhase(phase).build(), speed, distance);
 
         //translate origin to get angles.
-        Point4D translated = destination.minus(origin);
+        Point4D translated = destinationProjection.minus(origin);
 
         //find angles to unit trajectory
         double x = translated.getX();
@@ -45,6 +48,10 @@ public class CorkscrewTrajectory4D extends PeriodicTrajectory implements FiniteT
 
         //set initial cache
         this.cache = newCache(Point4D.origin(), Point4D.origin(), -1);
+    }
+
+    static Builder builder() {
+        return new Builder();
     }
 
     static Point4DCache newCache(Point4D point, Point4D velocity, double timeMark) {
@@ -89,7 +96,9 @@ public class CorkscrewTrajectory4D extends PeriodicTrajectory implements FiniteT
 
     private Point4D transformToRealVelocity(Point4D toTrans) {
         Point4D rotated = Point4D.from(Transformations
-                .reverseRotation(Point3D.project(toTrans), aroundX, aroundY, 0, RotationOrder.XYZ), 0);
+                        .reverseRotation(Point3D.project(toTrans), aroundX, aroundY, 0,
+                                RotationOrder.XYZ),
+                0);
         return rotated;
     }
 
@@ -154,7 +163,7 @@ public class CorkscrewTrajectory4D extends PeriodicTrajectory implements FiniteT
         return transformToRealVelocity(getCacheVelocity()).getAngle();
     }
 
-    private final class UntransformedUsage implements FiniteTrajectory4d {
+    private final class UnitTrajectory implements FiniteTrajectory4d {
         private Trajectory2d circlePlane;
         private final LinearTrajectory1D linear;
         private final double endPoint;
@@ -162,7 +171,7 @@ public class CorkscrewTrajectory4D extends PeriodicTrajectory implements FiniteT
 
         private boolean atEnd;
 
-        private UntransformedUsage(Trajectory2d circlePlane, double speed, double endPoint) {
+        private UnitTrajectory(Trajectory2d circlePlane, double speed, double endPoint) {
             this.linear = new LinearTrajectory1D(0, speed);
             this.circlePlane = circlePlane;
             this.endPoint = endPoint;
@@ -183,27 +192,8 @@ public class CorkscrewTrajectory4D extends PeriodicTrajectory implements FiniteT
         }
 
         private void markEnd() {
-            this.circlePlane = new Trajectory2d() {
-                @Override
-                public double getDesiredPositionAbscissa(double timeInSeconds) {
-                    return 0;
-                }
-
-                @Override
-                public double getDesiredVelocityAbscissa(double timeInSeconds) {
-                    return 0;
-                }
-
-                @Override
-                public double getDesiredPositionOrdinate(double timeInSeconds) {
-                    return 0;
-                }
-
-                @Override
-                public double getDesiredVelocityOrdinate(double timeInSeconds) {
-                    return 0;
-                }
-            };
+            this.atEnd = true;
+            this.circlePlane = new NoMovement2DTrajectory();
         }
 
         @Override
@@ -249,15 +239,94 @@ public class CorkscrewTrajectory4D extends PeriodicTrajectory implements FiniteT
             return endPoint / speed;
         }
 
+        private class NoMovement2DTrajectory implements Trajectory2d {
+
+            @Override
+            public double getDesiredPositionAbscissa(double timeInSeconds) {
+                return 0;
+            }
+
+            @Override
+            public double getDesiredVelocityAbscissa(double timeInSeconds) {
+                return 0;
+            }
+
+            @Override
+            public double getDesiredPositionOrdinate(double timeInSeconds) {
+                return 0;
+            }
+
+            @Override
+            public double getDesiredVelocityOrdinate(double timeInSeconds) {
+                return 0;
+            }
+        }
+
     }
 
     @AutoValue
-    static abstract class Point4DCache {
+    abstract static class Point4DCache {
+
         public abstract Point4D getDestinationPoint();
 
         public abstract Point4D getVelocityPoint();
 
         public abstract double getTimeMark();
+
     }
 
+    /**
+     * Builder for corkscrew trajectories.
+     */
+    public static final class Builder {
+        private Point4D origin = Point4D.origin();
+        private Point3D destination = Point3D.origin();
+        private double speed = 1;
+        private double radius = 0.5;
+        private double frequency = 0.3;
+        private double phase = 0;
+
+        private Builder() {
+        }
+
+        public Builder setOrigin(Point4D origin) {
+            this.origin = origin;
+            return this;
+        }
+
+        public Builder setDestination(
+                Point3D destination) {
+            this.destination = destination;
+            return this;
+        }
+
+        public Builder setSpeed(double speed) {
+            this.speed = speed;
+            return this;
+        }
+
+        public Builder setRadius(double radius) {
+            this.radius = radius;
+            return this;
+        }
+
+        public Builder setFrequency(double frequency) {
+            this.frequency = frequency;
+            return this;
+        }
+
+        public Builder setPhase(double phase) {
+            this.phase = phase;
+            return this;
+        }
+
+        /**
+         * @return a new Corkscrew trajectory instance.
+         */
+        public CorkscrewTrajectory4D build() {
+            checkNotNull(this.origin, "You have to Supply an origin with setOrigin()");
+            checkNotNull(this.destination, "You have to Supply a destination with setOrigin()");
+            return new CorkscrewTrajectory4D(origin, destination, speed, radius, frequency, phase);
+        }
+    }
 }

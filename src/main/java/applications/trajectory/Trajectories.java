@@ -167,16 +167,28 @@ public final class Trajectories {
     }
 
     /**
-     * @param sourcePoint origin point of motion.
-     * @param targetPoint destination point of motion.
+     * @param sourcePoint origin point of motion with the initial angle.
+     * @param targetPoint destination point of motion in 3D space.
      * @param velocity    the velocity to move with.
      * @param radius      the radius of the corkscrew motion
      * @param frequency   the frequency in time of completing the circular motion.
-     * @return a new straight line trajectory in xy plane with sudden drops in the z dimension.
+     * @param phase       the phase displacement for this trajectory.
+     * @return a new trajectory for performing a corkscrew motion around a
+     * straight line trajectory.
      */
     public static FiniteTrajectory4d newCorkscrewTrajectory(Point4D sourcePoint,
-            Point4D targetPoint, double velocity, double radius, double frequency, double phase) {
-        return new CorkscrewTrajectory4D(sourcePoint, targetPoint, velocity, radius, frequency,
-                phase);
+            Point3D targetPoint, double velocity, double radius, double frequency, double phase) {
+        return CorkscrewTrajectory4D.builder().setOrigin(sourcePoint)
+                .setDestination(targetPoint)
+                .setSpeed(velocity).setRadius(radius).setFrequency(frequency).setPhase(phase)
+                .build();
     }
+
+    /**
+     * @return A builder instance for corkscrew trajectories for custom builds.
+     */
+    public static CorkscrewTrajectory4D.Builder corkscrewTrajectoryBuilder() {
+        return CorkscrewTrajectory4D.builder();
+    }
+
 }
