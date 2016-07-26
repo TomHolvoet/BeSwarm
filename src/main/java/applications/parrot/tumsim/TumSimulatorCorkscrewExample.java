@@ -22,7 +22,7 @@ public class TumSimulatorCorkscrewExample extends AbstractTumSimulatorExample {
         Point3D end = Point3D.create(0, 15, 25);
         //                newCorkscrewTrajectory(start, end, 1, 0.5, 0.3, 0)
         FiniteTrajectory4d target1 = Trajectories.corkscrewTrajectoryBuilder().setOrigin(start)
-                .setDestination(end).setRadius(0.5).setFrequency(0.3).build();
+                .setDestination(end).setRadius(0.5).setFrequency(0.25).setSpeed(0.6).build();
         Trajectory4d hold1 = Trajectories.newHoldPositionTrajectory(start);
         return Choreography.builder().withTrajectory(hold1).forTime(30).withTrajectory(target1)
                 .build();
