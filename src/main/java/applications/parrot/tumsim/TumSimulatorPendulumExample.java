@@ -8,7 +8,7 @@ import control.FiniteTrajectory4d;
  */
 public class TumSimulatorPendulumExample extends AbstractTumSimulatorExample {
 
-    protected TumSimulatorPendulumExample(String nodeName) {
+    public TumSimulatorPendulumExample() {
         super("TumRunPendulumTrajectory");
     }
 

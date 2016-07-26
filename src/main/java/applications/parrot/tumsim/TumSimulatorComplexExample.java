@@ -14,7 +14,7 @@ import static applications.trajectory.Trajectories.newStraightLineTrajectory;
  */
 public class TumSimulatorComplexExample extends AbstractTumSimulatorExample {
 
-    protected TumSimulatorComplexExample(String nodeName) {
+    public TumSimulatorComplexExample() {
         super("TumRunComplexExampleTrajectory");
     }
 

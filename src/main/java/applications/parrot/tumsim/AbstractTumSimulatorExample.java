@@ -7,6 +7,8 @@ import org.ros.node.AbstractNodeMain;
 import org.ros.node.ConnectedNode;
 
 /**
+ * Abstract example trajectory class.
+ *
  * @author Kristof Coninx <kristof.coninx AT cs.kuleuven.be>
  */
 public abstract class AbstractTumSimulatorExample extends AbstractNodeMain

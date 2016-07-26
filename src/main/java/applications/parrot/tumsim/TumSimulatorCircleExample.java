@@ -8,7 +8,7 @@ import control.FiniteTrajectory4d;
  */
 public class TumSimulatorCircleExample extends AbstractTumSimulatorExample {
 
-    protected TumSimulatorCircleExample(String nodeName) {
+    public TumSimulatorCircleExample() {
         super("TumRunExampleTrajectory2");
     }
 

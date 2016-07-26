@@ -13,7 +13,7 @@ import control.FiniteTrajectory4d;
  */
 public final class TumRunSimpleLinePattern extends AbstractTumSimulatorExample {
 
-    protected TumRunSimpleLinePattern(String nodeName) {
+    public TumRunSimpleLinePattern() {
         super("TumRunSimpleLinePattern");
     }
 
