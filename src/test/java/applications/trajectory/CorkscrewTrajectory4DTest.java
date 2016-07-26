@@ -164,7 +164,5 @@ public class CorkscrewTrajectory4DTest {
         assertBounds(lx, -1, 1);
         assertBounds(ly, -1, 1);
         assertBounds(lz, -1, 1);
-
     }
-
 }

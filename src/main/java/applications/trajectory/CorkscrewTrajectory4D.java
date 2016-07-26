@@ -70,6 +70,14 @@ public final class CorkscrewTrajectory4D extends PeriodicTrajectory implements F
      * Calculates whether for a given velocity vector component, magnitude and perpendicular
      * velocity magnitude from the circle movement parameters, the velocity component is still
      * within acceptable bounds.
+     * The velocity component for x, Vx = speedX + circleX where speedX is the x component of the
+     * vector with magnitude |v| (specified by speed) and direction specified by
+     * destination-origin and
+     * where circleX represents the x component of the velocity vector of the circle movement at
+     * the moment where this vector attains its highest magnitude in the x component.
+     * The circle movement velocity vector is always perpendicular to the speed vector
+     * (destination-origin with |v|) and the magnitude of the circle velocity vector depends on
+     * the circle movement parameters (radius, frequency).
      *
      * @param speedcomp    the component of the velocity. (eg. Vx as speed*cos(phi) with phi the
      *                     angle of the vector with regards to the component unit vector.)
