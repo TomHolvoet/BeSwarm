@@ -41,8 +41,8 @@ public final class PeriodicTaskRunner {
             logger.debug("The executing task is interrupted. Stop executing the task.");
             // the task is cancelled if time ran out or the current thread is interrupted while waiting.
             future.cancel(true);
-        } catch (TimeoutException e) {
-            logger.debug("The executing task is run out of time. Stop executing the task", e);
+        } catch (TimeoutException ignored) {
+            logger.debug("The executing task is run out of time. Stop executing the task");
             future.cancel(true);
         } catch (ExecutionException e) {
             logger.debug("An execution exception occurs.", e);
