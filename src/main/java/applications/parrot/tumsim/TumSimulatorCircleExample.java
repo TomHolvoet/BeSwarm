@@ -8,6 +8,9 @@ import control.FiniteTrajectory4d;
  */
 public class TumSimulatorCircleExample extends AbstractTumSimulatorExample {
 
+    /**
+     * Default Constructor.
+     */
     public TumSimulatorCircleExample() {
         super("TumRunExampleTrajectory2");
     }

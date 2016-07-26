@@ -11,6 +11,9 @@ import control.Trajectory4d;
  */
 public class TumSimulatorZDropExample extends AbstractTumSimulatorExample {
 
+    /**
+     * Default Constructor.
+     */
     public TumSimulatorZDropExample() {
         super("TumRunZDropTrajectory2");
     }

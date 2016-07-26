@@ -13,6 +13,9 @@ import control.FiniteTrajectory4d;
  */
 public final class TumRunStraightLinePattern extends AbstractTumSimulatorExample {
 
+    /**
+     * Default Constructor.
+     */
     public TumRunStraightLinePattern() {
         super("TumRunStraightLineTrajectory");
     }

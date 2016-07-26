@@ -8,6 +8,9 @@ import control.FiniteTrajectory4d;
  */
 public class TumSimulatorPendulumExample extends AbstractTumSimulatorExample {
 
+    /**
+     * Default Constructor.
+     */
     public TumSimulatorPendulumExample() {
         super("TumRunPendulumTrajectory");
     }

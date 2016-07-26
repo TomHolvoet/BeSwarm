@@ -8,12 +8,13 @@ import org.ros.node.ConnectedNode;
 
 /**
  * Abstract example trajectory class.
+ * Extend this class for easy implementation of new example trajectories.
  *
  * @author Kristof Coninx <kristof.coninx AT cs.kuleuven.be>
  */
 public abstract class AbstractTumSimulatorExample extends AbstractNodeMain
         implements TrajectoryServer {
-    private String nodeName;
+    private final String nodeName;
 
     protected AbstractTumSimulatorExample(String nodeName) {
         this.nodeName = nodeName;
