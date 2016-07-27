@@ -13,6 +13,7 @@ import static applications.trajectory.CorkscrewTrajectory4D.newCache;
 import static applications.trajectory.TestUtils.EPSILON;
 import static applications.trajectory.TestUtils.assertBounds;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 
 /**
  * @author Kristof Coninx <kristof.coninx AT cs.kuleuven.be>
@@ -140,6 +141,15 @@ public class CorkscrewTrajectory4DTest {
                 .setRadius(radius).setFrequency(frequency).setPhase(phase)
                 .build();
         testVelocity(this.trajectory);
+    }
+
+    @Test
+    public void testCorrectTrajectoryInit() {
+        Point4D start = Point4D.create(0, 0, 10, 0);
+        Point3D end = Point3D.create(0, 15, 25);
+        trajectory = Trajectories.corkscrewTrajectoryBuilder().setOrigin(start)
+                .setDestination(end).setRadius(0.5).setFrequency(0.25).setSpeed(0.6).build();
+        assertNotEquals(0, trajectory.getTrajectoryDuration());
     }
 
     @Test
