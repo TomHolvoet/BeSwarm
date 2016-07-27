@@ -1,7 +1,6 @@
 package applications.parrot.tumsim;
 
 import applications.trajectory.TrajectoryServer;
-import com.google.common.collect.Lists;
 import control.FiniteTrajectory4d;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -39,7 +38,7 @@ public class TumSimulatorExampleTest {
     @Parameterized.Parameters
     public static Collection<? extends Class> getData() {
         Reflections reflections = new Reflections("applications.parrot.tumsim");
-        return Lists.newArrayList(reflections.getSubTypesOf(AbstractTumSimulatorExample.class));
+        return reflections.getSubTypesOf(AbstractTumSimulatorExample.class) s;
     }
 
     @Test
