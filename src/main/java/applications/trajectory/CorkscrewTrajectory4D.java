@@ -92,7 +92,7 @@ public final class CorkscrewTrajectory4D extends PeriodicTrajectory implements F
             double frequency) {
         double rfreq2pi = radius * frequency * TWOPI;
         double vcomp = speedcomp + rfreq2pi * Math.sqrt(1 - Math.pow(speedcomp / speed, 2));
-        if (vcomp > 1) {
+        if (vcomp > MAX_ABSOLUTE_VELOCITY) {
             return false;
         }
         return true;
