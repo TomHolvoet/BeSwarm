@@ -13,6 +13,7 @@ import control.Trajectory4d;
 public class TumSimulatorCorkscrewExample extends AbstractTumSimulatorExample {
 
     /**
+     * Default constructor.
      */
     public TumSimulatorCorkscrewExample() {
         super("TumRunCorkscrewTrajectory");
