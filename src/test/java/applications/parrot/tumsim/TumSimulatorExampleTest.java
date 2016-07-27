@@ -38,7 +38,7 @@ public class TumSimulatorExampleTest {
     @Parameterized.Parameters
     public static Collection<? extends Class> getData() {
         Reflections reflections = new Reflections("applications.parrot.tumsim");
-        return reflections.getSubTypesOf(AbstractTumSimulatorExample.class) s;
+        return reflections.getSubTypesOf(AbstractTumSimulatorExample.class);
     }
 
     @Test
