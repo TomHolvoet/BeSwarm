@@ -6,6 +6,8 @@ import control.FiniteTrajectory4d;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+import org.reflections.Reflections;
+import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
 
@@ -14,7 +16,8 @@ import static org.junit.Assert.fail;
 
 /**
  * Initialization tests for TumSim example files.
- * Manually add new runnable examples to the getData() list upon creation.
+ * This test uses reflection to scan the tumsim package for extensions of the
+ * AbstractTumSimulatorExample and runs initialization tests on instances of the found classes.
  * These tests validate correct parameters passed to trajectory creators before attempting to use
  * such trajectories in simulation or real world experiments.
  *
@@ -35,14 +38,15 @@ public class TumSimulatorExampleTest {
 
     @Parameterized.Parameters
     public static Collection<? extends Class> getData() {
-        return Lists.newArrayList(TumRunSimpleLinePattern.class,
-                TumRunStraightLinePattern.class, TumSimulatorCircleExample.class,
-                TumSimulatorComplexExample.class, TumSimulatorCorkscrewExample.class,
-                TumSimulatorPendulumExample.class, TumSimulatorZDropExample.class);
+        Reflections reflections = new Reflections("applications.parrot.tumsim");
+        return Lists.newArrayList(reflections.getSubTypesOf(AbstractTumSimulatorExample.class));
     }
 
     @Test
     public void testTrajectoryInitialization() {
+        LoggerFactory.getLogger(TumSimulatorExampleTest.class)
+                .info("Running example initialization test for instances of " + server.getClass()
+                        .getName());
         FiniteTrajectory4d traj = server.getConcreteTrajectory();
         assertNotEquals(0, traj.getTrajectoryDuration());
     }
