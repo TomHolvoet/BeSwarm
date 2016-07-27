@@ -125,14 +125,14 @@ public final class Transformations {
     }
 
     /**
-     * Rotates a point using Euler rotation. This method uses the extrinsic rotation in x-y-z
-     * order (first rotate
-     * about the x-axis, then rotate about the y-axis, the rotate about the z-axis).
+     * Rotates a point using Euler rotation. This method uses the extrinsic rotation. The order of the rotation is
+     * defined by {@code rotationOrder}.
      *
      * @param point the point to be rotated in 3D coordinate
      * @param rotationAngleX the rotation angle about the x-axis according to the right hand rule
      * @param rotationAngleY the rotation angle about the y-axis according to the right hand rule
      * @param rotationAngleZ the rotation angle about the z-axis according to the right hand rule
+     * @param rotationOrder the rotation order of the transform
      * @return a new 3D point representing the rotated point
      * @see <a href="https://en.wikipedia.org/wiki/Euler_angles">Euler angles and Euler rotations</a>
      * @see <a href="https://en.wikipedia.org/wiki/Rotation_matrix">Rotation matrix</a>

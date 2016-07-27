@@ -53,13 +53,13 @@ public final class GazeboModelStateEstimator implements StateEstimator {
         }
 
         final Pose pose = getDronePose(modelStates, index);
-        final InertialFrameVelocity inertialFrameVelocity = getInertialFrameVelocity(modelStates, index, pose);
+        final InertialFrameVelocity inertialFrameVelocity = getInertialFrameVelocity(modelStates, index);
 
         final double timeStampInSeconds = System.nanoTime() / NANO_SECOND_TO_SECOND;
         return Optional.of(DroneStateStamped.create(pose, inertialFrameVelocity, timeStampInSeconds));
     }
 
-    private static InertialFrameVelocity getInertialFrameVelocity(ModelStates modelStates, int index, Pose pose) {
+    private static InertialFrameVelocity getInertialFrameVelocity(ModelStates modelStates, int index) {
         final Twist gazeboTwist = modelStates.getTwist().get(index);
         return Velocity.builder()
                 .setLinearX(gazeboTwist.getLinear().getX())
