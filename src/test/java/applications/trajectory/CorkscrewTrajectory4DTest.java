@@ -22,6 +22,7 @@ public class CorkscrewTrajectory4DTest {
     private final double speed = 1;
     private final double radius = 0.5;
     private final double frequency = 0.3;
+    private final double startOrientation = Math.PI;
     private final int phase = 0;
     private FiniteTrajectory4d trajectory;
     private final double zDistance = 10;
@@ -32,7 +33,7 @@ public class CorkscrewTrajectory4DTest {
     @Before
     public void setUp() throws Exception {
         this.trajectory = CorkscrewTrajectory4D.builder()
-                .setOrigin(Point4D.create(x, y, startDistance, Math.PI))
+                .setOrigin(Point4D.create(x, y, startDistance, startOrientation))
                 .setDestination(Point3D.create(x, y, startDistance + zDistance))
                 .setSpeed(speed)
                 .setRadius(radius).setFrequency(frequency).setPhase(phase)
@@ -50,7 +51,7 @@ public class CorkscrewTrajectory4DTest {
     @Test
     public void testTrajectoryBoundsSimple() {
         testBounds(trajectory, 1000, x - radius, x + radius, y - radius, y + radius, startDistance,
-                startDistance + zDistance);
+                startDistance + zDistance, startOrientation - EPSILON, startOrientation + EPSILON);
     }
 
     @Test
@@ -153,7 +154,7 @@ public class CorkscrewTrajectory4DTest {
         testBounds(trajectory, 1000, start.getX() - radius, end.getX() + radius,
                 end.getY() - radius,
                 start.getY() + radius, start.getZ() - radius,
-                end.getZ() + zDistance);
+                end.getZ() + zDistance, orientation - EPSILON, orientation + EPSILON);
 
     }
 
@@ -174,19 +175,23 @@ public class CorkscrewTrajectory4DTest {
 
     private void testBounds(FiniteTrajectory4d trajectory, double end, double minBoundX,
             double maxBoundX, double minBoundY, double maxBoundY, double minBoundZ,
-            double maxBoundZ) {
+            double maxBoundZ, double minAngle, double maxAngle) {
         List<Double> lx = Lists.newArrayList();
         List<Double> ly = Lists.newArrayList();
         List<Double> lz = Lists.newArrayList();
+        List<Double> la = Lists.newArrayList();
 
         for (int i = 0; i < end; i++) {
             lx.add(trajectory.getDesiredPositionX(i / 10d));
             ly.add(trajectory.getDesiredPositionY(i / 10d));
             lz.add(trajectory.getDesiredPositionZ(i / 10d));
+            la.add(trajectory.getDesiredAngleZ(i / 10d));
+
         }
         assertBounds(lx, minBoundX, maxBoundX);
         assertBounds(ly, minBoundY, maxBoundY);
         assertBounds(lz, minBoundZ, maxBoundZ);
+        assertBounds(la, minAngle, maxAngle);
 
     }
 
