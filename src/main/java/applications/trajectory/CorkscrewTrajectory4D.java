@@ -144,10 +144,9 @@ public final class CorkscrewTrajectory4D extends PeriodicTrajectory implements F
     }
 
     private static Point4D rotationTransform(Point4D toTrans, double aroundX, double aroundY) {
-        Point4D rotated = Point4D.from(Transformations
+        return Point4D.from(Transformations
                 .reverseRotation(Point3D.project(toTrans), aroundX, aroundY, 0,
                         RotationOrder.XYZ), 0);
-        return rotated;
     }
 
     @Override
