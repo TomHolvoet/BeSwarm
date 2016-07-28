@@ -13,7 +13,7 @@ import control.Trajectory4d;
 public class TumSimulatorCorkscrewExample extends AbstractTumSimulatorExample {
 
     /**
-     * Default Constructor.
+     * Default constructor.
      */
     public TumSimulatorCorkscrewExample() {
         super("TumRunCorkscrewTrajectory");
@@ -21,13 +21,24 @@ public class TumSimulatorCorkscrewExample extends AbstractTumSimulatorExample {
 
     @Override
     public FiniteTrajectory4d getConcreteTrajectory() {
-        Point4D start = Point4D.create(0, 0, 10, 0);
-        Point3D end = Point3D.create(0, 15, 25);
-        //                newCorkscrewTrajectory(start, end, 1, 0.5, 0.3, 0)
-        FiniteTrajectory4d target1 = Trajectories.corkscrewTrajectoryBuilder().setOrigin(start)
-                .setDestination(end).setRadius(0.5).setFrequency(0.25).setSpeed(0.6).build();
-        Trajectory4d hold1 = Trajectories.newHoldPositionTrajectory(start);
-        return Choreography.builder().withTrajectory(hold1).forTime(30).withTrajectory(target1)
+        double orientation = -Math.PI / 2;
+        double radius = 0.5;
+        double frequency = 0.1;
+        double velocity = 0.1;
+        Point4D start = Point4D.create(0, 0, 1, orientation);
+        Point3D end = Point3D.create(1.5, -3.0, 1.5);
+        Trajectory4d init = Trajectories.newHoldPositionTrajectory(start);
+        FiniteTrajectory4d first = Trajectories
+                .newCorkscrewTrajectory(start, end, velocity, radius, frequency, 0);
+        Trajectory4d inter = Trajectories
+                .newHoldPositionTrajectory(Point4D.from(end, orientation));
+        return Choreography.builder()
+                .withTrajectory(init)
+                .forTime(4)
+                .withTrajectory(first)
+                .forTime(first.getTrajectoryDuration() + 2)
+                .withTrajectory(inter)
+                .forTime(5)
                 .build();
     }
 }

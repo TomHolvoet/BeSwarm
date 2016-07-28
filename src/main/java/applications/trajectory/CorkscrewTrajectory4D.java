@@ -59,8 +59,9 @@ public final class CorkscrewTrajectory4D extends PeriodicTrajectory implements F
                 "Z velocity component is higher than 1 for the given origin-destination points, "
                         + "velocity, radius and frequency values.");
 
-        this.aroundX = (Math.PI / 2) - Math.asin(z / Math.sqrt(Math.pow(y, 2) + Math.pow(z, 2)));
-        this.aroundY = Math.acos(x / Math.sqrt(Math.pow(x, 2) + Math.pow(z, 2)));
+        double zyNorm = Math.sqrt(Math.pow(y, 2) + Math.pow(z, 2));
+        this.aroundX = (Math.PI / 2) - Math.acos(y / zyNorm);
+        this.aroundY = Math.acos(x / Math.sqrt(Math.pow(x, 2) + Math.pow(zyNorm, 2)));
 
         //set initial cache
         this.cache = newCache(Point4D.origin(), Point4D.origin(), -1);
@@ -143,10 +144,9 @@ public final class CorkscrewTrajectory4D extends PeriodicTrajectory implements F
     }
 
     private static Point4D rotationTransform(Point4D toTrans, double aroundX, double aroundY) {
-        Point4D rotated = Point4D.from(Transformations
+        return Point4D.from(Transformations
                 .reverseRotation(Point3D.project(toTrans), aroundX, aroundY, 0,
                         RotationOrder.XYZ), 0);
-        return rotated;
     }
 
     @Override

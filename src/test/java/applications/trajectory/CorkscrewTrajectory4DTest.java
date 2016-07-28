@@ -13,6 +13,7 @@ import static applications.trajectory.CorkscrewTrajectory4D.newCache;
 import static applications.trajectory.TestUtils.EPSILON;
 import static applications.trajectory.TestUtils.assertBounds;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 
 /**
  * @author Kristof Coninx <kristof.coninx AT cs.kuleuven.be>
@@ -47,30 +48,9 @@ public class CorkscrewTrajectory4DTest {
     }
 
     @Test
-    public void testTrajectoryBoundsX() {
-        List<Double> l = Lists.newArrayList();
-        for (int i = 0; i < 1000; i++) {
-            l.add(trajectory.getDesiredPositionX(i / 10d));
-        }
-        assertBounds(l, x - radius, x + radius);
-    }
-
-    @Test
-    public void testTrajectoryBoundsY() {
-        List<Double> l = Lists.newArrayList();
-        for (int i = 0; i < 1000; i++) {
-            l.add(trajectory.getDesiredPositionY(i / 10d));
-        }
-        assertBounds(l, y - radius, y + radius);
-    }
-
-    @Test
-    public void testTrajectoryBoundsZ() {
-        List<Double> l = Lists.newArrayList();
-        for (int i = 0; i < 1000; i++) {
-            l.add(trajectory.getDesiredPositionZ(i / 10d));
-        }
-        assertBounds(l, startDistance, startDistance + zDistance);
+    public void testTrajectoryBoundsSimple() {
+        testBounds(trajectory, 1000, x - radius, x + radius, y - radius, y + radius, startDistance,
+                startDistance + zDistance);
     }
 
     @Test
@@ -143,12 +123,38 @@ public class CorkscrewTrajectory4DTest {
     }
 
     @Test
+    public void testCorrectTrajectoryInit() {
+        Point4D start = Point4D.create(0, 0, 10, 0);
+        Point3D end = Point3D.create(0, 15, 25);
+        trajectory = Trajectories.corkscrewTrajectoryBuilder().setOrigin(start)
+                .setDestination(end).setRadius(0.5).setFrequency(0.25).setSpeed(0.6).build();
+        assertNotEquals(0, trajectory.getTrajectoryDuration());
+    }
+
+    @Test
     public void testTrajectoryVelocityBoundsAngle() {
         List<Double> l = Lists.newArrayList();
         for (int i = 0; i < 1000; i++) {
             l.add(trajectory.getDesiredAngularVelocityZ(i / 10d));
         }
         assertBounds(l, 0, 0);
+    }
+
+    @Test
+    public void testBoundsXYZComplex() {
+        double orientation = -Math.PI / 2;
+        Point4D start = Point4D.create(0, 0, 1, orientation);
+        Point3D end = Point3D.create(1.5, -3.0, 1.5);
+        double radius = 0.5;
+        double frequency = 0.1;
+        double velocity = 0.1;
+        this.trajectory = Trajectories
+                .newCorkscrewTrajectory(start, end, velocity, radius, frequency, 0);
+        testBounds(trajectory, 1000, start.getX() - radius, end.getX() + radius,
+                end.getY() - radius,
+                start.getY() + radius, start.getZ() - radius,
+                end.getZ() + zDistance);
+
     }
 
     private void testVelocity(FiniteTrajectory4d trajectory) {
@@ -165,4 +171,23 @@ public class CorkscrewTrajectory4DTest {
         assertBounds(ly, -1, 1);
         assertBounds(lz, -1, 1);
     }
+
+    private void testBounds(FiniteTrajectory4d trajectory, double end, double minBoundX,
+            double maxBoundX, double minBoundY, double maxBoundY, double minBoundZ,
+            double maxBoundZ) {
+        List<Double> lx = Lists.newArrayList();
+        List<Double> ly = Lists.newArrayList();
+        List<Double> lz = Lists.newArrayList();
+
+        for (int i = 0; i < end; i++) {
+            lx.add(trajectory.getDesiredPositionX(i / 10d));
+            ly.add(trajectory.getDesiredPositionY(i / 10d));
+            lz.add(trajectory.getDesiredPositionZ(i / 10d));
+        }
+        assertBounds(lx, minBoundX, maxBoundX);
+        assertBounds(ly, minBoundY, maxBoundY);
+        assertBounds(lz, minBoundZ, maxBoundZ);
+
+    }
+
 }
