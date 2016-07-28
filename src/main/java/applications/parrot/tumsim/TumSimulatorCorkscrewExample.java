@@ -25,8 +25,8 @@ public class TumSimulatorCorkscrewExample extends AbstractTumSimulatorExample {
         double radius = 0.5;
         double frequency = 0.1;
         double velocity = 0.1;
-        Point4D start = Point4D.create(0, 0, 1, orientation);
-        Point3D end = Point3D.create(1.5, -3.0, 1.5);
+        Point4D start = Point4D.create(1, -1, 1, orientation);
+        Point3D end = Point3D.create(2.5, -4.0, 1.5);
         Trajectory4d init = Trajectories.newHoldPositionTrajectory(start);
         FiniteTrajectory4d first = Trajectories
                 .newCorkscrewTrajectory(start, end, velocity, radius, frequency, 0);
