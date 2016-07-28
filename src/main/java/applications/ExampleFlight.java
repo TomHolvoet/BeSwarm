@@ -107,6 +107,7 @@ public final class ExampleFlight {
                 .withPidLinearYParameters(pidLinearY)
                 .withPidLinearZParameters(pidLinearZ)
                 .withPidAngularZParameters(pidAngularZ)
+                .withControlRateInSeconds(0.01)
                 .build();
 
         final Command waitForLocalizationThenFollowTrajectory = WaitForLocalizationDecorator.create(stateEstimator,
