@@ -21,6 +21,9 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public final class CorkscrewTrajectory4D extends PeriodicTrajectory implements FiniteTrajectory4d {
 
     private static final double EPSILON = 0.00000001d;
+    private static final String VELOCITY_ERROR_MESSAGE =
+            "velocity component is higher than 1 for the given origin-destination points, "
+                    + "velocity, radius and frequency values.";
     private final FiniteTrajectory4d unitTrajectory;
     private final double aroundX;
     private final double aroundY;
@@ -50,14 +53,11 @@ public final class CorkscrewTrajectory4D extends PeriodicTrajectory implements F
                 .create(speed * (x / distance), speed * (y / distance), speed * (z / distance));
 
         checkArgument(isValidVelocity(speedComponent.getX(), speed, radius, frequency),
-                "X velocity component is higher than 1 for the given origin-destination points, "
-                        + "velocity, radius and frequency values.");
+                "X " + VELOCITY_ERROR_MESSAGE);
         checkArgument(isValidVelocity(speedComponent.getY(), speed, radius, frequency),
-                "Y velocity component is higher than 1 for the given origin-destination points, "
-                        + "velocity, radius and frequency values.");
+                "Y " + VELOCITY_ERROR_MESSAGE);
         checkArgument(isValidVelocity(speedComponent.getZ(), speed, radius, frequency),
-                "Z velocity component is higher than 1 for the given origin-destination points, "
-                        + "velocity, radius and frequency values.");
+                "Z " + VELOCITY_ERROR_MESSAGE);
 
         double zyNorm = Math.sqrt(Math.pow(y, 2) + Math.pow(z, 2));
         this.aroundX = (Math.PI / 2) - Math.acos(y / zyNorm);
