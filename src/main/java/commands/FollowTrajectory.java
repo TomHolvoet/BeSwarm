@@ -110,19 +110,32 @@ public final class FollowTrajectory implements Command {
         }
 
         private void logDroneState(DroneStateStamped currentState, double currentTimeInSeconds) {
-            poseLogger.trace("{} {} {} {} {} {} {} {} {}", System.nanoTime() / NANO_SECOND_TO_SECOND,
-                    currentState.pose().x(), currentState.pose().y(), currentState.pose().z(),
-                    currentState.pose().yaw(), trajectory4d.getDesiredPositionX(currentTimeInSeconds),
+            final double systemTimeInSeconds = System.nanoTime() / NANO_SECOND_TO_SECOND;
+            poseLogger.trace("{} {} {} {} {} {} {} {} {}", systemTimeInSeconds, currentState.pose().x(),
+                    currentState.pose().y(), currentState.pose().z(), currentState.pose().yaw(),
+                    trajectory4d.getDesiredPositionX(currentTimeInSeconds),
                     trajectory4d.getDesiredPositionY(currentTimeInSeconds),
                     trajectory4d.getDesiredPositionZ(currentTimeInSeconds),
                     trajectory4d.getDesiredAngleZ(currentTimeInSeconds));
-            velocityLogger.trace("{} {} {} {} {} {} {} {} {}", System.nanoTime() / NANO_SECOND_TO_SECOND,
+
+            final double deltaTimeInSeconds = 0.1;
+            final double desiredVelocityX = (trajectory4d.getDesiredPositionX(
+                    currentTimeInSeconds + deltaTimeInSeconds) - trajectory4d.getDesiredPositionX(
+                    currentTimeInSeconds)) / deltaTimeInSeconds;
+            final double desiredVelocityY = (trajectory4d.getDesiredPositionY(
+                    currentTimeInSeconds + deltaTimeInSeconds) - trajectory4d.getDesiredPositionY(
+                    currentTimeInSeconds)) / deltaTimeInSeconds;
+            final double desiredVelocityZ = (trajectory4d.getDesiredPositionZ(
+                    currentTimeInSeconds + deltaTimeInSeconds) - trajectory4d.getDesiredPositionZ(
+                    currentTimeInSeconds)) / deltaTimeInSeconds;
+            final double desiredVelocityYaw = (trajectory4d.getDesiredAngleZ(
+                    currentTimeInSeconds + deltaTimeInSeconds) - trajectory4d.getDesiredAngleZ(
+                    currentTimeInSeconds)) / deltaTimeInSeconds;
+
+            velocityLogger.trace("{} {} {} {} {} {} {} {} {}", systemTimeInSeconds,
                     currentState.inertialFrameVelocity().linearX(), currentState.inertialFrameVelocity().linearY(),
                     currentState.inertialFrameVelocity().linearZ(), currentState.inertialFrameVelocity().angularZ(),
-                    trajectory4d.getDesiredVelocityX(currentTimeInSeconds),
-                    trajectory4d.getDesiredVelocityY(currentTimeInSeconds),
-                    trajectory4d.getDesiredVelocityZ(currentTimeInSeconds),
-                    trajectory4d.getDesiredAngularVelocityZ(currentTimeInSeconds));
+                    desiredVelocityX, desiredVelocityY, desiredVelocityZ, desiredVelocityYaw);
         }
 
         private void setCounter(DroneStateStamped currentState) {
