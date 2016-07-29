@@ -14,6 +14,8 @@ public final class PidController1d {
     private double lastTimeInSeconds = -1;
     private double accumulatedError = 0;
 
+    private static final double DELTA_TIME_IN_SECOND = 0.1;
+
     private PidController1d(PidParameters parameters, Trajectory1d trajectory) {
         this.parameters = parameters;
         this.trajectory = trajectory;
@@ -46,7 +48,7 @@ public final class PidController1d {
         updateAccumulatedError(desiredTimeInSeconds, error);
 
         final double pTerm = parameters.kp() * error;
-        final double dTerm = parameters.kd() * (trajectory.getDesiredVelocity(desiredTimeInSeconds) - currentVelocity);
+        final double dTerm = parameters.kd() * (getDesiredVelocity(trajectory, desiredTimeInSeconds) - currentVelocity);
         final double iTerm = parameters.ki() * accumulatedError;
 
         double outVelocity = pTerm + dTerm + iTerm;
@@ -58,6 +60,12 @@ public final class PidController1d {
         }
 
         return outVelocity;
+    }
+
+    private static double getDesiredVelocity(Trajectory1d trajectory, double desiredTimeInSeconds) {
+        final double firstPoint = trajectory.getDesiredPosition(desiredTimeInSeconds);
+        final double secondPoint = trajectory.getDesiredPosition(desiredTimeInSeconds + DELTA_TIME_IN_SECOND);
+        return (secondPoint - firstPoint) / DELTA_TIME_IN_SECOND;
     }
 
     private void updateAccumulatedError(double currentTimeInSeconds, double error) {

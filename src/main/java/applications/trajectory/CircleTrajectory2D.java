@@ -43,22 +43,10 @@ final class CircleTrajectory2D extends PeriodicTrajectory implements Trajectory2
     }
 
     @Override
-    public double getDesiredVelocityAbscissa(double timeInSeconds) {
-        final double currentTime = getRelativeTime(timeInSeconds);
-        return -rfreq2pi * StrictMath.sin(freq2pi * currentTime + getPhaseDisplacement());
-    }
-
-    @Override
     public double getDesiredPositionOrdinate(double timeInSeconds) {
         final double currentTime = getRelativeTime(timeInSeconds);
         return getLinearDisplacement().getY() + getRadius() * StrictMath
                 .sin(freq2pi * currentTime + getPhaseDisplacement());
-    }
-
-    @Override
-    public double getDesiredVelocityOrdinate(double timeInSeconds) {
-        final double currentTime = getRelativeTime(timeInSeconds);
-        return rfreq2pi * StrictMath.cos(freq2pi * currentTime + getPhaseDisplacement());
     }
 
     static Builder builder() {

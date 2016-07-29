@@ -58,9 +58,9 @@ public class ZDropLineTrajectory extends BasicTrajectory implements FiniteTrajec
     }
 
     private static final void initTraj(Trajectory4d traj) {
-        traj.getDesiredVelocityX(0);
-        traj.getDesiredVelocityY(0);
-        traj.getDesiredVelocityZ(0);
+        traj.getDesiredPositionX(0);
+        traj.getDesiredPositionY(0);
+        traj.getDesiredPositionZ(0);
         traj.getDesiredAngleZ(0);
     }
 
@@ -71,21 +71,9 @@ public class ZDropLineTrajectory extends BasicTrajectory implements FiniteTrajec
     }
 
     @Override
-    public double getDesiredVelocityX(double timeInSeconds) {
-        final double currentTime = getRelativeTime(timeInSeconds);
-        return getTargetTrajectory().getDesiredVelocityX(currentTime);
-    }
-
-    @Override
     public double getDesiredPositionY(double timeInSeconds) {
         final double currentTime = getRelativeTime(timeInSeconds);
         return getTargetTrajectory().getDesiredPositionY(currentTime);
-    }
-
-    @Override
-    public double getDesiredVelocityY(double timeInSeconds) {
-        final double currentTime = getRelativeTime(timeInSeconds);
-        return getTargetTrajectory().getDesiredVelocityY(currentTime);
     }
 
     @Override
@@ -95,21 +83,9 @@ public class ZDropLineTrajectory extends BasicTrajectory implements FiniteTrajec
     }
 
     @Override
-    public double getDesiredVelocityZ(double timeInSeconds) {
-        final double currentTime = getRelativeTime(timeInSeconds);
-        return getTargetTrajectory().getDesiredVelocityZ(currentTime);
-    }
-
-    @Override
     public double getDesiredAngleZ(double timeInSeconds) {
         final double currentTime = getRelativeTime(timeInSeconds);
         return getTargetTrajectory().getDesiredAngleZ(currentTime);
-    }
-
-    @Override
-    public double getDesiredAngularVelocityZ(double timeInSeconds) {
-        final double currentTime = getRelativeTime(timeInSeconds);
-        return getTargetTrajectory().getDesiredAngularVelocityZ(currentTime);
     }
 
     @Override

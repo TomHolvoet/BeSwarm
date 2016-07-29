@@ -10,8 +10,7 @@ import org.junit.Test;
 import java.util.List;
 
 import static applications.trajectory.CorkscrewTrajectory4D.newCache;
-import static applications.trajectory.TestUtils.EPSILON;
-import static applications.trajectory.TestUtils.assertBounds;
+import static applications.trajectory.TestUtils.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
@@ -66,17 +65,17 @@ public class CorkscrewTrajectory4DTest {
         for (int i = 0; i < trajectory.getTrajectoryDuration() * 10; i++) {
             //            assertEquals(0.01 * i, trajectory.getDesiredPositionZ(i / 10d),
             // TestUtils.EPSILON);
-            l.add(trajectory.getDesiredVelocityZ(i / 10d));
+            l.add(getVelocityZ(trajectory, i / 10d));
         }
+        System.out.println(l);
         assertBounds(l, speed, speed);
     }
 
     @Test
     public void testAutoValueCache() {
         CorkscrewTrajectory4D.Point4DCache c = newCache(Point4D.create(2, 2, 2, 2),
-                Point4D.create(5, 5, 5, 5), 1);
+                1);
         assertEquals(2, c.getDestinationPoint().getX(), 0);
-        assertEquals(5, c.getVelocityPoint().getX(), 0);
     }
 
     @Test
@@ -136,7 +135,7 @@ public class CorkscrewTrajectory4DTest {
     public void testTrajectoryVelocityBoundsAngle() {
         List<Double> l = Lists.newArrayList();
         for (int i = 0; i < 1000; i++) {
-            l.add(trajectory.getDesiredAngularVelocityZ(i / 10d));
+            l.add(getAngularVelocity(trajectory, i / 10d));
         }
         assertBounds(l, 0, 0);
     }
@@ -163,9 +162,9 @@ public class CorkscrewTrajectory4DTest {
         List<Double> ly = Lists.newArrayList();
         List<Double> lz = Lists.newArrayList();
         for (int i = 0; i < 1000; i++) {
-            lx.add(trajectory.getDesiredVelocityX(i / 10d));
-            ly.add(trajectory.getDesiredVelocityY(i / 10d));
-            lz.add(trajectory.getDesiredVelocityZ(i / 10d));
+            lx.add(getVelocityX(trajectory, i / 10d));
+            ly.add(getVelocityY(trajectory, i / 10d));
+            lz.add(getVelocityZ(trajectory, i / 10d));
 
         }
         assertBounds(lx, -1, 1);

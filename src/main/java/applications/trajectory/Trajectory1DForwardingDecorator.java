@@ -30,9 +30,4 @@ public abstract class Trajectory1DForwardingDecorator implements Trajectory1d {
         return target.getDesiredPosition(timeInSeconds);
     }
 
-    @Override
-    public double getDesiredVelocity(double timeInSeconds) {
-        positionDelegate(timeInSeconds);
-        return target.getDesiredVelocity(timeInSeconds);
-    }
 }

@@ -64,7 +64,7 @@ public final class CorkscrewTrajectory4D extends PeriodicTrajectory implements F
         this.aroundY = Math.acos(x / Math.sqrt(Math.pow(x, 2) + Math.pow(zyNorm, 2)));
 
         //set initial cache
-        this.cache = newCache(Point4D.origin(), Point4D.origin(), -1);
+        this.cache = newCache(Point4D.origin(), -1);
     }
 
     /**
@@ -103,8 +103,8 @@ public final class CorkscrewTrajectory4D extends PeriodicTrajectory implements F
         return new Builder();
     }
 
-    static Point4DCache newCache(Point4D point, Point4D velocity, double timeMark) {
-        return new AutoValue_CorkscrewTrajectory4D_Point4DCache(point, velocity, timeMark);
+    static Point4DCache newCache(Point4D point, double timeMark) {
+        return new AutoValue_CorkscrewTrajectory4D_Point4DCache(point, timeMark);
     }
 
     private static boolean isEqual(double a, double b) {
@@ -118,25 +118,16 @@ public final class CorkscrewTrajectory4D extends PeriodicTrajectory implements F
                             unitTrajectory.getDesiredPositionY(time),
                             unitTrajectory.getDesiredPositionZ(time),
                             unitTrajectory.getDesiredAngleZ(time));
-            Point4D beforeTransVelocity = Point4D
-                    .create(unitTrajectory.getDesiredVelocityX(time),
-                            unitTrajectory.getDesiredVelocityY(time),
-                            unitTrajectory.getDesiredVelocityZ(time),
-                            unitTrajectory.getDesiredAngularVelocityZ(time));
-            setCache(beforeTransPoint, beforeTransVelocity, time);
+            setCache(beforeTransPoint, time);
         }
     }
 
-    private void setCache(Point4D beforeTransPoint, Point4D beforeTransVelocity, double time) {
-        this.cache = newCache(beforeTransPoint, beforeTransVelocity, time);
+    private void setCache(Point4D beforeTransPoint, double time) {
+        this.cache = newCache(beforeTransPoint, time);
     }
 
     private Point4D getCachePoint() {
         return this.cache.getDestinationPoint();
-    }
-
-    private Point4D getCacheVelocity() {
-        return this.cache.getVelocityPoint();
     }
 
     private Point4D translationTransform(Point4D toTrans) {
@@ -162,24 +153,10 @@ public final class CorkscrewTrajectory4D extends PeriodicTrajectory implements F
     }
 
     @Override
-    public double getDesiredVelocityX(double timeInSeconds) {
-        final double currentTime = getRelativeTime(timeInSeconds);
-        refreshCache(currentTime);
-        return rotationTransform(getCacheVelocity(), aroundX, aroundY).getX();
-    }
-
-    @Override
     public double getDesiredPositionY(double timeInSeconds) {
         final double currentTime = getRelativeTime(timeInSeconds);
         refreshCache(currentTime);
         return translationTransform(getCachePoint()).getY();
-    }
-
-    @Override
-    public double getDesiredVelocityY(double timeInSeconds) {
-        final double currentTime = getRelativeTime(timeInSeconds);
-        refreshCache(currentTime);
-        return rotationTransform(getCacheVelocity(), aroundX, aroundY).getY();
     }
 
     @Override
@@ -190,24 +167,10 @@ public final class CorkscrewTrajectory4D extends PeriodicTrajectory implements F
     }
 
     @Override
-    public double getDesiredVelocityZ(double timeInSeconds) {
-        final double currentTime = getRelativeTime(timeInSeconds);
-        refreshCache(currentTime);
-        return rotationTransform(getCacheVelocity(), aroundX, aroundY).getZ();
-    }
-
-    @Override
     public double getDesiredAngleZ(double timeInSeconds) {
         final double currentTime = getRelativeTime(timeInSeconds);
         refreshCache(currentTime);
         return translationTransform(getCachePoint()).getAngle();
-    }
-
-    @Override
-    public double getDesiredAngularVelocityZ(double timeInSeconds) {
-        final double currentTime = getRelativeTime(timeInSeconds);
-        refreshCache(currentTime);
-        return rotationTransform(getCacheVelocity(), aroundX, aroundY).getAngle();
     }
 
     private final class UnitTrajectory implements FiniteTrajectory4d {
@@ -244,21 +207,8 @@ public final class CorkscrewTrajectory4D extends PeriodicTrajectory implements F
         }
 
         @Override
-        public double getDesiredVelocityX(double timeInSeconds) {
-            if (atEnd) {
-                return 0;
-            }
-            return linear.getDesiredVelocity(timeInSeconds);
-        }
-
-        @Override
         public double getDesiredPositionY(double timeInSeconds) {
             return circlePlane.getDesiredPositionOrdinate(timeInSeconds);
-        }
-
-        @Override
-        public double getDesiredVelocityY(double timeInSeconds) {
-            return circlePlane.getDesiredVelocityOrdinate(timeInSeconds);
         }
 
         @Override
@@ -267,17 +217,7 @@ public final class CorkscrewTrajectory4D extends PeriodicTrajectory implements F
         }
 
         @Override
-        public double getDesiredVelocityZ(double timeInSeconds) {
-            return circlePlane.getDesiredVelocityAbscissa(timeInSeconds);
-        }
-
-        @Override
         public double getDesiredAngleZ(double timeInSeconds) {
-            return 0;
-        }
-
-        @Override
-        public double getDesiredAngularVelocityZ(double timeInSeconds) {
             return 0;
         }
 
@@ -294,19 +234,10 @@ public final class CorkscrewTrajectory4D extends PeriodicTrajectory implements F
             }
 
             @Override
-            public double getDesiredVelocityAbscissa(double timeInSeconds) {
-                return 0;
-            }
-
-            @Override
             public double getDesiredPositionOrdinate(double timeInSeconds) {
                 return 0;
             }
 
-            @Override
-            public double getDesiredVelocityOrdinate(double timeInSeconds) {
-                return 0;
-            }
         }
 
     }
@@ -315,8 +246,6 @@ public final class CorkscrewTrajectory4D extends PeriodicTrajectory implements F
     abstract static class Point4DCache {
 
         public abstract Point4D getDestinationPoint();
-
-        public abstract Point4D getVelocityPoint();
 
         public abstract double getTimeMark();
 

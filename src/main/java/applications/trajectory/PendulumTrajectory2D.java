@@ -50,18 +50,8 @@ public final class PendulumTrajectory2D extends PeriodicTrajectory implements Tr
     }
 
     @Override
-    public double getDesiredVelocityAbscissa(double timeInSeconds) {
-        return this.linearMovement.getDesiredVelocity(timeInSeconds);
-    }
-
-    @Override
     public double getDesiredPositionOrdinate(double timeInSeconds) {
         return this.pendulumOrdinate.getDesiredPosition(timeInSeconds);
-    }
-
-    @Override
-    public double getDesiredVelocityOrdinate(double timeInSeconds) {
-        return this.pendulumOrdinate.getDesiredVelocity(timeInSeconds);
     }
 
     /**
@@ -115,14 +105,5 @@ public final class PendulumTrajectory2D extends PeriodicTrajectory implements Tr
                             + getPhaseDisplacement());
         }
 
-        @Override
-        public double getDesiredVelocity(double timeInSeconds) {
-            setStartTime(timeInSeconds);
-
-            final double currentTime = timeInSeconds - getStartTime();
-            return -PISQUARED * getFrequency() * getRadius() * StrictMath
-                    .sin(freq2pi * currentTime + getPhaseDisplacement()) * StrictMath
-                    .cos(HALFPI * StrictMath.cos(freq2pi * currentTime + getPhaseDisplacement()));
-        }
     }
 }

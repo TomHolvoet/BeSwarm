@@ -3,6 +3,7 @@ package applications.trajectory;
 import org.junit.Test;
 
 import static applications.trajectory.TestUtils.EPSILON;
+import static applications.trajectory.TestUtils.getVelocityX;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
@@ -25,9 +26,9 @@ public class StraightLineWithSmoothBrakingTrajectoryTest extends StraightLineTra
     @Test
     public void testTargetVelocityCutoffPoint() {
         double brakePoint = after.getX() * brakingMark;
-        target.getDesiredVelocityX(brakePoint - 0.5);
-        assertNotEquals(0, target.getDesiredVelocityX(brakePoint - 0.5));
-        target.getDesiredVelocityX(brakePoint + 0.5);
-        assertEquals(0, target.getDesiredVelocityX(brakePoint + 0.5), EPSILON);
+        getVelocityX(target, brakePoint - 0.5);
+        assertNotEquals(0, getVelocityX(target, brakePoint - 0.5));
+        getVelocityX(target, brakePoint + 0.5);
+        assertEquals(0, getVelocityX(target, brakePoint + 0.5), EPSILON);
     }
 }

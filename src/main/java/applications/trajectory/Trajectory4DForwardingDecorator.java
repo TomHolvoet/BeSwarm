@@ -20,8 +20,6 @@ public abstract class Trajectory4DForwardingDecorator implements Trajectory4d {
         this.target = target;
     }
 
-    protected abstract void velocityDelegate(double timeInSeconds);
-
     protected abstract void positionDelegate(double timeInSeconds);
 
     @Override
@@ -31,22 +29,9 @@ public abstract class Trajectory4DForwardingDecorator implements Trajectory4d {
     }
 
     @Override
-    public double getDesiredVelocityX(double timeInSeconds) {
-        velocityDelegate(timeInSeconds);
-        return target.getDesiredVelocityX(timeInSeconds);
-    }
-
-    @Override
     public double getDesiredPositionY(double timeInSeconds) {
         positionDelegate(timeInSeconds);
         return target.getDesiredPositionY(timeInSeconds);
-
-    }
-
-    @Override
-    public double getDesiredVelocityY(double timeInSeconds) {
-        velocityDelegate(timeInSeconds);
-        return target.getDesiredVelocityY(timeInSeconds);
 
     }
 
@@ -58,22 +43,10 @@ public abstract class Trajectory4DForwardingDecorator implements Trajectory4d {
     }
 
     @Override
-    public double getDesiredVelocityZ(double timeInSeconds) {
-        velocityDelegate(timeInSeconds);
-        return target.getDesiredVelocityZ(timeInSeconds);
-
-    }
-
-    @Override
     public double getDesiredAngleZ(double timeInSeconds) {
         positionDelegate(timeInSeconds);
         return target.getDesiredAngleZ(timeInSeconds);
 
     }
 
-    @Override
-    public double getDesiredAngularVelocityZ(double timeInSeconds) {
-        velocityDelegate(timeInSeconds);
-        return target.getDesiredAngularVelocityZ(timeInSeconds);
-    }
 }
