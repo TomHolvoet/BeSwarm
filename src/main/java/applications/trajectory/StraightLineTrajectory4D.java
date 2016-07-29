@@ -79,21 +79,9 @@ class StraightLineTrajectory4D extends BasicTrajectory implements FiniteTrajecto
     }
 
     @Override
-    public double getDesiredVelocityX(double timeInSeconds) {
-        final double currentTime = getRelativeTime(timeInSeconds);
-        return getCurrentTrajectory().getDesiredVelocityX(currentTime);
-    }
-
-    @Override
     public double getDesiredPositionY(double timeInSeconds) {
         final double currentTime = getRelativeTime(timeInSeconds);
         return getCurrentTrajectory().getDesiredPositionY(currentTime);
-    }
-
-    @Override
-    public double getDesiredVelocityY(double timeInSeconds) {
-        final double currentTime = getRelativeTime(timeInSeconds);
-        return getCurrentTrajectory().getDesiredVelocityY(currentTime);
     }
 
     @Override
@@ -103,21 +91,9 @@ class StraightLineTrajectory4D extends BasicTrajectory implements FiniteTrajecto
     }
 
     @Override
-    public double getDesiredVelocityZ(double timeInSeconds) {
-        final double currentTime = getRelativeTime(timeInSeconds);
-        return getCurrentTrajectory().getDesiredVelocityZ(currentTime);
-    }
-
-    @Override
     public double getDesiredAngleZ(double timeInSeconds) {
         final double currentTime = getRelativeTime(timeInSeconds);
         return getCurrentTrajectory().getDesiredAngleZ(currentTime);
-    }
-
-    @Override
-    public double getDesiredAngularVelocityZ(double timeInSeconds) {
-        final double currentTime = getRelativeTime(timeInSeconds);
-        return getCurrentTrajectory().getDesiredAngularVelocityZ(currentTime);
     }
 
     @Override
@@ -158,13 +134,6 @@ class StraightLineTrajectory4D extends BasicTrajectory implements FiniteTrajecto
         HoldPositionForwarder(Point4D srcComp, Point4D speedComp, double endTime) {
             super(new LinearTrajectory4D(srcComp, speedComp));
             this.endTime = endTime;
-        }
-
-        @Override
-        protected void velocityDelegate(double timeInSeconds) {
-            if (timeInSeconds >= endTime) {
-                setHoldPosition(true);
-            }
         }
 
         @Override

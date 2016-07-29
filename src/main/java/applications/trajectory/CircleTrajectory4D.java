@@ -55,19 +55,9 @@ final class CircleTrajectory4D extends PeriodicTrajectory implements Trajectory4
     }
 
     @Override
-    public double getDesiredVelocityX(double timeInSeconds) {
-        return xycircle.getDesiredVelocityAbscissa(timeInSeconds);
-    }
-
-    @Override
     public double getDesiredPositionY(double timeInSeconds) {
         return (1 - scaleFactor) * (xycircle.getDesiredPositionOrdinate(timeInSeconds) - location
                 .getY()) + location.getY();
-    }
-
-    @Override
-    public double getDesiredVelocityY(double timeInSeconds) {
-        return (1 - scaleFactor) * xycircle.getDesiredVelocityOrdinate(timeInSeconds);
     }
 
     @Override
@@ -77,18 +67,8 @@ final class CircleTrajectory4D extends PeriodicTrajectory implements Trajectory4
     }
 
     @Override
-    public double getDesiredVelocityZ(double timeInSeconds) {
-        return scaleFactor * xycircle.getDesiredVelocityOrdinate(timeInSeconds);
-    }
-
-    @Override
     public double getDesiredAngleZ(double timeInSeconds) {
         return angularMotion.getDesiredPosition(timeInSeconds);
-    }
-
-    @Override
-    public double getDesiredAngularVelocityZ(double timeInSeconds) {
-        return angularMotion.getDesiredVelocity(timeInSeconds);
     }
 
     @Override

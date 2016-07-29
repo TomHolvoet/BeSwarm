@@ -67,30 +67,12 @@ public final class Choreography extends BasicTrajectory
     }
 
     @Override
-    public double getDesiredVelocityX(double timeInSeconds) {
-        setStartTime(timeInSeconds);
-        final double currentTime = timeInSeconds - getStartTime();
-        checkChoreoSegments(currentTime);
-        return getCurrentSegment().getTarget()
-                .getDesiredVelocityX(currentTime);
-    }
-
-    @Override
     public double getDesiredPositionY(double timeInSeconds) {
         setStartTime(timeInSeconds);
         final double currentTime = timeInSeconds - getStartTime();
         checkChoreoSegments(currentTime);
         return getCurrentSegment().getTarget()
                 .getDesiredPositionY(currentTime);
-    }
-
-    @Override
-    public double getDesiredVelocityY(double timeInSeconds) {
-        setStartTime(timeInSeconds);
-        final double currentTime = timeInSeconds - getStartTime();
-        checkChoreoSegments(currentTime);
-        return getCurrentSegment().getTarget()
-                .getDesiredVelocityY(currentTime);
     }
 
     @Override
@@ -103,29 +85,11 @@ public final class Choreography extends BasicTrajectory
     }
 
     @Override
-    public double getDesiredVelocityZ(double timeInSeconds) {
-        setStartTime(timeInSeconds);
-        final double currentTime = timeInSeconds - getStartTime();
-        checkChoreoSegments(currentTime);
-        return getCurrentSegment().getTarget()
-                .getDesiredVelocityZ(currentTime);
-    }
-
-    @Override
     public double getDesiredAngleZ(double timeInSeconds) {
         setStartTime(timeInSeconds);
         final double currentTime = timeInSeconds - getStartTime();
         checkChoreoSegments(currentTime);
         return getCurrentSegment().getTarget().getDesiredAngleZ(currentTime);
-    }
-
-    @Override
-    public double getDesiredAngularVelocityZ(double timeInSeconds) {
-        setStartTime(timeInSeconds);
-        final double currentTime = timeInSeconds - getStartTime();
-        checkChoreoSegments(currentTime);
-        return getCurrentSegment().getTarget()
-                .getDesiredAngularVelocityZ(currentTime);
     }
 
     @Override

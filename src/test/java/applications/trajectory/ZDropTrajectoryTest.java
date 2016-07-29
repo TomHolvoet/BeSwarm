@@ -85,10 +85,6 @@ public class ZDropTrajectoryTest {
         target.getDesiredPositionY(0);
         target.getDesiredPositionZ(0);
         target.getDesiredAngleZ(0);
-        target.getDesiredVelocityX(0);
-        target.getDesiredVelocityY(0);
-        target.getDesiredVelocityZ(0);
-        target.getDesiredAngularVelocityZ(0);
     }
 
     private int countOccurrence(List<Double> zresults, double value) {

@@ -19,18 +19,8 @@ class HoldPositionTrajectory4D implements Trajectory4d {
     }
 
     @Override
-    public double getDesiredVelocityX(double timeInSeconds) {
-        return 0;
-    }
-
-    @Override
     public double getDesiredPositionY(double timeInSeconds) {
         return targetPoint.getY();
-    }
-
-    @Override
-    public double getDesiredVelocityY(double timeInSeconds) {
-        return 0;
     }
 
     @Override
@@ -39,18 +29,8 @@ class HoldPositionTrajectory4D implements Trajectory4d {
     }
 
     @Override
-    public double getDesiredVelocityZ(double timeInSeconds) {
-        return 0;
-    }
-
-    @Override
     public double getDesiredAngleZ(double timeInSeconds) {
         return targetPoint.getAngle();
-    }
-
-    @Override
-    public double getDesiredAngularVelocityZ(double timeInSeconds) {
-        return 0;
     }
 
     @Override

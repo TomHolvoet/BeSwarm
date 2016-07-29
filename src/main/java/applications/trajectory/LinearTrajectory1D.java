@@ -23,8 +23,4 @@ class LinearTrajectory1D extends BasicTrajectory implements Trajectory1d {
         return startComp + speedComp * currentTime;
     }
 
-    @Override
-    public double getDesiredVelocity(double timeInSeconds) {
-        return speedComp;
-    }
 }

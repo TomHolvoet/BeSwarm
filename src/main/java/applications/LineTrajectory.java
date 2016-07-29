@@ -30,7 +30,7 @@ public final class LineTrajectory implements Trajectory4d {
      * Creates a line trajectory.
      *
      * @param flightDuration the duration of the trajectory
-     * @param length the length of the trajectory
+     * @param length         the length of the trajectory
      * @return a line trajectory instance
      */
     public static LineTrajectory create(double flightDuration, double length) {
@@ -43,18 +43,8 @@ public final class LineTrajectory implements Trajectory4d {
     }
 
     @Override
-    public double getDesiredVelocityX(double timeInSeconds) {
-        return trajectoryLinearX.getDesiredVelocity(timeInSeconds);
-    }
-
-    @Override
     public double getDesiredPositionY(double timeInSeconds) {
         return trajectoryLinearY.getDesiredPosition(timeInSeconds);
-    }
-
-    @Override
-    public double getDesiredVelocityY(double timeInSeconds) {
-        return trajectoryLinearY.getDesiredVelocity(timeInSeconds);
     }
 
     @Override
@@ -63,18 +53,8 @@ public final class LineTrajectory implements Trajectory4d {
     }
 
     @Override
-    public double getDesiredVelocityZ(double timeInSeconds) {
-        return trajectoryLinearZ.getDesiredVelocity(timeInSeconds);
-    }
-
-    @Override
     public double getDesiredAngleZ(double timeInSeconds) {
         return trajectoryAngularZ.getDesiredPosition(timeInSeconds);
-    }
-
-    @Override
-    public double getDesiredAngularVelocityZ(double timeInSeconds) {
-        return trajectoryAngularZ.getDesiredVelocity(timeInSeconds);
     }
 
     private final class TrajectoryLinearY implements Trajectory1d {
@@ -104,24 +84,12 @@ public final class LineTrajectory implements Trajectory4d {
             }
         }
 
-        @Override
-        public double getDesiredVelocity(double timeInSeconds) {
-            if (startTime < 0) {
-                startTime = timeInSeconds;
-            }
-
-            final double currentTime = timeInSeconds - startTime;
-            if (currentTime < flightDuration) {
-                return length / flightDuration;
-            } else {
-                return 0.0;
-            }
-        }
     }
 
     private final class ZeroTrajectory implements Trajectory1d {
 
-        private ZeroTrajectory() {}
+        private ZeroTrajectory() {
+        }
 
         @Override
         public double getDesiredPosition(double timeInSeconds) {
@@ -132,13 +100,5 @@ public final class LineTrajectory implements Trajectory4d {
             return 0.0;
         }
 
-        @Override
-        public double getDesiredVelocity(double timeInSeconds) {
-            if (startTime < 0) {
-                startTime = timeInSeconds;
-            }
-
-            return 0.0;
-        }
     }
 }
