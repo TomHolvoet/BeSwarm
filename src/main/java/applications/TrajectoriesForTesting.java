@@ -60,7 +60,7 @@ public final class TrajectoriesForTesting {
     public static FiniteTrajectory4d getCorkscrew() {
         double orientation = -Math.PI / 2;
         double radius = 0.5;
-        double frequency = 0.1;
+        double frequency = 0.2;
         double velocity = 0.1;
         Point4D start = Point4D.create(1, 0, 1, orientation);
         Point3D end = Point3D.create(2.5, -3.0, 1.5);
