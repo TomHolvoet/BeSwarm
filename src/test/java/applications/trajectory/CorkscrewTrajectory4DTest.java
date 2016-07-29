@@ -67,7 +67,6 @@ public class CorkscrewTrajectory4DTest {
             // TestUtils.EPSILON);
             l.add(getVelocityZ(trajectory, i / 10d));
         }
-        System.out.println(l);
         assertBounds(l, speed, speed);
     }
 

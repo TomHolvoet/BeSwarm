@@ -20,8 +20,7 @@ public final class TestUtils {
     private TestUtils() {
     }
 
-    public static void assertBounds(List<Double> results, double min,
-            double max) {
+    public static void assertBounds(List<Double> results, double min, double max) {
         for (Double d : results) {
             Assert.assertTrue(Collections.min(results) + EPSILON >= min - EPSILON);
             Assert.assertTrue(Collections.max(results) - EPSILON <= max + EPSILON);
@@ -30,15 +29,13 @@ public final class TestUtils {
 
     public static void testPositionFrequencyRadiusRelation(double frequency, double radius,
             Trajectory1d target) {
-        for (double i = 0; i < 30;
-             i += 1 / frequency) {
+        for (double i = 0; i < 30; i += 1 / frequency) {
             assertEquals(radius, target.getDesiredPosition(i), 0.01);
         }
     }
 
     public static void testVelocityFrequencyRadiusRelation(double frequency, Trajectory1d target) {
         for (double i = 0; i < 30; i += 1 / frequency) {
-            double d = getVelocity(target, i);
             assertEquals(0, getVelocity(target, i), 0.01);
         }
     }
@@ -70,8 +67,6 @@ public final class TestUtils {
     }
 
     public static double getVelocity(Trajectory1d trajectory, double t) {
-        double before = trajectory.getDesiredPosition(t);
-        double aft = trajectory.getDesiredPosition(t + DELTA);
         return (trajectory.getDesiredPosition(t + DELTA) - trajectory.getDesiredPosition(t))
                 / DELTA;
     }
