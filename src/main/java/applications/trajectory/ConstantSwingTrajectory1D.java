@@ -16,7 +16,6 @@ import static com.google.common.base.Preconditions.checkArgument;
  */
 class ConstantSwingTrajectory1D extends PeriodicTrajectory implements Trajectory1d {
     private final double freq2pi;
-    private final double rfreq2pi;
 
     /**
      * Constructor
@@ -32,7 +31,7 @@ class ConstantSwingTrajectory1D extends PeriodicTrajectory implements Trajectory
     ConstantSwingTrajectory1D(Point4D origin, double radius, double frequency, double phase) {
         super(phase, origin, radius, frequency);
         this.freq2pi = frequency * TWOPI;
-        this.rfreq2pi = frequency * radius * TWOPI;
+        double rfreq2pi = frequency * radius * TWOPI;
         checkArgument(Math.abs(rfreq2pi) < MAX_ABSOLUTE_VELOCITY,
                 "Absolute speed should not be larger than "
                         + "MAX_ABSOLUTE_VELOCITY,"
