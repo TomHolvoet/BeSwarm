@@ -1,7 +1,7 @@
 package applications.parrot.bebop;
 
 import applications.ExampleFlight;
-import applications.TrajectoriesForTesting;
+import applications.trajectory.TrajectoryServer;
 import control.FiniteTrajectory4d;
 import control.PidParameters;
 import control.localization.BebopStateEstimatorWithPoseStampedAndOdom;
@@ -22,13 +22,18 @@ import java.util.concurrent.TimeUnit;
 /**
  * @author Hoang Tung Dinh
  */
-public class BebopKristofComplexExample extends AbstractNodeMain {
-    private static final Logger logger = LoggerFactory.getLogger(BebopKristofComplexExample.class);
+public abstract class AbstractBebopExample extends AbstractNodeMain implements TrajectoryServer {
+    private static final Logger logger = LoggerFactory.getLogger(AbstractBebopExample.class);
     private static final String DRONE_NAME = "bebop";
+    private final String nodeName;
+
+    protected AbstractBebopExample(String nodeName) {
+        this.nodeName = nodeName;
+    }
 
     @Override
     public GraphName getDefaultNodeName() {
-        return GraphName.of("BebopSimpleLinePattern");
+        return GraphName.of(nodeName);
     }
 
     @Override
@@ -46,7 +51,7 @@ public class BebopKristofComplexExample extends AbstractNodeMain {
         final StateEstimator stateEstimator = BebopStateEstimatorWithPoseStampedAndOdom.create(
                 getPoseSubscriber(connectedNode), getOdometrySubscriber(connectedNode));
 
-        final FiniteTrajectory4d trajectory4d = TrajectoriesForTesting.getCorkscrew();
+        final FiniteTrajectory4d trajectory4d = getConcreteTrajectory();
 
         final ExampleFlight exampleFlight = ExampleFlight.builder()
                 .withConnectedNode(connectedNode)
