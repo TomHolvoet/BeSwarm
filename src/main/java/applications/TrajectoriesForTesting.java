@@ -51,7 +51,7 @@ public final class TrajectoriesForTesting {
         double yawAngle = -Math.PI / 2;
         Trajectory4d target1 = Trajectories.swingTrajectoryBuilder()
                 .setOrigin(Point4D.create(1.5, -2, 2.0, yawAngle))
-                .setFrequency(0.03)
+                .setFrequency(0.06)
                 .setRadius(1.5)
                 .build();
         return Choreography.builder().withTrajectory(target1).forTime(120).build();
