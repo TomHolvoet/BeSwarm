@@ -42,10 +42,5 @@ public final class TestUtils {
         verify(trajectory4d, atLeastOnce()).getDesiredPositionY(anyDouble());
         verify(trajectory4d, atLeastOnce()).getDesiredPositionZ(anyDouble());
         verify(trajectory4d, atLeastOnce()).getDesiredAngleZ(anyDouble());
-
-        verify(trajectory4d, atLeastOnce()).getDesiredVelocityX(anyDouble());
-        verify(trajectory4d, atLeastOnce()).getDesiredVelocityY(anyDouble());
-        verify(trajectory4d, atLeastOnce()).getDesiredVelocityZ(anyDouble());
-        verify(trajectory4d, atLeastOnce()).getDesiredAngularVelocityZ(anyDouble());
     }
 }
