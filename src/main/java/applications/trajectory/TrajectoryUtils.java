@@ -15,11 +15,13 @@ public final class TrajectoryUtils {
     /**
      * @param currentTime The time point in the motion.
      * @param frequency   The frequency of the pendulum movement.
-     * @return The angle of the pendulum string with the z-axis for a given time if the pendulum moves with given
+     * @return The angle of the pendulum string with the z-axis for a given time if the pendulum
+     * moves with given
      * frequency.
      */
     public static double pendulumAngleFromTime(double currentTime, double frequency) {
-        return PeriodicTrajectory.HALFPI * StrictMath.cos(PeriodicTrajectory.TWOPI * frequency * currentTime);
+        return PeriodicTrajectory.HALFPI * StrictMath
+                .cos(PeriodicTrajectory.TWOPI * frequency * currentTime);
     }
 
     /**
@@ -33,11 +35,6 @@ public final class TrajectoryUtils {
             @Override
             public double getDesiredPosition(double timeInSeconds) {
                 return trajectory4d.getDesiredPositionX(timeInSeconds);
-            }
-
-            @Override
-            public double getDesiredVelocity(double timeInSeconds) {
-                return trajectory4d.getDesiredVelocityX(timeInSeconds);
             }
         };
     }
@@ -54,11 +51,6 @@ public final class TrajectoryUtils {
             public double getDesiredPosition(double timeInSeconds) {
                 return trajectory4d.getDesiredPositionY(timeInSeconds);
             }
-
-            @Override
-            public double getDesiredVelocity(double timeInSeconds) {
-                return trajectory4d.getDesiredVelocityY(timeInSeconds);
-            }
         };
     }
 
@@ -74,11 +66,6 @@ public final class TrajectoryUtils {
             public double getDesiredPosition(double timeInSeconds) {
                 return trajectory4d.getDesiredPositionZ(timeInSeconds);
             }
-
-            @Override
-            public double getDesiredVelocity(double timeInSeconds) {
-                return trajectory4d.getDesiredVelocityZ(timeInSeconds);
-            }
         };
     }
 
@@ -86,18 +73,14 @@ public final class TrajectoryUtils {
      * Gets the one-dimensional trajectory angular z from a four-dimensional trajectory.
      *
      * @param trajectory4d the four-dimensional trajectory
-     * @return an one-dimensional trajectory represents the trajectory in the angular z (the yaw) coordinate
+     * @return an one-dimensional trajectory represents the trajectory in the angular z (the yaw)
+     * coordinate
      */
     public static Trajectory1d getTrajectoryAngularZ(final Trajectory4d trajectory4d) {
         return new Trajectory1d() {
             @Override
             public double getDesiredPosition(double timeInSeconds) {
                 return trajectory4d.getDesiredAngleZ(timeInSeconds);
-            }
-
-            @Override
-            public double getDesiredVelocity(double timeInSeconds) {
-                return trajectory4d.getDesiredAngularVelocityZ(timeInSeconds);
             }
         };
     }

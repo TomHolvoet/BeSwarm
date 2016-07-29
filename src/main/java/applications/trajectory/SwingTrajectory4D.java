@@ -38,19 +38,9 @@ class SwingTrajectory4D extends PeriodicTrajectory implements Trajectory4d {
     }
 
     @Override
-    public double getDesiredVelocityX(double timeInSeconds) {
-        return xFactor * swing.getDesiredVelocityAbscissa(timeInSeconds);
-    }
-
-    @Override
     public double getDesiredPositionY(double timeInSeconds) {
         return yFactor * swing.getDesiredPositionAbscissa(timeInSeconds) + this
                 .getLinearDisplacement().getY();
-    }
-
-    @Override
-    public double getDesiredVelocityY(double timeInSeconds) {
-        return yFactor * swing.getDesiredVelocityAbscissa(timeInSeconds);
     }
 
     @Override
@@ -59,18 +49,8 @@ class SwingTrajectory4D extends PeriodicTrajectory implements Trajectory4d {
     }
 
     @Override
-    public double getDesiredVelocityZ(double timeInSeconds) {
-        return swing.getDesiredVelocityOrdinate(timeInSeconds);
-    }
-
-    @Override
     public double getDesiredAngleZ(double timeInSeconds) {
         return angularMotion.getDesiredPosition(timeInSeconds);
-    }
-
-    @Override
-    public double getDesiredAngularVelocityZ(double timeInSeconds) {
-        return angularMotion.getDesiredVelocity(timeInSeconds);
     }
 
     @Override

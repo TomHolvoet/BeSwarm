@@ -44,8 +44,4 @@ class ConstantVelocityAngularTrajectory1D extends PeriodicTrajectory implements 
                 % TWOPI;
     }
 
-    @Override
-    public double getDesiredVelocity(double timeInSeconds) {
-        return TWOPI * getFrequency();
-    }
 }

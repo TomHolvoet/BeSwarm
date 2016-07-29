@@ -13,7 +13,6 @@ import static com.google.common.base.Preconditions.checkArgument;
  */
 final class CircleTrajectory2D extends PeriodicTrajectory implements Trajectory2d {
     private final double freq2pi;
-    private final double rfreq2pi;
 
     /**
      * Constructor
@@ -29,7 +28,7 @@ final class CircleTrajectory2D extends PeriodicTrajectory implements Trajectory2
             boolean clockwise) {
         super(phase, Point4D.from(origin, 0), radius, frequency);
         this.freq2pi = frequency * TWOPI * (clockwise ? 1 : -1);
-        this.rfreq2pi = frequency * radius * TWOPI * (clockwise ? 1 : -1);
+        double rfreq2pi = frequency * radius * TWOPI * (clockwise ? 1 : -1);
         checkArgument(Math.abs(rfreq2pi) < MAX_ABSOLUTE_VELOCITY,
                 "Absolute speed should not be larger than " + "MAX_ABSOLUTE_VELOCITY,"
                         + " which is: " + MAX_ABSOLUTE_VELOCITY);
@@ -43,22 +42,10 @@ final class CircleTrajectory2D extends PeriodicTrajectory implements Trajectory2
     }
 
     @Override
-    public double getDesiredVelocityAbscissa(double timeInSeconds) {
-        final double currentTime = getRelativeTime(timeInSeconds);
-        return -rfreq2pi * StrictMath.sin(freq2pi * currentTime + getPhaseDisplacement());
-    }
-
-    @Override
     public double getDesiredPositionOrdinate(double timeInSeconds) {
         final double currentTime = getRelativeTime(timeInSeconds);
         return getLinearDisplacement().getY() + getRadius() * StrictMath
                 .sin(freq2pi * currentTime + getPhaseDisplacement());
-    }
-
-    @Override
-    public double getDesiredVelocityOrdinate(double timeInSeconds) {
-        final double currentTime = getRelativeTime(timeInSeconds);
-        return rfreq2pi * StrictMath.cos(freq2pi * currentTime + getPhaseDisplacement());
     }
 
     static Builder builder() {

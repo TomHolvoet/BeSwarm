@@ -32,24 +32,10 @@ class LinearTrajectory4D extends BasicTrajectory implements Trajectory4d {
     }
 
     @Override
-    public double getDesiredVelocityX(double timeInSeconds) {
-        setStartTime(timeInSeconds);
-        final double currentTime = timeInSeconds - getStartTime();
-        return this.linearX.getDesiredVelocity(currentTime);
-    }
-
-    @Override
     public double getDesiredPositionY(double timeInSeconds) {
         setStartTime(timeInSeconds);
         final double currentTime = timeInSeconds - getStartTime();
         return this.linearY.getDesiredPosition(currentTime);
-    }
-
-    @Override
-    public double getDesiredVelocityY(double timeInSeconds) {
-        setStartTime(timeInSeconds);
-        final double currentTime = timeInSeconds - getStartTime();
-        return this.linearY.getDesiredVelocity(currentTime);
     }
 
     @Override
@@ -60,13 +46,6 @@ class LinearTrajectory4D extends BasicTrajectory implements Trajectory4d {
     }
 
     @Override
-    public double getDesiredVelocityZ(double timeInSeconds) {
-        setStartTime(timeInSeconds);
-        final double currentTime = timeInSeconds - getStartTime();
-        return this.linearZ.getDesiredVelocity(currentTime);
-    }
-
-    @Override
     public double getDesiredAngleZ(double timeInSeconds) {
         setStartTime(timeInSeconds);
         final double currentTime = timeInSeconds - getStartTime();
@@ -74,10 +53,4 @@ class LinearTrajectory4D extends BasicTrajectory implements Trajectory4d {
 
     }
 
-    @Override
-    public double getDesiredAngularVelocityZ(double timeInSeconds) {
-        setStartTime(timeInSeconds);
-        final double currentTime = timeInSeconds - getStartTime();
-        return this.angleZ.getDesiredVelocity(currentTime);
-    }
 }

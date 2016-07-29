@@ -68,13 +68,6 @@ public abstract class Periodic2DTest {
                             (timeInSeconds);
         }
 
-        @Override
-        public double getDesiredVelocity(double
-                timeInSeconds) {
-            return highFrequencyCircle
-                    .getDesiredVelocityAbscissa
-                            (timeInSeconds);
-        }
     }
 
     private class HighFreq1DOrdinate implements Trajectory1d {
@@ -86,12 +79,6 @@ public abstract class Periodic2DTest {
                             (timeInSeconds);
         }
 
-        @Override
-        public double getDesiredVelocity(double
-                timeInSeconds) {
-            return highFrequencyCircle
-                    .getDesiredVelocityOrdinate(timeInSeconds);
-        }
     }
 
     private class LowFreq1DAbscissa implements Trajectory1d {
@@ -103,13 +90,6 @@ public abstract class Periodic2DTest {
                             (timeInSeconds);
         }
 
-        @Override
-        public double getDesiredVelocity(double
-                timeInSeconds) {
-            return lowFrequencyCircle
-                    .getDesiredVelocityAbscissa
-                            (timeInSeconds);
-        }
     }
 
     private class LowFreq1DOrdinate implements Trajectory1d {
@@ -121,11 +101,5 @@ public abstract class Periodic2DTest {
                             (timeInSeconds);
         }
 
-        @Override
-        public double getDesiredVelocity(double
-                timeInSeconds) {
-            return lowFrequencyCircle
-                    .getDesiredVelocityOrdinate(timeInSeconds);
-        }
     }
 }

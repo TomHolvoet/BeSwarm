@@ -13,17 +13,14 @@ public class PidController1dTest {
 
     @Test
     public void testCompute() {
-        final PidParameters pidParameters = PidParameters.builder().setKp(0.05).setKd(1).setKi(0).build();
+        final PidParameters pidParameters = PidParameters.builder().setKp(0.05).setKd(1).setKi(0)
+                .build();
         final Trajectory1d trajectory1d = new Trajectory1d() {
             @Override
             public double getDesiredPosition(double timeInSeconds) {
                 return 10;
             }
 
-            @Override
-            public double getDesiredVelocity(double timeInSeconds) {
-                return 0;
-            }
         };
         final PidController1d pidController1d = PidController1d.create(pidParameters, trajectory1d);
 

@@ -5,6 +5,7 @@ import control.Trajectory4d;
 import org.junit.Before;
 import org.junit.Test;
 
+import static applications.trajectory.TestUtils.*;
 import static org.junit.Assert.assertEquals;
 
 /**
@@ -58,31 +59,31 @@ public class StraightLineTrajectory4DTest {
 
     @Test
     public void getTrajectoryLinearXVelocity() {
-        assertEquals(1, target.getDesiredVelocityX(5), 0);
+        assertEquals(1, getVelocityX(target, 5), EPSILON);
     }
 
     @Test
     public void getTrajectoryLinearXTestHoldAtEnd() throws Exception {
         target.getDesiredPositionX(15);
-        assertEquals(10, target.getDesiredPositionX(15), 0.01);
+        assertEquals(10, target.getDesiredPositionX(15), EPSILON);
     }
 
     @Test
     public void getTrajectoryLinearY() throws Exception {
-        assertEquals(0, target.getDesiredPositionY(5), 0);
-        assertEquals(0, target.getDesiredPositionY(10), 0);
+        assertEquals(0, target.getDesiredPositionY(5), EPSILON);
+        assertEquals(0, target.getDesiredPositionY(10), EPSILON);
 
         double t = 5;
         double toCalc = 10d / Math.sqrt(300d) * t;
-        assertEquals(toCalc, target2.getDesiredPositionY(t), 0.01);
+        assertEquals(toCalc, target2.getDesiredPositionY(t), EPSILON);
         t = 10;
         toCalc = 10d / Math.sqrt(300d) * t;
-        assertEquals(toCalc, target2.getDesiredPositionY(t), 0.01);
+        assertEquals(toCalc, target2.getDesiredPositionY(t), EPSILON);
     }
 
     @Test
     public void getTrajectoryLinearYVelocity() {
-        assertEquals(0, target.getDesiredVelocityY(5), 0);
+        assertEquals(0, getVelocityY(target, 5), 0);
     }
 
     @Test
@@ -100,7 +101,7 @@ public class StraightLineTrajectory4DTest {
 
     @Test
     public void getTrajectoryLinearZVelocity() {
-        assertEquals(0, target.getDesiredVelocityZ(5), 0);
+        assertEquals(0, getVelocityZ(target, 5), 0);
     }
 
     @Test

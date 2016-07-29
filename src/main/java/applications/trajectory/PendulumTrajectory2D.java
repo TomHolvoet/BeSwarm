@@ -16,7 +16,6 @@ import static com.google.common.base.Preconditions.checkArgument;
  * @author Kristof Coninx <kristof.coninx AT cs.kuleuven.be>
  */
 public final class PendulumTrajectory2D extends PeriodicTrajectory implements Trajectory2d {
-    private final double freq2pi;
     private final Trajectory1d linearMovement;
     private final Trajectory1d pendulumOrdinate;
 
@@ -29,7 +28,6 @@ public final class PendulumTrajectory2D extends PeriodicTrajectory implements Tr
      */
     private PendulumTrajectory2D(double radius, double frequency, Point4D origin, double phase) {
         super(HALFPI * 3 + phase, origin, radius, frequency);
-        this.freq2pi = frequency * TWOPI;
         this.linearMovement = new PendulumSwingTrajectory1D(origin, radius, frequency, phase);
         checkArgument(Math.abs(radius * frequency) < MAX_ABSOLUTE_VELOCITY / PISQUARED,
                 "Absolute speed should not be larger than " + "MAX_ABSOLUTE_VELOCITY,"
@@ -50,18 +48,8 @@ public final class PendulumTrajectory2D extends PeriodicTrajectory implements Tr
     }
 
     @Override
-    public double getDesiredVelocityAbscissa(double timeInSeconds) {
-        return this.linearMovement.getDesiredVelocity(timeInSeconds);
-    }
-
-    @Override
     public double getDesiredPositionOrdinate(double timeInSeconds) {
         return this.pendulumOrdinate.getDesiredPosition(timeInSeconds);
-    }
-
-    @Override
-    public double getDesiredVelocityOrdinate(double timeInSeconds) {
-        return this.pendulumOrdinate.getDesiredVelocity(timeInSeconds);
     }
 
     /**
@@ -115,14 +103,5 @@ public final class PendulumTrajectory2D extends PeriodicTrajectory implements Tr
                             + getPhaseDisplacement());
         }
 
-        @Override
-        public double getDesiredVelocity(double timeInSeconds) {
-            setStartTime(timeInSeconds);
-
-            final double currentTime = timeInSeconds - getStartTime();
-            return -PISQUARED * getFrequency() * getRadius() * StrictMath
-                    .sin(freq2pi * currentTime + getPhaseDisplacement()) * StrictMath
-                    .cos(HALFPI * StrictMath.cos(freq2pi * currentTime + getPhaseDisplacement()));
-        }
     }
 }
