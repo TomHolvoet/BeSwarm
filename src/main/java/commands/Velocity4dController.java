@@ -17,7 +17,7 @@ final class Velocity4dController implements VelocityController {
     private final Velocity4dService velocity4dService;
     private final PidController4d pidController4d;
 
-    private Velocity4dController(Velocity4dService velocity4dService, PidController4d pidController4d) {
+    Velocity4dController(Velocity4dService velocity4dService, PidController4d pidController4d) {
         this.velocity4dService = velocity4dService;
         this.pidController4d = pidController4d;
     }

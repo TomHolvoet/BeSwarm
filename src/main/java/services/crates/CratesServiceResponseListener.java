@@ -28,7 +28,7 @@ final class CratesServiceResponseListener<T extends Message> implements ServiceR
      * @return a new instance of the service response listener
      */
     public static <T extends Message> CratesServiceResponseListener<T> create(CountDownLatch countDownLatch) {
-        return new CratesServiceResponseListener<T>(countDownLatch);
+        return new CratesServiceResponseListener<>(countDownLatch);
     }
 
     @Override

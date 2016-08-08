@@ -64,6 +64,7 @@ final class TumExampleFlightFacade {
             TimeUnit.SECONDS.sleep(3);
         } catch (InterruptedException e) {
             logger.info("Warm up time is interrupted.", e);
+            Thread.currentThread().interrupt();
         }
 
         exampleFlight.fly();

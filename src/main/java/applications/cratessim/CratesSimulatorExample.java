@@ -75,6 +75,7 @@ public final class CratesSimulatorExample extends AbstractNodeMain {
             TimeUnit.SECONDS.sleep(5);
         } catch (InterruptedException e) {
             logger.info("Warm up is interrupted.", e);
+            Thread.currentThread().interrupt();
         }
     }
 

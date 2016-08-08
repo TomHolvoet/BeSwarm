@@ -22,7 +22,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * @author Hoang Tung Dinh
  */
 final class ParrotVelocity4dService implements Velocity4dService {
-    private static final Logger loggerVel = LoggerFactory.getLogger(ParrotVelocity4dService.class.getName() + ".vel");
+    private static final Logger velocityLogger = LoggerFactory.getLogger(ParrotVelocity4dService.class.getName() + ".vel");
 
     private final Publisher<Twist> publisher;
 
@@ -36,7 +36,7 @@ final class ParrotVelocity4dService implements Velocity4dService {
     private final double maxLinearZ;
     private final double maxAngularZ;
 
-    private ParrotVelocity4dService(Builder builder) {
+    ParrotVelocity4dService(Builder builder) {
         publisher = builder.publisher;
         minLinearX = builder.minLinearX;
         maxLinearX = builder.maxLinearX;
@@ -59,7 +59,7 @@ final class ParrotVelocity4dService implements Velocity4dService {
                 inertialFrameVelocity, pose);
 
         final BodyFrameVelocity refinedVelocity = getRefinedVelocity(bodyFrameVelocity);
-        loggerVel.trace("{} {} {} {} {}", System.nanoTime() / 1000000000.0, refinedVelocity.linearX(),
+        velocityLogger.trace("{} {} {} {} {}", System.nanoTime() / 1.0E09, refinedVelocity.linearX(),
                 refinedVelocity.linearY(), refinedVelocity.linearZ(), refinedVelocity.angularZ());
 
         publisher.publish(newTwistMessage(refinedVelocity));
@@ -100,7 +100,7 @@ final class ParrotVelocity4dService implements Velocity4dService {
         return getRefinedValue(angularZ, minAngularZ, maxAngularZ);
     }
 
-    private double getRefinedValue(double value, double minValue, double maxValue) {
+    private static double getRefinedValue(double value, double minValue, double maxValue) {
         double refinedValue = value;
 
         if (value > maxValue) {
@@ -145,7 +145,7 @@ final class ParrotVelocity4dService implements Velocity4dService {
         private Double maxLinearZ;
         private Double maxAngularZ;
 
-        private Builder() {}
+        Builder() {}
 
         /**
          * Sets the {@code publisher} and returns a reference to this Builder so that the methods can be chained

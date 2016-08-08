@@ -14,7 +14,7 @@ import services.rossubscribers.MessagesSubscriberService;
  */
 public class PrintPose extends AbstractNodeMain {
 
-    private static Logger logger = LoggerFactory.getLogger(PrintPose.class);
+    private static final Logger logger = LoggerFactory.getLogger(PrintPose.class);
     private static final String POSE_TOPIC = "/arlocros/pose";
 
     @Override
@@ -42,8 +42,9 @@ public class PrintPose extends AbstractNodeMain {
                 i++;
                 Thread.sleep(100);
             }
-        } catch (Exception e) {
-            logger.debug("An exception occurred while updating pose.", e);
+        } catch (InterruptedException e) {
+            logger.debug("The thread is interrupted.", e);
+            Thread.currentThread().interrupt();
         }
     }
 

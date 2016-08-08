@@ -13,7 +13,7 @@ import control.dto.Pose;
 public final class MoveToPose implements Command {
     private final FollowTrajectory followTrajectoryCommand;
 
-    private MoveToPose(FollowTrajectory followTrajectoryCommand) {
+    MoveToPose(FollowTrajectory followTrajectoryCommand) {
         this.followTrajectoryCommand = followTrajectoryCommand;
     }
 
@@ -38,7 +38,7 @@ public final class MoveToPose implements Command {
         private Pose goalPose;
         private double durationInSeconds;
 
-        private Builder() {}
+        Builder() {}
 
         @Override
         Builder self() {

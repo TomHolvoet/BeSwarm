@@ -45,10 +45,12 @@ public final class SimpleEmergencyAfterOneMinute implements EmergencyNotifier {
                 taskExecutor.submitTask(task);
             }
         } catch (InterruptedException e) {
-            logger.debug(
-                    "Waiting until sending emergency notification is interrupted. No emergency notification will be "
-                            + "sent.",
-                    e);
+            if (logger.isDebugEnabled()) {
+                logger.debug(
+                        "Waiting until sending emergency notification is interrupted. No emergency notification will " +
+                                "be " + "sent.", e);
+            }
+            Thread.currentThread().interrupt();
         }
     }
 

@@ -3,4 +3,7 @@
  *
  * @author Hoang Tung Dinh
  */
+@ParametersAreNonnullByDefault
 package control.dto;
+
+import javax.annotation.ParametersAreNonnullByDefault;

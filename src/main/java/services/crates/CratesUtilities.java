@@ -41,6 +41,7 @@ public final class CratesUtilities {
                 countDownLatch.await(ROS_SERVICE_WAITING_TIME_IN_MILLISECONDS, TimeUnit.MILLISECONDS);
             } catch (InterruptedException e) {
                 logger.info("Waiting for response is interrupted.", e);
+                Thread.currentThread().interrupt();
             }
 
             if (countDownLatch.getCount() == 0) {

@@ -12,7 +12,7 @@ public final class PidController1d {
     private final Trajectory1d trajectory;
 
     private double lastTimeInSeconds = -1;
-    private double accumulatedError = 0;
+    private double accumulatedError; // assigned to 0
 
     private static final double DELTA_TIME_IN_SECOND = 0.1;
 

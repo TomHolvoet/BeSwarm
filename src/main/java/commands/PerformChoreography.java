@@ -12,7 +12,7 @@ public final class PerformChoreography implements Command {
     private static final Logger logger = LoggerFactory.getLogger(PerformChoreography.class);
     private final FollowTrajectory followTrajectoryCommand;
 
-    private PerformChoreography(FollowTrajectory followTrajectoryCommand) {
+    PerformChoreography(FollowTrajectory followTrajectoryCommand) {
         this.followTrajectoryCommand = followTrajectoryCommand;
     }
 
@@ -38,9 +38,7 @@ public final class PerformChoreography implements Command {
 
         private FiniteTrajectory4d finiteTrajectory4d;
 
-        private Builder() {
-            super();
-        }
+        Builder() {}
 
         @Override
         Builder self() {

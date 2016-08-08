@@ -22,7 +22,7 @@ public final class PidController4d {
     private final PidController1d pidAngularZ;
     private final Trajectory1d angularTrajectoryZ;
 
-    private PidController4d(Builder builder) {
+    PidController4d(Builder builder) {
 
         angularTrajectoryZ = builder.angularTrajectoryZ;
         pidLinearX = PidController1d.create(builder.linearXParameters, builder.linearTrajectoryX);
@@ -81,7 +81,7 @@ public final class PidController4d {
         private Trajectory1d linearTrajectoryZ;
         private Trajectory1d angularTrajectoryZ;
 
-        private Builder() {}
+        Builder() {}
 
         /**
          * Sets the {@code trajectory4d} and returns a reference to this Builder so that the methods can be chained

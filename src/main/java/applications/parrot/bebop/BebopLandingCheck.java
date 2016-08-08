@@ -51,6 +51,7 @@ public final class BebopLandingCheck extends AbstractNodeMain {
             }
         } catch (InterruptedException e) {
             logger.info("Warm up time is interrupted.", e);
+            Thread.currentThread().interrupt();
         }
     }
 }

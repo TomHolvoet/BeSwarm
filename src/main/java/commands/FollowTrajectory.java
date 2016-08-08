@@ -76,7 +76,7 @@ public final class FollowTrajectory implements Command {
         private final double startTimeInNanoSeconds;
         private final int stateLifeDurationInNumberOfControlLoops;
 
-        private int counter = 0;
+        private int counter; // assigned to 0
         private double lastTimeStamp = Double.MIN_VALUE;
 
         private static final double NANO_SECOND_TO_SECOND = 1.0E09;

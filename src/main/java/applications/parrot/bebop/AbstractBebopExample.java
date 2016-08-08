@@ -72,6 +72,7 @@ public abstract class AbstractBebopExample extends AbstractNodeMain implements T
             TimeUnit.SECONDS.sleep(3);
         } catch (InterruptedException e) {
             logger.info("Warm up time is interrupted.", e);
+            Thread.currentThread().interrupt();
         }
 
         exampleFlight.fly();

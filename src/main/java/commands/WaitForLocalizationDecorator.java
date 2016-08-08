@@ -62,6 +62,7 @@ public final class WaitForLocalizationDecorator implements Command {
                 TimeUnit.MILLISECONDS.sleep(SLEEP_DURATION_IN_MILLISECONDS);
             } catch (InterruptedException e) {
                 logger.debug("Sleep is interrupted in land command.", e);
+                Thread.currentThread().interrupt();
             }
         }
 

@@ -20,7 +20,7 @@ public final class CreateVelocityControllerVisitor {
     private final PidParameters pidAngularZParameters;
     private final Trajectory4d trajectory4d;
 
-    private CreateVelocityControllerVisitor(Builder builder) {
+    CreateVelocityControllerVisitor(Builder builder) {
         pidLinearXParameters = builder.pidLinearXParameters;
         pidLinearYParameters = builder.pidLinearYParameters;
         pidLinearZParameters = builder.pidLinearZParameters;
@@ -95,7 +95,7 @@ public final class CreateVelocityControllerVisitor {
         private PidParameters pidAngularZParameters;
         private Trajectory4d trajectory4d;
 
-        private Builder() {}
+        Builder() {}
 
         /**
          * Sets the {@code pidLinearXParameters} and returns a reference to this Builder so that the methods can be

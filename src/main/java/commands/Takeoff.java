@@ -38,7 +38,8 @@ public final class Takeoff implements Command {
         try {
             TimeUnit.SECONDS.sleep(10);
         } catch (InterruptedException e) {
-            logger.debug("Waiting after sending taking off message is interrupted.");
+            logger.debug("Waiting after sending taking off message is interrupted.", e);
+            Thread.currentThread().interrupt();
         }
     }
 }
