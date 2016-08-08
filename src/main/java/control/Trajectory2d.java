@@ -12,14 +12,14 @@ public interface Trajectory2d {
     /**
      * @param timeInSeconds the point in time to get the position for.
      * @return The desired value of the position relative to the abscissa for the given point in
-     * time.
+     *     time.
      */
     double getDesiredPositionAbscissa(double timeInSeconds);
 
     /**
      * @param timeInSeconds the point in time to get the position for.
      * @return The desired value of the position relative to the ordinate. for the given point in
-     * time.
+     *     time.
      */
     double getDesiredPositionOrdinate(double timeInSeconds);
 }

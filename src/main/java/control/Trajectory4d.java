@@ -7,21 +7,21 @@ public interface Trajectory4d {
     /**
      * @param timeInSeconds the point in time to get the position for.
      * @return The desired value of the position relative to the x axis. for the given point in
-     * time.
+     *     time.
      */
     double getDesiredPositionX(double timeInSeconds);
 
     /**
      * @param timeInSeconds the point in time to get the position for.
      * @return The desired value of the position relative to the y axis. for the given point in
-     * time.
+     *     time.
      */
     double getDesiredPositionY(double timeInSeconds);
 
     /**
      * @param timeInSeconds the point in time to get the position for.
      * @return The desired value of the position relative to the z axis. for the given point in
-     * time.
+     *     time.
      */
     double getDesiredPositionZ(double timeInSeconds);
 

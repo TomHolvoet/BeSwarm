@@ -29,7 +29,7 @@ public class PrintPose extends AbstractNodeMain {
 
         try {
             int i = 0;
-            for (; ; ) {
+            while (true) {
                 Optional<PoseStamped> pose = poseSubscriber.getMostRecentMessage();
                 if (pose.isPresent()) {
                     double x = pose.get().getPose().getPosition().getX();

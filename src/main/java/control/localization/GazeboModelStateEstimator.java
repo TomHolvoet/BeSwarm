@@ -31,7 +31,7 @@ public final class GazeboModelStateEstimator implements StateEstimator {
      *
      * @param modelStateSubscriber the rostopic subscriber to a topic publishing model state messages
      * @param modelName the name of the drone model. A model state topic in Gazebo contains the states of all models in
-     * the simulation environment, while the drone is one of those models.
+     *     the simulation environment, while the drone is one of those models.
      * @return a state estimator instance
      */
     public static GazeboModelStateEstimator create(MessagesSubscriberService<ModelStates> modelStateSubscriber,

@@ -78,7 +78,9 @@ public final class LineTrajectory implements Trajectory4d {
                 return -length;
             } else {
                 double position = 0 - (currentTime % flightDuration) * length / flightDuration;
-                logger.info("Desired position" + position);
+                if (logger.isInfoEnabled()) {
+                    logger.info("Desired position" + position);
+                }
 
                 return position;
             }
