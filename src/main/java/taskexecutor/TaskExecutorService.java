@@ -51,7 +51,7 @@ public final class TaskExecutorService implements TaskExecutor {
     private static final class RunCommands implements Runnable {
         private final Iterable<Command> commands;
 
-        RunCommands(Iterable<Command> commands) {
+        private RunCommands(Iterable<Command> commands) {
             this.commands = commands;
         }
 

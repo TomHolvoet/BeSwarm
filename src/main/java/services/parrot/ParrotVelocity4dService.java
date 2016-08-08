@@ -36,7 +36,7 @@ final class ParrotVelocity4dService implements Velocity4dService {
     private final double maxLinearZ;
     private final double maxAngularZ;
 
-    ParrotVelocity4dService(Builder builder) {
+    private ParrotVelocity4dService(Builder builder) {
         publisher = builder.publisher;
         minLinearX = builder.minLinearX;
         maxLinearX = builder.maxLinearX;
@@ -145,7 +145,7 @@ final class ParrotVelocity4dService implements Velocity4dService {
         private Double maxLinearZ;
         private Double maxAngularZ;
 
-        Builder() {}
+        private Builder() {}
 
         /**
          * Sets the {@code publisher} and returns a reference to this Builder so that the methods can be chained

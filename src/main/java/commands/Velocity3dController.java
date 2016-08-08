@@ -21,7 +21,7 @@ final class Velocity3dController implements VelocityController {
     private final PidController1d pidControllerLinearY;
     private final PidController1d pidControllerLinearZ;
 
-    Velocity3dController(Builder builder) {
+    private Velocity3dController(Builder builder) {
         velocity3dService = builder.velocity3dService;
         trajectory4d = builder.trajectory4d;
         pidControllerLinearX = PidController1d.create(builder.pidLinearX,
