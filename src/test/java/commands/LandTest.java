@@ -64,7 +64,8 @@ public class LandTest {
 
     @Test
     public void testExecute_landingStateReceived() throws InterruptedException {
-        when(flyingStateService.getCurrentFlyingState()).thenReturn(Optional.of(FlyingState.LANDING));
+        when(flyingStateService.getCurrentFlyingState()).thenReturn(
+                Optional.of(FlyingState.LANDING));
         reset(landService);
         TimeUnit.MILLISECONDS.sleep(200);
         verify(landService, atMost(1)).sendLandingMessage();
@@ -73,7 +74,8 @@ public class LandTest {
 
     @Test
     public void testExecute_landedStateReceived() throws InterruptedException {
-        when(flyingStateService.getCurrentFlyingState()).thenReturn(Optional.of(FlyingState.LANDED));
+        when(flyingStateService.getCurrentFlyingState()).thenReturn(
+                Optional.of(FlyingState.LANDED));
         reset(landService);
         TimeUnit.MILLISECONDS.sleep(200);
         verify(landService, atMost(1)).sendLandingMessage();
@@ -82,7 +84,8 @@ public class LandTest {
 
     @Test
     @Parameters(method = "flyingStateValues")
-    public void testExecute_otherStatesReceived(Optional<FlyingState> flyingStateOptional) throws InterruptedException {
+    public void testExecute_otherStatesReceived(
+            Optional<FlyingState> flyingStateOptional) throws InterruptedException {
         when(flyingStateService.getCurrentFlyingState()).thenReturn(flyingStateOptional);
         reset(landService);
         TimeUnit.MILLISECONDS.sleep(200);

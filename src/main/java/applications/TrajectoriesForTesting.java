@@ -65,7 +65,8 @@ public final class TrajectoriesForTesting {
         Point4D start = Point4D.create(1, 0, 1, orientation);
         Point3D end = Point3D.create(2.5, -3.0, 1.5);
         Trajectory4d init = Trajectories.newHoldPositionTrajectory(start);
-        FiniteTrajectory4d first = Trajectories.newCorkscrewTrajectory(start, end, velocity, radius, frequency, 0);
+        FiniteTrajectory4d first = Trajectories.newCorkscrewTrajectory(start, end, velocity, radius,
+                frequency, 0);
         Trajectory4d inter = Trajectories.newHoldPositionTrajectory(Point4D.from(end, orientation));
         return Choreography.builder()
                 .withTrajectory(init)

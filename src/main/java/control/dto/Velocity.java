@@ -52,7 +52,11 @@ public abstract class Velocity implements InertialFrameVelocity, BodyFrameVeloci
         final double twistZ = twist.getLinear().getZ();
         final double twistAngularZ = twist.getAngular().getZ();
 
-        return builder().setLinearX(twistX).setLinearY(twistY).setLinearZ(twistZ).setAngularZ(twistAngularZ).build();
+        return builder().setLinearX(twistX)
+                .setLinearY(twistY)
+                .setLinearZ(twistZ)
+                .setAngularZ(twistAngularZ)
+                .build();
     }
 
     /**

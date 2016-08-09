@@ -39,7 +39,8 @@ final class Velocity2dController implements VelocityController {
     }
 
     @Override
-    public void computeAndSendVelocity(double currentTimeInSeconds, DroneStateStamped currentState) {
+    public void computeAndSendVelocity(double currentTimeInSeconds,
+            DroneStateStamped currentState) {
         final double nextVelocityX = pidControllerLinearX.compute(currentState.pose().x(),
                 currentState.inertialFrameVelocity().linearX(), currentTimeInSeconds);
         final double nextVelocityY = pidControllerLinearY.compute(currentState.pose().y(),
@@ -65,8 +66,8 @@ final class Velocity2dController implements VelocityController {
         }
 
         /**
-         * Sets the {@code velocity2dService} and returns a reference to this Builder so that the methods can be chained
-         * together.
+         * Sets the {@code velocity2dService} and returns a reference to this Builder so that the
+         * methods can be chained together.
          *
          * @param val the {@code velocity2dService} to set
          * @return a reference to this Builder
@@ -79,7 +80,8 @@ final class Velocity2dController implements VelocityController {
         /**
          * Returns a {@code Velocity2dController} built from the parameters previously set.
          *
-         * @return a {@code Velocity2dController} built with parameters of this {@code Velocity2dController.Builder}
+         * @return a {@code Velocity2dController} built with parameters of this
+         *     {@code Velocity2dController.Builder}
          */
         public Velocity2dController build() {
             checkNotNull(velocity2dService);
@@ -106,8 +108,8 @@ final class Velocity2dController implements VelocityController {
         abstract T self();
 
         /**
-         * Sets the {@code trajectory4d} and returns a reference to this Builder so that the methods can be chained
-         * together.
+         * Sets the {@code trajectory4d} and returns a reference to this Builder so that the
+         * methods can be chained together.
          *
          * @param val the {@code trajectory4d} to set
          * @return a reference to this Builder
@@ -118,8 +120,8 @@ final class Velocity2dController implements VelocityController {
         }
 
         /**
-         * Sets the {@code pidLinearX} and returns a reference to this Builder so that the methods can be chained
-         * together.
+         * Sets the {@code pidLinearX} and returns a reference to this Builder so that the
+         * methods can be chained together.
          *
          * @param val the {@code pidLinearX} to set
          * @return a reference to this Builder
@@ -130,8 +132,8 @@ final class Velocity2dController implements VelocityController {
         }
 
         /**
-         * Sets the {@code pidLinearY} and returns a reference to this Builder so that the methods can be chained
-         * together.
+         * Sets the {@code pidLinearY} and returns a reference to this Builder so that the
+         * methods can be chained together.
          *
          * @param val the {@code pidLinearY} to set
          * @return a reference to this Builder

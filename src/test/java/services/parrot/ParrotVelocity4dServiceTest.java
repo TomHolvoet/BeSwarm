@@ -62,8 +62,8 @@ public class ParrotVelocity4dServiceTest {
 
     @Test
     @Parameters(source = VelocityProvider.class)
-    public void testSendVelocityMessageWithoutThreshold(Pose pose, BodyFrameVelocity bodyFrameVelocity,
-            InertialFrameVelocity inertialFrameVelocity) {
+    public void testSendVelocityMessageWithoutThreshold(Pose pose,
+            BodyFrameVelocity bodyFrameVelocity, InertialFrameVelocity inertialFrameVelocity) {
         final Velocity4dService parrotVelocity4dService = ParrotVelocity4dService.builder()
                 .publisher(publisher)
                 .build();
@@ -100,7 +100,8 @@ public class ParrotVelocity4dServiceTest {
         assertThat(twistArgumentCaptor.getValue()).isEqualTo(twist);
     }
 
-    private void checkMessageSetUp(BodyFrameVelocity bodyFrameVelocity, Vector3 linear, Vector3 angular) {
+    private void checkMessageSetUp(BodyFrameVelocity bodyFrameVelocity, Vector3 linear,
+            Vector3 angular) {
         final ArgumentCaptor<Double> argumentCaptor = ArgumentCaptor.forClass(Double.class);
 
         verify(linear).setX(argumentCaptor.capture());

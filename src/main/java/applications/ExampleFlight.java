@@ -30,8 +30,8 @@ import java.util.Collection;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * This class illustrates an example flight. The drone will take off, hover in 5 second, follow a trajectory and then
- * land.
+ * This class illustrates an example flight. The drone will take off, hover in 5 second, follow a
+ * trajectory and then land.
  *
  * @author Hoang Tung Dinh
  */
@@ -79,7 +79,8 @@ public final class ExampleFlight {
     public void fly() {
         // task to execute in case of emergency
         final Task emergencyTask = createEmergencyTask();
-        final KeyboardEmergency keyboardEmergencyNotifier = createKeyboardEmergencyNotifier(emergencyTask);
+        final KeyboardEmergency keyboardEmergencyNotifier = createKeyboardEmergencyNotifier(
+                emergencyTask);
 
         final TaskExecutor taskExecutor = TaskExecutorService.create();
         keyboardEmergencyNotifier.registerTaskExecutor(taskExecutor);
@@ -110,8 +111,8 @@ public final class ExampleFlight {
                 .withControlRateInSeconds(0.01)
                 .build();
 
-        final Command waitForLocalizationThenFollowTrajectory = WaitForLocalizationDecorator.create(stateEstimator,
-                followTrajectory);
+        final Command waitForLocalizationThenFollowTrajectory = WaitForLocalizationDecorator.create(
+                stateEstimator, followTrajectory);
 
         commands.add(waitForLocalizationThenFollowTrajectory);
 
@@ -158,8 +159,8 @@ public final class ExampleFlight {
         }
 
         /**
-         * Sets the {@code takeOffService} and returns a reference to this Builder so that the methods can be chained
-         * together.
+         * Sets the {@code takeOffService} and returns a reference to this Builder so that the
+         * methods can be chained together.
          *
          * @param val the {@code takeOffService} to set
          * @return a reference to this Builder
@@ -170,8 +171,8 @@ public final class ExampleFlight {
         }
 
         /**
-         * Sets the {@code landService} and returns a reference to this Builder so that the methods can be chained
-         * together.
+         * Sets the {@code landService} and returns a reference to this Builder so that the
+         * methods can be chained together.
          *
          * @param val the {@code landService} to set
          * @return a reference to this Builder
@@ -182,8 +183,8 @@ public final class ExampleFlight {
         }
 
         /**
-         * Sets the {@code velocityService} and returns a reference to this Builder so that the methods can be chained
-         * together.
+         * Sets the {@code velocityService} and returns a reference to this Builder so that the
+         * methods can be chained together.
          *
          * @param val the {@code velocityService} to set
          * @return a reference to this Builder
@@ -194,8 +195,8 @@ public final class ExampleFlight {
         }
 
         /**
-         * Sets the {@code flyingStateService} and returns a reference to this Builder so that the methods can be
-         * chained together.
+         * Sets the {@code flyingStateService} and returns a reference to this Builder so that
+         * the methods can be chained together.
          *
          * @param val the {@code flyingStateService} to set
          * @return a reference to this Builder
@@ -206,8 +207,8 @@ public final class ExampleFlight {
         }
 
         /**
-         * Sets the {@code stateEstimator} and returns a reference to this Builder so that the methods can be chained
-         * together.
+         * Sets the {@code stateEstimator} and returns a reference to this Builder so that the
+         * methods can be chained together.
          *
          * @param val the {@code stateEstimator} to set
          * @return a reference to this Builder
@@ -218,8 +219,8 @@ public final class ExampleFlight {
         }
 
         /**
-         * Sets the {@code finiteTrajectory4d} and returns a reference to this Builder so that the methods can be
-         * chained together.
+         * Sets the {@code finiteTrajectory4d} and returns a reference to this Builder so that
+         * the methods can be chained together.
          *
          * @param val the {@code finiteTrajectory4d} to set
          * @return a reference to this Builder
@@ -230,8 +231,8 @@ public final class ExampleFlight {
         }
 
         /**
-         * Sets the {@code connectedNode} and returns a reference to this Builder so that the methods can be chained
-         * together.
+         * Sets the {@code connectedNode} and returns a reference to this Builder so that the
+         * methods can be chained together.
          *
          * @param val the {@code connectedNode} to set
          * @return a reference to this Builder
@@ -242,8 +243,8 @@ public final class ExampleFlight {
         }
 
         /**
-         * Sets the {@code pidLinearX} and returns a reference to this Builder so that the methods can be chained
-         * together.
+         * Sets the {@code pidLinearX} and returns a reference to this Builder so that the
+         * methods can be chained together.
          *
          * @param val the {@code pidLinearX} to set
          * @return a reference to this Builder
@@ -254,8 +255,8 @@ public final class ExampleFlight {
         }
 
         /**
-         * Sets the {@code pidLinearY} and returns a reference to this Builder so that the methods can be chained
-         * together.
+         * Sets the {@code pidLinearY} and returns a reference to this Builder so that the
+         * methods can be chained together.
          *
          * @param val the {@code pidLinearY} to set
          * @return a reference to this Builder
@@ -266,8 +267,8 @@ public final class ExampleFlight {
         }
 
         /**
-         * Sets the {@code pidLinearZ} and returns a reference to this Builder so that the methods can be chained
-         * together.
+         * Sets the {@code pidLinearZ} and returns a reference to this Builder so that the
+         * methods can be chained together.
          *
          * @param val the {@code pidLinearZ} to set
          * @return a reference to this Builder
@@ -278,8 +279,8 @@ public final class ExampleFlight {
         }
 
         /**
-         * Sets the {@code pidAngularZ} and returns a reference to this Builder so that the methods can be chained
-         * together.
+         * Sets the {@code pidAngularZ} and returns a reference to this Builder so that the
+         * methods can be chained together.
          *
          * @param val the {@code pidAngularZ} to set
          * @return a reference to this Builder
@@ -292,7 +293,8 @@ public final class ExampleFlight {
         /**
          * Returns a {@code ExampleFlight} built from the parameters previously set.
          *
-         * @return a {@code ExampleFlight} built with parameters of this {@code ExampleFlight.Builder}
+         * @return a {@code ExampleFlight} built with parameters of this
+         *     {@code ExampleFlight.Builder}
          */
         public ExampleFlight build() {
             checkNotNull(takeOffService);

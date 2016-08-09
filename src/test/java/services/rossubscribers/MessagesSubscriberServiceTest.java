@@ -28,7 +28,9 @@ public abstract class MessagesSubscriberServiceTest<T extends Message> {
 
     @Test
     public void testWithQueueSizeOfOne() {
-        final MessagesSubscriberService<T> messagesSubscriberService = MessagesSubscriberService.create(subscriber);
+        final MessagesSubscriberService<T> messagesSubscriberService = MessagesSubscriberService
+                .create(
+                subscriber);
         final ArgumentCaptor<MessageListener> argumentCaptor = getMessageListenerArgumentCaptor();
         testAddListenerAndAbsentMostRecentMessage(messagesSubscriberService, argumentCaptor);
         testAddOneAndGetMostRecentMessage(messagesSubscriberService, argumentCaptor);
@@ -36,7 +38,9 @@ public abstract class MessagesSubscriberServiceTest<T extends Message> {
 
     @Test
     public void testWithQueueSizeOfThree() {
-        final MessagesSubscriberService<T> messagesSubscriberService = MessagesSubscriberService.create(subscriber, 3);
+        final MessagesSubscriberService<T> messagesSubscriberService = MessagesSubscriberService
+                .create(
+                subscriber, 3);
         final ArgumentCaptor<MessageListener> argumentCaptor = getMessageListenerArgumentCaptor();
         testAddListenerAndAbsentMostRecentMessage(messagesSubscriberService, argumentCaptor);
         testAddOneAndGetMostRecentMessage(messagesSubscriberService, argumentCaptor);
@@ -54,11 +58,12 @@ public abstract class MessagesSubscriberServiceTest<T extends Message> {
         argumentCaptor.getValue().onNewMessage(thirdMessage);
         argumentCaptor.getValue().onNewMessage(fourthMessage);
         assertThat(messagesSubscriberService.getMostRecentMessage()).hasValue(fourthMessage);
-        assertThat(messagesSubscriberService.getMessageQueue()).containsExactly(secondMessage, thirdMessage,
-                fourthMessage).inOrder();
+        assertThat(messagesSubscriberService.getMessageQueue()).containsExactly(secondMessage,
+                thirdMessage, fourthMessage).inOrder();
     }
 
-    private void testAddListenerAndAbsentMostRecentMessage(MessagesSubscriberService<T> messagesSubscriberService,
+    private void testAddListenerAndAbsentMostRecentMessage(
+            MessagesSubscriberService<T> messagesSubscriberService,
             ArgumentCaptor<MessageListener> argumentCaptor) {
         verify(subscriber).addMessageListener(argumentCaptor.capture());
         assertThat(messagesSubscriberService.getMostRecentMessage()).isAbsent();
@@ -68,7 +73,8 @@ public abstract class MessagesSubscriberServiceTest<T extends Message> {
         return ArgumentCaptor.forClass(MessageListener.class);
     }
 
-    private void testAddOneAndGetMostRecentMessage(MessagesSubscriberService<T> messagesSubscriberService,
+    private void testAddOneAndGetMostRecentMessage(
+            MessagesSubscriberService<T> messagesSubscriberService,
             ArgumentCaptor<MessageListener> argumentCaptor) {
         final Message newMessage = createNewMessage("message");
         argumentCaptor.getValue().onNewMessage(newMessage);

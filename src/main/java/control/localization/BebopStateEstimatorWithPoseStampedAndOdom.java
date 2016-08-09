@@ -18,20 +18,22 @@ import utils.math.Transformations;
  */
 public final class BebopStateEstimatorWithPoseStampedAndOdom implements StateEstimator {
 
-    private static final Logger logger = LoggerFactory.getLogger(BebopStateEstimatorWithPoseStampedAndOdom.class);
+    private static final Logger logger = LoggerFactory.getLogger(
+            BebopStateEstimatorWithPoseStampedAndOdom.class);
 
     private final MessagesSubscriberService<PoseStamped> poseSubscriber;
     private final MessagesSubscriberService<Odometry> odometrySubscriber;
 
-    private BebopStateEstimatorWithPoseStampedAndOdom(MessagesSubscriberService<PoseStamped> poseSubscriber,
+    private BebopStateEstimatorWithPoseStampedAndOdom(
+            MessagesSubscriberService<PoseStamped> poseSubscriber,
             MessagesSubscriberService<Odometry> odometrySubscriber) {
         this.poseSubscriber = poseSubscriber;
         this.odometrySubscriber = odometrySubscriber;
     }
 
     /**
-     * Creates a state estimator for a bebop drone. The state estimator uses data from a pose topic and a odometry
-     * topic.
+     * Creates a state estimator for a bebop drone. The state estimator uses data from a pose
+     * topic and a odometry topic.
      *
      * @param poseSubscriber the subscriber to the pose topic
      * @param odometrySubscriber the subscriber to the odometry topic
@@ -58,8 +60,8 @@ public final class BebopStateEstimatorWithPoseStampedAndOdom implements StateEst
             return Optional.absent();
         }
 
-        final DroneStateStamped droneState = DroneStateStamped.create(pose, inertialFrameVelocity.get(),
-                poseStamped.get().getHeader().getStamp().toSeconds());
+        final DroneStateStamped droneState = DroneStateStamped.create(pose,
+                inertialFrameVelocity.get(), poseStamped.get().getHeader().getStamp().toSeconds());
         return Optional.of(droneState);
     }
 

@@ -17,7 +17,8 @@ final class Velocity4dController implements VelocityController {
     private final Velocity4dService velocity4dService;
     private final PidController4d pidController4d;
 
-    private Velocity4dController(Velocity4dService velocity4dService, PidController4d pidController4d) {
+    private Velocity4dController(Velocity4dService velocity4dService,
+            PidController4d pidController4d) {
         this.velocity4dService = velocity4dService;
         this.pidController4d = pidController4d;
     }
@@ -32,7 +33,8 @@ final class Velocity4dController implements VelocityController {
     }
 
     @Override
-    public void computeAndSendVelocity(double currentTimeInSeconds, DroneStateStamped currentState) {
+    public void computeAndSendVelocity(double currentTimeInSeconds,
+            DroneStateStamped currentState) {
         final InertialFrameVelocity nextVelocity = pidController4d.compute(currentState.pose(),
                 currentState.inertialFrameVelocity(), currentTimeInSeconds);
         velocity4dService.sendVelocity4dMessage(nextVelocity, currentState.pose());
@@ -53,8 +55,8 @@ final class Velocity4dController implements VelocityController {
         }
 
         /**
-         * Sets the {@code velocity4dService} and returns a reference to this Builder so that the methods can be chained
-         * together.
+         * Sets the {@code velocity4dService} and returns a reference to this Builder so that the
+         * methods can be chained together.
          *
          * @param val the {@code velocity4dService} to set
          * @return a reference to this Builder
@@ -67,7 +69,8 @@ final class Velocity4dController implements VelocityController {
         /**
          * Returns a {@code Velocity4dController} built from the parameters previously set.
          *
-         * @return a {@code Velocity4dController} built with parameters of this {@code Velocity4dController.Builder}
+         * @return a {@code Velocity4dController} built with parameters of this
+         *     {@code Velocity4dController.Builder}
          */
         public Velocity4dController build() {
             checkNotNull(velocity4dService);
@@ -88,8 +91,8 @@ final class Velocity4dController implements VelocityController {
         }
     }
 
-    abstract static class BuilderWithVelocity4dService<T extends BuilderWithVelocity4dService<T>> extends
-            Velocity3dController.BuilderWithVelocity3dService<T> {
+    abstract static class BuilderWithVelocity4dService<T extends BuilderWithVelocity4dService<T>>
+            extends Velocity3dController.BuilderWithVelocity3dService<T> {
         PidParameters pidAngularZ;
 
         BuilderWithVelocity4dService() {
@@ -97,8 +100,8 @@ final class Velocity4dController implements VelocityController {
         }
 
         /**
-         * Sets the {@code pidAngularZ} and returns a reference to this Builder so that the methods can be chained
-         * together.
+         * Sets the {@code pidAngularZ} and returns a reference to this Builder so that the
+         * methods can be chained together.
          *
          * @param val the {@code pidAngularZ} to set
          * @return a reference to this Builder

@@ -13,7 +13,12 @@ public final class VelocityProvider {
     private VelocityProvider() {}
 
     public static Object[] provideVelocityValues() {
-        final Pose pose1 = Pose.builder().setX(0).setY(0).setZ(10).setYaw(0.7853981633974483).build();
+        final Pose pose1 = Pose.builder()
+                .setX(0)
+                .setY(0)
+                .setZ(10)
+                .setYaw(0.7853981633974483)
+                .build();
         final BodyFrameVelocity bVel1 = Velocity.builder()
                 .setLinearX(1)
                 .setLinearY(0)

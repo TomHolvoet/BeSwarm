@@ -13,7 +13,8 @@ import java.util.concurrent.CountDownLatch;
  */
 final class CratesServiceResponseListener<T extends Message> implements ServiceResponseListener<T> {
 
-    private static final Logger logger = LoggerFactory.getLogger(CratesServiceResponseListener.class);
+    private static final Logger logger = LoggerFactory.getLogger(
+            CratesServiceResponseListener.class);
     private final CountDownLatch countDownLatch;
 
     private CratesServiceResponseListener(CountDownLatch countDownLatch) {
@@ -27,7 +28,8 @@ final class CratesServiceResponseListener<T extends Message> implements ServiceR
      * @param <T> the response message type
      * @return a new instance of the service response listener
      */
-    public static <T extends Message> CratesServiceResponseListener<T> create(CountDownLatch countDownLatch) {
+    public static <T extends Message> CratesServiceResponseListener<T> create(
+            CountDownLatch countDownLatch) {
         return new CratesServiceResponseListener<>(countDownLatch);
     }
 

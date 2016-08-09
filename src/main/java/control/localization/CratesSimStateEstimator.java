@@ -55,10 +55,12 @@ public final class CratesSimStateEstimator implements StateEstimator {
                 .setAngularZ(state.getR())
                 .build();
 
-        final InertialFrameVelocity inertialFrameVelocity = Transformations.bodyFrameVelocityToInertialFrameVelocity(
+        final InertialFrameVelocity inertialFrameVelocity = Transformations
+                .bodyFrameVelocityToInertialFrameVelocity(
                 bodyFrameVelocity, pose);
 
         final double timeStampInSeconds = System.nanoTime() / NANO_SECOND_TO_SECOND;
-        return Optional.of(DroneStateStamped.create(pose, inertialFrameVelocity, timeStampInSeconds));
+        return Optional.of(
+                DroneStateStamped.create(pose, inertialFrameVelocity, timeStampInSeconds));
     }
 }

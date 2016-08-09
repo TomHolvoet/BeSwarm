@@ -35,8 +35,8 @@ abstract class AbstractFollowTrajectoryBuilder<T extends AbstractFollowTrajector
     abstract T self();
 
     /**
-     * Sets the {@code pidLinearXParameters} and returns a reference to an implementation of this class so that the
-     * methods can be chained together.
+     * Sets the {@code pidLinearXParameters} and returns a reference to an implementation of this
+     * class so that the methods can be chained together.
      *
      * @param val the {@code pidLinearXParameters} to set
      * @return a reference to an implementation of this class
@@ -47,8 +47,8 @@ abstract class AbstractFollowTrajectoryBuilder<T extends AbstractFollowTrajector
     }
 
     /**
-     * Sets the {@code pidLinearYParameters} and returns a reference to an implementation of this class so that the
-     * methods can be chained together.
+     * Sets the {@code pidLinearYParameters} and returns a reference to an implementation of this
+     * class so that the methods can be chained together.
      *
      * @param val the {@code pidLinearYParameters} to set
      * @return a reference to an implementation of this class
@@ -59,8 +59,8 @@ abstract class AbstractFollowTrajectoryBuilder<T extends AbstractFollowTrajector
     }
 
     /**
-     * Sets the {@code pidLinearZParameters} and returns a reference to an implementation of this class so that the
-     * methods can be chained together.
+     * Sets the {@code pidLinearZParameters} and returns a reference to an implementation of this
+     * class so that the methods can be chained together.
      *
      * @param val the {@code pidLinearZParameters} to set
      * @return a reference to an implementation of this class
@@ -71,8 +71,8 @@ abstract class AbstractFollowTrajectoryBuilder<T extends AbstractFollowTrajector
     }
 
     /**
-     * Sets the {@code pidAngularZParameters} and returns a reference to an implementation of this class so that the
-     * methods can be chained together.
+     * Sets the {@code pidAngularZParameters} and returns a reference to an implementation of
+     * this class so that the methods can be chained together.
      *
      * @param val the {@code pidAngularZParameters} to set
      * @return a reference to an implementation of this class
@@ -83,8 +83,8 @@ abstract class AbstractFollowTrajectoryBuilder<T extends AbstractFollowTrajector
     }
 
     /**
-     * Sets the {@code controlRateInSeconds} and returns a reference to an implementation of this class so that the
-     * methods can be chained together.
+     * Sets the {@code controlRateInSeconds} and returns a reference to an implementation of this
+     * class so that the methods can be chained together.
      *
      * @param val the {@code controlRateInSeconds} to set
      * @return a reference to an implementation of this class
@@ -96,8 +96,7 @@ abstract class AbstractFollowTrajectoryBuilder<T extends AbstractFollowTrajector
 
     /**
      * Sets the {@code droneStateLifeDurationInSeconds} and returns a reference to this
-     * AbstractFollowTrajectoryBuilder
-     * so that the methods can be chained together.
+     * AbstractFollowTrajectoryBuilder so that the methods can be chained together.
      *
      * @param val the {@code droneStateLifeDurationInSeconds} to set
      * @return a reference to an implementation of this class
@@ -108,9 +107,8 @@ abstract class AbstractFollowTrajectoryBuilder<T extends AbstractFollowTrajector
     }
 
     /**
-     * Sets the {@code stateEstimator} and returns a reference to an implementation of this class so that the
-     * methods
-     * can be chained together.
+     * Sets the {@code stateEstimator} and returns a reference to an implementation of this class
+     * so that the methods can be chained together.
      *
      * @param val the {@code stateEstimator} to set
      * @return a reference to an implementation of this class
@@ -121,8 +119,8 @@ abstract class AbstractFollowTrajectoryBuilder<T extends AbstractFollowTrajector
     }
 
     /**
-     * Sets the {@code velocityService} and returns a reference to an implementation of this class so that the methods
-     * can be chained together.
+     * Sets the {@code velocityService} and returns a reference to an implementation of this
+     * class so that the methods can be chained together.
      *
      * @param val the {@code velocityService} to set
      * @return a reference to an implementation of this class
@@ -136,8 +134,10 @@ abstract class AbstractFollowTrajectoryBuilder<T extends AbstractFollowTrajector
      * Copies the parameter of another builder.
      *
      * @param otherBuilder the builder that parameters will be copied
-     * @param <U> the type of the other builder, which must be a subclass of {@link AbstractFollowTrajectoryBuilder}
-     * @return a concrete implementation of this abstract builder with all parameters copied from {@code otherBuilder}
+     * @param <U> the type of the other builder, which must be a subclass of
+     *     {@link AbstractFollowTrajectoryBuilder}
+     * @return a concrete implementation of this abstract builder with all parameters copied from
+     *     {@code otherBuilder}
      */
     public <U extends AbstractFollowTrajectoryBuilder<?>> T copyOf(U otherBuilder) {
         pidLinearXParameters = otherBuilder.pidLinearXParameters;

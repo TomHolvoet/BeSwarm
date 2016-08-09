@@ -41,7 +41,8 @@ public abstract class AbstractBuilderTest {
     public void setUp() {
         velocity4dService = mock(Velocity4dService.class, RETURNS_MOCKS);
         stateEstimator = mock(StateEstimator.class, RETURNS_MOCKS);
-        when(stateEstimator.getCurrentState()).thenReturn(Optional.of(mock(DroneStateStamped.class, RETURNS_MOCKS)));
+        when(stateEstimator.getCurrentState()).thenReturn(
+                Optional.of(mock(DroneStateStamped.class, RETURNS_MOCKS)));
 
         pidLinearX = mock(PidParameters.class, RETURNS_MOCKS);
         pidLinearY = mock(PidParameters.class, RETURNS_MOCKS);
@@ -82,9 +83,10 @@ public abstract class AbstractBuilderTest {
         verify(pidParameters, atLeastOnce()).minVelocity();
     }
 
-    private static void checkCorrectServicesCalled(Velocity4dService velocity4dService, StateEstimator stateEstimator) {
-        verify(velocity4dService, atLeastOnce()).sendVelocity4dMessage(any(InertialFrameVelocity.class),
-                any(Pose.class));
+    private static void checkCorrectServicesCalled(Velocity4dService velocity4dService,
+            StateEstimator stateEstimator) {
+        verify(velocity4dService, atLeastOnce()).sendVelocity4dMessage(
+                any(InertialFrameVelocity.class), any(Pose.class));
         verify(stateEstimator, atLeastOnce()).getCurrentState();
     }
 

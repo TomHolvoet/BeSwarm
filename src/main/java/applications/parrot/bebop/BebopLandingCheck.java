@@ -33,7 +33,8 @@ public final class BebopLandingCheck extends AbstractNodeMain {
     @Override
     public void onStart(final ConnectedNode connectedNode) {
         try {
-            final CommonServiceFactory serviceFactory = BebopServiceFactory.create(connectedNode, DRONE_NAME);
+            final CommonServiceFactory serviceFactory = BebopServiceFactory.create(connectedNode,
+                    DRONE_NAME);
             final TakeOffService takeoffService = serviceFactory.createTakeOffService();
             final LandService landService = serviceFactory.createLandService();
             final FlyingStateService flyingStateService = serviceFactory.createFlyingStateService();

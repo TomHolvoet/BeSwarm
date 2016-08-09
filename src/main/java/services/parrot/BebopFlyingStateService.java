@@ -11,12 +11,13 @@ import services.rossubscribers.MessagesSubscriberService;
 /**
  * @author Hoang Tung Dinh
  */
-public final class BebopFlyingStateService extends AbstractFlyingStateService<Ardrone3PilotingStateFlyingStateChanged> {
+public final class BebopFlyingStateService extends
+        AbstractFlyingStateService<Ardrone3PilotingStateFlyingStateChanged> {
 
     private static final Logger logger = LoggerFactory.getLogger(BebopFlyingStateService.class);
-    private static final ImmutableMap<Byte, FlyingState> FLYING_STATE_MAP = ImmutableMap.<Byte, FlyingState>builder()
-            .put(
-            (byte) 0, FlyingState.LANDED)
+    private static final ImmutableMap<Byte, FlyingState> FLYING_STATE_MAP = ImmutableMap.<Byte,
+            FlyingState>builder()
+            .put((byte) 0, FlyingState.LANDED)
             .put((byte) 1, FlyingState.TAKING_OFF)
             .put((byte) 2, FlyingState.HOVERING)
             .put((byte) 3, FlyingState.FLYING)
@@ -34,7 +35,8 @@ public final class BebopFlyingStateService extends AbstractFlyingStateService<Ar
      * @return the flying state service
      */
     public static BebopFlyingStateService create(
-            MessagesSubscriberService<Ardrone3PilotingStateFlyingStateChanged> flyingStateSubscriber) {
+            MessagesSubscriberService<Ardrone3PilotingStateFlyingStateChanged>
+                    flyingStateSubscriber) {
         final BebopFlyingStateService bebopFlyingStateService = new BebopFlyingStateService();
         flyingStateSubscriber.registerMessageObserver(bebopFlyingStateService);
         return bebopFlyingStateService;

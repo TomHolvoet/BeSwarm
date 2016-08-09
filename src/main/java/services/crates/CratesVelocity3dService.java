@@ -19,12 +19,14 @@ final class CratesVelocity3dService implements Velocity3dService {
     }
 
     /**
-     * Create a 3d-velocity service for a drone in the Crates simualtor.
+     * Create a 3d-velocity service for a drone in the Crates simulator.
      *
-     * @param srvVelocity the service client connected to the {@code Velocity} rosservice of the drone
+     * @param srvVelocity the service client connected to the {@code Velocity} rosservice of the
+     *     drone
      * @return a 3d-velocity service
      */
-    public static CratesVelocity3dService create(ServiceClient<VelocityRequest, VelocityResponse> srvVelocity) {
+    public static CratesVelocity3dService create(
+            ServiceClient<VelocityRequest, VelocityResponse> srvVelocity) {
         return new CratesVelocity3dService(srvVelocity);
     }
 
@@ -36,8 +38,9 @@ final class CratesVelocity3dService implements Velocity3dService {
         velocityRequest.setDy(inertialFrameVelocityY);
         velocityRequest.setDz(inertialFrameVelocityZ);
         velocityRequest.setYaw(angularPositionZ);
-        logger.trace("Sending 3d velocity: [velX={} velY={} velZ={} posYaw={}]", inertialFrameVelocityX,
-                inertialFrameVelocityY, inertialFrameVelocityZ, angularPositionZ);
+        logger.trace("Sending 3d velocity: [velX={} velY={} velZ={} posYaw={}]",
+                inertialFrameVelocityX, inertialFrameVelocityY, inertialFrameVelocityZ,
+                angularPositionZ);
         CratesUtilities.sendRequest(srvVelocity, velocityRequest);
     }
 }

@@ -14,7 +14,8 @@ import static org.mockito.Mockito.when;
 /**
  * @author Hoang Tung Dinh
  */
-public class BebopFlyingStateServiceTest extends FlyingStateServiceTest<Byte, Ardrone3PilotingStateFlyingStateChanged> {
+public class BebopFlyingStateServiceTest extends FlyingStateServiceTest<Byte,
+        Ardrone3PilotingStateFlyingStateChanged> {
     @Override
     public ImmutableMap<Byte, FlyingState> getFlyingStateMap() {
         return ImmutableMap.<Byte, FlyingState>builder().put((byte) 0, FlyingState.LANDED)
@@ -29,14 +30,15 @@ public class BebopFlyingStateServiceTest extends FlyingStateServiceTest<Byte, Ar
 
     @Override
     public FlyingStateService createFlyingStateService(
-            MessagesSubscriberService<Ardrone3PilotingStateFlyingStateChanged> messagesSubscriberService) {
+            MessagesSubscriberService<Ardrone3PilotingStateFlyingStateChanged>
+                    messagesSubscriberService) {
         return BebopFlyingStateService.create(messagesSubscriberService);
     }
 
     @Override
     public Ardrone3PilotingStateFlyingStateChanged createMockStateMessage(Byte newStateCode) {
-        final Ardrone3PilotingStateFlyingStateChanged state = mock(Ardrone3PilotingStateFlyingStateChanged.class,
-                RETURNS_MOCKS);
+        final Ardrone3PilotingStateFlyingStateChanged state = mock(
+                Ardrone3PilotingStateFlyingStateChanged.class, RETURNS_MOCKS);
         when(state.getState()).thenReturn(newStateCode);
         return state;
     }

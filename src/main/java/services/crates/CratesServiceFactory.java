@@ -53,7 +53,8 @@ public final class CratesServiceFactory implements CommonServiceFactory {
      * @param connectedNode the connected ros node
      * @return a service factory for the drone
      */
-    public static CratesServiceFactory create(String droneName, String modelName, ConnectedNode connectedNode) {
+    public static CratesServiceFactory create(String droneName, String modelName,
+            ConnectedNode connectedNode) {
         return new CratesServiceFactory(droneName, modelName, connectedNode);
     }
 
@@ -61,12 +62,14 @@ public final class CratesServiceFactory implements CommonServiceFactory {
     public TakeOffService createTakeOffService() {
         try {
             return CratesTakeOffService.create(
-                    connectedNode.<TakeoffRequest, TakeoffResponse>newServiceClient(namePrefix + "controller/Takeoff",
-                            Takeoff._TYPE));
+                    connectedNode.<TakeoffRequest, TakeoffResponse>newServiceClient(
+                            namePrefix + "controller/Takeoff", Takeoff._TYPE));
         } catch (ServiceNotFoundException e) {
-            logger.info("Take off service not found. Drone: {}. Model: {}. Exception: {}", droneName, modelName, e);
+            logger.info("Take off service not found. Drone: {}. Model: {}. Exception: {}",
+                    droneName, modelName, e);
             throw new IllegalStateException(
-                    String.format("Take off service not found. Drone: %s. Model: %s", droneName, modelName));
+                    String.format("Take off service not found. Drone: %s. Model: %s", droneName,
+                            modelName));
         }
     }
 
@@ -74,19 +77,21 @@ public final class CratesServiceFactory implements CommonServiceFactory {
     public LandService createLandService() {
         try {
             return CratesLandService.create(
-                    connectedNode.<LandRequest, LandResponse>newServiceClient(namePrefix + "controller/Land",
-                            Land._TYPE));
+                    connectedNode.<LandRequest, LandResponse>newServiceClient(
+                            namePrefix + "controller/Land", Land._TYPE));
         } catch (ServiceNotFoundException e) {
             logger.debug(SERVICE_NOT_FOUND, e);
             throw new IllegalStateException(
-                    String.format("Land service not found. Drone: %s. Model: %s", droneName, modelName));
+                    String.format("Land service not found. Drone: %s. Model: %s", droneName,
+                            modelName));
         }
     }
 
     @Override
     public FlyingStateService createFlyingStateService() {
         final String topicName = namePrefix + "Truth";
-        final MessagesSubscriberService<State> flyingStateSubscriber = MessagesSubscriberService.create(
+        final MessagesSubscriberService<State> flyingStateSubscriber = MessagesSubscriberService
+                .create(
                 connectedNode.<State>newSubscriber(topicName, State._TYPE));
         return CratesFlyingStateService.create(flyingStateSubscriber);
     }
@@ -98,12 +103,14 @@ public final class CratesServiceFactory implements CommonServiceFactory {
      */
     public Velocity3dService createVelocity3dService() {
         try {
-            return CratesVelocity3dService.create(connectedNode.<VelocityRequest, VelocityResponse>newServiceClient(
-                    namePrefix + "controller/Velocity", Velocity._TYPE));
+            return CratesVelocity3dService.create(
+                    connectedNode.<VelocityRequest, VelocityResponse>newServiceClient(
+                            namePrefix + "controller/Velocity", Velocity._TYPE));
         } catch (ServiceNotFoundException e) {
             logger.debug(SERVICE_NOT_FOUND, e);
             throw new IllegalStateException(
-                    String.format("Velocity service not found. Drone: %s. Model: %s", droneName, modelName));
+                    String.format("Velocity service not found. Drone: %s. Model: %s", droneName,
+                            modelName));
         }
     }
 
@@ -120,7 +127,8 @@ public final class CratesServiceFactory implements CommonServiceFactory {
         } catch (ServiceNotFoundException e) {
             logger.debug(SERVICE_NOT_FOUND, e);
             throw new IllegalStateException(
-                    String.format("Velocity height service not found. Drone: %s. Model: %s", droneName, modelName));
+                    String.format("Velocity height service not found. Drone: %s. Model: %s",
+                            droneName, modelName));
         }
     }
 }

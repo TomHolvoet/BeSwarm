@@ -11,7 +11,8 @@ import static org.mockito.Mockito.verify;
 /**
  * @author Hoang Tung Dinh
  */
-public abstract class CratesTakeOffServiceValidCustomizedAltitudeTest extends CratesTakeOffServiceTest {
+public abstract class CratesTakeOffServiceValidCustomizedAltitudeTest extends
+        CratesTakeOffServiceTest {
     private static final double validTakeOffAltitude = 3.0;
 
     @Override

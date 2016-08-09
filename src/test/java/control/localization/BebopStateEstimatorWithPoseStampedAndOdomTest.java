@@ -35,48 +35,59 @@ public class BebopStateEstimatorWithPoseStampedAndOdomTest {
     public void setUp() {
         poseSubscriber = mock(MessagesSubscriberService.class);
         odometrySubscriber = mock(MessagesSubscriberService.class);
-        bebopStateEstimator = BebopStateEstimatorWithPoseStampedAndOdom.create(poseSubscriber, odometrySubscriber);
+        bebopStateEstimator = BebopStateEstimatorWithPoseStampedAndOdom.create(poseSubscriber,
+                odometrySubscriber);
     }
 
     @Test
     public void testGetCurrentState_noPoseReceived() {
         when(poseSubscriber.getMostRecentMessage()).thenReturn(Optional.<PoseStamped>absent());
-        when(odometrySubscriber.getMostRecentMessage()).thenReturn(Optional.of(mock(Odometry.class)));
+        when(odometrySubscriber.getMostRecentMessage()).thenReturn(
+                Optional.of(mock(Odometry.class)));
         assertThat(bebopStateEstimator.getCurrentState()).isAbsent();
     }
 
     @Test
     public void testGetCurrentState_noVelocityReceived() {
-        when(poseSubscriber.getMostRecentMessage()).thenReturn(Optional.of(mock(PoseStamped.class, RETURNS_MOCKS)));
+        when(poseSubscriber.getMostRecentMessage()).thenReturn(
+                Optional.of(mock(PoseStamped.class, RETURNS_MOCKS)));
         when(odometrySubscriber.getMostRecentMessage()).thenReturn(Optional.<Odometry>absent());
         assertThat(bebopStateEstimator.getCurrentState()).isAbsent();
     }
 
     @Test
     @Parameters(source = DroneStateProvider.class)
-    public void testGetCurrentState_withPoseAndVelocity(Pose pose, BodyFrameVelocity bodyFrameVelocity,
-            InertialFrameVelocity inertialFrameVelocity, QuaternionAngle quaternionAngle) {
+    public void testGetCurrentState_withPoseAndVelocity(Pose pose,
+            BodyFrameVelocity bodyFrameVelocity, InertialFrameVelocity inertialFrameVelocity,
+            QuaternionAngle quaternionAngle) {
         final double timeStampInSeconds = 0.5;
-        final PoseStamped poseStamped = createMockPoseStamped(pose, quaternionAngle, timeStampInSeconds);
+        final PoseStamped poseStamped = createMockPoseStamped(pose, quaternionAngle,
+                timeStampInSeconds);
         final Odometry odometry = createMockOdometry(bodyFrameVelocity);
 
         when(poseSubscriber.getMostRecentMessage()).thenReturn(Optional.of(poseStamped));
         when(odometrySubscriber.getMostRecentMessage()).thenReturn(Optional.of(odometry));
 
-        final DroneStateStamped droneStateStamped = DroneStateStamped.create(pose, inertialFrameVelocity,
-                timeStampInSeconds);
+        final DroneStateStamped droneStateStamped = DroneStateStamped.create(pose,
+                inertialFrameVelocity, timeStampInSeconds);
 
         TestUtils.assertPoseEqual(pose, droneStateStamped.pose());
-        TestUtils.assertVelocityEqual(inertialFrameVelocity, droneStateStamped.inertialFrameVelocity());
-        assertThat(timeStampInSeconds).isWithin(0.000001).of(droneStateStamped.getTimeStampInSeconds());
+        TestUtils.assertVelocityEqual(inertialFrameVelocity,
+                droneStateStamped.inertialFrameVelocity());
+        assertThat(timeStampInSeconds).isWithin(0.000001)
+                .of(droneStateStamped.getTimeStampInSeconds());
     }
 
     private static Odometry createMockOdometry(BodyFrameVelocity bodyFrameVelocity) {
         final Odometry odometry = mock(Odometry.class, RETURNS_DEEP_STUBS);
-        when(odometry.getTwist().getTwist().getLinear().getX()).thenReturn(bodyFrameVelocity.linearX());
-        when(odometry.getTwist().getTwist().getLinear().getY()).thenReturn(bodyFrameVelocity.linearY());
-        when(odometry.getTwist().getTwist().getLinear().getZ()).thenReturn(bodyFrameVelocity.linearZ());
-        when(odometry.getTwist().getTwist().getAngular().getZ()).thenReturn(bodyFrameVelocity.angularZ());
+        when(odometry.getTwist().getTwist().getLinear().getX()).thenReturn(
+                bodyFrameVelocity.linearX());
+        when(odometry.getTwist().getTwist().getLinear().getY()).thenReturn(
+                bodyFrameVelocity.linearY());
+        when(odometry.getTwist().getTwist().getLinear().getZ()).thenReturn(
+                bodyFrameVelocity.linearZ());
+        when(odometry.getTwist().getTwist().getAngular().getZ()).thenReturn(
+                bodyFrameVelocity.angularZ());
         return odometry;
     }
 

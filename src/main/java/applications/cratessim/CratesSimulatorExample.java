@@ -42,8 +42,8 @@ public final class CratesSimulatorExample extends AbstractNodeMain {
     @Override
     public void onStart(final ConnectedNode connectedNode) {
         addDroneModel(connectedNode);
-        final CratesServiceFactory cratesServiceFactory = CratesServiceFactory.create(DRONE_NAME, MODEL_NAME,
-                connectedNode);
+        final CratesServiceFactory cratesServiceFactory = CratesServiceFactory.create(DRONE_NAME,
+                MODEL_NAME, connectedNode);
         final StateEstimator stateEstimator = getStateEstimator(connectedNode);
         final FiniteTrajectory4d trajectory = TrajectoriesForTesting.getFastCircle();
         final ExampleFlight exampleFlight = ExampleFlight.builder()
@@ -54,19 +54,40 @@ public final class CratesSimulatorExample extends AbstractNodeMain {
                 .withStateEstimator(stateEstimator)
                 .withTakeOffService(cratesServiceFactory.createTakeOffService())
                 .withVelocityService(cratesServiceFactory.createVelocity2dService())
-                .withPidLinearX(PidParameters.builder().setKp(2).setKd(1).setKi(0).setLagTimeInSeconds(0.2).build())
-                .withPidLinearY(PidParameters.builder().setKp(2).setKd(1).setKi(0).setLagTimeInSeconds(0.2).build())
-                .withPidLinearZ(PidParameters.builder().setKp(2).setKd(1).setKi(0).setLagTimeInSeconds(0.2).build())
-                .withPidAngularZ(
-                        PidParameters.builder().setKp(1.5).setKd(0.75).setKi(0).setLagTimeInSeconds(0.2).build())
+                .withPidLinearX(PidParameters.builder()
+                        .setKp(2)
+                        .setKd(1)
+                        .setKi(0)
+                        .setLagTimeInSeconds(0.2)
+                        .build())
+                .withPidLinearY(PidParameters.builder()
+                        .setKp(2)
+                        .setKd(1)
+                        .setKi(0)
+                        .setLagTimeInSeconds(0.2)
+                        .build())
+                .withPidLinearZ(PidParameters.builder()
+                        .setKp(2)
+                        .setKd(1)
+                        .setKi(0)
+                        .setLagTimeInSeconds(0.2)
+                        .build())
+                .withPidAngularZ(PidParameters.builder()
+                        .setKp(1.5)
+                        .setKd(0.75)
+                        .setKi(0)
+                        .setLagTimeInSeconds(0.2)
+                        .build())
                 .build();
         exampleFlight.fly();
     }
 
     private static StateEstimator getStateEstimator(ConnectedNode connectedNode) {
         final String srvNamePrefix = "/hal/quadrotor/" + MODEL_NAME + "/" + DRONE_NAME + "/";
-        final MessagesSubscriberService<State> cratesTruthStateSubscriber = MessagesSubscriberService.create(
-                connectedNode.<State>newSubscriber(srvNamePrefix + "Truth", State._TYPE), 2);
+        final MessagesSubscriberService<State> cratesTruthStateSubscriber =
+                MessagesSubscriberService
+                .create(connectedNode.<State>newSubscriber(srvNamePrefix + "Truth", State._TYPE),
+                        2);
         return CratesSimStateEstimator.create(cratesTruthStateSubscriber);
     }
 
@@ -82,8 +103,9 @@ public final class CratesSimulatorExample extends AbstractNodeMain {
     private static void addDroneModel(ConnectedNode connectedNode) {
         try {
             final String srvName = "/simulator/Insert";
-            final ServiceClient<InsertRequest, InsertResponse> insertSrv = connectedNode.newServiceClient(srvName,
-                    Insert._TYPE);
+            final ServiceClient<InsertRequest, InsertResponse> insertSrv = connectedNode
+                    .newServiceClient(
+                    srvName, Insert._TYPE);
             final InsertRequest insertRequest = insertSrv.newMessage();
             insertRequest.setModelName(DRONE_NAME);
             insertRequest.setModelType("model://" + MODEL_NAME);

@@ -57,14 +57,16 @@ public abstract class CratesLandServiceTest {
     public void testSendLandMessage() throws InterruptedException {
         checkServiceCalledAndIsWaiting(serviceClient, argumentCaptor, future);
 
-        final ServiceResponseListener<LandResponse> serviceResponseListener = argumentCaptor.getValue();
+        final ServiceResponseListener<LandResponse> serviceResponseListener = argumentCaptor
+                .getValue();
         responseToMessage(serviceResponseListener);
 
         TimeUnit.MILLISECONDS.sleep(50);
         assertThat(future.isDone()).isTrue();
     }
 
-    private static void checkServiceCalledAndIsWaiting(ServiceClient<LandRequest, LandResponse> serviceClient,
+    private static void checkServiceCalledAndIsWaiting(
+            ServiceClient<LandRequest, LandResponse> serviceClient,
             ArgumentCaptor<ServiceResponseListener> argumentCaptor, Future<?> future) {
         verify(serviceClient, atLeastOnce()).call(any(LandRequest.class), argumentCaptor.capture());
         assertThat(future.isDone()).isFalse();

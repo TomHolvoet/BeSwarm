@@ -16,7 +16,8 @@ import static java.util.concurrent.TimeUnit.SECONDS;
  */
 public final class SimpleEmergencyAfterOneMinute implements EmergencyNotifier {
 
-    private static final Logger logger = LoggerFactory.getLogger(SimpleEmergencyAfterOneMinute.class);
+    private static final Logger logger = LoggerFactory.getLogger(
+            SimpleEmergencyAfterOneMinute.class);
 
     private final Task task;
     private final Collection<TaskExecutor> taskExecutors = new ArrayList<>();
@@ -36,7 +37,8 @@ public final class SimpleEmergencyAfterOneMinute implements EmergencyNotifier {
     }
 
     /**
-     * Starts waiting for one minutes and then submits the emergency task to all subscribed {@link TaskExecutor}.
+     * Starts waiting for one minutes and then submits the emergency task to all subscribed
+     * {@link TaskExecutor}.
      */
     public void run() {
         try {
@@ -47,8 +49,9 @@ public final class SimpleEmergencyAfterOneMinute implements EmergencyNotifier {
         } catch (InterruptedException e) {
             if (logger.isDebugEnabled()) {
                 logger.debug(
-                        "Waiting until sending emergency notification is interrupted. No emergency notification will " +
-                                "be " + "sent.", e);
+                        "Waiting until sending emergency notification is interrupted. No " +
+                                "emergency notification will be sent.",
+                        e);
             }
             Thread.currentThread().interrupt();
         }

@@ -66,11 +66,12 @@ public final class BebopServiceFactory extends ParrotServiceFactory {
 
     @Override
     public FlyingStateService createFlyingStateService() {
-        final String topicName = "/" + getDroneName() + "/states/ARDrone3/PilotingState/FlyingStateChanged";
-        final MessagesSubscriberService<Ardrone3PilotingStateFlyingStateChanged> flyingStateSubscriber =
-                MessagesSubscriberService
-                .create(getConnectedNode().<Ardrone3PilotingStateFlyingStateChanged>newSubscriber(topicName,
-                        Ardrone3PilotingStateFlyingStateChanged._TYPE));
+        final String topicName = "/" + getDroneName() +
+                "/states/ARDrone3/PilotingState/FlyingStateChanged";
+        final MessagesSubscriberService<Ardrone3PilotingStateFlyingStateChanged>
+                flyingStateSubscriber = MessagesSubscriberService
+                .create(getConnectedNode().<Ardrone3PilotingStateFlyingStateChanged>newSubscriber(
+                        topicName, Ardrone3PilotingStateFlyingStateChanged._TYPE));
 
         return BebopFlyingStateService.create(flyingStateSubscriber);
     }

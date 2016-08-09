@@ -25,7 +25,8 @@ public class WaitForLocalizationDecoratorTest {
         final Command toBeExecutedCommand = mock(Command.class);
         final StateEstimator stateEstimator = mock(StateEstimator.class);
 
-        final Command waitForLocalization = WaitForLocalizationDecorator.create(stateEstimator, toBeExecutedCommand);
+        final Command waitForLocalization = WaitForLocalizationDecorator.create(stateEstimator,
+                toBeExecutedCommand);
 
         when(stateEstimator.getCurrentState()).thenReturn(Optional.<DroneStateStamped>absent());
 

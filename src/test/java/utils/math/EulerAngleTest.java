@@ -28,6 +28,7 @@ public class EulerAngleTest {
     @Test
     @Parameters(method = "angleDistanceValues")
     public void testComputeAngleDistance(double firstAngle, double secondAngle, double distance) {
-        assertThat(EulerAngle.computeAngleDistance(firstAngle, secondAngle)).isWithin(DELTA).of(distance);
+        assertThat(EulerAngle.computeAngleDistance(firstAngle, secondAngle)).isWithin(DELTA)
+                .of(distance);
     }
 }

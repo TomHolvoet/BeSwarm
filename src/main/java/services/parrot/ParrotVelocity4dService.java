@@ -15,14 +15,15 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * A facade which provides an interface to publish velocity (a.k.a. piloting) message. There are minimum and maximum
- * values for each dimension of the velocity. If the input in one dimension of the velocity is out of the min/max
- * range, the dimension will be set to the min/max value.
+ * A facade which provides an interface to publish velocity (a.k.a. piloting) message. There are
+ * minimum and maximum values for each dimension of the velocity. If the input in one dimension
+ * of the velocity is out of the min/max range, the dimension will be set to the min/max value.
  *
  * @author Hoang Tung Dinh
  */
 final class ParrotVelocity4dService implements Velocity4dService {
-    private static final Logger velocityLogger = LoggerFactory.getLogger(ParrotVelocity4dService.class.getName() + ".vel");
+    private static final Logger velocityLogger = LoggerFactory.getLogger(
+            ParrotVelocity4dService.class.getName() + ".vel");
 
     private final Publisher<Twist> publisher;
 
@@ -55,12 +56,14 @@ final class ParrotVelocity4dService implements Velocity4dService {
 
     @Override
     public void sendVelocity4dMessage(InertialFrameVelocity inertialFrameVelocity, Pose pose) {
-        final BodyFrameVelocity bodyFrameVelocity = Transformations.inertialFrameVelocityToBodyFrameVelocity(
+        final BodyFrameVelocity bodyFrameVelocity = Transformations
+                .inertialFrameVelocityToBodyFrameVelocity(
                 inertialFrameVelocity, pose);
 
         final BodyFrameVelocity refinedVelocity = getRefinedVelocity(bodyFrameVelocity);
-        velocityLogger.trace("{} {} {} {} {}", System.nanoTime() / 1.0E09, refinedVelocity.linearX(),
-                refinedVelocity.linearY(), refinedVelocity.linearZ(), refinedVelocity.angularZ());
+        velocityLogger.trace("{} {} {} {} {}", System.nanoTime() / 1.0E09,
+                refinedVelocity.linearX(), refinedVelocity.linearY(), refinedVelocity.linearZ(),
+                refinedVelocity.angularZ());
 
         publisher.publish(newTwistMessage(refinedVelocity));
     }
@@ -113,8 +116,7 @@ final class ParrotVelocity4dService implements Velocity4dService {
     }
 
     /**
-     * The {@link Builder#publisher(Publisher)} is mandatory.
-     * All min and max values are optional.
+     * The {@link Builder#publisher(Publisher)} is mandatory. All min and max values are optional.
      *
      * @return a builder instance of this facade
      */
@@ -148,8 +150,8 @@ final class ParrotVelocity4dService implements Velocity4dService {
         private Builder() {}
 
         /**
-         * Sets the {@code publisher} and returns a reference to this Builder so that the methods can be chained
-         * together.
+         * Sets the {@code publisher} and returns a reference to this Builder so that the methods
+         * can be chained together.
          *
          * @param val the {@code publisher} to set
          * @return a reference to this Builder
@@ -160,8 +162,8 @@ final class ParrotVelocity4dService implements Velocity4dService {
         }
 
         /**
-         * Sets the {@code minLinearX} and returns a reference to this Builder so that the methods can be chained
-         * together.
+         * Sets the {@code minLinearX} and returns a reference to this Builder so that the
+         * methods can be chained together.
          *
          * @param val the {@code minLinearX} to set
          * @return a reference to this Builder
@@ -172,8 +174,8 @@ final class ParrotVelocity4dService implements Velocity4dService {
         }
 
         /**
-         * Sets the {@code maxLinearX} and returns a reference to this Builder so that the methods can be chained
-         * together.
+         * Sets the {@code maxLinearX} and returns a reference to this Builder so that the
+         * methods can be chained together.
          *
          * @param val the {@code maxLinearX} to set
          * @return a reference to this Builder
@@ -184,8 +186,8 @@ final class ParrotVelocity4dService implements Velocity4dService {
         }
 
         /**
-         * Sets the {@code minLinearY} and returns a reference to this Builder so that the methods can be chained
-         * together.
+         * Sets the {@code minLinearY} and returns a reference to this Builder so that the
+         * methods can be chained together.
          *
          * @param val the {@code minLinearY} to set
          * @return a reference to this Builder
@@ -196,8 +198,8 @@ final class ParrotVelocity4dService implements Velocity4dService {
         }
 
         /**
-         * Sets the {@code maxLinearY} and returns a reference to this Builder so that the methods can be chained
-         * together.
+         * Sets the {@code maxLinearY} and returns a reference to this Builder so that the
+         * methods can be chained together.
          *
          * @param val the {@code maxLinearY} to set
          * @return a reference to this Builder
@@ -208,8 +210,8 @@ final class ParrotVelocity4dService implements Velocity4dService {
         }
 
         /**
-         * Sets the {@code minLinearZ} and returns a reference to this Builder so that the methods can be chained
-         * together.
+         * Sets the {@code minLinearZ} and returns a reference to this Builder so that the
+         * methods can be chained together.
          *
          * @param val the {@code minLinearZ} to set
          * @return a reference to this Builder
@@ -220,8 +222,8 @@ final class ParrotVelocity4dService implements Velocity4dService {
         }
 
         /**
-         * Sets the {@code maxLinearZ} and returns a reference to this Builder so that the methods can be chained
-         * together.
+         * Sets the {@code maxLinearZ} and returns a reference to this Builder so that the
+         * methods can be chained together.
          *
          * @param val the {@code maxLinearZ} to set
          * @return a reference to this Builder
@@ -232,8 +234,8 @@ final class ParrotVelocity4dService implements Velocity4dService {
         }
 
         /**
-         * Sets the {@code minAngularZ} and returns a reference to this Builder so that the methods can be chained
-         * together.
+         * Sets the {@code minAngularZ} and returns a reference to this Builder so that the
+         * methods can be chained together.
          *
          * @param val the {@code minAngularZ} to set
          * @return a reference to this Builder
@@ -244,8 +246,8 @@ final class ParrotVelocity4dService implements Velocity4dService {
         }
 
         /**
-         * Sets the {@code maxAngularZ} and returns a reference to this Builder so that the methods can be chained
-         * together.
+         * Sets the {@code maxAngularZ} and returns a reference to this Builder so that the
+         * methods can be chained together.
          *
          * @param val the {@code maxAngularZ} to set
          * @return a reference to this Builder
@@ -258,7 +260,8 @@ final class ParrotVelocity4dService implements Velocity4dService {
         /**
          * Returns a {@code VelocityPublisher} built from the parameters previously set.
          *
-         * @return a {@code VelocityPublisher} built with parameters of this {@code VelocityPublisher.Builder}
+         * @return a {@code VelocityPublisher} built with parameters of this
+         *     {@code VelocityPublisher.Builder}
          */
         public ParrotVelocity4dService build() {
             checkNotNull(publisher, "missing publisher");

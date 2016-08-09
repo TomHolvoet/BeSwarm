@@ -20,7 +20,8 @@ import static org.mockito.Mockito.when;
  */
 public class KeyboardEmergencyTest {
 
-    private final Task task = Task.create(ImmutableList.<Command>of(), TaskType.FIRST_ORDER_EMERGENCY);
+    private final Task task = Task.create(ImmutableList.<Command>of(),
+            TaskType.FIRST_ORDER_EMERGENCY);
     private KeyboardEmergency keyboardEmergency;
     private TaskExecutor firstTaskExecutor;
     private TaskExecutor secondTaskExecutor;

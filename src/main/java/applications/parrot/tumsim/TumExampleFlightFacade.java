@@ -24,7 +24,8 @@ final class TumExampleFlightFacade {
     private final ExampleFlight exampleFlight;
 
     private TumExampleFlightFacade(FiniteTrajectory4d trajectory4d, ConnectedNode connectedNode) {
-        final ParrotServiceFactory parrotServiceFactory = TumSimServiceFactory.create(connectedNode);
+        final ParrotServiceFactory parrotServiceFactory = TumSimServiceFactory.create(
+                connectedNode);
         final StateEstimator stateEstimator = getStateEstimator(connectedNode);
         exampleFlight = ExampleFlight.builder()
                 .withConnectedNode(connectedNode)
@@ -34,23 +35,44 @@ final class TumExampleFlightFacade {
                 .withStateEstimator(stateEstimator)
                 .withTakeOffService(parrotServiceFactory.createTakeOffService())
                 .withVelocityService(parrotServiceFactory.createVelocity4dService())
-                .withPidLinearX(PidParameters.builder().setKp(2).setKd(1).setKi(0).setLagTimeInSeconds(0.2).build())
-                .withPidLinearY(PidParameters.builder().setKp(2).setKd(1).setKi(0).setLagTimeInSeconds(0.2).build())
-                .withPidLinearZ(PidParameters.builder().setKp(2).setKd(1).setKi(0).setLagTimeInSeconds(0.2).build())
-                .withPidAngularZ(
-                        PidParameters.builder().setKp(1.5).setKd(0.75).setKi(0).setLagTimeInSeconds(0.2).build())
+                .withPidLinearX(PidParameters.builder()
+                        .setKp(2)
+                        .setKd(1)
+                        .setKi(0)
+                        .setLagTimeInSeconds(0.2)
+                        .build())
+                .withPidLinearY(PidParameters.builder()
+                        .setKp(2)
+                        .setKd(1)
+                        .setKi(0)
+                        .setLagTimeInSeconds(0.2)
+                        .build())
+                .withPidLinearZ(PidParameters.builder()
+                        .setKp(2)
+                        .setKd(1)
+                        .setKi(0)
+                        .setLagTimeInSeconds(0.2)
+                        .build())
+                .withPidAngularZ(PidParameters.builder()
+                        .setKp(1.5)
+                        .setKd(0.75)
+                        .setKi(0)
+                        .setLagTimeInSeconds(0.2)
+                        .build())
                 .build();
     }
 
     /**
-     * Creates a facade to run the drone in the Tum simulator. The drone will take off, follow a provided trajectory
+     * Creates a facade to run the drone in the Tum simulator. The drone will take off, follow a
+     * provided trajectory
      * and then land.
      *
      * @param trajectory4d the trajectory which the drone will follow
      * @param connectedNode the connected node
      * @return a facade for flying with the drone in the Tum simulator
      */
-    public static TumExampleFlightFacade create(FiniteTrajectory4d trajectory4d, ConnectedNode connectedNode) {
+    public static TumExampleFlightFacade create(FiniteTrajectory4d trajectory4d,
+            ConnectedNode connectedNode) {
         return new TumExampleFlightFacade(trajectory4d, connectedNode);
     }
 
@@ -71,8 +93,9 @@ final class TumExampleFlightFacade {
     }
 
     private static StateEstimator getStateEstimator(ConnectedNode connectedNode) {
-        final MessagesSubscriberService<ModelStates> modelStateSubscriber = MessagesSubscriberService.create(
-                connectedNode.<ModelStates>newSubscriber("/gazebo/model_states", ModelStates._TYPE));
+        final MessagesSubscriberService<ModelStates> modelStateSubscriber = MessagesSubscriberService
+                .create(connectedNode.<ModelStates>newSubscriber("/gazebo/model_states",
+                        ModelStates._TYPE));
         return GazeboModelStateEstimator.create(modelStateSubscriber, MODEL_NAME);
     }
 }

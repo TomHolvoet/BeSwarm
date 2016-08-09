@@ -30,7 +30,8 @@ final class ParrotLandService implements LandService {
      * documentations</a>
      */
     public static ParrotLandService create(Publisher<Empty> publisher) {
-        checkArgument(publisher.getTopicName().toString().endsWith("/land"), "Topic name must be [namespace]/land");
+        checkArgument(publisher.getTopicName().toString().endsWith("/land"),
+                "Topic name must be [namespace]/land");
         return new ParrotLandService(publisher);
     }
 

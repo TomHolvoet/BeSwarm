@@ -31,8 +31,8 @@ public class TransformationsTest {
 
     @Test
     @Parameters(method = "eulerAndCorrespondingQuaternions")
-    public void testQuaternionToEulerAngle(double quaternionW, double quaternionX, double quaternionY,
-            double quaternionZ, double eulerX, double eulerY, double eulerZ) {
+    public void testQuaternionToEulerAngle(double quaternionW, double quaternionX,
+            double quaternionY, double quaternionZ, double eulerX, double eulerY, double eulerZ) {
         final Quaternion mockQuaternion = mock(Quaternion.class);
         when(mockQuaternion.getW()).thenReturn(quaternionW);
         when(mockQuaternion.getX()).thenReturn(quaternionX);
@@ -48,19 +48,20 @@ public class TransformationsTest {
 
     @Test
     @Parameters(source = VelocityProvider.class)
-    public void testBodyFrameVelocityToInertialFrameVelocity(Pose pose, BodyFrameVelocity bodyFrameVelocity,
-            InertialFrameVelocity inertialFrameVelocity) {
-        TestUtils.assertVelocityEqual(Transformations.bodyFrameVelocityToInertialFrameVelocity(bodyFrameVelocity, pose),
+    public void testBodyFrameVelocityToInertialFrameVelocity(Pose pose,
+            BodyFrameVelocity bodyFrameVelocity, InertialFrameVelocity inertialFrameVelocity) {
+        TestUtils.assertVelocityEqual(
+                Transformations.bodyFrameVelocityToInertialFrameVelocity(bodyFrameVelocity, pose),
                 inertialFrameVelocity);
     }
 
     @Test
     @Parameters(source = VelocityProvider.class)
-    public void testInertialFrameVelocityToBodyFrameVelocity(Pose pose, BodyFrameVelocity bodyFrameVelocity,
-            InertialFrameVelocity inertialFrameVelocity) {
+    public void testInertialFrameVelocityToBodyFrameVelocity(Pose pose,
+            BodyFrameVelocity bodyFrameVelocity, InertialFrameVelocity inertialFrameVelocity) {
         TestUtils.assertVelocityEqual(
-                Transformations.inertialFrameVelocityToBodyFrameVelocity(inertialFrameVelocity, pose),
-                bodyFrameVelocity);
+                Transformations.inertialFrameVelocityToBodyFrameVelocity(inertialFrameVelocity,
+                        pose), bodyFrameVelocity);
     }
 
     private static void assertPoint3DEqual(Point3D p0, Point3D p1) {
@@ -78,9 +79,21 @@ public class TransformationsTest {
     }
 
     private Object[] rotationPointValues() {
-        return new Object[]{new Object[]{Point3D.create(1, 0, 0), 0, 0, StrictMath.PI, Point3D.create(-1, 0, 0)},
-                new Object[]{Point3D.create(1, 0, 0), 0, StrictMath.PI / 2, 0, Point3D.create(0, 0, -1)},
-                new Object[]{Point3D.create(0, 0, 1), StrictMath.PI / 2, 0, 0, Point3D.create(0, -1, 0)},
+        return new Object[]{new Object[]{Point3D.create(1, 0, 0),
+                0,
+                0,
+                StrictMath.PI,
+                Point3D.create(-1, 0, 0)},
+                new Object[]{Point3D.create(1, 0, 0),
+                        0,
+                        StrictMath.PI / 2,
+                        0,
+                        Point3D.create(0, 0, -1)},
+                new Object[]{Point3D.create(0, 0, 1),
+                        StrictMath.PI / 2,
+                        0,
+                        0,
+                        Point3D.create(0, -1, 0)},
                 new Object[]{Point3D.create(0, 1, 0),
                         StrictMath.PI / 2,
                         StrictMath.PI / 2,
@@ -95,19 +108,19 @@ public class TransformationsTest {
 
     @Test
     @Parameters(method = "rotationPointValues")
-    public void testRotateXYZ(Point3D initialPoint, double rotationAngleX, double rotationAngleY, double rotationAngleZ,
-            Point3D rotatedPoint) {
-        final Point3D p = Transformations.rotate(initialPoint, rotationAngleX, rotationAngleY, rotationAngleZ,
-                RotationOrder.XYZ);
+    public void testRotateXYZ(Point3D initialPoint, double rotationAngleX, double rotationAngleY,
+            double rotationAngleZ, Point3D rotatedPoint) {
+        final Point3D p = Transformations.rotate(initialPoint, rotationAngleX, rotationAngleY,
+                rotationAngleZ, RotationOrder.XYZ);
         assertPoint3DEqual(p, rotatedPoint);
     }
 
     @Test
     @Parameters(method = "rotationPointValues")
-    public void testReverseRotationXYZ(Point3D initialPoint, double rotationAngleX, double rotationAngleY,
-            double rotationAngleZ, Point3D rotatedPoint) {
-        final Point3D p = Transformations.reverseRotation(rotatedPoint, rotationAngleX, rotationAngleY, rotationAngleZ,
-                RotationOrder.XYZ);
+    public void testReverseRotationXYZ(Point3D initialPoint, double rotationAngleX,
+            double rotationAngleY, double rotationAngleZ, Point3D rotatedPoint) {
+        final Point3D p = Transformations.reverseRotation(rotatedPoint, rotationAngleX,
+                rotationAngleY, rotationAngleZ, RotationOrder.XYZ);
         assertPoint3DEqual(p, initialPoint);
     }
 }

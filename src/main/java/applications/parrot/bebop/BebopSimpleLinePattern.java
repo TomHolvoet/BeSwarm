@@ -33,9 +33,11 @@ public class BebopSimpleLinePattern extends AbstractNodeMain {
 
     @Override
     public void onStart(final ConnectedNode connectedNode) {
-        final double flightDuration = connectedNode.getParameterTree().getDouble("beswarm/flight_duration");
+        final double flightDuration = connectedNode.getParameterTree()
+                .getDouble("beswarm/flight_duration");
 
-        final ParrotServiceFactory parrotServiceFactory = BebopServiceFactory.create(connectedNode, DRONE_NAME);
+        final ParrotServiceFactory parrotServiceFactory = BebopServiceFactory.create(connectedNode,
+                DRONE_NAME);
         final StateEstimator stateEstimator = BebopStateEstimatorWithPoseStampedAndOdom.create(
                 getPoseSubscriber(connectedNode), getOdometrySubscriber(connectedNode));
         final FiniteTrajectory4d choreography = Choreography.builder()
@@ -64,16 +66,20 @@ public class BebopSimpleLinePattern extends AbstractNodeMain {
         exampleFlight.fly();
     }
 
-    private static MessagesSubscriberService<PoseStamped> getPoseSubscriber(ConnectedNode connectedNode) {
+    private static MessagesSubscriberService<PoseStamped> getPoseSubscriber(
+            ConnectedNode connectedNode) {
         final String poseTopic = "/arlocros/pose";
         logger.info("Subscribed to {} for getting pose.", poseTopic);
-        return MessagesSubscriberService.create(connectedNode.<PoseStamped>newSubscriber(poseTopic, PoseStamped._TYPE));
+        return MessagesSubscriberService.create(
+                connectedNode.<PoseStamped>newSubscriber(poseTopic, PoseStamped._TYPE));
     }
 
-    private static MessagesSubscriberService<Odometry> getOdometrySubscriber(ConnectedNode connectedNode) {
+    private static MessagesSubscriberService<Odometry> getOdometrySubscriber(
+            ConnectedNode connectedNode) {
         final String odometryTopic = "/" + DRONE_NAME + "/odom";
         logger.info("Subscribed to {} for getting odometry", odometryTopic);
-        return MessagesSubscriberService.create(connectedNode.<Odometry>newSubscriber(odometryTopic, Odometry._TYPE));
+        return MessagesSubscriberService.create(
+                connectedNode.<Odometry>newSubscriber(odometryTopic, Odometry._TYPE));
     }
 
 }

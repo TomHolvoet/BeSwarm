@@ -27,8 +27,8 @@ public final class KeyboardEmergency implements EmergencyNotifier, MessageObserv
     }
 
     /**
-     * Creates a keyboard emergency notifier. It will notify all the subscribed {@link TaskExecutor} when key "x" is
-     * pressed.
+     * Creates a keyboard emergency notifier. It will notify all the subscribed
+     * {@link TaskExecutor} when key "x" is pressed.
      *
      * @param task the emergency task to be executed when key "x" is pressed
      * @return a keyboard emergency notifier

@@ -36,7 +36,8 @@ public class ParrotFlipServiceTest {
             verify(message).setData(messageArgumentCaptor.capture());
             assertThat(messageArgumentCaptor.getValue()).isEqualTo(flipDirection.getCode());
 
-            final ArgumentCaptor<UInt8> publisherArgumentCaptor = ArgumentCaptor.forClass(UInt8.class);
+            final ArgumentCaptor<UInt8> publisherArgumentCaptor = ArgumentCaptor.forClass(
+                    UInt8.class);
             verify(publisher, atLeastOnce()).publish(publisherArgumentCaptor.capture());
             assertThat(publisherArgumentCaptor.getValue()).isEqualTo(message);
 

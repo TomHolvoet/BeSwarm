@@ -31,7 +31,8 @@ public abstract class CratesTakeOffServiceTest {
 
     abstract Future<?> sendMessage(TakeOffService cratesTakeOffService);
 
-    abstract void responseToMessage(ServiceResponseListener<TakeoffResponse> serviceResponseListener);
+    abstract void responseToMessage(
+            ServiceResponseListener<TakeoffResponse> serviceResponseListener);
 
     abstract void checkCorrectSentAltitude(TakeoffRequest takeoffRequest);
 
@@ -39,7 +40,8 @@ public abstract class CratesTakeOffServiceTest {
     public void setUp() {
         serviceClient = mock(ServiceClient.class, RETURNS_DEEP_STUBS);
         when(serviceClient.newMessage()).thenReturn(mock(TakeoffRequest.class));
-        serviceResponseListenerArgumentCaptor = ArgumentCaptor.forClass(ServiceResponseListener.class);
+        serviceResponseListenerArgumentCaptor = ArgumentCaptor.forClass(
+                ServiceResponseListener.class);
         takeoffRequestArgumentCaptor = ArgumentCaptor.forClass(TakeoffRequest.class);
         cratesTakeOffService = CratesTakeOffService.create(serviceClient);
     }
@@ -53,7 +55,8 @@ public abstract class CratesTakeOffServiceTest {
         checkCorrectSentAltitude(sentTakeoffRequest);
 
         final ServiceResponseListener<TakeoffResponse> serviceResponseListener =
-                serviceResponseListenerArgumentCaptor.getValue();
+                serviceResponseListenerArgumentCaptor
+                .getValue();
         responseToMessage(serviceResponseListener);
 
         TimeUnit.MILLISECONDS.sleep(50);

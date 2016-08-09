@@ -67,7 +67,8 @@ public abstract class Pose {
                 .setX(poseStamped.getPose().getPosition().getX())
                 .setY(poseStamped.getPose().getPosition().getY())
                 .setZ(poseStamped.getPose().getPosition().getZ())
-                .setYaw(Transformations.quaternionToEulerAngle(poseStamped.getPose().getOrientation()).angleZ())
+                .setYaw(Transformations.quaternionToEulerAngle(
+                        poseStamped.getPose().getOrientation()).angleZ())
                 .build();
     }
 
@@ -88,8 +89,9 @@ public abstract class Pose {
      * @return true if two poses are similar within a tolerance
      */
     public static boolean areSamePoseWithinEps(Pose p1, Pose p2) {
-        return StrictMath.abs(p1.x() - p2.x()) < EPS && StrictMath.abs(p1.y() - p2.y()) < EPS && StrictMath.abs(
-                p1.z() - p2.z()) < EPS && StrictMath.abs(p1.yaw() - p2.yaw()) < EPS;
+        return StrictMath.abs(p1.x() - p2.x()) < EPS && StrictMath.abs(
+                p1.y() - p2.y()) < EPS && StrictMath.abs(p1.z() - p2.z()) < EPS && StrictMath.abs(
+                p1.yaw() - p2.yaw()) < EPS;
     }
 
     /**

@@ -24,7 +24,8 @@ public final class TumRunSimpleLinePattern extends AbstractTumSimulatorExample {
     public FiniteTrajectory4d getConcreteTrajectory() {
         final double flightDuration = 100;
         return Choreography.builder()
-                .withTrajectory(LineTrajectory.create(flightDuration, 2.0)).forTime(flightDuration)
+                .withTrajectory(LineTrajectory.create(flightDuration, 2.0))
+                .forTime(flightDuration)
                 .build();
     }
 }

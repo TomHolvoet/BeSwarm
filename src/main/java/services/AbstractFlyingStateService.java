@@ -11,7 +11,8 @@ import java.util.concurrent.atomic.AtomicReference;
  * @param <T> the type of the state message
  * @author Hoang Tung Dinh
  */
-public abstract class AbstractFlyingStateService<T extends Message> implements FlyingStateService, MessageObserver<T> {
+public abstract class AbstractFlyingStateService<T extends Message> implements
+        FlyingStateService, MessageObserver<T> {
 
     private final AtomicReference<FlyingState> currentFlyingState = new AtomicReference<>();
 

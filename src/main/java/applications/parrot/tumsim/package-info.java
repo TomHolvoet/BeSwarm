@@ -1,5 +1,6 @@
 /**
- * This package contains classes that initialize a ros node to control the drone in the Tum simulator.
+ * This package contains classes that initialize a ros node to control the drone in the Tum
+ * simulator.
  *
  * @author Hoang Tung Dinh
  */

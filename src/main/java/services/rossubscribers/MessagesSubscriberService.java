@@ -43,7 +43,8 @@ public class MessagesSubscriberService<T extends Message> {
      * @param <U> the type of the messages
      * @return an instance of this class
      */
-    public static <U extends Message> MessagesSubscriberService<U> create(Subscriber<U> subscriber) {
+    public static <U extends Message> MessagesSubscriberService<U> create(
+            Subscriber<U> subscriber) {
         return new MessagesSubscriberService<>(subscriber, DEFAULT_MESSAGE_QUEUE_SIZE);
     }
 

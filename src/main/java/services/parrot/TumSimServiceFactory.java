@@ -52,7 +52,8 @@ public final class TumSimServiceFactory extends ParrotServiceFactory {
     @Override
     public FlyingStateService createFlyingStateService() {
         final String topicName = "/" + DRONE_NAME + "/navdata";
-        final MessagesSubscriberService<Navdata> flyingStateSubscriber = MessagesSubscriberService.create(
+        final MessagesSubscriberService<Navdata> flyingStateSubscriber =
+                MessagesSubscriberService.create(
                 getConnectedNode().<Navdata>newSubscriber(topicName, Navdata._TYPE));
 
         return TumSimFlyingStateService.create(flyingStateSubscriber);

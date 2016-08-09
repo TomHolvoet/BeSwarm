@@ -4,7 +4,8 @@ package control.dto;
  * FlipDirection for flipping.
  *
  * @author Hoang Tung Dinh
- * @see <a href="http://bebop-autonomy.readthedocs.io/en/latest/piloting.html#flight-animations">Bebop
+ * @see
+ * <a href="http://bebop-autonomy.readthedocs.io/en/latest/piloting.html#flight-animations">Bebop
  * documentations</a>
  */
 public enum FlipDirection {
@@ -19,7 +20,8 @@ public enum FlipDirection {
     /**
      * Get the code associated with each flipping direction according to bebop documents.
      *
-     * @see <a href="http://bebop-autonomy.readthedocs.io/en/latest/piloting.html#flight-animations">Bebop ROS
+     * @see
+     * <a href="http://bebop-autonomy.readthedocs.io/en/latest/piloting.html#flight-animations">Bebop ROS
      * driver</a>
      */
     public byte getCode() {

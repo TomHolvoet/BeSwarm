@@ -24,26 +24,31 @@ import static org.mockito.Mockito.when;
  */
 public abstract class CratesVelocity3dServiceTest {
 
-    abstract void responseToMessage(ServiceResponseListener<VelocityResponse> serviceResponseListener);
+    abstract void responseToMessage(
+            ServiceResponseListener<VelocityResponse> serviceResponseListener);
 
     @Test
     public void testSendVelocityMessage() throws InterruptedException {
-        final ServiceClient<VelocityRequest, VelocityResponse> serviceClient = mock(ServiceClient.class,
-                RETURNS_DEEP_STUBS);
+        final ServiceClient<VelocityRequest, VelocityResponse> serviceClient = mock(
+                ServiceClient.class, RETURNS_DEEP_STUBS);
         when(serviceClient.newMessage()).thenReturn(mock(VelocityRequest.class));
 
-        final Velocity3dService cratesVelocity3dService = CratesVelocity3dService.create(serviceClient);
+        final Velocity3dService cratesVelocity3dService = CratesVelocity3dService.create(
+                serviceClient);
         final double velX = 1;
         final double velY = 2;
         final double velZ = 3;
         final double posYaw = -1;
 
-        final Future<?> future = checkSendingMessageBeforeReponse(cratesVelocity3dService, velX, velY, velZ, posYaw);
+        final Future<?> future = checkSendingMessageBeforeReponse(cratesVelocity3dService, velX,
+                velY, velZ, posYaw);
 
-        final ArgumentCaptor<VelocityRequest> velocityRequestArgumentCaptor = ArgumentCaptor.forClass(
+        final ArgumentCaptor<VelocityRequest> velocityRequestArgumentCaptor = ArgumentCaptor
+                .forClass(
                 VelocityRequest.class);
-        final ArgumentCaptor<ServiceResponseListener> serviceResponseListenerArgumentCaptor = ArgumentCaptor.forClass(
-                ServiceResponseListener.class);
+        final ArgumentCaptor<ServiceResponseListener> serviceResponseListenerArgumentCaptor =
+                ArgumentCaptor
+                .forClass(ServiceResponseListener.class);
         verify(serviceClient, atLeastOnce()).call(velocityRequestArgumentCaptor.capture(),
                 serviceResponseListenerArgumentCaptor.capture());
 
@@ -51,8 +56,9 @@ public abstract class CratesVelocity3dServiceTest {
         checkResponseToMessage(future, serviceResponseListenerArgumentCaptor);
     }
 
-    private Future<?> checkSendingMessageBeforeReponse(final Velocity3dService velocity3dService, final double velX,
-            final double velY, final double velZ, final double posYaw) throws InterruptedException {
+    private Future<?> checkSendingMessageBeforeReponse(final Velocity3dService velocity3dService,
+            final double velX, final double velY, final double velZ,
+            final double posYaw) throws InterruptedException {
         final Future<?> future = Executors.newSingleThreadExecutor().submit(new Runnable() {
             @Override
             public void run() {
@@ -67,17 +73,19 @@ public abstract class CratesVelocity3dServiceTest {
     }
 
     private void checkResponseToMessage(Future<?> future,
-            ArgumentCaptor<ServiceResponseListener> serviceResponseListenerArgumentCaptor) throws InterruptedException {
+            ArgumentCaptor<ServiceResponseListener> serviceResponseListenerArgumentCaptor) throws
+            InterruptedException {
         final ServiceResponseListener<VelocityResponse> serviceResponseListener =
-                serviceResponseListenerArgumentCaptor.getValue();
+                serviceResponseListenerArgumentCaptor
+                .getValue();
         responseToMessage(serviceResponseListener);
 
         TimeUnit.MILLISECONDS.sleep(50);
         assertThat(future.isDone()).isTrue();
     }
 
-    private static void checkCorrectVelocitySent(double velX, double velY, double velZ, double posYaw,
-            ArgumentCaptor<VelocityRequest> velocityRequestArgumentCaptor) {
+    private static void checkCorrectVelocitySent(double velX, double velY, double velZ,
+            double posYaw, ArgumentCaptor<VelocityRequest> velocityRequestArgumentCaptor) {
         final VelocityRequest velocityRequest = velocityRequestArgumentCaptor.getValue();
         verify(velocityRequest).setDx(velX);
         verify(velocityRequest).setDy(velY);

@@ -43,25 +43,36 @@ public class BebopHover extends AbstractNodeMain {
 
     @Override
     public void onStart(final ConnectedNode connectedNode) {
-        final double pidLinearXKP = connectedNode.getParameterTree().getDouble("beswarm/pid_linear_x_kp");
-        final double pidLinearXKI = connectedNode.getParameterTree().getDouble("beswarm/pid_linear_x_ki");
-        final double pidLinearXKD = connectedNode.getParameterTree().getDouble("beswarm/pid_linear_x_kd");
-        final double pidLinearYKP = connectedNode.getParameterTree().getDouble("beswarm/pid_linear_y_kp");
-        final double pidLinearYKI = connectedNode.getParameterTree().getDouble("beswarm/pid_linear_y_ki");
-        final double pidLinearYKD = connectedNode.getParameterTree().getDouble("beswarm/pid_linear_y_kd");
-        final double flightDuration = connectedNode.getParameterTree().getDouble("beswarm/flight_duration");
+        final double pidLinearXKP = connectedNode.getParameterTree()
+                .getDouble("beswarm/pid_linear_x_kp");
+        final double pidLinearXKI = connectedNode.getParameterTree()
+                .getDouble("beswarm/pid_linear_x_ki");
+        final double pidLinearXKD = connectedNode.getParameterTree()
+                .getDouble("beswarm/pid_linear_x_kd");
+        final double pidLinearYKP = connectedNode.getParameterTree()
+                .getDouble("beswarm/pid_linear_y_kp");
+        final double pidLinearYKI = connectedNode.getParameterTree()
+                .getDouble("beswarm/pid_linear_y_ki");
+        final double pidLinearYKD = connectedNode.getParameterTree()
+                .getDouble("beswarm/pid_linear_y_kd");
+        final double flightDuration = connectedNode.getParameterTree()
+                .getDouble("beswarm/flight_duration");
         final double locationX = connectedNode.getParameterTree().getDouble("beswarm/location_x");
         final double locationY = connectedNode.getParameterTree().getDouble("beswarm/location_y");
         final double locationZ = connectedNode.getParameterTree().getDouble("beswarm/location_z");
-        final double locationYaw = connectedNode.getParameterTree().getDouble("beswarm/location_yaw");
+        final double locationYaw = connectedNode.getParameterTree()
+                .getDouble("beswarm/location_yaw");
 
-        logger.info("target location: (x,y,z,yaw) ({},{}, {}, {})", locationX, locationY, locationZ, locationYaw);
+        logger.info("target location: (x,y,z,yaw) ({},{}, {}, {})", locationX, locationY, locationZ,
+                locationYaw);
 
-        final ParrotServiceFactory parrotServiceFactory = BebopServiceFactory.create(connectedNode, DRONE_NAME);
+        final ParrotServiceFactory parrotServiceFactory = BebopServiceFactory.create(connectedNode,
+                DRONE_NAME);
         TakeOffService takeoffService = parrotServiceFactory.createTakeOffService();
         Velocity4dService velocity4dService = parrotServiceFactory.createVelocity4dService();
         LandService landService = parrotServiceFactory.createLandService();
-        final FlyingStateService flyingStateService = parrotServiceFactory.createFlyingStateService();
+        final FlyingStateService flyingStateService = parrotServiceFactory
+                .createFlyingStateService();
 
         final StateEstimator stateEstimator = BebopStateEstimatorWithPoseStampedAndOdom.create(
                 getPoseSubscriber(connectedNode), getOdometrySubscriber(connectedNode));
@@ -77,13 +88,23 @@ public class BebopHover extends AbstractNodeMain {
         Command moveToPose = MoveToPose.builder()
                 .withVelocityService(velocity4dService)
                 .withStateEstimator(stateEstimator)
-                .withGoalPose(
-                        Pose.builder().setX(locationX).setY(locationY).setZ(locationZ).setYaw(locationYaw).build())
+                .withGoalPose(Pose.builder()
+                        .setX(locationX)
+                        .setY(locationY)
+                        .setZ(locationZ)
+                        .setYaw(locationYaw)
+                        .build())
                 .withDurationInSeconds(flightDuration)
-                .withPidLinearXParameters(
-                        PidParameters.builder().setKp(pidLinearXKP).setKi(pidLinearXKI).setKd(pidLinearXKD).build())
-                .withPidLinearYParameters(
-                        PidParameters.builder().setKp(pidLinearYKP).setKi(pidLinearYKI).setKd(pidLinearYKD).build())
+                .withPidLinearXParameters(PidParameters.builder()
+                        .setKp(pidLinearXKP)
+                        .setKi(pidLinearXKI)
+                        .setKd(pidLinearXKD)
+                        .build())
+                .withPidLinearYParameters(PidParameters.builder()
+                        .setKp(pidLinearYKP)
+                        .setKi(pidLinearYKI)
+                        .setKd(pidLinearYKD)
+                        .build())
                 .build();
         Command land = Land.create(landService, flyingStateService);
 
@@ -91,15 +112,19 @@ public class BebopHover extends AbstractNodeMain {
         taskExecutor.submitTask(Task.create(TaskType.NORMAL_TASK, takeoff, moveToPose, land));
     }
 
-    private static MessagesSubscriberService<PoseStamped> getPoseSubscriber(ConnectedNode connectedNode) {
+    private static MessagesSubscriberService<PoseStamped> getPoseSubscriber(
+            ConnectedNode connectedNode) {
         final String poseTopic = "/arlocros/pose";
         logger.info("Subscribed to {} for getting pose.", poseTopic);
-        return MessagesSubscriberService.create(connectedNode.<PoseStamped>newSubscriber(poseTopic, PoseStamped._TYPE));
+        return MessagesSubscriberService.create(
+                connectedNode.<PoseStamped>newSubscriber(poseTopic, PoseStamped._TYPE));
     }
 
-    private static MessagesSubscriberService<Odometry> getOdometrySubscriber(ConnectedNode connectedNode) {
+    private static MessagesSubscriberService<Odometry> getOdometrySubscriber(
+            ConnectedNode connectedNode) {
         final String odometryTopic = "/" + DRONE_NAME + "/odom";
         logger.info("Subscribed to {} for getting odometry", odometryTopic);
-        return MessagesSubscriberService.create(connectedNode.<Odometry>newSubscriber(odometryTopic, Odometry._TYPE));
+        return MessagesSubscriberService.create(
+                connectedNode.<Odometry>newSubscriber(odometryTopic, Odometry._TYPE));
     }
 }

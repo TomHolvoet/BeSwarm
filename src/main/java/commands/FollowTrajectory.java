@@ -16,7 +16,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public final class FollowTrajectory implements Command {
 
     private static final Logger logger = LoggerFactory.getLogger(FollowTrajectory.class);
-    private static final Logger poseLogger = LoggerFactory.getLogger(FollowTrajectory.class.getName() + ".poselogger");
+    private static final Logger poseLogger = LoggerFactory.getLogger(
+            FollowTrajectory.class.getName() + ".poselogger");
     private static final Logger velocityLogger = LoggerFactory.getLogger(
             FollowTrajectory.class.getName() + ".velocitylogger");
 
@@ -35,7 +36,8 @@ public final class FollowTrajectory implements Command {
         controlRateInSeconds = builder.controlRateInSeconds;
         droneStateLifeDurationInSeconds = builder.droneStateLifeDurationInSeconds;
 
-        final CreateVelocityControllerVisitor controllerVisitor = CreateVelocityControllerVisitor.builder()
+        final CreateVelocityControllerVisitor controllerVisitor = CreateVelocityControllerVisitor
+                .builder()
                 .withTrajectory4d(trajectory4d)
                 .withPidLinearXParameters(builder.pidLinearXParameters)
                 .withPidLinearYParameters(builder.pidLinearYParameters)
@@ -103,8 +105,8 @@ public final class FollowTrajectory implements Command {
                 logger.debug("Pose is outdated. Stop sending velocity.");
             } else {
                 logger.trace("Got pose and velocity. Start computing the next velocity response.");
-                final double currentTimeInSeconds = (System.nanoTime() - startTimeInNanoSeconds) /
-                        NANO_SECOND_TO_SECOND;
+                final double currentTimeInSeconds = (System.nanoTime() - startTimeInNanoSeconds)
+                        / NANO_SECOND_TO_SECOND;
                 velocityController.computeAndSendVelocity(currentTimeInSeconds, currentState.get());
                 logDroneState(currentState.get(), currentTimeInSeconds);
             }
@@ -112,8 +114,9 @@ public final class FollowTrajectory implements Command {
 
         private void logDroneState(DroneStateStamped currentState, double currentTimeInSeconds) {
             final double systemTimeInSeconds = System.nanoTime() / NANO_SECOND_TO_SECOND;
-            poseLogger.trace("{} {} {} {} {} {} {} {} {}", systemTimeInSeconds, currentState.pose().x(),
-                    currentState.pose().y(), currentState.pose().z(), currentState.pose().yaw(),
+            poseLogger.trace("{} {} {} {} {} {} {} {} {}", systemTimeInSeconds,
+                    currentState.pose().x(), currentState.pose().y(), currentState.pose().z(),
+                    currentState.pose().yaw(),
                     trajectory4d.getDesiredPositionX(currentTimeInSeconds),
                     trajectory4d.getDesiredPositionY(currentTimeInSeconds),
                     trajectory4d.getDesiredPositionZ(currentTimeInSeconds),
@@ -134,9 +137,11 @@ public final class FollowTrajectory implements Command {
                     currentTimeInSeconds)) / deltaTimeInSeconds;
 
             velocityLogger.trace("{} {} {} {} {} {} {} {} {}", systemTimeInSeconds,
-                    currentState.inertialFrameVelocity().linearX(), currentState.inertialFrameVelocity().linearY(),
-                    currentState.inertialFrameVelocity().linearZ(), currentState.inertialFrameVelocity().angularZ(),
-                    desiredVelocityX, desiredVelocityY, desiredVelocityZ, desiredVelocityYaw);
+                    currentState.inertialFrameVelocity().linearX(),
+                    currentState.inertialFrameVelocity().linearY(),
+                    currentState.inertialFrameVelocity().linearZ(),
+                    currentState.inertialFrameVelocity().angularZ(), desiredVelocityX,
+                    desiredVelocityY, desiredVelocityZ, desiredVelocityYaw);
         }
 
         private void setCounter(DroneStateStamped currentState) {

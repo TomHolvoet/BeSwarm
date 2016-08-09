@@ -7,7 +7,8 @@ import control.dto.DroneStateStamped;
  */
 public interface VelocityController {
     /**
-     * Computes and sends a velocity to a velocity service based on the current time and the current state of the drone.
+     * Computes and sends a velocity to a velocity service based on the current time and the
+     * current state of the drone.
      *
      * @param currentTimeInSeconds the current time
      * @param currentState the current state of the drone

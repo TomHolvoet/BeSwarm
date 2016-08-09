@@ -22,8 +22,8 @@ public enum RotationOrder {
         }
     };
 
-    abstract SimpleMatrix get3dRotationMatrix(SimpleMatrix rotationMatrixX, SimpleMatrix rotationMatrixY,
-            SimpleMatrix rotationMatrixZ);
+    abstract SimpleMatrix get3dRotationMatrix(SimpleMatrix rotationMatrixX,
+            SimpleMatrix rotationMatrixY, SimpleMatrix rotationMatrixZ);
 
     RotationOrder getInverseOrder() {
         switch (this) {

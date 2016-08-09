@@ -42,7 +42,8 @@ final class Velocity3dController implements VelocityController {
     }
 
     @Override
-    public void computeAndSendVelocity(double currentTimeInSeconds, DroneStateStamped currentState) {
+    public void computeAndSendVelocity(double currentTimeInSeconds,
+            DroneStateStamped currentState) {
         final double nextVelocityX = pidControllerLinearX.compute(currentState.pose().x(),
                 currentState.inertialFrameVelocity().linearX(), currentTimeInSeconds);
         final double nextVelocityY = pidControllerLinearY.compute(currentState.pose().y(),
@@ -69,8 +70,8 @@ final class Velocity3dController implements VelocityController {
         }
 
         /**
-         * Sets the {@code velocity3dService} and returns a reference to this Builder so that the methods can be chained
-         * together.
+         * Sets the {@code velocity3dService} and returns a reference to this Builder so that the
+         * methods can be chained together.
          *
          * @param val the {@code velocity3dService} to set
          * @return a reference to this Builder
@@ -83,7 +84,8 @@ final class Velocity3dController implements VelocityController {
         /**
          * Returns a {@code Velocity3dController} built from the parameters previously set.
          *
-         * @return a {@code Velocity3dController} built with parameters of this {@code Velocity3dController.Builder}
+         * @return a {@code Velocity3dController} built with parameters of this
+         *     {@code Velocity3dController.Builder}
          */
         public Velocity3dController build() {
             checkNotNull(velocity3dService);
@@ -95,8 +97,8 @@ final class Velocity3dController implements VelocityController {
         }
     }
 
-    abstract static class BuilderWithVelocity3dService<T extends BuilderWithVelocity3dService<T>> extends
-            Velocity2dController.BuilderWithVelocity2dService<T> {
+    abstract static class BuilderWithVelocity3dService<T extends BuilderWithVelocity3dService<T>>
+            extends Velocity2dController.BuilderWithVelocity2dService<T> {
         PidParameters pidLinearZ;
 
         BuilderWithVelocity3dService() {
@@ -104,8 +106,8 @@ final class Velocity3dController implements VelocityController {
         }
 
         /**
-         * Sets the {@code pidLinearZ} and returns a reference to this Builder so that the methods can be chained
-         * together.
+         * Sets the {@code pidLinearZ} and returns a reference to this Builder so that the
+         * methods can be chained together.
          *
          * @param val the {@code pidLinearZ} to set
          * @return a reference to this Builder

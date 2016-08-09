@@ -30,8 +30,8 @@ public class TumSimulatorExampleTest {
         try {
             this.server = (TrajectoryServer) cl.getDeclaredConstructor().newInstance();
         } catch (Exception e) {
-            fail("Instantiation with default constructor should be possible for "
-                    + "TumSimulatorExamples");
+            fail("Instantiation with default constructor should be possible for " +
+                    "TumSimulatorExamples");
         }
     }
 

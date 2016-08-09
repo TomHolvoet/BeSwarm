@@ -30,7 +30,8 @@ public class CratesFlyingStateServiceTest extends FlyingStateServiceTest<String,
     }
 
     @Override
-    public FlyingStateService createFlyingStateService(MessagesSubscriberService<State> messagesSubscriberService) {
+    public FlyingStateService createFlyingStateService(
+            MessagesSubscriberService<State> messagesSubscriberService) {
         return CratesFlyingStateService.create(messagesSubscriberService);
     }
 

@@ -98,8 +98,8 @@ public final class CreateVelocityControllerVisitor {
         private Builder() {}
 
         /**
-         * Sets the {@code pidLinearXParameters} and returns a reference to this Builder so that the methods can be
-         * chained together.
+         * Sets the {@code pidLinearXParameters} and returns a reference to this Builder so that
+         * the methods can be chained together.
          *
          * @param val the {@code pidLinearXParameters} to set
          * @return a reference to this Builder
@@ -110,8 +110,8 @@ public final class CreateVelocityControllerVisitor {
         }
 
         /**
-         * Sets the {@code pidLinearYParameters} and returns a reference to this Builder so that the methods can be
-         * chained together.
+         * Sets the {@code pidLinearYParameters} and returns a reference to this Builder so that
+         * the methods can be chained together.
          *
          * @param val the {@code pidLinearYParameters} to set
          * @return a reference to this Builder
@@ -122,8 +122,8 @@ public final class CreateVelocityControllerVisitor {
         }
 
         /**
-         * Sets the {@code pidLinearZParameters} and returns a reference to this Builder so that the methods can be
-         * chained together.
+         * Sets the {@code pidLinearZParameters} and returns a reference to this Builder so that
+         * the methods can be chained together.
          *
          * @param val the {@code pidLinearZParameters} to set
          * @return a reference to this Builder
@@ -134,8 +134,8 @@ public final class CreateVelocityControllerVisitor {
         }
 
         /**
-         * Sets the {@code pidAngularZParameters} and returns a reference to this Builder so that the methods can be
-         * chained together.
+         * Sets the {@code pidAngularZParameters} and returns a reference to this Builder so that
+         * the methods can be chained together.
          *
          * @param val the {@code pidAngularZParameters} to set
          * @return a reference to this Builder
@@ -146,8 +146,8 @@ public final class CreateVelocityControllerVisitor {
         }
 
         /**
-         * Sets the {@code trajectory4d} and returns a reference to this Builder so that the methods can be chained
-         * together.
+         * Sets the {@code trajectory4d} and returns a reference to this Builder so that the
+         * methods can be chained together.
          *
          * @param val the {@code trajectory4d} to set
          * @return a reference to this Builder
@@ -158,10 +158,11 @@ public final class CreateVelocityControllerVisitor {
         }
 
         /**
-         * Returns a {@code CreateVelocityControllerVisitor} built from the parameters previously set.
+         * Returns a {@code CreateVelocityControllerVisitor} built from the parameters previously
+         * set.
          *
-         * @return a {@code CreateVelocityControllerVisitor} built with parameters of this {@code
-         * CreateVelocityControllerVisitor.Builder}
+         * @return a {@code CreateVelocityControllerVisitor} built with parameters of this
+         *     {@code CreateVelocityControllerVisitor.Builder}
          */
         public CreateVelocityControllerVisitor build() {
             checkNotNull(pidLinearXParameters);

@@ -31,7 +31,8 @@ public class TumSimFlyingStateServiceTest extends FlyingStateServiceTest<Integer
     }
 
     @Override
-    public FlyingStateService createFlyingStateService(MessagesSubscriberService<Navdata> messagesSubscriberService) {
+    public FlyingStateService createFlyingStateService(
+            MessagesSubscriberService<Navdata> messagesSubscriberService) {
         return TumSimFlyingStateService.create(messagesSubscriberService);
     }
 

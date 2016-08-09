@@ -11,8 +11,8 @@ import services.VelocityService;
 import static com.google.common.base.Preconditions.checkArgument;
 
 /**
- * Command for hovering. This command requests the drone to hover by publishing a zero velocity and wait for a
- * certain amount of time.
+ * Command for hovering. This command requests the drone to hover by publishing a zero velocity
+ * and wait for a certain amount of time.
  *
  * @author Hoang Tung Dinh
  */
@@ -23,7 +23,8 @@ public final class Hover implements Command {
     private final StateEstimator stateEstimator;
     private final double durationInSeconds;
 
-    private Hover(VelocityService velocityService, StateEstimator stateEstimator, double durationInSeconds) {
+    private Hover(VelocityService velocityService, StateEstimator stateEstimator,
+            double durationInSeconds) {
         this.velocityService = velocityService;
         this.stateEstimator = stateEstimator;
         this.durationInSeconds = durationInSeconds;
@@ -40,7 +41,8 @@ public final class Hover implements Command {
     public static Hover create(VelocityService velocityService, StateEstimator stateEstimator,
             double durationInSeconds) {
         checkArgument(durationInSeconds > 0,
-                String.format("Duration must be a positive value, but it is %f", durationInSeconds));
+                String.format("Duration must be a positive value, but it is %f",
+                        durationInSeconds));
         return new Hover(velocityService, stateEstimator, durationInSeconds);
     }
 

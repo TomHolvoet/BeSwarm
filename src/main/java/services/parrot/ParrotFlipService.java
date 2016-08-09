@@ -23,11 +23,13 @@ final class ParrotFlipService implements FlipService {
     /**
      * @param publisher the publisher associated to the "flip" topic.
      * @return an instance of this facade
-     * @see <a href="http://bebop-autonomy.readthedocs.io/en/latest/piloting.html#flight-animations">Bebop
+     * @see
+     * <a href="http://bebop-autonomy.readthedocs.io/en/latest/piloting.html#flight-animations">Bebop
      * documentations</a>
      */
     public static ParrotFlipService create(Publisher<UInt8> publisher) {
-        checkArgument(publisher.getTopicName().toString().endsWith("/flip"), "Topic name must be [namespace]/flip");
+        checkArgument(publisher.getTopicName().toString().endsWith("/flip"),
+                "Topic name must be [namespace]/flip");
         return new ParrotFlipService(publisher);
     }
 

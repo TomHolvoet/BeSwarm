@@ -7,7 +7,8 @@ package services;
  */
 public interface TakeOffService {
     /**
-     * Send a message to require the drone to take off. The drone will take off and hover at a default altitude.
+     * Send a message to require the drone to take off. The drone will take off and hover at a
+     * default altitude.
      */
     void sendTakingOffMessage();
 

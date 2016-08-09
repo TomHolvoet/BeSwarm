@@ -14,7 +14,8 @@ public class CratesTakeOffServiceInvalidCustomizedAltitudeTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testInvalidCustomizedAltitude() {
-        final TakeOffService cratesTakeOffService = CratesTakeOffService.create(mock(ServiceClient.class));
+        final TakeOffService cratesTakeOffService = CratesTakeOffService.create(
+                mock(ServiceClient.class));
         cratesTakeOffService.sendTakingOffMessage(invalidTakeOffAltitude);
     }
 }

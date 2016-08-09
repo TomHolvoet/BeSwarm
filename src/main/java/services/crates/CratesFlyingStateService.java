@@ -38,7 +38,8 @@ final class CratesFlyingStateService extends AbstractFlyingStateService<State> {
      * @param flyingStateSubscriber the subscriber to a state topic of the drone
      * @return an flying state service instance
      */
-    public static CratesFlyingStateService create(MessagesSubscriberService<State> flyingStateSubscriber) {
+    public static CratesFlyingStateService create(
+            MessagesSubscriberService<State> flyingStateSubscriber) {
         final CratesFlyingStateService cratesFlyingStateService = new CratesFlyingStateService();
         flyingStateSubscriber.registerMessageObserver(cratesFlyingStateService);
         return cratesFlyingStateService;
@@ -48,11 +49,14 @@ final class CratesFlyingStateService extends AbstractFlyingStateService<State> {
     public void onNewMessage(State message) {
         final String controllerStateName = message.getController();
         final Optional<FlyingState> currentFlyingState = getCurrentFlyingState();
-        if (!currentFlyingState.isPresent() || !currentFlyingState.get().getStateName().equals(controllerStateName)) {
-            final FlyingState newFlyingState = FLYING_STATE_MAP.get(controllerStateName).getConvertedFlyingState();
+        if (!currentFlyingState.isPresent() || !currentFlyingState.get()
+                .getStateName()
+                .equals(controllerStateName)) {
+            final FlyingState newFlyingState = FLYING_STATE_MAP.get(controllerStateName)
+                    .getConvertedFlyingState();
             setCurrentFlyingState(newFlyingState);
-            logger.trace("Current crates state: {}. Current standard flying state: {}.", controllerStateName,
-                    newFlyingState.getStateName());
+            logger.trace("Current crates state: {}. Current standard flying state: {}.",
+                    controllerStateName, newFlyingState.getStateName());
         }
     }
 
