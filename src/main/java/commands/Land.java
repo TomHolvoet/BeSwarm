@@ -67,6 +67,9 @@ public final class Land implements Command {
             } catch (InterruptedException e) {
                 logger.debug("Sleep is interrupted in land command.", e);
                 Thread.currentThread().interrupt();
+            }
+
+            if (Thread.interrupted()) {
                 return;
             }
         }
