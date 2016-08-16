@@ -19,7 +19,12 @@ import services.rossubscribers.MessagesSubscriberService;
 
 import java.util.concurrent.TimeUnit;
 
-/** @author Hoang Tung Dinh */
+/**
+ * Main abstract entry for running Bebop. Implementation of this abstract class must provide a
+ * trajectory for the drone by implementing {@link TrajectoryServer#getConcreteTrajectory()}.
+ *
+ * @author Hoang Tung Dinh
+ */
 public abstract class AbstractBebopExample extends AbstractNodeMain implements TrajectoryServer {
   private static final Logger logger = LoggerFactory.getLogger(AbstractBebopExample.class);
   private static final String DRONE_NAME = "bebop";

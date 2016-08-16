@@ -10,7 +10,11 @@ import static org.mockito.Matchers.anyDouble;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.verify;
 
-/** @author Hoang Tung Dinh */
+/**
+ * Some test utilities for comparing double values and verifying methods called.
+ *
+ * @author Hoang Tung Dinh
+ */
 public final class TestUtils {
   private static final double DELTA = 0.01;
 

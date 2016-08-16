@@ -3,7 +3,12 @@ package applications.parrot.bebop;
 import applications.TrajectoriesForTesting;
 import control.FiniteTrajectory4d;
 
-/** @author Hoang Tung Dinh */
+/**
+ * An implementation of {@link AbstractBebopExample} with the {@link
+ * TrajectoriesForTesting#getCorkscrew()} trajectory.
+ *
+ * @author Hoang Tung Dinh
+ */
 public class BebopCorkscrewExample extends AbstractBebopExample {
 
   /** Default constructor. */

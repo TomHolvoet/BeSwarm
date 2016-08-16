@@ -24,7 +24,7 @@ import sim.InsertResponse;
 import java.util.concurrent.TimeUnit;
 
 /**
- * This class is for running the Crates simulator.
+ * Main entry for running the Crates simulator.
  *
  * @author Hoang Tung Dinh
  * @see <a href="https://bitbucket.org/vicengomez/crates">The simulator</a>
