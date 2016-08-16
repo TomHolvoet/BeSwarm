@@ -9,10 +9,10 @@ import services.rossubscribers.FlyingState;
  * @author Hoang Tung Dinh
  */
 public interface FlyingStateService {
-    /**
-     * Gets the current flying state of the drone.
-     *
-     * @return the current flying state of the drone, can be absent
-     */
-    Optional<FlyingState> getCurrentFlyingState();
+  /**
+   * Gets the current flying state of the drone.
+   *
+   * @return the current flying state of the drone, can be absent
+   */
+  Optional<FlyingState> getCurrentFlyingState();
 }

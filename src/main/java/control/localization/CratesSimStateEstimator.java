@@ -10,57 +10,55 @@ import hal_quadrotor.State;
 import services.rossubscribers.MessagesSubscriberService;
 import utils.math.Transformations;
 
-/**
- * @author Hoang Tung Dinh
- */
+/** @author Hoang Tung Dinh */
 public final class CratesSimStateEstimator implements StateEstimator {
-    private final MessagesSubscriberService<State> stateSubscriber;
-    private static final double NANO_SECOND_TO_SECOND = 1000000000.0;
+  private static final double NANO_SECOND_TO_SECOND = 1000000000.0;
+  private final MessagesSubscriberService<State> stateSubscriber;
 
-    private CratesSimStateEstimator(MessagesSubscriberService<State> stateSubscriber) {
-        this.stateSubscriber = stateSubscriber;
+  private CratesSimStateEstimator(MessagesSubscriberService<State> stateSubscriber) {
+    this.stateSubscriber = stateSubscriber;
+  }
+
+  /**
+   * Creates a new state estimator for a drone in the Crates simulator.
+   *
+   * @param stateSubscriber the state subscriber
+   * @return a state estimator
+   */
+  public static CratesSimStateEstimator create(MessagesSubscriberService<State> stateSubscriber) {
+    return new CratesSimStateEstimator(stateSubscriber);
+  }
+
+  @Override
+  public Optional<DroneStateStamped> getCurrentState() {
+    final Optional<State> stateOptional = stateSubscriber.getMostRecentMessage();
+
+    if (!stateOptional.isPresent()) {
+      return Optional.absent();
     }
 
-    /**
-     * Creates a new state estimator for a drone in the Crates simulator.
-     *
-     * @param stateSubscriber the state subscriber
-     * @return a state estimator
-     */
-    public static CratesSimStateEstimator create(MessagesSubscriberService<State> stateSubscriber) {
-        return new CratesSimStateEstimator(stateSubscriber);
-    }
+    final State state = stateOptional.get();
 
-    @Override
-    public Optional<DroneStateStamped> getCurrentState() {
-        final Optional<State> stateOptional = stateSubscriber.getMostRecentMessage();
+    final Pose pose =
+        Pose.builder()
+            .setX(state.getX())
+            .setY(state.getY())
+            .setZ(state.getZ())
+            .setYaw(state.getYaw())
+            .build();
 
-        if (!stateOptional.isPresent()) {
-            return Optional.absent();
-        }
+    final BodyFrameVelocity bodyFrameVelocity =
+        Velocity.builder()
+            .setLinearX(state.getU())
+            .setLinearY(state.getV())
+            .setLinearZ(state.getW())
+            .setAngularZ(state.getR())
+            .build();
 
-        final State state = stateOptional.get();
+    final InertialFrameVelocity inertialFrameVelocity =
+        Transformations.bodyFrameVelocityToInertialFrameVelocity(bodyFrameVelocity, pose);
 
-        final Pose pose = Pose.builder()
-                .setX(state.getX())
-                .setY(state.getY())
-                .setZ(state.getZ())
-                .setYaw(state.getYaw())
-                .build();
-
-        final BodyFrameVelocity bodyFrameVelocity = Velocity.builder()
-                .setLinearX(state.getU())
-                .setLinearY(state.getV())
-                .setLinearZ(state.getW())
-                .setAngularZ(state.getR())
-                .build();
-
-        final InertialFrameVelocity inertialFrameVelocity = Transformations
-                .bodyFrameVelocityToInertialFrameVelocity(
-                bodyFrameVelocity, pose);
-
-        final double timeStampInSeconds = System.nanoTime() / NANO_SECOND_TO_SECOND;
-        return Optional.of(
-                DroneStateStamped.create(pose, inertialFrameVelocity, timeStampInSeconds));
-    }
+    final double timeStampInSeconds = System.nanoTime() / NANO_SECOND_TO_SECOND;
+    return Optional.of(DroneStateStamped.create(pose, inertialFrameVelocity, timeStampInSeconds));
+  }
 }

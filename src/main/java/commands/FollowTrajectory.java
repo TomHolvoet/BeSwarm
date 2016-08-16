@@ -10,205 +10,212 @@ import org.slf4j.LoggerFactory;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-/**
- * @author Hoang Tung Dinh
- */
+/** @author Hoang Tung Dinh */
 public final class FollowTrajectory implements Command {
 
-    private static final Logger logger = LoggerFactory.getLogger(FollowTrajectory.class);
-    private static final Logger poseLogger = LoggerFactory.getLogger(
-            FollowTrajectory.class.getName() + ".poselogger");
-    private static final Logger velocityLogger = LoggerFactory.getLogger(
-            FollowTrajectory.class.getName() + ".velocitylogger");
+  private static final Logger logger = LoggerFactory.getLogger(FollowTrajectory.class);
+  private static final Logger poseLogger =
+      LoggerFactory.getLogger(FollowTrajectory.class.getName() + ".poselogger");
+  private static final Logger velocityLogger =
+      LoggerFactory.getLogger(FollowTrajectory.class.getName() + ".velocitylogger");
 
-    private final StateEstimator stateEstimator;
-    private final Trajectory4d trajectory4d;
-    private final double durationInSeconds;
-    private final double controlRateInSeconds;
-    private final double droneStateLifeDurationInSeconds;
+  private final StateEstimator stateEstimator;
+  private final Trajectory4d trajectory4d;
+  private final double durationInSeconds;
+  private final double controlRateInSeconds;
+  private final double droneStateLifeDurationInSeconds;
 
-    private final VelocityController velocityController;
+  private final VelocityController velocityController;
 
-    private FollowTrajectory(Builder builder) {
-        stateEstimator = builder.stateEstimator;
-        trajectory4d = builder.trajectory4d;
-        durationInSeconds = builder.durationInSeconds;
-        controlRateInSeconds = builder.controlRateInSeconds;
-        droneStateLifeDurationInSeconds = builder.droneStateLifeDurationInSeconds;
+  private FollowTrajectory(Builder builder) {
+    stateEstimator = builder.stateEstimator;
+    trajectory4d = builder.trajectory4d;
+    durationInSeconds = builder.durationInSeconds;
+    controlRateInSeconds = builder.controlRateInSeconds;
+    droneStateLifeDurationInSeconds = builder.droneStateLifeDurationInSeconds;
 
-        final CreateVelocityControllerVisitor controllerVisitor = CreateVelocityControllerVisitor
-                .builder()
-                .withTrajectory4d(trajectory4d)
-                .withPidLinearXParameters(builder.pidLinearXParameters)
-                .withPidLinearYParameters(builder.pidLinearYParameters)
-                .withPidLinearZParameters(builder.pidLinearZParameters)
-                .withPidAngularZParameters(builder.pidAngularZParameters)
-                .build();
+    final CreateVelocityControllerVisitor controllerVisitor =
+        CreateVelocityControllerVisitor.builder()
+            .withTrajectory4d(trajectory4d)
+            .withPidLinearXParameters(builder.pidLinearXParameters)
+            .withPidLinearYParameters(builder.pidLinearYParameters)
+            .withPidLinearZParameters(builder.pidLinearZParameters)
+            .withPidAngularZParameters(builder.pidAngularZParameters)
+            .build();
 
-        velocityController = controllerVisitor.createVelocityController(builder.velocityService);
+    velocityController = controllerVisitor.createVelocityController(builder.velocityService);
+  }
+
+  /**
+   * Gets the builder of this class.
+   *
+   * @return a builder instance
+   */
+  public static Builder builder() {
+    return new Builder();
+  }
+
+  /**
+   * Copies the parameters of another builder.
+   *
+   * @param otherBuilder the other builder
+   * @return a builder instance of this class with all copied parameters from the other builder
+   */
+  public static Builder copyBuilder(AbstractFollowTrajectoryBuilder<?> otherBuilder) {
+    return new Builder().copyOf(otherBuilder);
+  }
+
+  @Override
+  public void execute() {
+    logger.debug("Execute follow trajectory command: {}", trajectory4d);
+    final Runnable computeNextResponse = new ComputeNextResponse();
+    PeriodicTaskRunner.run(computeNextResponse, controlRateInSeconds, durationInSeconds);
+  }
+
+  /** Builder for {@link FollowTrajectory}. */
+  public static final class Builder extends AbstractFollowTrajectoryBuilder<Builder> {
+    private Trajectory4d trajectory4d;
+    private Double durationInSeconds;
+
+    private Builder() {}
+
+    @Override
+    Builder self() {
+      return this;
     }
 
     /**
-     * Gets the builder of this class.
+     * Sets the trajectory that the drone will follow.
      *
-     * @return a builder instance
+     * @param val the value to set
+     * @return a reference to this Builder
      */
-    public static Builder builder() {
-        return new Builder();
+    public Builder withTrajectory4d(Trajectory4d val) {
+      trajectory4d = val;
+      return this;
     }
 
     /**
-     * Copies the parameters of another builder.
+     * Sets the duration that the {@link FollowTrajectory} will be executed.
      *
-     * @param otherBuilder the other builder
-     * @return a builder instance of this class with all copied parameters from the other builder
+     * @param val the value to set
+     * @return a reference to this Builder
      */
-    public static Builder copyBuilder(AbstractFollowTrajectoryBuilder<?> otherBuilder) {
-        return new Builder().copyOf(otherBuilder);
+    public Builder withDurationInSeconds(double val) {
+      durationInSeconds = val;
+      return this;
+    }
+
+    /**
+     * Builds a {@link FollowTrajectory} instance.
+     *
+     * @return a built {@link FollowTrajectory} instance
+     */
+    public FollowTrajectory build() {
+      checkNotNull(trajectory4d);
+      checkNotNull(durationInSeconds);
+      checkNotNull(pidLinearXParameters);
+      checkNotNull(pidLinearYParameters);
+      checkNotNull(pidLinearZParameters);
+      checkNotNull(pidAngularZParameters);
+      checkNotNull(controlRateInSeconds);
+      checkNotNull(droneStateLifeDurationInSeconds);
+      checkNotNull(stateEstimator);
+      checkNotNull(velocityService);
+
+      return new FollowTrajectory(this);
+    }
+  }
+
+  private final class ComputeNextResponse implements Runnable {
+    private static final double NANO_SECOND_TO_SECOND = 1.0E09;
+    private final double startTimeInNanoSeconds;
+    private final int stateLifeDurationInNumberOfControlLoops;
+    // assigned to 0
+    private int counter;
+    private double lastTimeStamp = Double.MIN_VALUE;
+
+    private ComputeNextResponse() {
+      this.startTimeInNanoSeconds = System.nanoTime();
+      this.stateLifeDurationInNumberOfControlLoops =
+          (int) Math.ceil(droneStateLifeDurationInSeconds / controlRateInSeconds);
     }
 
     @Override
-    public void execute() {
-        logger.debug("Execute follow trajectory command: {}", trajectory4d);
-        final Runnable computeNextResponse = new ComputeNextResponse();
-        PeriodicTaskRunner.run(computeNextResponse, controlRateInSeconds, durationInSeconds);
+    public void run() {
+      logger.trace("Start a control loop.");
+      final Optional<DroneStateStamped> currentState = stateEstimator.getCurrentState();
+      if (!currentState.isPresent()) {
+        logger.trace("Cannot get state. Haven't sent any velocity.");
+        return;
+      }
+
+      setCounter(currentState.get());
+
+      if (counter >= stateLifeDurationInNumberOfControlLoops) {
+        logger.debug("Pose is outdated. Stop sending velocity.");
+      } else {
+        logger.trace("Got pose and velocity. Start computing the next velocity response.");
+        final double currentTimeInSeconds =
+            (System.nanoTime() - startTimeInNanoSeconds) / NANO_SECOND_TO_SECOND;
+        velocityController.computeAndSendVelocity(currentTimeInSeconds, currentState.get());
+        logDroneState(currentState.get(), currentTimeInSeconds);
+      }
     }
 
-    private final class ComputeNextResponse implements Runnable {
-        private final double startTimeInNanoSeconds;
-        private final int stateLifeDurationInNumberOfControlLoops;
+    private void logDroneState(DroneStateStamped currentState, double currentTimeInSeconds) {
+      final double systemTimeInSeconds = System.nanoTime() / NANO_SECOND_TO_SECOND;
+      poseLogger.trace(
+          "{} {} {} {} {} {} {} {} {}",
+          systemTimeInSeconds,
+          currentState.pose().x(),
+          currentState.pose().y(),
+          currentState.pose().z(),
+          currentState.pose().yaw(),
+          trajectory4d.getDesiredPositionX(currentTimeInSeconds),
+          trajectory4d.getDesiredPositionY(currentTimeInSeconds),
+          trajectory4d.getDesiredPositionZ(currentTimeInSeconds),
+          trajectory4d.getDesiredAngleZ(currentTimeInSeconds));
 
-        // assigned to 0
-        private int counter;
-        private double lastTimeStamp = Double.MIN_VALUE;
+      final double deltaTimeInSeconds = 0.1;
+      final double desiredVelocityX =
+          (trajectory4d.getDesiredPositionX(currentTimeInSeconds + deltaTimeInSeconds)
+                  - trajectory4d.getDesiredPositionX(currentTimeInSeconds))
+              / deltaTimeInSeconds;
+      final double desiredVelocityY =
+          (trajectory4d.getDesiredPositionY(currentTimeInSeconds + deltaTimeInSeconds)
+                  - trajectory4d.getDesiredPositionY(currentTimeInSeconds))
+              / deltaTimeInSeconds;
+      final double desiredVelocityZ =
+          (trajectory4d.getDesiredPositionZ(currentTimeInSeconds + deltaTimeInSeconds)
+                  - trajectory4d.getDesiredPositionZ(currentTimeInSeconds))
+              / deltaTimeInSeconds;
+      final double desiredVelocityYaw =
+          (trajectory4d.getDesiredAngleZ(currentTimeInSeconds + deltaTimeInSeconds)
+                  - trajectory4d.getDesiredAngleZ(currentTimeInSeconds))
+              / deltaTimeInSeconds;
 
-        private static final double NANO_SECOND_TO_SECOND = 1.0E09;
-
-        private ComputeNextResponse() {
-            this.startTimeInNanoSeconds = System.nanoTime();
-            this.stateLifeDurationInNumberOfControlLoops = (int) Math.ceil(
-                    droneStateLifeDurationInSeconds / controlRateInSeconds);
-        }
-
-        @Override
-        public void run() {
-            logger.trace("Start a control loop.");
-            final Optional<DroneStateStamped> currentState = stateEstimator.getCurrentState();
-            if (!currentState.isPresent()) {
-                logger.trace("Cannot get state. Haven't sent any velocity.");
-                return;
-            }
-
-            setCounter(currentState.get());
-
-            if (counter >= stateLifeDurationInNumberOfControlLoops) {
-                logger.debug("Pose is outdated. Stop sending velocity.");
-            } else {
-                logger.trace("Got pose and velocity. Start computing the next velocity response.");
-                final double currentTimeInSeconds = (System.nanoTime() - startTimeInNanoSeconds)
-                        / NANO_SECOND_TO_SECOND;
-                velocityController.computeAndSendVelocity(currentTimeInSeconds, currentState.get());
-                logDroneState(currentState.get(), currentTimeInSeconds);
-            }
-        }
-
-        private void logDroneState(DroneStateStamped currentState, double currentTimeInSeconds) {
-            final double systemTimeInSeconds = System.nanoTime() / NANO_SECOND_TO_SECOND;
-            poseLogger.trace("{} {} {} {} {} {} {} {} {}", systemTimeInSeconds,
-                    currentState.pose().x(), currentState.pose().y(), currentState.pose().z(),
-                    currentState.pose().yaw(),
-                    trajectory4d.getDesiredPositionX(currentTimeInSeconds),
-                    trajectory4d.getDesiredPositionY(currentTimeInSeconds),
-                    trajectory4d.getDesiredPositionZ(currentTimeInSeconds),
-                    trajectory4d.getDesiredAngleZ(currentTimeInSeconds));
-
-            final double deltaTimeInSeconds = 0.1;
-            final double desiredVelocityX = (trajectory4d.getDesiredPositionX(
-                    currentTimeInSeconds + deltaTimeInSeconds) - trajectory4d.getDesiredPositionX(
-                    currentTimeInSeconds)) / deltaTimeInSeconds;
-            final double desiredVelocityY = (trajectory4d.getDesiredPositionY(
-                    currentTimeInSeconds + deltaTimeInSeconds) - trajectory4d.getDesiredPositionY(
-                    currentTimeInSeconds)) / deltaTimeInSeconds;
-            final double desiredVelocityZ = (trajectory4d.getDesiredPositionZ(
-                    currentTimeInSeconds + deltaTimeInSeconds) - trajectory4d.getDesiredPositionZ(
-                    currentTimeInSeconds)) / deltaTimeInSeconds;
-            final double desiredVelocityYaw = (trajectory4d.getDesiredAngleZ(
-                    currentTimeInSeconds + deltaTimeInSeconds) - trajectory4d.getDesiredAngleZ(
-                    currentTimeInSeconds)) / deltaTimeInSeconds;
-
-            velocityLogger.trace("{} {} {} {} {} {} {} {} {}", systemTimeInSeconds,
-                    currentState.inertialFrameVelocity().linearX(),
-                    currentState.inertialFrameVelocity().linearY(),
-                    currentState.inertialFrameVelocity().linearZ(),
-                    currentState.inertialFrameVelocity().angularZ(), desiredVelocityX,
-                    desiredVelocityY, desiredVelocityZ, desiredVelocityYaw);
-        }
-
-        private void setCounter(DroneStateStamped currentState) {
-            final double currentTimeStamp = currentState.getTimeStampInSeconds();
-            if (currentTimeStamp == lastTimeStamp) {
-                counter++;
-            } else {
-                counter = 0;
-                lastTimeStamp = currentTimeStamp;
-            }
-        }
+      velocityLogger.trace(
+          "{} {} {} {} {} {} {} {} {}",
+          systemTimeInSeconds,
+          currentState.inertialFrameVelocity().linearX(),
+          currentState.inertialFrameVelocity().linearY(),
+          currentState.inertialFrameVelocity().linearZ(),
+          currentState.inertialFrameVelocity().angularZ(),
+          desiredVelocityX,
+          desiredVelocityY,
+          desiredVelocityZ,
+          desiredVelocityYaw);
     }
 
-    /**
-     * Builder for {@link FollowTrajectory}.
-     */
-    public static final class Builder extends AbstractFollowTrajectoryBuilder<Builder> {
-        private Trajectory4d trajectory4d;
-        private Double durationInSeconds;
-
-        private Builder() {}
-
-        @Override
-        Builder self() {
-            return this;
-        }
-
-        /**
-         * Sets the trajectory that the drone will follow.
-         *
-         * @param val the value to set
-         * @return a reference to this Builder
-         */
-        public Builder withTrajectory4d(Trajectory4d val) {
-            trajectory4d = val;
-            return this;
-        }
-
-        /**
-         * Sets the duration that the {@link FollowTrajectory} will be executed.
-         *
-         * @param val the value to set
-         * @return a reference to this Builder
-         */
-        public Builder withDurationInSeconds(double val) {
-            durationInSeconds = val;
-            return this;
-        }
-
-        /**
-         * Builds a {@link FollowTrajectory} instance.
-         *
-         * @return a built {@link FollowTrajectory} instance
-         */
-        public FollowTrajectory build() {
-            checkNotNull(trajectory4d);
-            checkNotNull(durationInSeconds);
-            checkNotNull(pidLinearXParameters);
-            checkNotNull(pidLinearYParameters);
-            checkNotNull(pidLinearZParameters);
-            checkNotNull(pidAngularZParameters);
-            checkNotNull(controlRateInSeconds);
-            checkNotNull(droneStateLifeDurationInSeconds);
-            checkNotNull(stateEstimator);
-            checkNotNull(velocityService);
-
-            return new FollowTrajectory(this);
-        }
+    private void setCounter(DroneStateStamped currentState) {
+      final double currentTimeStamp = currentState.getTimeStampInSeconds();
+      if (currentTimeStamp == lastTimeStamp) {
+        counter++;
+      } else {
+        counter = 0;
+        lastTimeStamp = currentTimeStamp;
+      }
     }
+  }
 }

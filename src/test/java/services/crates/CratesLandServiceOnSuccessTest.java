@@ -5,12 +5,10 @@ import org.ros.node.service.ServiceResponseListener;
 
 import static org.mockito.Mockito.mock;
 
-/**
- * @author Hoang Tung Dinh
- */
+/** @author Hoang Tung Dinh */
 public class CratesLandServiceOnSuccessTest extends CratesLandServiceTest {
-    @Override
-    void responseToMessage(ServiceResponseListener<LandResponse> serviceResponseListener) {
-        serviceResponseListener.onSuccess(mock(LandResponse.class));
-    }
+  @Override
+  void responseToMessage(ServiceResponseListener<LandResponse> serviceResponseListener) {
+    serviceResponseListener.onSuccess(mock(LandResponse.class));
+  }
 }

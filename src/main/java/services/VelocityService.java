@@ -5,5 +5,4 @@ package services;
  *
  * @author Hoang Tung Dinh
  */
-public interface VelocityService {
-}
+public interface VelocityService {}

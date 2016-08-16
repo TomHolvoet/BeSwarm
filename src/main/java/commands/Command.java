@@ -6,8 +6,6 @@ package commands;
  * @author Hoang Tung Dinh
  */
 public interface Command {
-    /**
-     * Execute the command.
-     */
-    void execute();
+  /** Execute the command. */
+  void execute();
 }

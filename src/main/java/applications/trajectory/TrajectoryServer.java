@@ -9,8 +9,6 @@ import control.FiniteTrajectory4d;
  */
 public interface TrajectoryServer {
 
-    /**
-     * @return A fully built finite trajectory in 4D.
-     */
-    FiniteTrajectory4d getConcreteTrajectory();
+  /** @return A fully built finite trajectory in 4D. */
+  FiniteTrajectory4d getConcreteTrajectory();
 }

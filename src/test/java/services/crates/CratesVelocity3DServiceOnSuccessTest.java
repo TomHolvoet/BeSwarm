@@ -5,12 +5,10 @@ import org.ros.node.service.ServiceResponseListener;
 
 import static org.mockito.Mockito.mock;
 
-/**
- * @author Hoang Tung Dinh
- */
+/** @author Hoang Tung Dinh */
 public class CratesVelocity3DServiceOnSuccessTest extends CratesVelocity3dServiceTest {
-    @Override
-    void responseToMessage(ServiceResponseListener<VelocityResponse> serviceResponseListener) {
-        serviceResponseListener.onSuccess(mock(VelocityResponse.class));
-    }
+  @Override
+  void responseToMessage(ServiceResponseListener<VelocityResponse> serviceResponseListener) {
+    serviceResponseListener.onSuccess(mock(VelocityResponse.class));
+  }
 }

@@ -11,31 +11,29 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-/**
- * @author Hoang Tung Dinh
- */
+/** @author Hoang Tung Dinh */
 public abstract class ParrotTakeOffAndLandServiceTest<T extends Message> {
 
-    abstract String createTopicName();
+  abstract String createTopicName();
 
-    abstract T createNewMessage();
+  abstract T createNewMessage();
 
-    abstract void createServiceAndSendMessage(Publisher<T> publisher);
+  abstract void createServiceAndSendMessage(Publisher<T> publisher);
 
-    abstract ArgumentCaptor<T> createArgumentCaptor();
+  abstract ArgumentCaptor<T> createArgumentCaptor();
 
-    @Test
-    public void testSendMessage() {
-        final Publisher<T> publisher = mock(Publisher.class, RETURNS_DEEP_STUBS);
-        when(publisher.getTopicName().toString()).thenReturn(createTopicName());
+  @Test
+  public void testSendMessage() {
+    final Publisher<T> publisher = mock(Publisher.class, RETURNS_DEEP_STUBS);
+    when(publisher.getTopicName().toString()).thenReturn(createTopicName());
 
-        final T message = createNewMessage();
-        when(publisher.newMessage()).thenReturn(message);
+    final T message = createNewMessage();
+    when(publisher.newMessage()).thenReturn(message);
 
-        createServiceAndSendMessage(publisher);
+    createServiceAndSendMessage(publisher);
 
-        final ArgumentCaptor<T> argumentCaptor = createArgumentCaptor();
-        verify(publisher).publish(argumentCaptor.capture());
-        assertThat(argumentCaptor.getValue()).isEqualTo(message);
-    }
+    final ArgumentCaptor<T> argumentCaptor = createArgumentCaptor();
+    verify(publisher).publish(argumentCaptor.capture());
+    assertThat(argumentCaptor.getValue()).isEqualTo(message);
+  }
 }

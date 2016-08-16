@@ -6,8 +6,6 @@ package services;
  * @author Hoang Tung Dinh
  */
 public interface LandService {
-    /**
-     * Sends a message to require the drone to land.
-     */
-    void sendLandingMessage();
+  /** Sends a message to require the drone to land. */
+  void sendLandingMessage();
 }

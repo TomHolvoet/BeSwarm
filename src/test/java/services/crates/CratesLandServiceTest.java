@@ -20,55 +20,56 @@ import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
-/**
- * @author Hoang Tung Dinh
- */
+/** @author Hoang Tung Dinh */
 public abstract class CratesLandServiceTest {
 
-    private ServiceClient<LandRequest, LandResponse> serviceClient;
-    private ArgumentCaptor<ServiceResponseListener> argumentCaptor;
-    private LandService cratesLandService;
-    private Future<?> future;
+  private ServiceClient<LandRequest, LandResponse> serviceClient;
+  private ArgumentCaptor<ServiceResponseListener> argumentCaptor;
+  private LandService cratesLandService;
+  private Future<?> future;
 
-    abstract void responseToMessage(ServiceResponseListener<LandResponse> serviceResponseListener);
+  private static void checkServiceCalledAndIsWaiting(
+      ServiceClient<LandRequest, LandResponse> serviceClient,
+      ArgumentCaptor<ServiceResponseListener> argumentCaptor,
+      Future<?> future) {
+    verify(serviceClient, atLeastOnce()).call(any(LandRequest.class), argumentCaptor.capture());
+    assertThat(future.isDone()).isFalse();
+  }
 
-    @Before
-    public void setUp() throws InterruptedException {
-        serviceClient = mock(ServiceClient.class);
-        argumentCaptor = ArgumentCaptor.forClass(ServiceResponseListener.class);
+  abstract void responseToMessage(ServiceResponseListener<LandResponse> serviceResponseListener);
 
-        cratesLandService = CratesLandService.create(serviceClient);
-        future = Executors.newSingleThreadExecutor().submit(new Runnable() {
-            @Override
-            public void run() {
-                cratesLandService.sendLandingMessage();
-            }
-        });
+  @Before
+  public void setUp() throws InterruptedException {
+    serviceClient = mock(ServiceClient.class);
+    argumentCaptor = ArgumentCaptor.forClass(ServiceResponseListener.class);
 
-        TimeUnit.MILLISECONDS.sleep(300);
-    }
+    cratesLandService = CratesLandService.create(serviceClient);
+    future =
+        Executors.newSingleThreadExecutor()
+            .submit(
+                new Runnable() {
+                  @Override
+                  public void run() {
+                    cratesLandService.sendLandingMessage();
+                  }
+                });
 
-    @After
-    public void tearDown() {
-        future.cancel(true);
-    }
+    TimeUnit.MILLISECONDS.sleep(300);
+  }
 
-    @Test
-    public void testSendLandMessage() throws InterruptedException {
-        checkServiceCalledAndIsWaiting(serviceClient, argumentCaptor, future);
+  @After
+  public void tearDown() {
+    future.cancel(true);
+  }
 
-        final ServiceResponseListener<LandResponse> serviceResponseListener = argumentCaptor
-                .getValue();
-        responseToMessage(serviceResponseListener);
+  @Test
+  public void testSendLandMessage() throws InterruptedException {
+    checkServiceCalledAndIsWaiting(serviceClient, argumentCaptor, future);
 
-        TimeUnit.MILLISECONDS.sleep(50);
-        assertThat(future.isDone()).isTrue();
-    }
+    final ServiceResponseListener<LandResponse> serviceResponseListener = argumentCaptor.getValue();
+    responseToMessage(serviceResponseListener);
 
-    private static void checkServiceCalledAndIsWaiting(
-            ServiceClient<LandRequest, LandResponse> serviceClient,
-            ArgumentCaptor<ServiceResponseListener> argumentCaptor, Future<?> future) {
-        verify(serviceClient, atLeastOnce()).call(any(LandRequest.class), argumentCaptor.capture());
-        assertThat(future.isDone()).isFalse();
-    }
+    TimeUnit.MILLISECONDS.sleep(50);
+    assertThat(future.isDone()).isTrue();
+  }
 }

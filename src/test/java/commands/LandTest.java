@@ -23,82 +23,83 @@ import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-/**
- * @author Hoang Tung Dinh
- */
+/** @author Hoang Tung Dinh */
 @RunWith(JUnitParamsRunner.class)
 public class LandTest {
 
-    private LandService landService;
-    private FlyingStateService flyingStateService;
-    private Future<?> future;
+  private LandService landService;
+  private FlyingStateService flyingStateService;
+  private Future<?> future;
 
-    @Before
-    public void setUp() throws InterruptedException {
-        landService = mock(LandService.class);
-        flyingStateService = mock(FlyingStateService.class);
-        final Command landCommand = Land.create(landService, flyingStateService);
+  @Before
+  public void setUp() throws InterruptedException {
+    landService = mock(LandService.class);
+    flyingStateService = mock(FlyingStateService.class);
+    final Command landCommand = Land.create(landService, flyingStateService);
 
-        when(flyingStateService.getCurrentFlyingState()).thenReturn(Optional.<FlyingState>absent());
+    when(flyingStateService.getCurrentFlyingState()).thenReturn(Optional.<FlyingState>absent());
 
-        future = Executors.newSingleThreadExecutor().submit(new Runnable() {
-            @Override
-            public void run() {
-                landCommand.execute();
-            }
-        });
-    }
+    future =
+        Executors.newSingleThreadExecutor()
+            .submit(
+                new Runnable() {
+                  @Override
+                  public void run() {
+                    landCommand.execute();
+                  }
+                });
+  }
 
-    @After
-    public void tearDown() {
-        future.cancel(true);
-    }
+  @After
+  public void tearDown() {
+    future.cancel(true);
+  }
 
-    @Test
-    public void testExecute_noStateReceived() throws InterruptedException {
-        reset(landService);
-        TimeUnit.MILLISECONDS.sleep(200);
-        verify(landService, atLeast(2)).sendLandingMessage();
-        assertThat(future.isDone()).isFalse();
-    }
+  @Test
+  public void testExecute_noStateReceived() throws InterruptedException {
+    reset(landService);
+    TimeUnit.MILLISECONDS.sleep(200);
+    verify(landService, atLeast(2)).sendLandingMessage();
+    assertThat(future.isDone()).isFalse();
+  }
 
-    @Test
-    public void testExecute_landingStateReceived() throws InterruptedException {
-        when(flyingStateService.getCurrentFlyingState()).thenReturn(
-                Optional.of(FlyingState.LANDING));
-        reset(landService);
-        TimeUnit.MILLISECONDS.sleep(200);
-        verify(landService, atMost(1)).sendLandingMessage();
-        assertThat(future.isDone()).isFalse();
-    }
+  @Test
+  public void testExecute_landingStateReceived() throws InterruptedException {
+    when(flyingStateService.getCurrentFlyingState()).thenReturn(Optional.of(FlyingState.LANDING));
+    reset(landService);
+    TimeUnit.MILLISECONDS.sleep(200);
+    verify(landService, atMost(1)).sendLandingMessage();
+    assertThat(future.isDone()).isFalse();
+  }
 
-    @Test
-    public void testExecute_landedStateReceived() throws InterruptedException {
-        when(flyingStateService.getCurrentFlyingState()).thenReturn(
-                Optional.of(FlyingState.LANDED));
-        reset(landService);
-        TimeUnit.MILLISECONDS.sleep(200);
-        verify(landService, atMost(1)).sendLandingMessage();
-        assertThat(future.isDone()).isTrue();
-    }
+  @Test
+  public void testExecute_landedStateReceived() throws InterruptedException {
+    when(flyingStateService.getCurrentFlyingState()).thenReturn(Optional.of(FlyingState.LANDED));
+    reset(landService);
+    TimeUnit.MILLISECONDS.sleep(200);
+    verify(landService, atMost(1)).sendLandingMessage();
+    assertThat(future.isDone()).isTrue();
+  }
 
-    @Test
-    @Parameters(method = "flyingStateValues")
-    public void testExecute_otherStatesReceived(
-            Optional<FlyingState> flyingStateOptional) throws InterruptedException {
-        when(flyingStateService.getCurrentFlyingState()).thenReturn(flyingStateOptional);
-        reset(landService);
-        TimeUnit.MILLISECONDS.sleep(200);
-        verify(landService, atLeast(2)).sendLandingMessage();
-        assertThat(future.isDone()).isFalse();
-    }
+  @Test
+  @Parameters(method = "flyingStateValues")
+  public void testExecute_otherStatesReceived(Optional<FlyingState> flyingStateOptional)
+      throws InterruptedException {
+    when(flyingStateService.getCurrentFlyingState()).thenReturn(flyingStateOptional);
+    reset(landService);
+    TimeUnit.MILLISECONDS.sleep(200);
+    verify(landService, atLeast(2)).sendLandingMessage();
+    assertThat(future.isDone()).isFalse();
+  }
 
-    private Object[] flyingStateValues() {
-        return new Object[]{new Object[]{Optional.of(FlyingState.TAKING_OFF)},
-                new Object[]{Optional.of(FlyingState.HOVERING)},
-                new Object[]{Optional.of(FlyingState.FLYING)},
-                new Object[]{Optional.of(FlyingState.EMERGENCY)},
-                new Object[]{Optional.of(FlyingState.USER_TAKEOFF)},
-                new Object[]{Optional.of(FlyingState.UNKNOWN)}};
-    }
+  private Object[] flyingStateValues() {
+    return new Object[] {
+      new Object[] {Optional.of(FlyingState.TAKING_OFF)},
+      new Object[] {Optional.of(FlyingState.HOVERING)},
+      new Object[] {Optional.of(FlyingState.FLYING)},
+      new Object[] {Optional.of(FlyingState.EMERGENCY)},
+      new Object[] {Optional.of(FlyingState.USER_TAKEOFF)},
+      new Object[] {Optional.of(FlyingState.UNKNOWN)}
+    };
+  }
 }

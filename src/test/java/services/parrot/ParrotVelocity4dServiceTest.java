@@ -27,101 +27,98 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-/**
- * @author Hoang Tung Dinh
- */
+/** @author Hoang Tung Dinh */
 @RunWith(JUnitParamsRunner.class)
 public class ParrotVelocity4dServiceTest {
 
-    @Nullable private Publisher<Twist> publisher;
-    @Nullable private Twist twist;
-    @Nullable private Vector3 linear;
-    @Nullable private Vector3 angular;
+  @Nullable private Publisher<Twist> publisher;
+  @Nullable private Twist twist;
+  @Nullable private Vector3 linear;
+  @Nullable private Vector3 angular;
 
-    @Before
-    public void setUp() {
-        publisher = mock(Publisher.class, RETURNS_DEEP_STUBS);
-        when(publisher.getTopicName().toString()).thenReturn("/bebop/cmd_vel");
+  @Before
+  public void setUp() {
+    publisher = mock(Publisher.class, RETURNS_DEEP_STUBS);
+    when(publisher.getTopicName().toString()).thenReturn("/bebop/cmd_vel");
 
-        twist = mock(Twist.class, RETURNS_DEEP_STUBS);
-        when(publisher.newMessage()).thenReturn(twist);
+    twist = mock(Twist.class, RETURNS_DEEP_STUBS);
+    when(publisher.newMessage()).thenReturn(twist);
 
-        linear = mock(Vector3.class);
-        angular = mock(Vector3.class);
-        when(twist.getLinear()).thenReturn(linear);
-        when(twist.getAngular()).thenReturn(angular);
-    }
+    linear = mock(Vector3.class);
+    angular = mock(Vector3.class);
+    when(twist.getLinear()).thenReturn(linear);
+    when(twist.getAngular()).thenReturn(angular);
+  }
 
-    @After
-    public void tearDown() {
-        publisher = null;
-        twist = null;
-        linear = null;
-        angular = null;
-    }
+  @After
+  public void tearDown() {
+    publisher = null;
+    twist = null;
+    linear = null;
+    angular = null;
+  }
 
-    @Test
-    @Parameters(source = VelocityProvider.class)
-    public void testSendVelocityMessageWithoutThreshold(Pose pose,
-            BodyFrameVelocity bodyFrameVelocity, InertialFrameVelocity inertialFrameVelocity) {
-        final Velocity4dService parrotVelocity4dService = ParrotVelocity4dService.builder()
-                .publisher(publisher)
-                .build();
-        parrotVelocity4dService.sendVelocity4dMessage(inertialFrameVelocity, pose);
-        checkMessageSetUp(bodyFrameVelocity, linear, angular);
-        checkCorrectTwistMessageSent(publisher, twist);
+  @Test
+  @Parameters(source = VelocityProvider.class)
+  public void testSendVelocityMessageWithoutThreshold(
+      Pose pose, BodyFrameVelocity bodyFrameVelocity, InertialFrameVelocity inertialFrameVelocity) {
+    final Velocity4dService parrotVelocity4dService =
+        ParrotVelocity4dService.builder().publisher(publisher).build();
+    parrotVelocity4dService.sendVelocity4dMessage(inertialFrameVelocity, pose);
+    checkMessageSetUp(bodyFrameVelocity, linear, angular);
+    checkCorrectTwistMessageSent(publisher, twist);
+  }
 
-    }
+  @Test
+  @Parameters(source = VelocityProviderWithThreshold.class)
+  public void testSendVelocityMessageWithThreshold(
+      Pose pose, BodyFrameVelocity bodyFrameVelocity, InertialFrameVelocity inertialFrameVelocity) {
+    final Velocity4dService parrotVelocity4dService =
+        ParrotVelocity4dService.builder()
+            .publisher(publisher)
+            .minLinearX(-0.25)
+            .minLinearY(-0.25)
+            .minLinearZ(-0.25)
+            .minAngularZ(-0.25)
+            .maxLinearX(0.25)
+            .maxLinearY(0.25)
+            .maxLinearZ(0.25)
+            .maxAngularZ(0.25)
+            .build();
+    parrotVelocity4dService.sendVelocity4dMessage(inertialFrameVelocity, pose);
+    checkMessageSetUp(bodyFrameVelocity, linear, angular);
+    checkCorrectTwistMessageSent(publisher, twist);
+  }
 
-    @Test
-    @Parameters(source = VelocityProviderWithThreshold.class)
-    public void testSendVelocityMessageWithThreshold(Pose pose, BodyFrameVelocity bodyFrameVelocity,
-            InertialFrameVelocity inertialFrameVelocity) {
-        final Velocity4dService parrotVelocity4dService = ParrotVelocity4dService.builder()
-                .publisher(publisher)
-                .minLinearX(-0.25)
-                .minLinearY(-0.25)
-                .minLinearZ(-0.25)
-                .minAngularZ(-0.25)
-                .maxLinearX(0.25)
-                .maxLinearY(0.25)
-                .maxLinearZ(0.25)
-                .maxAngularZ(0.25)
-                .build();
-        parrotVelocity4dService.sendVelocity4dMessage(inertialFrameVelocity, pose);
-        checkMessageSetUp(bodyFrameVelocity, linear, angular);
-        checkCorrectTwistMessageSent(publisher, twist);
+  private void checkCorrectTwistMessageSent(Publisher<Twist> publisher, Twist twist) {
+    final ArgumentCaptor<Twist> twistArgumentCaptor = ArgumentCaptor.forClass(Twist.class);
+    verify(publisher).publish(twistArgumentCaptor.capture());
+    assertThat(twistArgumentCaptor.getValue()).isEqualTo(twist);
+  }
 
-    }
+  private void checkMessageSetUp(
+      BodyFrameVelocity bodyFrameVelocity, Vector3 linear, Vector3 angular) {
+    final ArgumentCaptor<Double> argumentCaptor = ArgumentCaptor.forClass(Double.class);
 
-    private void checkCorrectTwistMessageSent(Publisher<Twist> publisher, Twist twist) {
-        final ArgumentCaptor<Twist> twistArgumentCaptor = ArgumentCaptor.forClass(Twist.class);
-        verify(publisher).publish(twistArgumentCaptor.capture());
-        assertThat(twistArgumentCaptor.getValue()).isEqualTo(twist);
-    }
+    verify(linear).setX(argumentCaptor.capture());
+    final double linearX = argumentCaptor.getValue();
 
-    private void checkMessageSetUp(BodyFrameVelocity bodyFrameVelocity, Vector3 linear,
-            Vector3 angular) {
-        final ArgumentCaptor<Double> argumentCaptor = ArgumentCaptor.forClass(Double.class);
+    verify(linear).setY(argumentCaptor.capture());
+    final double linearY = argumentCaptor.getValue();
 
-        verify(linear).setX(argumentCaptor.capture());
-        final double linearX = argumentCaptor.getValue();
+    verify(linear).setZ(argumentCaptor.capture());
+    final double linearZ = argumentCaptor.getValue();
 
-        verify(linear).setY(argumentCaptor.capture());
-        final double linearY = argumentCaptor.getValue();
+    verify(angular).setZ(argumentCaptor.capture());
+    final double angularZ = argumentCaptor.getValue();
 
-        verify(linear).setZ(argumentCaptor.capture());
-        final double linearZ = argumentCaptor.getValue();
-
-        verify(angular).setZ(argumentCaptor.capture());
-        final double angularZ = argumentCaptor.getValue();
-
-        final BodyFrameVelocity sentBodyFrameVelocity = Velocity.builder()
-                .setLinearX(linearX)
-                .setLinearY(linearY)
-                .setLinearZ(linearZ)
-                .setAngularZ(angularZ)
-                .build();
-        TestUtils.assertVelocityEqual(bodyFrameVelocity, sentBodyFrameVelocity);
-    }
+    final BodyFrameVelocity sentBodyFrameVelocity =
+        Velocity.builder()
+            .setLinearX(linearX)
+            .setLinearY(linearY)
+            .setLinearZ(linearZ)
+            .setAngularZ(angularZ)
+            .build();
+    TestUtils.assertVelocityEqual(bodyFrameVelocity, sentBodyFrameVelocity);
+  }
 }

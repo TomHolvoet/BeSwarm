@@ -15,33 +15,32 @@ import static com.google.common.base.Preconditions.checkArgument;
  */
 final class ParrotLandService implements LandService {
 
-    private static final Logger logger = LoggerFactory.getLogger(ParrotLandService.class);
+  private static final Logger logger = LoggerFactory.getLogger(ParrotLandService.class);
 
-    private final Publisher<Empty> publisher;
+  private final Publisher<Empty> publisher;
 
-    private ParrotLandService(Publisher<Empty> publisher) {
-        this.publisher = publisher;
-    }
+  private ParrotLandService(Publisher<Empty> publisher) {
+    this.publisher = publisher;
+  }
 
-    /**
-     * @param publisher the publisher associated to the "land" topic.
-     * @return an instance of this facade
-     * @see <a href="http://bebop-autonomy.readthedocs.io/en/latest/piloting.html#land">Bebop
-     * documentations</a>
-     */
-    public static ParrotLandService create(Publisher<Empty> publisher) {
-        checkArgument(publisher.getTopicName().toString().endsWith("/land"),
-                "Topic name must be [namespace]/land");
-        return new ParrotLandService(publisher);
-    }
+  /**
+   * @param publisher the publisher associated to the "land" topic.
+   * @return an instance of this facade
+   * @see <a href="http://bebop-autonomy.readthedocs.io/en/latest/piloting.html#land">Bebop
+   *     documentations</a>
+   */
+  public static ParrotLandService create(Publisher<Empty> publisher) {
+    checkArgument(
+        publisher.getTopicName().toString().endsWith("/land"),
+        "Topic name must be [namespace]/land");
+    return new ParrotLandService(publisher);
+  }
 
-    /**
-     * Publish a landing message.
-     */
-    @Override
-    public void sendLandingMessage() {
-        final Empty empty = publisher.newMessage();
-        logger.trace("sending land message to ROS");
-        publisher.publish(empty);
-    }
+  /** Publish a landing message. */
+  @Override
+  public void sendLandingMessage() {
+    final Empty empty = publisher.newMessage();
+    logger.trace("sending land message to ROS");
+    publisher.publish(empty);
+  }
 }

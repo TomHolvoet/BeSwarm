@@ -9,44 +9,41 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import services.rossubscribers.MessagesSubscriberService;
 
-/**
- * Print the poses published to the {@code /arlocros/pose} topic.
- */
+/** Print the poses published to the {@code /arlocros/pose} topic. */
 public class PrintPose extends AbstractNodeMain {
 
-    private static final Logger logger = LoggerFactory.getLogger(PrintPose.class);
-    private static final String POSE_TOPIC = "/arlocros/pose";
+  private static final Logger logger = LoggerFactory.getLogger(PrintPose.class);
+  private static final String POSE_TOPIC = "/arlocros/pose";
 
-    @Override
-    public GraphName getDefaultNodeName() {
-        return GraphName.of("PosePrinter");
-    }
+  @Override
+  public GraphName getDefaultNodeName() {
+    return GraphName.of("PosePrinter");
+  }
 
-    @Override
-    public void onStart(final ConnectedNode connectedNode) {
-        MessagesSubscriberService<PoseStamped> poseSubscriber = MessagesSubscriberService
-                .<PoseStamped>create(
-                connectedNode.<PoseStamped>newSubscriber(POSE_TOPIC, PoseStamped._TYPE));
+  @Override
+  public void onStart(final ConnectedNode connectedNode) {
+    MessagesSubscriberService<PoseStamped> poseSubscriber =
+        MessagesSubscriberService.<PoseStamped>create(
+            connectedNode.<PoseStamped>newSubscriber(POSE_TOPIC, PoseStamped._TYPE));
 
-        try {
-            int i = 0;
-            while (true) {
-                Optional<PoseStamped> pose = poseSubscriber.getMostRecentMessage();
-                if (pose.isPresent()) {
-                    double x = pose.get().getPose().getPosition().getX();
-                    double y = pose.get().getPose().getPosition().getY();
-                    double z = pose.get().getPose().getPosition().getZ();
-                    logger.info("{}, {}, {}", x, y, z);
-                } else if (i % 100 == 0) {
-                    logger.info("No pose available");
-                }
-                i++;
-                Thread.sleep(100);
-            }
-        } catch (InterruptedException e) {
-            logger.debug("The thread is interrupted.", e);
-            Thread.currentThread().interrupt();
+    try {
+      int i = 0;
+      while (true) {
+        Optional<PoseStamped> pose = poseSubscriber.getMostRecentMessage();
+        if (pose.isPresent()) {
+          double x = pose.get().getPose().getPosition().getX();
+          double y = pose.get().getPose().getPosition().getY();
+          double z = pose.get().getPose().getPosition().getZ();
+          logger.info("{}, {}, {}", x, y, z);
+        } else if (i % 100 == 0) {
+          logger.info("No pose available");
         }
+        i++;
+        Thread.sleep(100);
+      }
+    } catch (InterruptedException e) {
+      logger.debug("The thread is interrupted.", e);
+      Thread.currentThread().interrupt();
     }
-
+  }
 }

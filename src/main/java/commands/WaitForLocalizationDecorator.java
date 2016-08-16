@@ -16,59 +16,58 @@ import java.util.concurrent.TimeUnit;
  */
 public final class WaitForLocalizationDecorator implements Command {
 
-    private static final Logger logger = LoggerFactory.getLogger(
-            WaitForLocalizationDecorator.class);
+  private static final Logger logger = LoggerFactory.getLogger(WaitForLocalizationDecorator.class);
+  private static final int SLEEP_DURATION_IN_MILLISECONDS = 50;
+  private final StateEstimator stateEstimator;
+  private final Command command;
+  @Nullable private DroneStateStamped lastReceivedPose;
 
-    private final StateEstimator stateEstimator;
-    private final Command command;
-    private static final int SLEEP_DURATION_IN_MILLISECONDS = 50;
+  private WaitForLocalizationDecorator(StateEstimator stateEstimator, Command command) {
+    this.stateEstimator = stateEstimator;
+    this.command = command;
+  }
 
-    @Nullable private DroneStateStamped lastReceivedPose;
+  /**
+   * Creates an instance of this class.
+   *
+   * @param stateEstimator the state estimator of the drone
+   * @param command the command to be decorated
+   * @return a decorated command which will wait until receiving a valid pose from the {@code
+   *     stateEstimator} and the execute the {@code command}
+   */
+  public static WaitForLocalizationDecorator create(
+      StateEstimator stateEstimator, Command command) {
+    return new WaitForLocalizationDecorator(stateEstimator, command);
+  }
 
-    private WaitForLocalizationDecorator(StateEstimator stateEstimator, Command command) {
-        this.stateEstimator = stateEstimator;
-        this.command = command;
-    }
+  @Override
+  public void execute() {
+    logger.debug("Start waiting for localization.");
 
-    /**
-     * Creates an instance of this class.
-     *
-     * @param stateEstimator the state estimator of the drone
-     * @param command the command to be decorated
-     * @return a decorated command which will wait until receiving a valid pose from the
-     *     {@code stateEstimator} and the execute the {@code command}
-     */
-    public static WaitForLocalizationDecorator create(StateEstimator stateEstimator,
-            Command command) {return new WaitForLocalizationDecorator(stateEstimator, command);}
+    while (true) {
+      final Optional<DroneStateStamped> droneStateStampedOptional =
+          stateEstimator.getCurrentState();
 
-    @Override
-    public void execute() {
-        logger.debug("Start waiting for localization.");
-
-        while (true) {
-            final Optional<DroneStateStamped> droneStateStampedOptional = stateEstimator
-                    .getCurrentState();
-
-            if (droneStateStampedOptional.isPresent()) {
-                final DroneStateStamped droneStateStamped = droneStateStampedOptional.get();
-                if (lastReceivedPose == null) {
-                    lastReceivedPose = droneStateStamped;
-                } else {
-                    if (droneStateStamped.getTimeStampInSeconds() != lastReceivedPose
-                            .getTimeStampInSeconds()) {
-                        break;
-                    }
-                }
-            }
-
-            try {
-                TimeUnit.MILLISECONDS.sleep(SLEEP_DURATION_IN_MILLISECONDS);
-            } catch (InterruptedException e) {
-                logger.debug("Sleep is interrupted in land command.", e);
-                Thread.currentThread().interrupt();
-            }
+      if (droneStateStampedOptional.isPresent()) {
+        final DroneStateStamped droneStateStamped = droneStateStampedOptional.get();
+        if (lastReceivedPose == null) {
+          lastReceivedPose = droneStateStamped;
+        } else {
+          if (droneStateStamped.getTimeStampInSeconds()
+              != lastReceivedPose.getTimeStampInSeconds()) {
+            break;
+          }
         }
+      }
 
-        command.execute();
+      try {
+        TimeUnit.MILLISECONDS.sleep(SLEEP_DURATION_IN_MILLISECONDS);
+      } catch (InterruptedException e) {
+        logger.debug("Sleep is interrupted in land command.", e);
+        Thread.currentThread().interrupt();
+      }
     }
+
+    command.execute();
+  }
 }

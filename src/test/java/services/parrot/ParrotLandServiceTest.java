@@ -7,29 +7,27 @@ import std_msgs.Empty;
 
 import static org.mockito.Mockito.mock;
 
-/**
- * @author Hoang Tung Dinh
- */
+/** @author Hoang Tung Dinh */
 public class ParrotLandServiceTest extends ParrotTakeOffAndLandServiceTest<Empty> {
 
-    @Override
-    String createTopicName() {
-        return "/bebop/land";
-    }
+  @Override
+  String createTopicName() {
+    return "/bebop/land";
+  }
 
-    @Override
-    Empty createNewMessage() {
-        return mock(Empty.class);
-    }
+  @Override
+  Empty createNewMessage() {
+    return mock(Empty.class);
+  }
 
-    @Override
-    void createServiceAndSendMessage(Publisher<Empty> publisher) {
-        final LandService landService = ParrotLandService.create(publisher);
-        landService.sendLandingMessage();
-    }
+  @Override
+  void createServiceAndSendMessage(Publisher<Empty> publisher) {
+    final LandService landService = ParrotLandService.create(publisher);
+    landService.sendLandingMessage();
+  }
 
-    @Override
-    ArgumentCaptor<Empty> createArgumentCaptor() {
-        return ArgumentCaptor.forClass(Empty.class);
-    }
+  @Override
+  ArgumentCaptor<Empty> createArgumentCaptor() {
+    return ArgumentCaptor.forClass(Empty.class);
+  }
 }

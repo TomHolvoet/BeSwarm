@@ -1,7 +1,4 @@
 package control.dto;
 
-/**
- * @author Hoang Tung Dinh
- */
-public interface InertialFrameVelocity extends VelocityDto {
-}
+/** @author Hoang Tung Dinh */
+public interface InertialFrameVelocity extends VelocityDto {}
