@@ -13,6 +13,7 @@ import control.PidParameters;
 import control.localization.StateEstimator;
 import keyboard.Key;
 import org.ros.node.ConnectedNode;
+import sensor_msgs.Joy;
 import services.FlyingStateService;
 import services.LandService;
 import services.TakeOffService;
@@ -23,6 +24,7 @@ import taskexecutor.TaskExecutor;
 import taskexecutor.TaskExecutorService;
 import taskexecutor.TaskType;
 import taskexecutor.interruptors.KeyboardEmergency;
+import taskexecutor.interruptors.XBox360ControllerEmergency;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -79,9 +81,12 @@ public final class ExampleFlight {
     final Task emergencyTask = createEmergencyTask();
     final KeyboardEmergency keyboardEmergencyNotifier =
         createKeyboardEmergencyNotifier(emergencyTask);
+    final XBox360ControllerEmergency xBox360ControllerEmergency =
+        createXBox360ControllerEmergency(emergencyTask);
 
     final TaskExecutor taskExecutor = TaskExecutorService.create();
     keyboardEmergencyNotifier.registerTaskExecutor(taskExecutor);
+    xBox360ControllerEmergency.registerTaskExecutor(taskExecutor);
 
     // normal fly task
     final Task flyTask = createFlyTask();
@@ -133,6 +138,15 @@ public final class ExampleFlight {
     final KeyboardEmergency keyboardEmergency = KeyboardEmergency.create(emergencyTask);
     keyboardSubscriber.registerMessageObserver(keyboardEmergency);
     return keyboardEmergency;
+  }
+
+  private XBox360ControllerEmergency createXBox360ControllerEmergency(Task emergencyTask) {
+    final MessagesSubscriberService<Joy> joystickSubscriber =
+        MessagesSubscriberService.create(connectedNode.<Joy>newSubscriber("/bebop/joy", Joy._TYPE));
+    final XBox360ControllerEmergency xBox360ControllerEmergency =
+        XBox360ControllerEmergency.create(emergencyTask);
+    joystickSubscriber.registerMessageObserver(xBox360ControllerEmergency);
+    return xBox360ControllerEmergency;
   }
 
   /** {@code ExampleFlight} builder static inner class. */
