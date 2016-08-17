@@ -19,6 +19,7 @@ import services.LandService;
 import services.TakeOffService;
 import services.Velocity4dService;
 import services.parrot.BebopServiceFactory;
+import services.parrot.ParrotServiceFactory;
 import services.rossubscribers.MessagesSubscriberService;
 import taskexecutor.Task;
 import taskexecutor.TaskExecutor;
@@ -53,12 +54,12 @@ public final class EmergencyButtonOT extends AbstractNodeMain {
 
     final TaskExecutor taskExecutor = TaskExecutorService.create();
 
-    final BebopServiceFactory bebopServiceFactory =
+    final ParrotServiceFactory parrotServiceFactory =
         BebopServiceFactory.create(connectedNode, DRONE_NAME);
 
     if ("enable".equals(controllerStatus)) {
       final XBox360ControllerEmergency xBox360ControllerEmergency =
-          createXBox360ControllerEmergencyNotifier(connectedNode, bebopServiceFactory);
+          createXBox360ControllerEmergencyNotifier(connectedNode, parrotServiceFactory);
       xBox360ControllerEmergency.registerTaskExecutor(taskExecutor);
     }
 
@@ -70,15 +71,15 @@ public final class EmergencyButtonOT extends AbstractNodeMain {
     }
 
     // start flying
-    final Task flyTask = createFlyTask(bebopServiceFactory);
+    final Task flyTask = createFlyTask(parrotServiceFactory);
     taskExecutor.submitTask(flyTask);
   }
 
-  private static Task createFlyTask(BebopServiceFactory bebopServiceFactory) {
-    final TakeOffService takeOffService = bebopServiceFactory.createTakeOffService();
+  private static Task createFlyTask(ParrotServiceFactory parrotServiceFactory) {
+    final TakeOffService takeOffService = parrotServiceFactory.createTakeOffService();
     final Command takeOff = Takeoff.create(takeOffService);
 
-    final Velocity4dService velocity4dService = bebopServiceFactory.createVelocity4dService();
+    final Velocity4dService velocity4dService = parrotServiceFactory.createVelocity4dService();
     final Command sendZeroVelocity =
         new Command() {
           @Override
@@ -103,7 +104,7 @@ public final class EmergencyButtonOT extends AbstractNodeMain {
   }
 
   private static XBox360ControllerEmergency createXBox360ControllerEmergencyNotifier(
-      ConnectedNode connectedNode, BebopServiceFactory bebopServiceFactory) {
+      ConnectedNode connectedNode, ParrotServiceFactory bebopServiceFactory) {
     final Task emergencyLandingTask = createEmergencyLandingTask(bebopServiceFactory);
 
     final MessagesSubscriberService<Joy> joystickSubscriber =
@@ -114,9 +115,9 @@ public final class EmergencyButtonOT extends AbstractNodeMain {
     return xBox360ControllerEmergency;
   }
 
-  private static Task createEmergencyLandingTask(BebopServiceFactory bebopServiceFactory) {
-    final LandService landService = bebopServiceFactory.createLandService();
-    final FlyingStateService flyingStateService = bebopServiceFactory.createFlyingStateService();
+  private static Task createEmergencyLandingTask(ParrotServiceFactory parrotServiceFactory) {
+    final LandService landService = parrotServiceFactory.createLandService();
+    final FlyingStateService flyingStateService = parrotServiceFactory.createFlyingStateService();
     final Command land = Land.create(landService, flyingStateService);
     return Task.create(ImmutableList.of(land), TaskType.FIRST_ORDER_EMERGENCY);
   }
