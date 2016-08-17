@@ -26,6 +26,7 @@ import taskexecutor.Task;
 import taskexecutor.TaskExecutor;
 import taskexecutor.TaskExecutorService;
 import taskexecutor.TaskType;
+import time.RosTime;
 
 import java.util.concurrent.TimeUnit;
 
@@ -39,7 +40,8 @@ public class BebopHover extends AbstractNodeMain {
     final String poseTopic = "/arlocros/pose";
     logger.info("Subscribed to {} for getting pose.", poseTopic);
     return MessagesSubscriberService.create(
-        connectedNode.<PoseStamped>newSubscriber(poseTopic, PoseStamped._TYPE));
+        connectedNode.<PoseStamped>newSubscriber(poseTopic, PoseStamped._TYPE),
+        RosTime.create(connectedNode));
   }
 
   private static MessagesSubscriberService<Odometry> getOdometrySubscriber(
@@ -47,7 +49,8 @@ public class BebopHover extends AbstractNodeMain {
     final String odometryTopic = "/" + DRONE_NAME + "/odom";
     logger.info("Subscribed to {} for getting odometry", odometryTopic);
     return MessagesSubscriberService.create(
-        connectedNode.<Odometry>newSubscriber(odometryTopic, Odometry._TYPE));
+        connectedNode.<Odometry>newSubscriber(odometryTopic, Odometry._TYPE),
+        RosTime.create(connectedNode));
   }
 
   @Override

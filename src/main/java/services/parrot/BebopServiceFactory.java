@@ -7,11 +7,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import services.FlipService;
 import services.FlyingStateService;
-import services.ResetService;
 import services.Velocity4dService;
 import services.rossubscribers.MessagesSubscriberService;
-import std_msgs.Empty;
 import std_msgs.UInt8;
+import time.RosTime;
 
 /** @author Hoang Tung Dinh */
 public final class BebopServiceFactory extends ParrotServiceFactory {
@@ -73,7 +72,8 @@ public final class BebopServiceFactory extends ParrotServiceFactory {
         MessagesSubscriberService.create(
             getConnectedNode()
                 .<Ardrone3PilotingStateFlyingStateChanged>newSubscriber(
-                    topicName, Ardrone3PilotingStateFlyingStateChanged._TYPE));
+                    topicName, Ardrone3PilotingStateFlyingStateChanged._TYPE),
+            RosTime.create(getConnectedNode()));
 
     return BebopFlyingStateService.create(flyingStateSubscriber);
   }

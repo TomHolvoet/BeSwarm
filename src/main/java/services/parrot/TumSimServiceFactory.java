@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import services.FlyingStateService;
 import services.Velocity4dService;
 import services.rossubscribers.MessagesSubscriberService;
+import time.RosTime;
 
 /** @author Hoang Tung Dinh */
 public final class TumSimServiceFactory extends ParrotServiceFactory {
@@ -53,7 +54,8 @@ public final class TumSimServiceFactory extends ParrotServiceFactory {
     final String topicName = "/" + DRONE_NAME + "/navdata";
     final MessagesSubscriberService<Navdata> flyingStateSubscriber =
         MessagesSubscriberService.create(
-            getConnectedNode().<Navdata>newSubscriber(topicName, Navdata._TYPE));
+            getConnectedNode().<Navdata>newSubscriber(topicName, Navdata._TYPE),
+            RosTime.create(getConnectedNode()));
 
     return TumSimFlyingStateService.create(flyingStateSubscriber);
   }

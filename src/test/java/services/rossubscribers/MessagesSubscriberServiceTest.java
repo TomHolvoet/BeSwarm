@@ -6,8 +6,10 @@ import org.mockito.ArgumentCaptor;
 import org.ros.internal.message.Message;
 import org.ros.message.MessageListener;
 import org.ros.node.topic.Subscriber;
+import time.TimeProvider;
 
 import static com.google.common.truth.Truth.assertThat;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 /** @author Hoang Tung Dinh */
@@ -27,7 +29,7 @@ public abstract class MessagesSubscriberServiceTest<T extends Message> {
   @Test
   public void testWithQueueSizeOfOne() {
     final MessagesSubscriberService<T> messagesSubscriberService =
-        MessagesSubscriberService.create(subscriber);
+        MessagesSubscriberService.create(subscriber, mock(TimeProvider.class));
     final ArgumentCaptor<MessageListener> argumentCaptor = getMessageListenerArgumentCaptor();
     testAddListenerAndAbsentMostRecentMessage(messagesSubscriberService, argumentCaptor);
     testAddOneAndGetMostRecentMessage(messagesSubscriberService, argumentCaptor);
@@ -36,7 +38,7 @@ public abstract class MessagesSubscriberServiceTest<T extends Message> {
   @Test
   public void testWithQueueSizeOfThree() {
     final MessagesSubscriberService<T> messagesSubscriberService =
-        MessagesSubscriberService.create(subscriber, 3);
+        MessagesSubscriberService.create(subscriber, 3, mock(TimeProvider.class));
     final ArgumentCaptor<MessageListener> argumentCaptor = getMessageListenerArgumentCaptor();
     testAddListenerAndAbsentMostRecentMessage(messagesSubscriberService, argumentCaptor);
     testAddOneAndGetMostRecentMessage(messagesSubscriberService, argumentCaptor);

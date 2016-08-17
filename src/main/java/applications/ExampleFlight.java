@@ -25,6 +25,7 @@ import taskexecutor.TaskExecutorService;
 import taskexecutor.TaskType;
 import taskexecutor.interruptors.KeyboardEmergency;
 import taskexecutor.interruptors.XBox360ControllerEmergency;
+import time.RosTime;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -136,7 +137,8 @@ public final class ExampleFlight {
   private KeyboardEmergency createKeyboardEmergencyNotifier(Task emergencyTask) {
     final MessagesSubscriberService<Key> keyboardSubscriber =
         MessagesSubscriberService.create(
-            connectedNode.<Key>newSubscriber("/keyboard/keydown", Key._TYPE));
+            connectedNode.<Key>newSubscriber("/keyboard/keydown", Key._TYPE),
+            RosTime.create(connectedNode));
     final KeyboardEmergency keyboardEmergency = KeyboardEmergency.create(emergencyTask);
     keyboardSubscriber.registerMessageObserver(keyboardEmergency);
     return keyboardEmergency;
@@ -144,7 +146,9 @@ public final class ExampleFlight {
 
   private XBox360ControllerEmergency createXBox360ControllerEmergency(Task emergencyTask) {
     final MessagesSubscriberService<Joy> joystickSubscriber =
-        MessagesSubscriberService.create(connectedNode.<Joy>newSubscriber("/bebop/joy", Joy._TYPE));
+        MessagesSubscriberService.create(
+            connectedNode.<Joy>newSubscriber("/bebop/joy", Joy._TYPE),
+            RosTime.create(connectedNode));
     final XBox360ControllerEmergency xBox360ControllerEmergency =
         XBox360ControllerEmergency.create(emergencyTask);
     joystickSubscriber.registerMessageObserver(xBox360ControllerEmergency);

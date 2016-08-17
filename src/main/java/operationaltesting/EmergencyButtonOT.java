@@ -26,6 +26,7 @@ import taskexecutor.TaskExecutor;
 import taskexecutor.TaskExecutorService;
 import taskexecutor.TaskType;
 import taskexecutor.interruptors.XBox360ControllerEmergency;
+import time.RosTime;
 
 /**
  * A runner for testing the xbox emergency button when flying with bebop. The runner commands the
@@ -79,7 +80,9 @@ public final class EmergencyButtonOT extends AbstractNodeMain {
         Task.create(ImmutableList.of(land), TaskType.FIRST_ORDER_EMERGENCY);
 
     final MessagesSubscriberService<Joy> joystickSubscriber =
-        MessagesSubscriberService.create(connectedNode.<Joy>newSubscriber("/bebop/joy", Joy._TYPE));
+        MessagesSubscriberService.create(
+            connectedNode.<Joy>newSubscriber("/bebop/joy", Joy._TYPE),
+            RosTime.create(connectedNode));
     final XBox360ControllerEmergency xBox360ControllerEmergency =
         XBox360ControllerEmergency.create(emergencyLandingTask);
     joystickSubscriber.registerMessageObserver(xBox360ControllerEmergency);

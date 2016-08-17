@@ -8,6 +8,7 @@ import org.ros.message.MessageListener;
 import org.ros.node.topic.Subscriber;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import time.TimeProvider;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -26,24 +27,29 @@ public class MessagesSubscriberService<T extends Message> {
   private static final Logger logger = LoggerFactory.getLogger(MessagesSubscriberService.class);
   private static final int DEFAULT_MESSAGE_QUEUE_SIZE = 1;
   private final MessagesListener<T> messagesListener;
+  private final TimeProvider timeProvider;
 
-  protected MessagesSubscriberService(Subscriber<T> subscriber, int maxMessageQueueSize) {
+  protected MessagesSubscriberService(
+      Subscriber<T> subscriber, int maxMessageQueueSize, TimeProvider timeProvider) {
     checkArgument(
         maxMessageQueueSize >= 1,
         String.format("Queue size must be at least 1, but it is %d.", maxMessageQueueSize));
     this.messagesListener = MessagesListener.create(maxMessageQueueSize);
     subscriber.addMessageListener(messagesListener);
+    this.timeProvider = timeProvider;
   }
 
   /**
    * Creates an instance of this class with the queue size of one.
    *
    * @param subscriber the rostopic subscriber
+   * @param timeProvider the time provider
    * @param <U> the type of the messages
    * @return an instance of this class
    */
-  public static <U extends Message> MessagesSubscriberService<U> create(Subscriber<U> subscriber) {
-    return new MessagesSubscriberService<>(subscriber, DEFAULT_MESSAGE_QUEUE_SIZE);
+  public static <U extends Message> MessagesSubscriberService<U> create(
+      Subscriber<U> subscriber, TimeProvider timeProvider) {
+    return new MessagesSubscriberService<>(subscriber, DEFAULT_MESSAGE_QUEUE_SIZE, timeProvider);
   }
 
   /**
@@ -51,12 +57,13 @@ public class MessagesSubscriberService<T extends Message> {
    *
    * @param subscriber the rostopic subscriber
    * @param maxMessageQueueSize the maximum queue of most recent messages
+   * @param timeProvider the time provider
    * @param <U> the type of the messages
    * @return an instance of this class
    */
   public static <U extends Message> MessagesSubscriberService<U> create(
-      Subscriber<U> subscriber, int maxMessageQueueSize) {
-    return new MessagesSubscriberService<>(subscriber, maxMessageQueueSize);
+      Subscriber<U> subscriber, int maxMessageQueueSize, TimeProvider timeProvider) {
+    return new MessagesSubscriberService<>(subscriber, maxMessageQueueSize, timeProvider);
   }
 
   /** Returns the most recent message received. */

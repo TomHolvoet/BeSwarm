@@ -20,6 +20,7 @@ import services.rossubscribers.MessagesSubscriberService;
 import sim.Insert;
 import sim.InsertRequest;
 import sim.InsertResponse;
+import time.RosTime;
 
 import java.util.concurrent.TimeUnit;
 
@@ -38,7 +39,9 @@ public final class CratesSimulatorExample extends AbstractNodeMain {
     final String srvNamePrefix = "/hal/quadrotor/" + MODEL_NAME + "/" + DRONE_NAME + "/";
     final MessagesSubscriberService<State> cratesTruthStateSubscriber =
         MessagesSubscriberService.create(
-            connectedNode.<State>newSubscriber(srvNamePrefix + "Truth", State._TYPE), 2);
+            connectedNode.<State>newSubscriber(srvNamePrefix + "Truth", State._TYPE),
+            2,
+            RosTime.create(connectedNode));
     return CratesSimStateEstimator.create(cratesTruthStateSubscriber);
   }
 

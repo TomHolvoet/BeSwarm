@@ -8,6 +8,7 @@ import org.ros.node.ConnectedNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import services.rossubscribers.MessagesSubscriberService;
+import time.RosTime;
 
 /** Print the poses published to the {@code /arlocros/pose} topic. */
 public class PrintPose extends AbstractNodeMain {
@@ -24,7 +25,7 @@ public class PrintPose extends AbstractNodeMain {
   public void onStart(final ConnectedNode connectedNode) {
     MessagesSubscriberService<PoseStamped> poseSubscriber =
         MessagesSubscriberService.<PoseStamped>create(
-            connectedNode.<PoseStamped>newSubscriber(POSE_TOPIC, PoseStamped._TYPE));
+            connectedNode.<PoseStamped>newSubscriber(POSE_TOPIC, PoseStamped._TYPE), RosTime.create(connectedNode));
 
     try {
       int i = 0;

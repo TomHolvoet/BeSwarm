@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import services.parrot.ParrotServiceFactory;
 import services.parrot.TumSimServiceFactory;
 import services.rossubscribers.MessagesSubscriberService;
+import time.RosTime;
 
 import java.util.concurrent.TimeUnit;
 
@@ -66,7 +67,8 @@ final class TumExampleFlightFacade {
   private static StateEstimator getStateEstimator(ConnectedNode connectedNode) {
     final MessagesSubscriberService<ModelStates> modelStateSubscriber =
         MessagesSubscriberService.create(
-            connectedNode.<ModelStates>newSubscriber("/gazebo/model_states", ModelStates._TYPE));
+            connectedNode.<ModelStates>newSubscriber("/gazebo/model_states", ModelStates._TYPE),
+            RosTime.create(connectedNode));
     return GazeboModelStateEstimator.create(modelStateSubscriber, MODEL_NAME);
   }
 

@@ -24,6 +24,7 @@ import services.TakeOffService;
 import services.Velocity2dService;
 import services.Velocity3dService;
 import services.rossubscribers.MessagesSubscriberService;
+import time.RosTime;
 
 /** @author Hoang Tung Dinh */
 public final class CratesServiceFactory implements CommonServiceFactory {
@@ -91,7 +92,8 @@ public final class CratesServiceFactory implements CommonServiceFactory {
     final String topicName = namePrefix + "Truth";
     final MessagesSubscriberService<State> flyingStateSubscriber =
         MessagesSubscriberService.create(
-            connectedNode.<State>newSubscriber(topicName, State._TYPE));
+            connectedNode.<State>newSubscriber(topicName, State._TYPE),
+            RosTime.create(connectedNode));
     return CratesFlyingStateService.create(flyingStateSubscriber);
   }
 

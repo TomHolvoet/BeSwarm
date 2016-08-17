@@ -12,4 +12,11 @@ public interface TimeProvider {
    * @return the current time in nano seconds
    */
   long getCurrentTimeNanoSeconds();
+
+  /**
+   * Gets the current time in seconds.
+   *
+   * @return the current time in seconds
+   */
+  double getCurrentTimeSeconds();
 }
