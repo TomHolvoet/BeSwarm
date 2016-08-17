@@ -33,6 +33,7 @@ final class TumExampleFlightFacade {
             .withStateEstimator(stateEstimator)
             .withTakeOffService(parrotServiceFactory.createTakeOffService())
             .withVelocityService(parrotServiceFactory.createVelocity4dService())
+            .withResetService(parrotServiceFactory.createResetService())
             .withPidLinearX(
                 PidParameters.builder().setKp(2).setKd(1).setKi(0).setLagTimeInSeconds(0.2).build())
             .withPidLinearY(

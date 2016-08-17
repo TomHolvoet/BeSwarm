@@ -77,9 +77,4 @@ public final class BebopServiceFactory extends ParrotServiceFactory {
 
     return BebopFlyingStateService.create(flyingStateSubscriber);
   }
-
-  public ResetService createResetService() {
-    final String topicName = "/" + getDroneName() + "/reset";
-    return BebopResetService.create(getConnectedNode().<Empty>newPublisher(topicName, Empty._TYPE));
-  }
 }
