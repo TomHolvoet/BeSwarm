@@ -5,6 +5,8 @@ import applications.trajectory.points.Point4D;
 import control.Trajectory4d;
 import control.dto.Pose;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
  * Command for moving to a predefined pose. It is a facade which uses {@link FollowTrajectory}.
  *
@@ -34,7 +36,7 @@ public final class MoveToPose implements Command {
   /** Builder for this class. */
   public static final class Builder extends AbstractFollowTrajectoryBuilder<Builder> {
     private Pose goalPose;
-    private double durationInSeconds;
+    private Double durationInSeconds;
 
     private Builder() {}
 
@@ -71,6 +73,8 @@ public final class MoveToPose implements Command {
      * @return a built {@link MoveToPose} instance
      */
     public MoveToPose build() {
+      checkNotNull(goalPose, "Missing goalPose.");
+      checkNotNull(durationInSeconds, "Missing durationInSeconds");
       final Trajectory4d trajectory4d =
           Trajectories.newHoldPositionTrajectory(Point4D.from(goalPose));
       final FollowTrajectory followTrajectory =

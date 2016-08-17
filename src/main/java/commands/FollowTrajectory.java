@@ -121,11 +121,11 @@ public final class FollowTrajectory implements Command {
       checkNotNull(pidLinearYParameters);
       checkNotNull(pidLinearZParameters);
       checkNotNull(pidAngularZParameters);
-      checkNotNull(controlRateInSeconds);
-      checkNotNull(droneStateLifeDurationInSeconds);
-      checkNotNull(stateEstimator);
+      checkNotNull(super.controlRateInSeconds);
+      checkNotNull(super.droneStateLifeDurationInSeconds);
+      checkNotNull(super.stateEstimator);
       checkNotNull(velocityService);
-      checkNotNull(timeProvider);
+      checkNotNull(super.timeProvider);
 
       return new FollowTrajectory(this);
     }
