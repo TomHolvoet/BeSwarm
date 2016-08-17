@@ -38,6 +38,7 @@ public final class BebopServiceFactory extends ParrotServiceFactory {
     final Velocity4dService velocity4dService =
         ParrotVelocity4dService.builder()
             .publisher(getConnectedNode().<Twist>newPublisher(topicName, Twist._TYPE))
+            .timeProvider(RosTime.create(getConnectedNode()))
             .minLinearX(-1)
             .minLinearY(-1)
             .minLinearZ(-1)

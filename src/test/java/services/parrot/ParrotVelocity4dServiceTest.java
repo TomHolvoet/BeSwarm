@@ -15,6 +15,7 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.ros.node.topic.Publisher;
 import services.Velocity4dService;
+import time.TimeProvider;
 import utils.TestUtils;
 import utils.math.VelocityProvider;
 import utils.math.VelocityProviderWithThreshold;
@@ -63,7 +64,10 @@ public class ParrotVelocity4dServiceTest {
   public void testSendVelocityMessageWithoutThreshold(
       Pose pose, BodyFrameVelocity bodyFrameVelocity, InertialFrameVelocity inertialFrameVelocity) {
     final Velocity4dService parrotVelocity4dService =
-        ParrotVelocity4dService.builder().publisher(publisher).build();
+        ParrotVelocity4dService.builder()
+            .publisher(publisher)
+            .timeProvider(mock(TimeProvider.class))
+            .build();
     parrotVelocity4dService.sendVelocity4dMessage(inertialFrameVelocity, pose);
     checkMessageSetUp(bodyFrameVelocity, linear, angular);
     checkCorrectTwistMessageSent(publisher, twist);
@@ -76,6 +80,7 @@ public class ParrotVelocity4dServiceTest {
     final Velocity4dService parrotVelocity4dService =
         ParrotVelocity4dService.builder()
             .publisher(publisher)
+            .timeProvider(mock(TimeProvider.class))
             .minLinearX(-0.25)
             .minLinearY(-0.25)
             .minLinearZ(-0.25)
