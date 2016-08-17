@@ -83,6 +83,7 @@ public final class EmergencyButtonOT extends AbstractNodeMain {
         new Command() {
           @Override
           public void execute() {
+            logger.debug("Executing SendZeroVelocity command.");
             final Runnable sendZeroVelocityTask =
                 new Runnable() {
                   @Override
