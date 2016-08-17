@@ -22,7 +22,7 @@ public class ZDropTrajectoryTest {
   private double bounddelta = 0.23;
 
   @Before
-  public void setup() {
+  public void setUp() {
     before = Point4D.create(0, 0, 0, 0);
     after = Point4D.create(10, 0, 0, Math.PI / 2);
     target = Trajectories.newZDropLineTrajectory(before, after, speed, freq, negDrop);

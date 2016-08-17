@@ -21,7 +21,7 @@ public class CircleTrajectory4DTest {
   private double planeshift = Math.PI / 6d;
 
   @Before
-  public void setup() {
+  public void setUp() {
     target = Trajectories.newCircleTrajectory4D(origin, radius, frequency, 0);
     //TODO test this as well.
     targetPlaneShift = Trajectories.newCircleTrajectory4D(origin, radius, frequency, planeshift);
