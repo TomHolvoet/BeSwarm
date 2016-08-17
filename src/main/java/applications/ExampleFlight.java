@@ -102,7 +102,8 @@ public final class ExampleFlight {
     final Command takeOff = Takeoff.create(takeOffService, flyingStateService, resetService);
     commands.add(takeOff);
 
-    final Command hoverFiveSecond = Hover.create(velocityService, stateEstimator, 5);
+    final Command hoverFiveSecond =
+        Hover.create(velocityService, stateEstimator, 5, RosTime.create(connectedNode));
     commands.add(hoverFiveSecond);
 
     final Command followTrajectory =

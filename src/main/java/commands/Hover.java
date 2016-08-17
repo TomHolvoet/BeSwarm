@@ -7,6 +7,7 @@ import control.localization.StateEstimator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import services.VelocityService;
+import time.TimeProvider;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
@@ -22,12 +23,17 @@ public final class Hover implements Command {
   private final VelocityService velocityService;
   private final StateEstimator stateEstimator;
   private final double durationInSeconds;
+  private final TimeProvider timeProvider;
 
   private Hover(
-      VelocityService velocityService, StateEstimator stateEstimator, double durationInSeconds) {
+      VelocityService velocityService,
+      StateEstimator stateEstimator,
+      double durationInSeconds,
+      TimeProvider timeProvider) {
     this.velocityService = velocityService;
     this.stateEstimator = stateEstimator;
     this.durationInSeconds = durationInSeconds;
+    this.timeProvider = timeProvider;
   }
 
   /**
@@ -36,14 +42,18 @@ public final class Hover implements Command {
    * @param velocityService the velocity service of the drone
    * @param stateEstimator the state estimator of the drone
    * @param durationInSeconds the duration that the drone will hover
+   * @param timeProvider the time provider
    * @return a hover command
    */
   public static Hover create(
-      VelocityService velocityService, StateEstimator stateEstimator, double durationInSeconds) {
+      VelocityService velocityService,
+      StateEstimator stateEstimator,
+      double durationInSeconds,
+      TimeProvider timeProvider) {
     checkArgument(
         durationInSeconds > 0,
         String.format("Duration must be a positive value, but it is %f", durationInSeconds));
-    return new Hover(velocityService, stateEstimator, durationInSeconds);
+    return new Hover(velocityService, stateEstimator, durationInSeconds, timeProvider);
   }
 
   @Override
@@ -62,6 +72,7 @@ public final class Hover implements Command {
             .withStateEstimator(stateEstimator)
             .withGoalPose(currentPose)
             .withDurationInSeconds(durationInSeconds)
+            .withTimeProvider(timeProvider)
             .build();
 
     moveToPose.execute();
