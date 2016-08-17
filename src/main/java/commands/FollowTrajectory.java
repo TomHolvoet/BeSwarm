@@ -7,6 +7,7 @@ import control.dto.DroneStateStamped;
 import control.localization.StateEstimator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import time.TimeProvider;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -24,6 +25,7 @@ public final class FollowTrajectory implements Command {
   private final double durationInSeconds;
   private final double controlRateInSeconds;
   private final double droneStateLifeDurationInSeconds;
+  private final TimeProvider timeProvider;
 
   private final VelocityController velocityController;
 
@@ -33,6 +35,7 @@ public final class FollowTrajectory implements Command {
     durationInSeconds = builder.durationInSeconds;
     controlRateInSeconds = builder.controlRateInSeconds;
     droneStateLifeDurationInSeconds = builder.droneStateLifeDurationInSeconds;
+    timeProvider = builder.timeProvider;
 
     final CreateVelocityControllerVisitor controllerVisitor =
         CreateVelocityControllerVisitor.builder()
@@ -128,15 +131,14 @@ public final class FollowTrajectory implements Command {
   }
 
   private final class ComputeNextResponse implements Runnable {
-    private static final double NANO_SECOND_TO_SECOND = 1.0E09;
-    private final double startTimeInNanoSeconds;
+    private final double startTimeInSeconds;
     private final int stateLifeDurationInNumberOfControlLoops;
     // assigned to 0
     private int counter;
     private double lastTimeStamp = Double.MIN_VALUE;
 
     private ComputeNextResponse() {
-      this.startTimeInNanoSeconds = System.nanoTime();
+      this.startTimeInSeconds = timeProvider.getCurrentTimeSeconds();
       this.stateLifeDurationInNumberOfControlLoops =
           (int) Math.ceil(droneStateLifeDurationInSeconds / controlRateInSeconds);
     }
@@ -157,14 +159,14 @@ public final class FollowTrajectory implements Command {
       } else {
         logger.trace("Got pose and velocity. Start computing the next velocity response.");
         final double currentTimeInSeconds =
-            (System.nanoTime() - startTimeInNanoSeconds) / NANO_SECOND_TO_SECOND;
+            timeProvider.getCurrentTimeSeconds() - startTimeInSeconds;
         velocityController.computeAndSendVelocity(currentTimeInSeconds, currentState.get());
         logDroneState(currentState.get(), currentTimeInSeconds);
       }
     }
 
     private void logDroneState(DroneStateStamped currentState, double currentTimeInSeconds) {
-      final double systemTimeInSeconds = System.nanoTime() / NANO_SECOND_TO_SECOND;
+      final double systemTimeInSeconds = timeProvider.getCurrentTimeSeconds();
       poseLogger.trace(
           "{} {} {} {} {} {} {} {} {}",
           systemTimeInSeconds,

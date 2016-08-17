@@ -25,6 +25,7 @@ public class FollowTrajectoryBuilderTest extends AbstractBuilderTest {
         FollowTrajectory.builder()
             .withVelocityService(argumentHolder.velocityService())
             .withStateEstimator(argumentHolder.stateEstimator())
+            .withTimeProvider(argumentHolder.timeProvider())
             .withTrajectory4d(trajectory4d)
             .withDurationInSeconds(argumentHolder.durationInSeconds())
             .withPidLinearXParameters(argumentHolder.pidLinearX())

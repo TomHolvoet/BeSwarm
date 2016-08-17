@@ -69,7 +69,8 @@ final class TumExampleFlightFacade {
         MessagesSubscriberService.create(
             connectedNode.<ModelStates>newSubscriber("/gazebo/model_states", ModelStates._TYPE),
             RosTime.create(connectedNode));
-    return GazeboModelStateEstimator.create(modelStateSubscriber, MODEL_NAME);
+    return GazeboModelStateEstimator.create(
+        modelStateSubscriber, MODEL_NAME, RosTime.create(connectedNode));
   }
 
   /** Starts flying. */

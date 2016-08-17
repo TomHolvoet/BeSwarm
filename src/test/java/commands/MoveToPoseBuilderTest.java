@@ -27,6 +27,7 @@ public class MoveToPoseBuilderTest extends AbstractBuilderTest {
             .withVelocityService(argumentHolder.velocityService())
             .withStateEstimator(argumentHolder.stateEstimator())
             .withGoalPose(goalPose)
+            .withTimeProvider(argumentHolder.timeProvider())
             .withDurationInSeconds(argumentHolder.durationInSeconds())
             .withPidLinearXParameters(argumentHolder.pidLinearX())
             .withPidLinearYParameters(argumentHolder.pidLinearY())

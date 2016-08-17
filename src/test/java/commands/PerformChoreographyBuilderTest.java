@@ -29,6 +29,7 @@ public class PerformChoreographyBuilderTest extends AbstractBuilderTest {
         PerformChoreography.builder()
             .withVelocityService(argumentHolder.velocityService())
             .withStateEstimator(argumentHolder.stateEstimator())
+            .withTimeProvider(argumentHolder.timeProvider())
             .withFiniteTrajectory4d(finiteTrajectory4d)
             .withPidLinearXParameters(argumentHolder.pidLinearX())
             .withPidLinearYParameters(argumentHolder.pidLinearY())

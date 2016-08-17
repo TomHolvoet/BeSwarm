@@ -4,6 +4,7 @@ import control.DefaultPidParameters;
 import control.PidParameters;
 import control.localization.StateEstimator;
 import services.VelocityService;
+import time.TimeProvider;
 
 /**
  * @author Hoang Tung Dinh
@@ -21,6 +22,7 @@ abstract class AbstractFollowTrajectoryBuilder<T extends AbstractFollowTrajector
   Double droneStateLifeDurationInSeconds;
   StateEstimator stateEstimator;
   VelocityService velocityService;
+  TimeProvider timeProvider;
 
   AbstractFollowTrajectoryBuilder() {
     pidLinearXParameters = DefaultPidParameters.LINEAR_X.getParameters();
@@ -130,6 +132,18 @@ abstract class AbstractFollowTrajectoryBuilder<T extends AbstractFollowTrajector
   }
 
   /**
+   * Sets the {@code timeProvider} and returns a reference to an implementation of this class so
+   * that the methods can be chained together.
+   *
+   * @param val the {@code timeProvider} to set
+   * @return a reference to an implementation of this class
+   */
+  public final T withTimeProvider(TimeProvider val) {
+    timeProvider = val;
+    return self();
+  }
+
+  /**
    * Copies the parameter of another builder.
    *
    * @param otherBuilder the builder that parameters will be copied
@@ -147,6 +161,7 @@ abstract class AbstractFollowTrajectoryBuilder<T extends AbstractFollowTrajector
     droneStateLifeDurationInSeconds = otherBuilder.droneStateLifeDurationInSeconds;
     stateEstimator = otherBuilder.stateEstimator;
     velocityService = otherBuilder.velocityService;
+    timeProvider = otherBuilder.timeProvider;
 
     return self();
   }
