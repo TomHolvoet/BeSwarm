@@ -102,7 +102,12 @@ public final class EmergencyButtonOT extends AbstractNodeMain {
                   @Override
                   public void run() {
                     final InertialFrameVelocity inertialFrameVelocity =
-                        Velocity.createZeroVelocity();
+                        Velocity.builder()
+                            .setLinearX(0)
+                            .setLinearY(0)
+                            .setLinearZ(0.01)
+                            .setAngularZ(0)
+                            .build();
                     final Pose pose = Pose.createZeroPose();
                     velocity4dService.sendVelocity4dMessage(inertialFrameVelocity, pose);
                   }
