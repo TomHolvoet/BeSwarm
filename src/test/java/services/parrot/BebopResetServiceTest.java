@@ -2,17 +2,17 @@ package services.parrot;
 
 import org.mockito.ArgumentCaptor;
 import org.ros.node.topic.Publisher;
-import services.LandService;
+import services.ResetService;
 import std_msgs.Empty;
 
 import static org.mockito.Mockito.mock;
 
 /** @author Hoang Tung Dinh */
-public class ParrotLandServiceTest extends AbstractParrotServiceTest<Empty> {
+public class BebopResetServiceTest extends AbstractParrotServiceTest<Empty> {
 
   @Override
   String createTopicName() {
-    return "/bebop/land";
+    return "/bebop/sendResetMessage";
   }
 
   @Override
@@ -22,8 +22,8 @@ public class ParrotLandServiceTest extends AbstractParrotServiceTest<Empty> {
 
   @Override
   void createServiceAndSendMessage(Publisher<Empty> publisher) {
-    final LandService landService = ParrotLandService.create(publisher);
-    landService.sendLandingMessage();
+    final ResetService resetService = BebopResetService.create(publisher);
+    resetService.sendResetMessage();
   }
 
   @Override

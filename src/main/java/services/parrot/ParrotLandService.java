@@ -40,7 +40,7 @@ final class ParrotLandService implements LandService {
   @Override
   public void sendLandingMessage() {
     final Empty empty = publisher.newMessage();
-    logger.trace("sending land message to ROS");
     publisher.publish(empty);
+    logger.debug("Sent a land message to {}", publisher.getTopicName());
   }
 }

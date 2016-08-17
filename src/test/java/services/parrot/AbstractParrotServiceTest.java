@@ -11,8 +11,12 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-/** @author Hoang Tung Dinh */
-public abstract class ParrotTakeOffAndLandServiceTest<T extends Message> {
+/**
+ * Abstract class providing a test for simple parrot services.
+ *
+ * @author Hoang Tung Dinh
+ */
+public abstract class AbstractParrotServiceTest<T extends Message> {
 
   abstract String createTopicName();
 
