@@ -19,6 +19,9 @@ import java.util.Queue;
 import static com.google.common.base.Preconditions.checkArgument;
 
 /**
+ * Message subscriber service listening to messages from a ROS topic and stored them in an {@link
+ * EvictingQueue}.
+ *
  * @param <T> the type of the messages
  * @author mhct
  */
@@ -27,16 +30,14 @@ public class MessagesSubscriberService<T extends Message> {
   private static final Logger logger = LoggerFactory.getLogger(MessagesSubscriberService.class);
   private static final int DEFAULT_MESSAGE_QUEUE_SIZE = 1;
   private final MessagesListener<T> messagesListener;
-  private final TimeProvider timeProvider;
 
   protected MessagesSubscriberService(
       Subscriber<T> subscriber, int maxMessageQueueSize, TimeProvider timeProvider) {
     checkArgument(
         maxMessageQueueSize >= 1,
         String.format("Queue size must be at least 1, but it is %d.", maxMessageQueueSize));
-    this.messagesListener = MessagesListener.create(maxMessageQueueSize);
+    this.messagesListener = MessagesListener.create(maxMessageQueueSize, timeProvider);
     subscriber.addMessageListener(messagesListener);
-    this.timeProvider = timeProvider;
   }
 
   /**
@@ -98,10 +99,12 @@ public class MessagesSubscriberService<T extends Message> {
     private final Collection<MessageObserver<K>> messageObservers;
     private final Queue<K> messageQueue;
     @Nullable private K mostRecentMessage;
+    private final TimeProvider timeProvider;
 
-    private MessagesListener(int maxQueueSize) {
+    private MessagesListener(int maxQueueSize, TimeProvider timeProvider) {
       messageQueue = Queues.synchronizedQueue(EvictingQueue.<K>create(maxQueueSize));
       messageObservers = new ArrayList<>();
+      this.timeProvider = timeProvider;
     }
 
     /**
@@ -111,13 +114,15 @@ public class MessagesSubscriberService<T extends Message> {
      * @param <U> the type of the message
      * @return an instance of this class
      */
-    public static <U extends Message> MessagesListener<U> create(int maxQueueSize) {
-      return new MessagesListener<>(maxQueueSize);
+    public static <U extends Message> MessagesListener<U> create(
+        int maxQueueSize, TimeProvider timeProvider) {
+      return new MessagesListener<>(maxQueueSize, timeProvider);
     }
 
     @Override
     public void onNewMessage(K newMessage) {
-      logger.trace("{} {}", System.nanoTime() / 1.0E09, newMessage.toRawMessage().getType());
+      logger.trace(
+          "{} {}", timeProvider.getCurrentTimeSeconds(), newMessage.toRawMessage().getType());
       messageQueue.add(newMessage);
       mostRecentMessage = newMessage;
       notifyMessageObservers(newMessage);
@@ -149,9 +154,9 @@ public class MessagesSubscriberService<T extends Message> {
 
     Optional<K> getMostRecentMessage() {
       if (mostRecentMessage == null) {
-        return Optional.<K>absent();
+        return Optional.absent();
       } else {
-        return Optional.<K>of(mostRecentMessage);
+        return Optional.of(mostRecentMessage);
       }
     }
 
