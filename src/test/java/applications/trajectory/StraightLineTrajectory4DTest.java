@@ -56,6 +56,11 @@ public class StraightLineTrajectory4DTest {
     testPartialDistanceCovered(t);
   }
 
+  private void testPartialDistanceCovered(double t) {
+    double toCalc = 10d / Math.sqrt(300d) * t;
+    assertEquals(toCalc, target2.getDesiredPositionX(t), 0.01);
+  }
+
   @Test
   public void getTrajectoryLinearXVelocity() {
     assertEquals(1, getVelocityX(target, 5), EPSILON);
@@ -124,10 +129,5 @@ public class StraightLineTrajectory4DTest {
     testPartialDistanceCovered(t);
     t = 10;
     testPartialDistanceCovered(t);
-  }
-
-  private void testPartialDistanceCovered(double t) {
-    double toCalc = 10d / Math.sqrt(300d) * t;
-    assertEquals(toCalc, target2.getDesiredPositionX(t), 0.01);
   }
 }

@@ -29,6 +29,13 @@ public class ZDropTrajectoryTest {
     init();
   }
 
+  private void init() {
+    target.getDesiredPositionX(0);
+    target.getDesiredPositionY(0);
+    target.getDesiredPositionZ(0);
+    target.getDesiredAngleZ(0);
+  }
+
   @Test
   public void testDropRateAfter() {
     before = Point4D.create(0, 0, 10, 0);
@@ -45,6 +52,32 @@ public class ZDropTrajectoryTest {
     for (int i = 1; i <= 2 * n; i++) {
       target.getDesiredPositionZ(t);
     }
+  }
+
+  private void testParamDropRate(double start, double duration, double expected) {
+    List<Double> zresults = Lists.newArrayList();
+    for (double i = start; i < duration; i += 0.1d) {
+      zresults.add(target.getDesiredPositionZ(i));
+    }
+    int count = countOccurrence(zresults, after.getZ() - negDrop + bounddelta);
+    assertEquals(expected, count, 0);
+  }
+
+  private int countOccurrence(List<Double> zresults, double value) {
+    int count = 0;
+    boolean bound = false;
+    boolean counted = false;
+    for (double d : zresults) {
+      if (d <= value) {
+        if (!counted) {
+          count += 1;
+          counted = true;
+        }
+      } else {
+        counted = false;
+      }
+    }
+    return count;
   }
 
   @Test
@@ -66,38 +99,5 @@ public class ZDropTrajectoryTest {
     target = Trajectories.newZDropLineTrajectory(before, after, speed, freq, negDrop);
     init();
     testParamDropRate(0, target.getTrajectoryDuration() * 2, freq);
-  }
-
-  private void testParamDropRate(double start, double duration, double expected) {
-    List<Double> zresults = Lists.newArrayList();
-    for (double i = start; i < duration; i += 0.1d) {
-      zresults.add(target.getDesiredPositionZ(i));
-    }
-    int count = countOccurrence(zresults, after.getZ() - negDrop + bounddelta);
-    assertEquals(expected, count, 0);
-  }
-
-  private void init() {
-    target.getDesiredPositionX(0);
-    target.getDesiredPositionY(0);
-    target.getDesiredPositionZ(0);
-    target.getDesiredAngleZ(0);
-  }
-
-  private int countOccurrence(List<Double> zresults, double value) {
-    int count = 0;
-    boolean bound = false;
-    boolean counted = false;
-    for (double d : zresults) {
-      if (d <= value) {
-        if (!counted) {
-          count += 1;
-          counted = true;
-        }
-      } else {
-        counted = false;
-      }
-    }
-    return count;
   }
 }
