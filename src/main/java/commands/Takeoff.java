@@ -11,8 +11,7 @@ import services.rossubscribers.FlyingState;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Command for taking off.
- * // TODO test me
+ * Command for taking off. // TODO test me
  *
  * @author Hoang Tung Dinh
  */
@@ -61,7 +60,13 @@ public final class Takeoff implements Command {
   private void waitUntilInHoveringState() {
     while (true) {
       final Optional<FlyingState> currentFlyingState = flyingStateService.getCurrentFlyingState();
-      if (currentFlyingState.isPresent() && currentFlyingState.get() == FlyingState.HOVERING) {
+      // This is a hack to make the code work with both the Tum simulator and the bebop drone. If
+      // the drone took off successfully, the bebop flying state is HOVERING while the flying
+      // state of the ArDrone in the Tum simulator is FLYING.
+      // TODO: refactor this code
+      if (currentFlyingState.isPresent()
+          && (currentFlyingState.get() == FlyingState.HOVERING
+              || currentFlyingState.get() == FlyingState.FLYING)) {
         return;
       }
       try {
