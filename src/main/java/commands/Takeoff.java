@@ -35,6 +35,7 @@ public final class Takeoff implements Command {
   public void execute() {
     logger.debug("Execute take off command.");
     takeOffService.sendTakingOffMessage();
+    // TODO: check the state instead of using sleep
     try {
       TimeUnit.SECONDS.sleep(10);
     } catch (InterruptedException e) {
