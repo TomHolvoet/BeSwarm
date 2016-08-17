@@ -11,6 +11,8 @@ import control.dto.Velocity;
 import org.ros.namespace.GraphName;
 import org.ros.node.AbstractNodeMain;
 import org.ros.node.ConnectedNode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import sensor_msgs.Joy;
 import services.FlyingStateService;
 import services.LandService;
@@ -24,6 +26,8 @@ import taskexecutor.TaskExecutorService;
 import taskexecutor.TaskType;
 import taskexecutor.interruptors.XBox360ControllerEmergency;
 
+import java.util.concurrent.TimeUnit;
+
 /**
  * A runner for testing the xbox emergency button when flying with bebop. The runner commands the
  * drone to take off, then waits for five seconds, then starts sending zero velocity for each 50ms.
@@ -34,6 +38,7 @@ import taskexecutor.interruptors.XBox360ControllerEmergency;
  */
 public final class EmergencyButtonOT extends AbstractNodeMain {
 
+  private static final Logger logger = LoggerFactory.getLogger(EmergencyButtonOT.class);
   private static final String DRONE_NAME = "bebop";
 
   @Override
@@ -55,6 +60,13 @@ public final class EmergencyButtonOT extends AbstractNodeMain {
       final XBox360ControllerEmergency xBox360ControllerEmergency =
           createXBox360ControllerEmergencyNotifier(connectedNode, bebopServiceFactory);
       xBox360ControllerEmergency.registerTaskExecutor(taskExecutor);
+    }
+
+    try {
+      TimeUnit.SECONDS.sleep(3);
+    } catch (InterruptedException e) {
+      logger.info("Warm up time is interrupted.", e);
+      Thread.currentThread().interrupt();
     }
 
     // start flying
