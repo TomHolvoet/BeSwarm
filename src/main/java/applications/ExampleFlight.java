@@ -7,7 +7,6 @@ import commands.Hover;
 import commands.Land;
 import commands.Takeoff;
 import commands.WaitForLocalizationDecorator;
-import control.DefaultPidParameters;
 import control.FiniteTrajectory4d;
 import control.PidParameters;
 import control.localization.StateEstimator;
@@ -16,6 +15,7 @@ import org.ros.node.ConnectedNode;
 import sensor_msgs.Joy;
 import services.FlyingStateService;
 import services.LandService;
+import services.ResetService;
 import services.TakeOffService;
 import services.VelocityService;
 import services.rossubscribers.MessagesSubscriberService;
@@ -43,6 +43,7 @@ public final class ExampleFlight {
   private final LandService landService;
   private final VelocityService velocityService;
   private final FlyingStateService flyingStateService;
+  private final ResetService resetService;
   private final StateEstimator stateEstimator;
   private final FiniteTrajectory4d finiteTrajectory4d;
   private final ConnectedNode connectedNode;
@@ -57,6 +58,7 @@ public final class ExampleFlight {
     landService = builder.landService;
     velocityService = builder.velocityService;
     flyingStateService = builder.flyingStateService;
+    resetService = builder.resetService;
     stateEstimator = builder.stateEstimator;
     finiteTrajectory4d = builder.finiteTrajectory4d;
     connectedNode = builder.connectedNode;
@@ -96,7 +98,7 @@ public final class ExampleFlight {
   private Task createFlyTask() {
     final Collection<Command> commands = new ArrayList<>();
 
-    final Command takeOff = Takeoff.create(takeOffService);
+    final Command takeOff = Takeoff.create(takeOffService, flyingStateService, resetService);
     commands.add(takeOff);
 
     final Command hoverFiveSecond = Hover.create(velocityService, stateEstimator, 5);
@@ -155,6 +157,7 @@ public final class ExampleFlight {
     private LandService landService;
     private VelocityService velocityService;
     private FlyingStateService flyingStateService;
+    private ResetService resetService;
     private StateEstimator stateEstimator;
     private FiniteTrajectory4d finiteTrajectory4d;
     private ConnectedNode connectedNode;
@@ -163,12 +166,7 @@ public final class ExampleFlight {
     private PidParameters pidLinearZ;
     private PidParameters pidAngularZ;
 
-    private Builder() {
-      pidLinearX = DefaultPidParameters.LINEAR_X.getParameters();
-      pidLinearY = DefaultPidParameters.LINEAR_Y.getParameters();
-      pidLinearZ = DefaultPidParameters.LINEAR_Z.getParameters();
-      pidAngularZ = DefaultPidParameters.ANGULAR_Z.getParameters();
-    }
+    private Builder() {}
 
     /**
      * Sets the {@code takeOffService} and returns a reference to this Builder so that the methods
@@ -215,6 +213,18 @@ public final class ExampleFlight {
      */
     public Builder withFlyingStateService(FlyingStateService val) {
       flyingStateService = val;
+      return this;
+    }
+
+    /**
+     * Sets the {@code resetService} and returns a reference to this Builder so that the methods can
+     * be chained together.
+     *
+     * @param val the {@code resetService} to set
+     * @return a reference to this Builder
+     */
+    public Builder withResetService(ResetService val) {
+      resetService = val;
       return this;
     }
 
@@ -312,6 +322,7 @@ public final class ExampleFlight {
       checkNotNull(landService);
       checkNotNull(velocityService);
       checkNotNull(flyingStateService);
+      checkNotNull(resetService);
       checkNotNull(stateEstimator);
       checkNotNull(finiteTrajectory4d);
       checkNotNull(connectedNode);

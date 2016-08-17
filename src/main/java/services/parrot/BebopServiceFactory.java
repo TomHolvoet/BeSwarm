@@ -7,8 +7,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import services.FlipService;
 import services.FlyingStateService;
+import services.ResetService;
 import services.Velocity4dService;
 import services.rossubscribers.MessagesSubscriberService;
+import std_msgs.Empty;
 import std_msgs.UInt8;
 
 /** @author Hoang Tung Dinh */
@@ -74,5 +76,10 @@ public final class BebopServiceFactory extends ParrotServiceFactory {
                     topicName, Ardrone3PilotingStateFlyingStateChanged._TYPE));
 
     return BebopFlyingStateService.create(flyingStateSubscriber);
+  }
+
+  public ResetService createResetService() {
+    final String topicName = "/" + getDroneName() + "/reset";
+    return BebopResetService.create(getConnectedNode().<Empty>newPublisher(topicName, Empty._TYPE));
   }
 }

@@ -17,10 +17,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import services.FlyingStateService;
 import services.LandService;
+import services.ResetService;
 import services.TakeOffService;
 import services.Velocity4dService;
 import services.parrot.BebopServiceFactory;
-import services.parrot.ParrotServiceFactory;
 import services.rossubscribers.MessagesSubscriberService;
 import taskexecutor.Task;
 import taskexecutor.TaskExecutor;
@@ -83,12 +83,13 @@ public class BebopHover extends AbstractNodeMain {
         locationZ,
         locationYaw);
 
-    final ParrotServiceFactory parrotServiceFactory =
+    final BebopServiceFactory bebopServiceFactory =
         BebopServiceFactory.create(connectedNode, DRONE_NAME);
-    TakeOffService takeoffService = parrotServiceFactory.createTakeOffService();
-    Velocity4dService velocity4dService = parrotServiceFactory.createVelocity4dService();
-    LandService landService = parrotServiceFactory.createLandService();
-    final FlyingStateService flyingStateService = parrotServiceFactory.createFlyingStateService();
+    final TakeOffService takeoffService = bebopServiceFactory.createTakeOffService();
+    final Velocity4dService velocity4dService = bebopServiceFactory.createVelocity4dService();
+    final LandService landService = bebopServiceFactory.createLandService();
+    final FlyingStateService flyingStateService = bebopServiceFactory.createFlyingStateService();
+    final ResetService resetService = bebopServiceFactory.createResetService();
 
     final StateEstimator stateEstimator =
         BebopStateEstimatorWithPoseStampedAndOdom.create(
@@ -101,7 +102,7 @@ public class BebopHover extends AbstractNodeMain {
       Thread.currentThread().interrupt();
     }
 
-    Command takeoff = Takeoff.create(takeoffService);
+    Command takeoff = Takeoff.create(takeoffService, flyingStateService, resetService);
     Command moveToPose =
         MoveToPose.builder()
             .withVelocityService(velocity4dService)
