@@ -125,6 +125,7 @@ public final class FollowTrajectory implements Command {
       checkNotNull(droneStateLifeDurationInSeconds);
       checkNotNull(stateEstimator);
       checkNotNull(velocityService);
+      checkNotNull(timeProvider);
 
       return new FollowTrajectory(this);
     }

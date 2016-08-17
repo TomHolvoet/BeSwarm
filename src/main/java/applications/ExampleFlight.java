@@ -109,6 +109,7 @@ public final class ExampleFlight {
         FollowTrajectory.builder()
             .withVelocityService(velocityService)
             .withStateEstimator(stateEstimator)
+            .withTimeProvider(RosTime.create(connectedNode))
             .withTrajectory4d(finiteTrajectory4d)
             .withDurationInSeconds(finiteTrajectory4d.getTrajectoryDuration())
             .withPidLinearXParameters(pidLinearX)
