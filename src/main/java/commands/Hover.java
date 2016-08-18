@@ -17,6 +17,7 @@ import static com.google.common.base.Preconditions.checkArgument;
  *
  * @author Hoang Tung Dinh
  */
+// TODO: Refactor this class to use the optical flow sensor only
 public final class Hover implements Command {
   private static final Logger logger = LoggerFactory.getLogger(Hover.class);
 
