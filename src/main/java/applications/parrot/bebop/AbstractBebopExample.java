@@ -5,10 +5,10 @@ import applications.trajectory.TrajectoryServer;
 import com.google.common.collect.ImmutableList;
 import commands.Command;
 import commands.FollowTrajectory;
-import commands.Land;
 import commands.Takeoff;
 import commands.WaitForLocalizationDecorator;
 import commands.bebopcommands.BebopHover;
+import commands.bebopcommands.BebopLand;
 import control.FiniteTrajectory4d;
 import control.PidParameters;
 import control.localization.BebopStateEstimatorWithPoseStampedAndOdom;
@@ -138,8 +138,9 @@ public abstract class AbstractBebopExample extends AbstractNodeMain implements T
             resetService,
             stateEstimator);
 
-    final ExampleFlight exampleFlight =
-        ExampleFlight.create(landService, flyingStateService, connectedNode, flyTask);
+    final Task emergencyTask = createEmergencyTask(landService, flyingStateService);
+
+    final ExampleFlight exampleFlight = ExampleFlight.create(connectedNode, flyTask, emergencyTask);
 
     // without this code, the take off message cannot be sent properly (I don't understand why).
     try {
@@ -150,6 +151,12 @@ public abstract class AbstractBebopExample extends AbstractNodeMain implements T
     }
 
     exampleFlight.fly();
+  }
+
+  private static Task createEmergencyTask(LandService landService,
+      FlyingStateService flyingStateService) {
+    final Command land = BebopLand.create(landService, flyingStateService);
+    return Task.create(ImmutableList.of(land), TaskType.FIRST_ORDER_EMERGENCY);
   }
 
   private Task createFlyTask(
@@ -194,7 +201,7 @@ public abstract class AbstractBebopExample extends AbstractNodeMain implements T
 
     commands.add(waitForLocalizationThenFollowTrajectory);
 
-    final Command land = Land.create(landService, flyingStateService);
+    final Command land = BebopLand.create(landService, flyingStateService);
     commands.add(land);
 
     return Task.create(ImmutableList.copyOf(commands), TaskType.NORMAL_TASK);

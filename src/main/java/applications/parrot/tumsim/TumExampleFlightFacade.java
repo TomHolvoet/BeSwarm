@@ -4,10 +4,10 @@ import applications.ExampleFlight;
 import com.google.common.collect.ImmutableList;
 import commands.Command;
 import commands.FollowTrajectory;
-import commands.Land;
 import commands.Takeoff;
 import commands.WaitForLocalizationDecorator;
 import commands.bebopcommands.BebopHover;
+import commands.tumsimcommands.TumSimLand;
 import control.FiniteTrajectory4d;
 import control.PidParameters;
 import control.localization.GazeboModelStateEstimator;
@@ -84,12 +84,19 @@ final class TumExampleFlightFacade {
 
     commands.add(waitForLocalizationThenFollowTrajectory);
 
-    final Command land = Land.create(landService, flyingStateService);
+    final Command land = TumSimLand.create(landService, flyingStateService);
     commands.add(land);
 
     final Task flyTask = Task.create(ImmutableList.copyOf(commands), TaskType.NORMAL_TASK);
+    final Task emergencyTask = createEmergencyTask(landService, flyingStateService);
 
-    exampleFlight = ExampleFlight.create(landService, flyingStateService, connectedNode, flyTask);
+    exampleFlight = ExampleFlight.create(connectedNode, flyTask, emergencyTask);
+  }
+
+  private static Task createEmergencyTask(
+      LandService landService, FlyingStateService flyingStateService) {
+    final Command land = TumSimLand.create(landService, flyingStateService);
+    return Task.create(ImmutableList.of(land), TaskType.FIRST_ORDER_EMERGENCY);
   }
 
   /**

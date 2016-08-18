@@ -2,8 +2,8 @@ package operationaltesting;
 
 import com.google.common.collect.ImmutableList;
 import commands.Command;
-import commands.Land;
 import commands.Takeoff;
+import commands.bebopcommands.BebopLand;
 import commands.schedulers.PeriodicTaskRunner;
 import control.dto.InertialFrameVelocity;
 import control.dto.Pose;
@@ -75,7 +75,7 @@ public final class EmergencyButtonOT extends AbstractNodeMain {
 
   private XBox360ControllerEmergency createXBoxControllerEmergency(
       ConnectedNode connectedNode, FlyingStateService flyingStateService, LandService landService) {
-    final Command land = Land.create(landService, flyingStateService);
+    final Command land = BebopLand.create(landService, flyingStateService);
     final Task emergencyLandingTask =
         Task.create(ImmutableList.of(land), TaskType.FIRST_ORDER_EMERGENCY);
 

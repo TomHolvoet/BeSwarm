@@ -1,6 +1,7 @@
-package commands;
+package commands.bebopcommands;
 
 import com.google.common.base.Optional;
+import commands.Command;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 import org.junit.After;
@@ -23,9 +24,13 @@ import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-/** @author Hoang Tung Dinh */
+/**
+ * Tests for {@link BebopLand}.
+ *
+ * @author Hoang Tung Dinh
+ */
 @RunWith(JUnitParamsRunner.class)
-public class LandTest {
+public class BebopLandTest {
 
   private LandService landService;
   private FlyingStateService flyingStateService;
@@ -35,7 +40,7 @@ public class LandTest {
   public void setUp() throws InterruptedException {
     landService = mock(LandService.class);
     flyingStateService = mock(FlyingStateService.class);
-    final Command landCommand = Land.create(landService, flyingStateService);
+    final Command landCommand = BebopLand.create(landService, flyingStateService);
 
     when(flyingStateService.getCurrentFlyingState()).thenReturn(Optional.<FlyingState>absent());
 

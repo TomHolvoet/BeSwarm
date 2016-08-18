@@ -1,18 +1,12 @@
 package applications;
 
-import com.google.common.collect.ImmutableList;
-import commands.Command;
-import commands.Land;
 import keyboard.Key;
 import org.ros.node.ConnectedNode;
 import sensor_msgs.Joy;
-import services.FlyingStateService;
-import services.LandService;
 import services.rossubscribers.MessagesSubscriberService;
 import taskexecutor.Task;
 import taskexecutor.TaskExecutor;
 import taskexecutor.TaskExecutorService;
-import taskexecutor.TaskType;
 import taskexecutor.interruptors.KeyboardEmergency;
 import taskexecutor.interruptors.XBox360ControllerEmergency;
 import time.RosTime;
@@ -25,43 +19,32 @@ import time.RosTime;
  */
 public final class ExampleFlight {
 
-  private final LandService landService;
-  private final FlyingStateService flyingStateService;
   private final ConnectedNode connectedNode;
   private final Task flyTask;
+  private final Task emergencyTask;
 
-  private ExampleFlight(
-      LandService landService,
-      FlyingStateService flyingStateService,
-      ConnectedNode connectedNode,
-      Task flyTask) {
-    this.landService = landService;
-    this.flyingStateService = flyingStateService;
+  private ExampleFlight(ConnectedNode connectedNode, Task flyTask, Task emergencyTask) {
     this.connectedNode = connectedNode;
     this.flyTask = flyTask;
+    this.emergencyTask = emergencyTask;
   }
 
   /**
    * Creates an instance of {@link ExampleFlight}.
    *
-   * @param landService the flying service
-   * @param flyingStateService the flying state service
    * @param connectedNode the connected node
    * @param flyTask the fly task
+   * @param emergencyTask the emergency task
    * @return an instance of {@link ExampleFlight}
    */
   public static ExampleFlight create(
-      LandService landService,
-      FlyingStateService flyingStateService,
-      ConnectedNode connectedNode,
-      Task flyTask) {
-    return new ExampleFlight(landService, flyingStateService, connectedNode, flyTask);
+      ConnectedNode connectedNode, Task flyTask, Task emergencyTask) {
+    return new ExampleFlight(connectedNode, flyTask, emergencyTask);
   }
 
   /** Starts flying. */
   public void fly() {
     // task to execute in case of emergency
-    final Task emergencyTask = createEmergencyTask();
     final KeyboardEmergency keyboardEmergencyNotifier =
         createKeyboardEmergencyNotifier(emergencyTask);
     final XBox360ControllerEmergency xBox360ControllerEmergency =
@@ -73,11 +56,6 @@ public final class ExampleFlight {
 
     // start fly task
     taskExecutor.submitTask(flyTask);
-  }
-
-  private Task createEmergencyTask() {
-    final Command land = Land.create(landService, flyingStateService);
-    return Task.create(ImmutableList.of(land), TaskType.FIRST_ORDER_EMERGENCY);
   }
 
   private KeyboardEmergency createKeyboardEmergencyNotifier(Task emergencyTask) {

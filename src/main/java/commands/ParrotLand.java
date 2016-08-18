@@ -14,32 +14,21 @@ import java.util.concurrent.TimeUnit;
  *
  * @author Hoang Tung Dinh
  */
-public final class Land implements Command {
+public abstract class ParrotLand implements Command {
 
-  private static final Logger logger = LoggerFactory.getLogger(Land.class);
+  private static final Logger logger = LoggerFactory.getLogger(ParrotLand.class);
   private static final int SLEEP_DURATION_IN_MILLISECONDS = 50;
 
   private final LandService landService;
   private final FlyingStateService flyingStateService;
 
-  private Land(LandService landService, FlyingStateService flyingStateService) {
+  protected ParrotLand(LandService landService, FlyingStateService flyingStateService) {
     this.landService = landService;
     this.flyingStateService = flyingStateService;
   }
 
-  /**
-   * Creates a land command.
-   *
-   * @param landService the land service of the drone
-   * @param flyingStateService the flying state service of the drone
-   * @return a land command
-   */
-  public static Land create(LandService landService, FlyingStateService flyingStateService) {
-    return new Land(landService, flyingStateService);
-  }
-
   @Override
-  public void execute() {
+  public final void execute() {
     logger.debug("Execute land command.");
 
     while (true) {

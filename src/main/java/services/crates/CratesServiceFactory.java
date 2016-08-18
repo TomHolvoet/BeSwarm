@@ -83,11 +83,11 @@ public final class CratesServiceFactory implements CommonServiceFactory {
     try {
       return CratesLandService.create(
           connectedNode.<LandRequest, LandResponse>newServiceClient(
-              namePrefix + "controller/Land", Land._TYPE));
+              namePrefix + "controller/ParrotLand", Land._TYPE));
     } catch (ServiceNotFoundException e) {
       logger.debug(SERVICE_NOT_FOUND, e);
       throw new IllegalStateException(
-          String.format("Land service not found. Drone: %s. Model: %s", droneName, modelName));
+          String.format("ParrotLand service not found. Drone: %s. Model: %s", droneName, modelName));
     }
   }
 

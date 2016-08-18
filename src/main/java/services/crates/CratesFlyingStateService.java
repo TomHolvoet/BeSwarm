@@ -21,7 +21,7 @@ final class CratesFlyingStateService extends AbstractFlyingStateService<State> {
           .put("Emergency", CratesFlyingState.EMERGENCY)
           .put("Hover", CratesFlyingState.HOVER)
           .put("Idle", CratesFlyingState.IDLE)
-          .put("Land", CratesFlyingState.LAND)
+          .put("ParrotLand", CratesFlyingState.LAND)
           .put("Takeoff", CratesFlyingState.TAKE_OFF)
           .put("VelocityHeight", CratesFlyingState.VELOCITY_HEIGHT)
           .put("Velocity", CratesFlyingState.VELOCITY)
@@ -88,7 +88,7 @@ final class CratesFlyingStateService extends AbstractFlyingStateService<State> {
       }
     },
 
-    LAND("Land") {
+    LAND("ParrotLand") {
       @Override
       FlyingState getConvertedFlyingState() {
         return FlyingState.LANDING;
