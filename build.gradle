@@ -100,6 +100,8 @@ dependencies {
     testCompile 'junit:junit:4.12'
     testCompile 'org.mockito:mockito-all:1.10.19'
     testCompile 'org.reflections:reflections:0.9.10'
+    // https://mvnrepository.com/artifact/org.georegression/georegression
+    testcompile 'org.georegression:georegression:0.11'
 }
 
 idea {

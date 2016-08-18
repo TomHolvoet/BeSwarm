@@ -79,11 +79,14 @@ public class CollisionDetectorTest {
   @Test
   public void testCollisionDetectAtPoint() {
     List<Collision> collisions =
-        new CollisionDetector(Lists.newArrayList(holdPos, lin1), 1).findCollisions();
+        new CollisionDetector(Lists.newArrayList(holdPos, lin1), 1)
+            .findDangerouslyDisconnectedSegments();
+    System.out.println(collisions);
     assertTrue(isCollisionPresentFor(9.9, collisions));
     assertTrue(isCollisionPresentFor(8.5, collisions));
     assertTrue(isCollisionPresentFor(8.1, collisions));
-    assertFalse(isCollisionPresentFor(8.0, collisions));
+    assertTrue(isCollisionPresentFor(8.0, collisions));
+    assertFalse(isCollisionPresentFor(7.9, collisions));
     assertFalse(isCollisionPresentFor(7.8, collisions));
   }
 
@@ -119,23 +122,29 @@ public class CollisionDetectorTest {
 
   @Test
   public void testNonConnectingSegments() {
-    FiniteTrajectory4d t1 =
+
+    Choreography.BuildableStepBuilder t1Builder =
         Choreography.builder()
             .withTrajectory(Trajectories.newHoldPositionTrajectory(Point4D.create(1, 0, 0, 0)))
             .forTime(5)
             .withTrajectory(Trajectories.newHoldPositionTrajectory(Point4D.create(-1, 0, 0, 0)))
-            .forTime(5)
-            .build();
-    FiniteTrajectory4d t2 =
+            .forTime(5);
+
+    FiniteTrajectory4d t1 = t1Builder.build();
+
+    Choreography.BuildableStepBuilder t2Builder =
         Choreography.builder()
             .withTrajectory(Trajectories.newHoldPositionTrajectory(Point4D.create(-1, 0, 0, 0)))
             .forTime(5)
             .withTrajectory(Trajectories.newHoldPositionTrajectory(Point4D.create(1, 0, 0, 0)))
-            .forTime(5)
-            .build();
+            .forTime(5);
+
+    FiniteTrajectory4d t2 = t2Builder.build();
 
     List<Collision> collisions =
         new CollisionDetector(Lists.newArrayList(t1, t2), 1).findCollisions();
+    t1 = t1Builder.build();
+    t2 = t2Builder.build();
     List<Collision> disconnects =
         new CollisionDetector(Lists.newArrayList(t1, t2), 1).findDangerouslyDisconnectedSegments();
     assertTrue(collisions.isEmpty());

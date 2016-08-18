@@ -19,6 +19,8 @@ import static com.google.common.base.Preconditions.checkArgument;
  * from the lower level control point-of-view. Using the builder, one can create choreography
  * instances and configure them with different trajectories to be executed in sequence.
  *
+ * <p>A choreography can and should only be consumed once and cannot be reused.
+ *
  * @author Kristof Coninx <kristof.coninx AT cs.kuleuven.be>
  */
 public final class Choreography extends BasicTrajectory implements FiniteTrajectory4d {

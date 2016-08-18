@@ -1,9 +1,11 @@
 package applications.trajectory;
 
+import applications.trajectory.points.Point3D;
 import applications.trajectory.points.Point4D;
 import control.FiniteTrajectory4d;
 import control.Trajectory1d;
 import control.Trajectory4d;
+import georegression.struct.point.Point3D_F64;
 
 import java.util.Collections;
 import java.util.List;
@@ -85,5 +87,9 @@ public final class TestUtils {
   private static void testForCollisions(CollisionDetector detector) {
     List<CollisionDetector.Collision> collisions = detector.findCollisions();
     assertTrue("Found " + collisions.size() + " collisions: " + collisions, collisions.isEmpty());
+  }
+
+  public static Point3D_F64 Point3DToPoint3D_F64(Point3D point) {
+    return new Point3D_F64(point.getX(), point.getY(), point.getZ());
   }
 }
