@@ -42,9 +42,4 @@ final class ParrotTakeOffService implements TakeOffService {
     publisher.publish(empty);
     logger.debug("Sent take off message to {}", publisher.getTopicName());
   }
-
-  @Override
-  public void sendTakingOffMessage(double desiredAltitude) {
-    throw new UnsupportedOperationException("Parrot drone does not support this service");
-  }
 }
