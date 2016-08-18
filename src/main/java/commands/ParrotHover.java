@@ -8,6 +8,8 @@ import org.slf4j.LoggerFactory;
 import services.Velocity4dService;
 import time.TimeProvider;
 
+import java.util.concurrent.TimeUnit;
+
 /**
  * Hover command for parrot drones.
  *
@@ -34,5 +36,12 @@ public abstract class ParrotHover extends Hover {
     final BodyFrameVelocity bodyFrameVelocity = Velocity.createZeroVelocity();
     velocity4dService.sendBodyFrameVelocity(bodyFrameVelocity);
     // TODO: test the drone to see if we need the HOVER flying state feedback here
+
+    try {
+      TimeUnit.MILLISECONDS.sleep((long) (getDurationInSeconds() * 1000));
+    } catch (InterruptedException e) {
+      logger.debug("ParrotHover command is interrupted.", e);
+      Thread.currentThread().interrupt();
+    }
   }
 }
