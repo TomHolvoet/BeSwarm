@@ -2,8 +2,8 @@ package operationaltesting;
 
 import com.google.common.collect.ImmutableList;
 import commands.Command;
-import commands.Takeoff;
 import commands.bebopcommands.BebopLand;
+import commands.bebopcommands.BebopTakeOff;
 import commands.schedulers.PeriodicTaskRunner;
 import control.dto.InertialFrameVelocity;
 import control.dto.Pose;
@@ -94,7 +94,7 @@ public final class EmergencyButtonOT extends AbstractNodeMain {
       TakeOffService takeOffService,
       ResetService resetService,
       final Velocity4dService velocity4dService) {
-    final Command takeOff = Takeoff.create(takeOffService, flyingStateService, resetService);
+    final Command takeOff = BebopTakeOff.create(takeOffService, flyingStateService, resetService);
     final Command sendZeroVelocity =
         new Command() {
           @Override

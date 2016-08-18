@@ -66,7 +66,7 @@ public final class CratesServiceFactory implements CommonServiceFactory {
     try {
       return CratesTakeOffService.create(
           connectedNode.<TakeoffRequest, TakeoffResponse>newServiceClient(
-              namePrefix + "controller/Takeoff", Takeoff._TYPE));
+              namePrefix + "controller/ParrotTakeOff", Takeoff._TYPE));
     } catch (ServiceNotFoundException e) {
       logger.info(
           "Take off service not found. Drone: {}. Model: {}. Exception: {}",

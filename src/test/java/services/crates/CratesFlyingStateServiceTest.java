@@ -21,7 +21,7 @@ public class CratesFlyingStateServiceTest extends FlyingStateServiceTest<String,
         .put("Hover", FlyingState.HOVERING)
         .put("Idle", FlyingState.LANDED)
         .put("ParrotLand", FlyingState.LANDING)
-        .put("Takeoff", FlyingState.TAKING_OFF)
+        .put("ParrotTakeOff", FlyingState.TAKING_OFF)
         .put("VelocityHeight", FlyingState.FLYING)
         .put("Velocity", FlyingState.FLYING)
         .put("Waypoint", FlyingState.FLYING)

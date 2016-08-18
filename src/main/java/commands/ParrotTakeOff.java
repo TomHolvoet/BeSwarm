@@ -11,40 +11,25 @@ import services.rossubscribers.FlyingState;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Command for taking off. // TODO test me
+ * Take off command for parrot drones.
  *
  * @author Hoang Tung Dinh
  */
-public final class Takeoff implements Command {
+public abstract class ParrotTakeOff implements Command {
 
-  private static final Logger logger = LoggerFactory.getLogger(Takeoff.class);
+  private static final Logger logger = LoggerFactory.getLogger(ParrotTakeOff.class);
 
   private final TakeOffService takeOffService;
   private final FlyingStateService flyingStateService;
   private final ResetService resetService;
 
-  private Takeoff(
+  protected ParrotTakeOff(
       TakeOffService takeOffService,
       FlyingStateService flyingStateService,
       ResetService resetService) {
     this.takeOffService = takeOffService;
     this.flyingStateService = flyingStateService;
     this.resetService = resetService;
-  }
-
-  /**
-   * Creates an instance of the {@link Takeoff} command.
-   *
-   * @param takeOffService the take off service
-   * @param flyingStateService the flying state service
-   * @param resetService the reset service
-   * @return an instance of the {@link Takeoff} command
-   */
-  public static Takeoff create(
-      TakeOffService takeOffService,
-      FlyingStateService flyingStateService,
-      ResetService resetService) {
-    return new Takeoff(takeOffService, flyingStateService, resetService);
   }
 
   @Override
@@ -64,9 +49,7 @@ public final class Takeoff implements Command {
       // the drone took off successfully, the bebop flying state is HOVERING while the flying
       // state of the ArDrone in the Tum simulator is FLYING.
       // TODO: refactor this code
-      if (currentFlyingState.isPresent()
-          && (currentFlyingState.get() == FlyingState.HOVERING
-              || currentFlyingState.get() == FlyingState.FLYING)) {
+      if (currentFlyingState.isPresent() && isInHoveringState(currentFlyingState.get())) {
         return;
       }
       try {
@@ -78,6 +61,8 @@ public final class Takeoff implements Command {
       }
     }
   }
+
+  protected abstract boolean isInHoveringState(FlyingState currentFlyingState);
 
   /** Sends take off messages until the drone state is TAKING_OFF. */
   private void sendTakeOffMessages() {

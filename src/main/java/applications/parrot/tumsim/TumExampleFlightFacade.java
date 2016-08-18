@@ -4,10 +4,11 @@ import applications.ExampleFlight;
 import com.google.common.collect.ImmutableList;
 import commands.Command;
 import commands.FollowTrajectory;
-import commands.Takeoff;
+import commands.ParrotTakeOff;
 import commands.WaitForLocalizationDecorator;
 import commands.bebopcommands.BebopHover;
 import commands.tumsimcommands.TumSimLand;
+import commands.tumsimcommands.TumSimTakeoff;
 import control.FiniteTrajectory4d;
 import control.PidParameters;
 import control.localization.GazeboModelStateEstimator;
@@ -49,7 +50,7 @@ final class TumExampleFlightFacade {
 
     final Collection<Command> commands = new ArrayList<>();
 
-    final Command takeOff = Takeoff.create(takeOffService, flyingStateService, resetService);
+    final Command takeOff = TumSimTakeoff.create(takeOffService, flyingStateService, resetService);
     commands.add(takeOff);
 
     final Command hoverFiveSecond =

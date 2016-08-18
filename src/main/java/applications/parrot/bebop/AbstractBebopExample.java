@@ -5,10 +5,11 @@ import applications.trajectory.TrajectoryServer;
 import com.google.common.collect.ImmutableList;
 import commands.Command;
 import commands.FollowTrajectory;
-import commands.Takeoff;
+import commands.ParrotTakeOff;
 import commands.WaitForLocalizationDecorator;
 import commands.bebopcommands.BebopHover;
 import commands.bebopcommands.BebopLand;
+import commands.bebopcommands.BebopTakeOff;
 import control.FiniteTrajectory4d;
 import control.PidParameters;
 import control.localization.BebopStateEstimatorWithPoseStampedAndOdom;
@@ -175,7 +176,7 @@ public abstract class AbstractBebopExample extends AbstractNodeMain implements T
 
     final Collection<Command> commands = new ArrayList<>();
 
-    final Command takeOff = Takeoff.create(takeOffService, flyingStateService, resetService);
+    final Command takeOff = BebopTakeOff.create(takeOffService, flyingStateService, resetService);
     commands.add(takeOff);
 
     final Command hoverFiveSecond =
