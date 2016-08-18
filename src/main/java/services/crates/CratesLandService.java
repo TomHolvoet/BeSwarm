@@ -7,7 +7,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import services.LandService;
 
-/** @author Hoang Tung Dinh */
+/**
+ * Land service for drones in Crates simulator.
+ *
+ * @author Hoang Tung Dinh
+ */
 final class CratesLandService implements LandService {
   private static final Logger logger = LoggerFactory.getLogger(CratesLandService.class);
   private final ServiceClient<LandRequest, LandResponse> srvLand;
@@ -17,10 +21,10 @@ final class CratesLandService implements LandService {
   }
 
   /**
-   * Creates that land service working with the Crates simulator.
+   * Creates an instance of {@link CratesLandService}.
    *
    * @param srvLand the ros service client for landing
-   * @return the land service working with the crates simualtor
+   * @return an instance of {@link CratesLandService}
    */
   public static CratesLandService create(ServiceClient<LandRequest, LandResponse> srvLand) {
     return new CratesLandService(srvLand);

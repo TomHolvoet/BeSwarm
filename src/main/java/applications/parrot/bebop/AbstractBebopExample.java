@@ -2,6 +2,13 @@ package applications.parrot.bebop;
 
 import applications.ExampleFlight;
 import applications.trajectory.TrajectoryServer;
+import com.google.common.collect.ImmutableList;
+import commands.Command;
+import commands.FollowTrajectory;
+import commands.Land;
+import commands.Takeoff;
+import commands.WaitForLocalizationDecorator;
+import commands.bebopcommands.BebopHover;
 import control.FiniteTrajectory4d;
 import control.PidParameters;
 import control.localization.BebopStateEstimatorWithPoseStampedAndOdom;
@@ -13,11 +20,20 @@ import org.ros.node.AbstractNodeMain;
 import org.ros.node.ConnectedNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import services.FlyingStateService;
+import services.LandService;
+import services.ResetService;
+import services.TakeOffService;
+import services.Velocity4dService;
 import services.parrot.BebopServiceFactory;
 import services.parrot.ParrotServiceFactory;
 import services.rossubscribers.MessagesSubscriberService;
+import taskexecutor.Task;
+import taskexecutor.TaskType;
 import time.RosTime;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -58,6 +74,7 @@ public abstract class AbstractBebopExample extends AbstractNodeMain implements T
 
   private static MessagesSubscriberService<Odometry> getOdometrySubscriber(
       ConnectedNode connectedNode) {
+    // TODO: remove this method
     final String odometryTopic = "/" + DRONE_NAME + "/odom";
     logger.info("Subscribed to {} for getting odometry", odometryTopic);
     return MessagesSubscriberService.create(
@@ -99,26 +116,30 @@ public abstract class AbstractBebopExample extends AbstractNodeMain implements T
 
     final ParrotServiceFactory parrotServiceFactory =
         BebopServiceFactory.create(connectedNode, DRONE_NAME);
+    final LandService landService = parrotServiceFactory.createLandService();
+    final FlyingStateService flyingStateService = parrotServiceFactory.createFlyingStateService();
+    final Velocity4dService velocity4dService = parrotServiceFactory.createVelocity4dService();
+    final TakeOffService takeOffService = parrotServiceFactory.createTakeOffService();
+    final ResetService resetService = parrotServiceFactory.createResetService();
     final StateEstimator stateEstimator =
         BebopStateEstimatorWithPoseStampedAndOdom.create(
             getPoseSubscriber(connectedNode), getOdometrySubscriber(connectedNode));
-
-    final FiniteTrajectory4d trajectory4d = getConcreteTrajectory();
+    final Task flyTask =
+        createFlyTask(
+            connectedNode,
+            pidLinearX,
+            pidLinearY,
+            pidLinearZ,
+            pidAngularZ,
+            landService,
+            flyingStateService,
+            velocity4dService,
+            takeOffService,
+            resetService,
+            stateEstimator);
 
     final ExampleFlight exampleFlight =
-        ExampleFlight.builder()
-            .withConnectedNode(connectedNode)
-            .withFiniteTrajectory4d(trajectory4d)
-            .withFlyingStateService(parrotServiceFactory.createFlyingStateService())
-            .withLandService(parrotServiceFactory.createLandService())
-            .withPidLinearX(pidLinearX)
-            .withPidLinearY(pidLinearY)
-            .withPidLinearZ(pidLinearZ)
-            .withPidAngularZ(pidAngularZ)
-            .withStateEstimator(stateEstimator)
-            .withTakeOffService(parrotServiceFactory.createTakeOffService())
-            .withVelocityService(parrotServiceFactory.createVelocity4dService())
-            .build();
+        ExampleFlight.create(landService, flyingStateService, connectedNode, flyTask);
 
     // without this code, the take off message cannot be sent properly (I don't understand why).
     try {
@@ -129,5 +150,53 @@ public abstract class AbstractBebopExample extends AbstractNodeMain implements T
     }
 
     exampleFlight.fly();
+  }
+
+  private Task createFlyTask(
+      ConnectedNode connectedNode,
+      PidParameters pidLinearX,
+      PidParameters pidLinearY,
+      PidParameters pidLinearZ,
+      PidParameters pidAngularZ,
+      LandService landService,
+      FlyingStateService flyingStateService,
+      Velocity4dService velocity4dService,
+      TakeOffService takeOffService,
+      ResetService resetService,
+      StateEstimator stateEstimator) {
+    final FiniteTrajectory4d trajectory4d = getConcreteTrajectory();
+
+    final Collection<Command> commands = new ArrayList<>();
+
+    final Command takeOff = Takeoff.create(takeOffService, flyingStateService, resetService);
+    commands.add(takeOff);
+
+    final Command hoverFiveSecond =
+        BebopHover.create(5, RosTime.create(connectedNode), velocity4dService, stateEstimator);
+    commands.add(hoverFiveSecond);
+
+    final Command followTrajectory =
+        FollowTrajectory.builder()
+            .withVelocityService(velocity4dService)
+            .withStateEstimator(stateEstimator)
+            .withTimeProvider(RosTime.create(connectedNode))
+            .withTrajectory4d(trajectory4d)
+            .withDurationInSeconds(trajectory4d.getTrajectoryDuration())
+            .withPidLinearXParameters(pidLinearX)
+            .withPidLinearYParameters(pidLinearY)
+            .withPidLinearZParameters(pidLinearZ)
+            .withPidAngularZParameters(pidAngularZ)
+            .withControlRateInSeconds(0.01)
+            .build();
+
+    final Command waitForLocalizationThenFollowTrajectory =
+        WaitForLocalizationDecorator.create(stateEstimator, followTrajectory);
+
+    commands.add(waitForLocalizationThenFollowTrajectory);
+
+    final Command land = Land.create(landService, flyingStateService);
+    commands.add(land);
+
+    return Task.create(ImmutableList.copyOf(commands), TaskType.NORMAL_TASK);
   }
 }

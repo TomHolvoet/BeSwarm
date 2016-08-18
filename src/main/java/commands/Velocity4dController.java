@@ -35,7 +35,7 @@ final class Velocity4dController implements VelocityController {
     final InertialFrameVelocity nextVelocity =
         pidController4d.compute(
             currentState.pose(), currentState.inertialFrameVelocity(), currentTimeInSeconds);
-    velocity4dService.sendVelocity4dMessage(nextVelocity, currentState.pose());
+    velocity4dService.sendInertialFrameVelocity(nextVelocity, currentState.pose());
   }
 
   /** Builds a {@link Velocity4dController} instance. */

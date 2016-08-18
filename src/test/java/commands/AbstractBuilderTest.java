@@ -47,7 +47,7 @@ public abstract class AbstractBuilderTest {
       StateEstimator stateEstimator,
       TimeProvider timeProvider) {
     verify(velocity4dService, atLeastOnce())
-        .sendVelocity4dMessage(any(InertialFrameVelocity.class), any(Pose.class));
+        .sendInertialFrameVelocity(any(InertialFrameVelocity.class), any(Pose.class));
     verify(stateEstimator, atLeastOnce()).getCurrentState();
     verify(timeProvider, atLeastOnce()).getCurrentTimeSeconds();
   }

@@ -88,11 +88,17 @@ final class ParrotVelocity4dService implements Velocity4dService {
   }
 
   @Override
-  public void sendVelocity4dMessage(InertialFrameVelocity inertialFrameVelocity, Pose pose) {
+  public void sendInertialFrameVelocity(InertialFrameVelocity inertialFrameVelocity, Pose pose) {
     final BodyFrameVelocity bodyFrameVelocity =
         Transformations.inertialFrameVelocityToBodyFrameVelocity(inertialFrameVelocity, pose);
 
+    sendBodyFrameVelocity(bodyFrameVelocity);
+  }
+
+  @Override
+  public void sendBodyFrameVelocity(BodyFrameVelocity bodyFrameVelocity) {
     final BodyFrameVelocity refinedVelocity = getRefinedVelocity(bodyFrameVelocity);
+
     velocityLogger.trace(
         "{} {} {} {} {}",
         timeProvider.getCurrentTimeSeconds(),

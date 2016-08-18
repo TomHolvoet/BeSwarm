@@ -1,5 +1,8 @@
 package services.crates;
 
+import hal_quadrotor.Hover;
+import hal_quadrotor.HoverRequest;
+import hal_quadrotor.HoverResponse;
 import hal_quadrotor.Land;
 import hal_quadrotor.LandRequest;
 import hal_quadrotor.LandResponse;
@@ -19,6 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import services.CommonServiceFactory;
 import services.FlyingStateService;
+import services.HoverService;
 import services.LandService;
 import services.TakeOffService;
 import services.Velocity2dService;
@@ -129,6 +133,23 @@ public final class CratesServiceFactory implements CommonServiceFactory {
       throw new IllegalStateException(
           String.format(
               "Velocity height service not found. Drone: %s. Model: %s", droneName, modelName));
+    }
+  }
+
+  /**
+   * Creates a {@link HoverService} for the drone.
+   *
+   * @return an instance of {@link HoverService}
+   */
+  public HoverService createHoverService() {
+    try {
+      return CratesHoverService.create(
+          connectedNode.<HoverRequest, HoverResponse>newServiceClient(
+              namePrefix + "controller/Hover", Hover._TYPE));
+    } catch (ServiceNotFoundException e) {
+      logger.debug(SERVICE_NOT_FOUND, e);
+      throw new IllegalStateException(
+          String.format("Hover service not found. Drone: %s. Model: %s", droneName, modelName));
     }
   }
 }

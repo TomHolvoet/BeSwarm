@@ -112,7 +112,7 @@ public final class EmergencyButtonOT extends AbstractNodeMain {
                             .setAngularZ(0)
                             .build();
                     final Pose pose = Pose.createZeroPose();
-                    velocity4dService.sendVelocity4dMessage(inertialFrameVelocity, pose);
+                    velocity4dService.sendInertialFrameVelocity(inertialFrameVelocity, pose);
                   }
                 };
 

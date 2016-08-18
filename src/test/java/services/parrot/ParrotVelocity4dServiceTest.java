@@ -68,7 +68,7 @@ public class ParrotVelocity4dServiceTest {
             .publisher(publisher)
             .timeProvider(mock(TimeProvider.class))
             .build();
-    parrotVelocity4dService.sendVelocity4dMessage(inertialFrameVelocity, pose);
+    parrotVelocity4dService.sendInertialFrameVelocity(inertialFrameVelocity, pose);
     checkMessageSetUp(bodyFrameVelocity, linear, angular);
     checkCorrectTwistMessageSent(publisher, twist);
   }
@@ -90,7 +90,7 @@ public class ParrotVelocity4dServiceTest {
             .maxLinearZ(0.25)
             .maxAngularZ(0.25)
             .build();
-    parrotVelocity4dService.sendVelocity4dMessage(inertialFrameVelocity, pose);
+    parrotVelocity4dService.sendInertialFrameVelocity(inertialFrameVelocity, pose);
     checkMessageSetUp(bodyFrameVelocity, linear, angular);
     checkCorrectTwistMessageSent(publisher, twist);
   }
