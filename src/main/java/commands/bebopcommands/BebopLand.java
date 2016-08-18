@@ -1,6 +1,6 @@
 package commands.bebopcommands;
 
-import commands.ParrotLand;
+import commands.AbstractParrotLand;
 import services.FlyingStateService;
 import services.LandService;
 
@@ -9,7 +9,7 @@ import services.LandService;
  *
  * @author Hoang Tung Dinh
  */
-public final class BebopLand extends ParrotLand {
+public final class BebopLand extends AbstractParrotLand {
   private BebopLand(LandService landService, FlyingStateService flyingStateService) {
     super(landService, flyingStateService);
   }

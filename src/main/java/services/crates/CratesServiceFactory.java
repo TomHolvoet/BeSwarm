@@ -66,7 +66,7 @@ public final class CratesServiceFactory implements CommonServiceFactory {
     try {
       return CratesTakeOffService.create(
           connectedNode.<TakeoffRequest, TakeoffResponse>newServiceClient(
-              namePrefix + "controller/ParrotTakeOff", Takeoff._TYPE));
+              namePrefix + "controller/AbstractParrotTakeOff", Takeoff._TYPE));
     } catch (ServiceNotFoundException e) {
       logger.info(
           "Take off service not found. Drone: {}. Model: {}. Exception: {}",
@@ -83,11 +83,11 @@ public final class CratesServiceFactory implements CommonServiceFactory {
     try {
       return CratesLandService.create(
           connectedNode.<LandRequest, LandResponse>newServiceClient(
-              namePrefix + "controller/ParrotLand", Land._TYPE));
+              namePrefix + "controller/AbstractParrotLand", Land._TYPE));
     } catch (ServiceNotFoundException e) {
       logger.debug(SERVICE_NOT_FOUND, e);
       throw new IllegalStateException(
-          String.format("ParrotLand service not found. Drone: %s. Model: %s", droneName, modelName));
+          String.format("AbstractParrotLand service not found. Drone: %s. Model: %s", droneName, modelName));
     }
   }
 
@@ -145,11 +145,11 @@ public final class CratesServiceFactory implements CommonServiceFactory {
     try {
       return CratesHoverService.create(
           connectedNode.<HoverRequest, HoverResponse>newServiceClient(
-              namePrefix + "controller/Hover", Hover._TYPE));
+              namePrefix + "controller/AbstractHover", Hover._TYPE));
     } catch (ServiceNotFoundException e) {
       logger.debug(SERVICE_NOT_FOUND, e);
       throw new IllegalStateException(
-          String.format("Hover service not found. Drone: %s. Model: %s", droneName, modelName));
+          String.format("AbstractHover service not found. Drone: %s. Model: %s", droneName, modelName));
     }
   }
 }

@@ -5,7 +5,6 @@ import applications.trajectory.TrajectoryServer;
 import com.google.common.collect.ImmutableList;
 import commands.Command;
 import commands.FollowTrajectory;
-import commands.ParrotTakeOff;
 import commands.WaitForLocalizationDecorator;
 import commands.bebopcommands.BebopHover;
 import commands.bebopcommands.BebopLand;

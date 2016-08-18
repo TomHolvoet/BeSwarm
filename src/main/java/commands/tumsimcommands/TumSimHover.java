@@ -1,16 +1,16 @@
 package commands.tumsimcommands;
 
-import commands.ParrotHover;
+import commands.AbstractParrotHover;
 import control.localization.StateEstimator;
 import services.Velocity4dService;
 import time.TimeProvider;
 
 /**
- * Hover command for the ArDrone in the Tum simulator.
+ * AbstractHover command for the ArDrone in the Tum simulator.
  *
  * @author Hoang Tung Dinh
  */
-public final class TumSimHover extends ParrotHover {
+public final class TumSimHover extends AbstractParrotHover {
   private TumSimHover(
       double durationInSeconds,
       TimeProvider timeProvider,

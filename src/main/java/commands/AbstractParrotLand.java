@@ -14,15 +14,15 @@ import java.util.concurrent.TimeUnit;
  *
  * @author Hoang Tung Dinh
  */
-public abstract class ParrotLand implements Command {
+public abstract class AbstractParrotLand implements Command {
 
-  private static final Logger logger = LoggerFactory.getLogger(ParrotLand.class);
+  private static final Logger logger = LoggerFactory.getLogger(AbstractParrotLand.class);
   private static final int SLEEP_DURATION_IN_MILLISECONDS = 50;
 
   private final LandService landService;
   private final FlyingStateService flyingStateService;
 
-  protected ParrotLand(LandService landService, FlyingStateService flyingStateService) {
+  protected AbstractParrotLand(LandService landService, FlyingStateService flyingStateService) {
     this.landService = landService;
     this.flyingStateService = flyingStateService;
   }

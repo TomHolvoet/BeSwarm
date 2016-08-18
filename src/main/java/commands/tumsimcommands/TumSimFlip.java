@@ -1,6 +1,6 @@
 package commands.tumsimcommands;
 
-import commands.ParrotFlip;
+import commands.AbstractParrotFlip;
 import control.dto.FlipDirection;
 import services.FlipService;
 
@@ -9,7 +9,7 @@ import services.FlipService;
  *
  * @author Hoang Tung Dinh
  */
-public final class TumSimFlip extends ParrotFlip {
+public final class TumSimFlip extends AbstractParrotFlip {
   private TumSimFlip(FlipService flipService, FlipDirection flipDirection) {
     super(flipService, flipDirection);
   }

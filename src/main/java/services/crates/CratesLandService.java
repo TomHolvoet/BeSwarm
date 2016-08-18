@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
 import services.LandService;
 
 /**
- * ParrotLand service for drones in Crates simulator.
+ * AbstractParrotLand service for drones in Crates simulator.
  *
  * @author Hoang Tung Dinh
  */

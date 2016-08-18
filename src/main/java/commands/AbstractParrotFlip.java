@@ -8,12 +8,12 @@ import services.FlipService;
  *
  * @author Hoang Tung Dinh
  */
-public abstract class ParrotFlip implements Command {
+public abstract class AbstractParrotFlip implements Command {
 
   private final FlipService flipService;
   private final FlipDirection flipDirection;
 
-  protected ParrotFlip(FlipService flipService, FlipDirection flipDirection) {
+  protected AbstractParrotFlip(FlipService flipService, FlipDirection flipDirection) {
     this.flipService = flipService;
     this.flipDirection = flipDirection;
   }

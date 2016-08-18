@@ -37,7 +37,7 @@ public abstract class ParrotServiceFactory implements CommonServiceFactory {
     final String topicName = "/" + droneName + "/land";
     final LandService landService =
         ParrotLandService.create(connectedNode.<Empty>newPublisher(topicName, Empty._TYPE));
-    logger.info("ParrotLand service connected to {}", topicName);
+    logger.info("AbstractParrotLand service connected to {}", topicName);
     return landService;
   }
 

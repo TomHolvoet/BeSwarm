@@ -15,15 +15,15 @@ import java.util.concurrent.TimeUnit;
  *
  * @author Hoang Tung Dinh
  */
-public abstract class ParrotTakeOff implements Command {
+public abstract class AbstractParrotTakeOff implements Command {
 
-  private static final Logger logger = LoggerFactory.getLogger(ParrotTakeOff.class);
+  private static final Logger logger = LoggerFactory.getLogger(AbstractParrotTakeOff.class);
 
   private final TakeOffService takeOffService;
   private final FlyingStateService flyingStateService;
   private final ResetService resetService;
 
-  protected ParrotTakeOff(
+  protected AbstractParrotTakeOff(
       TakeOffService takeOffService,
       FlyingStateService flyingStateService,
       ResetService resetService) {

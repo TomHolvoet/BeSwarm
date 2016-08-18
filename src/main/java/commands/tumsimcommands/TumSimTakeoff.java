@@ -1,6 +1,6 @@
 package commands.tumsimcommands;
 
-import commands.ParrotTakeOff;
+import commands.AbstractParrotTakeOff;
 import services.FlyingStateService;
 import services.ResetService;
 import services.TakeOffService;
@@ -11,7 +11,7 @@ import services.rossubscribers.FlyingState;
  *
  * @author Hoang Tung Dinh
  */
-public final class TumSimTakeoff extends ParrotTakeOff {
+public final class TumSimTakeoff extends AbstractParrotTakeOff {
   private TumSimTakeoff(
       TakeOffService takeOffService,
       FlyingStateService flyingStateService,

@@ -1,17 +1,17 @@
 package commands.cratescommands;
 
-import commands.Hover;
+import commands.AbstractHover;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import services.HoverService;
 import time.TimeProvider;
 
 /**
- * Hover command for drones in Crates simulator.
+ * AbstractHover command for drones in Crates simulator.
  *
  * @author Hoang Tung Dinh
  */
-public final class CratesHover extends Hover {
+public final class CratesHover extends AbstractHover {
 
   private static final Logger logger = LoggerFactory.getLogger(CratesHover.class);
   private final HoverService hoverService;

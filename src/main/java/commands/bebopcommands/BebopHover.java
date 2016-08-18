@@ -1,12 +1,12 @@
 package commands.bebopcommands;
 
-import commands.ParrotHover;
+import commands.AbstractParrotHover;
 import control.localization.StateEstimator;
 import services.Velocity4dService;
 import time.TimeProvider;
 
 /** @author Hoang Tung Dinh */
-public final class BebopHover extends ParrotHover {
+public final class BebopHover extends AbstractParrotHover {
   private BebopHover(
       double durationInSeconds,
       TimeProvider timeProvider,

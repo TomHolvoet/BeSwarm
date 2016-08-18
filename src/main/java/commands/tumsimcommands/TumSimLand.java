@@ -1,6 +1,6 @@
 package commands.tumsimcommands;
 
-import commands.ParrotLand;
+import commands.AbstractParrotLand;
 import services.FlyingStateService;
 import services.LandService;
 
@@ -9,7 +9,7 @@ import services.LandService;
  *
  * @author Hoang Tung Dinh
  */
-public final class TumSimLand extends ParrotLand {
+public final class TumSimLand extends AbstractParrotLand {
   private TumSimLand(LandService landService, FlyingStateService flyingStateService) {
     super(landService, flyingStateService);
   }

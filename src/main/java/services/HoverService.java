@@ -1,7 +1,7 @@
 package services;
 
 /**
- * Hover service.
+ * AbstractHover service.
  *
  * @author Hoang Tung Dinh
  */
