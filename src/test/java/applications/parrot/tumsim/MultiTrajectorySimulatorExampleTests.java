@@ -26,7 +26,7 @@ import static org.junit.Assert.fail;
  */
 @RunWith(Parameterized.class)
 public class MultiTrajectorySimulatorExampleTests {
-  private static final String PACKAGE_FQN = ""; //TODO decide.
+  private static final String PACKAGE_FQN = "applications.parrot.tumsim"; //TODO decide.
   private static final Class TEST_PARENT = MultiTrajectoryServer.class;
 
   private MultiTrajectoryServer server;

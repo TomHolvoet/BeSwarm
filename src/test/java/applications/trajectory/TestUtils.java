@@ -84,6 +84,6 @@ public final class TestUtils {
 
   private static void testForCollisions(CollisionDetector detector) {
     List<CollisionDetector.Collision> collisions = detector.findCollisions();
-    assertTrue("Found following collisions: " + collisions, collisions.isEmpty());
+    assertTrue("Found " + collisions.size() + " collisions: " + collisions, collisions.isEmpty());
   }
 }

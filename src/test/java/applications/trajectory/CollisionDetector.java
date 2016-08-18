@@ -7,6 +7,7 @@ import control.FiniteTrajectory4d;
 import control.Trajectory4d;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 /** @author Kristof Coninx <kristof.coninx AT cs.kuleuven.be> */
@@ -48,6 +49,9 @@ public class CollisionDetector {
   }
 
   private Collection<Collision> getCollisionsAtTime(double t) {
+    if (Math.abs(t - 38) < 0.001) {
+      System.out.println(t);
+    }
     List<Collision> collT = Lists.newArrayList();
     for (int i = 0; i < trajectories.size(); i++) {
       for (int j = i + 1; j < trajectories.size(); j++) {
@@ -70,10 +74,14 @@ public class CollisionDetector {
             second.getDesiredPositionX(t),
             second.getDesiredPositionY(t),
             second.getDesiredPositionZ(t));
-    if (Point3D.distance(firstPoint, secondPoint) < minimumDistance) {
+    if (Point3D.distance(firstPoint, secondPoint) < minimumDistance - TestUtils.EPSILON) {
       return true;
     }
     return false;
+  }
+
+  List<Collision> findDangerouslyDisconnectedSegments() {
+    return Collections.emptyList();
   }
 
   @AutoValue
