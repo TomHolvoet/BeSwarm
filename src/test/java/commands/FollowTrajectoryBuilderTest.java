@@ -1,13 +1,21 @@
 package commands;
 
+import control.PidParameters;
 import control.Trajectory4d;
+import control.localization.StateEstimator;
 import org.junit.Before;
+import org.junit.Test;
+import services.VelocityService;
 import utils.TestUtils;
 
 import static org.mockito.Mockito.RETURNS_MOCKS;
 import static org.mockito.Mockito.mock;
 
-/** @author Hoang Tung Dinh */
+/**
+ * Tests for {@link FollowTrajectory}'s builder.
+ *
+ * @author Hoang Tung Dinh
+ */
 public class FollowTrajectoryBuilderTest extends AbstractBuilderTest {
 
   private Trajectory4d trajectory4d;
@@ -40,5 +48,19 @@ public class FollowTrajectoryBuilderTest extends AbstractBuilderTest {
   @Override
   void checkCorrectExtraMethodsCalled() {
     TestUtils.verifyTrajectoryCalled(trajectory4d);
+  }
+
+  @Test(expected = NullPointerException.class)
+  public void testMissingTimeProvider() {
+    FollowTrajectory.builder()
+        .withVelocityService(mock(VelocityService.class))
+        .withStateEstimator(mock(StateEstimator.class))
+        .withTrajectory4d(mock(Trajectory4d.class))
+        .withDurationInSeconds(1)
+        .withPidLinearXParameters(mock(PidParameters.class))
+        .withPidLinearYParameters(mock(PidParameters.class))
+        .withPidLinearZParameters(mock(PidParameters.class))
+        .withPidAngularZParameters(mock(PidParameters.class))
+        .build();
   }
 }
