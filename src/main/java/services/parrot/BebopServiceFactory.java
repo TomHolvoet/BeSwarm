@@ -61,7 +61,7 @@ public final class BebopServiceFactory extends ParrotServiceFactory {
     final String topicName = "/" + getDroneName() + "/flip";
     final FlipService flipService =
         ParrotFlipService.create(getConnectedNode().<UInt8>newPublisher(topicName, UInt8._TYPE));
-    logger.info("Flip service connected to {}", topicName);
+    logger.info("ParrotFlip service connected to {}", topicName);
     return flipService;
   }
 
