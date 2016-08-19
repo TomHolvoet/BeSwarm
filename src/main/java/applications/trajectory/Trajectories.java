@@ -208,4 +208,18 @@ public final class Trajectories {
   public static CorkscrewTrajectory4D.Builder corkscrewTrajectoryBuilder() {
     return CorkscrewTrajectory4D.builder();
   }
+
+  /**
+   * A side-to-side-and-back wiggle with constant altitude.
+   *
+   * @param centerPoint The point to wiggle around with the orientation determining the wiggle
+   *     direction axis. The drone will always move perpendicular to the orientation.
+   * @param wiggles The number of wiggles to perform.
+   * @param distance The distance of the wiggles.
+   * @return A finite trajectory object.
+   */
+  public static FiniteTrajectory4d newWiggleTrajectory(
+      Point4D centerPoint, int wiggles, double distance) {
+    return new WiggleTrajectory(centerPoint, wiggles, distance);
+  }
 }
