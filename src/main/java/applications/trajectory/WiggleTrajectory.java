@@ -11,7 +11,7 @@ import control.FiniteTrajectory4d;
  * @author Kristof Coninx <kristof.coninx AT cs.kuleuven.be>
  */
 public class WiggleTrajectory extends BasicTrajectory implements FiniteTrajectory4d {
-  private static final double WIGGLE_VELOCITY = 5d;
+  private static final double WIGGLE_VELOCITY = 1d;
   private final FiniteTrajectory4d target;
 
   WiggleTrajectory(Point4D centerPoint, int wiggles, double distance) {
@@ -26,7 +26,7 @@ public class WiggleTrajectory extends BasicTrajectory implements FiniteTrajector
     Point4D endLeft =
         Point4D.create(
             centerPoint.getX() - StrictMath.cos(orientation) * distance,
-                centerPoint.getY() - StrictMath.sin(orientation) * distance,
+            centerPoint.getY() - StrictMath.sin(orientation) * distance,
             centerPoint.getZ(),
             orientation);
 
