@@ -42,9 +42,9 @@ public final class TrajectoriesForTesting {
   public static FiniteTrajectory4d getLargeCircle() {
     Trajectory4d second =
         Trajectories.circleTrajectoryBuilder()
-            .setLocation(Point3D.create(1.5, -3.5, 1.5))
+            .setLocation(Point3D.create(1.5, -2.5, 1.5))
             .setRadius(1.5)
-            .setFrequency(0.05)
+            .setFrequency(0.1)
             .fixYawAt(-Math.PI / 2)
             .build();
     return Choreography.builder().withTrajectory(second).forTime(120).build();
