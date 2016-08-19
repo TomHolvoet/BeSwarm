@@ -1,9 +1,9 @@
-package applications.trajectory.points;
+package applications.trajectory.geom.point;
 
 import com.google.auto.value.AutoValue;
 import control.dto.Pose;
 
-import static applications.trajectory.points.Point3D.project;
+import static applications.trajectory.geom.point.Point3D.project;
 
 /**
  * Point class for grouping a point in 4d space with angular orientation.

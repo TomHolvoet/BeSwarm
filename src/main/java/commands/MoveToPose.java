@@ -1,7 +1,7 @@
 package commands;
 
 import applications.trajectory.Trajectories;
-import applications.trajectory.points.Point4D;
+import applications.trajectory.geom.point.Point4D;
 import control.Trajectory4d;
 import control.dto.Pose;
 

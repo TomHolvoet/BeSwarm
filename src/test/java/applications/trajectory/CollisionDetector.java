@@ -1,17 +1,21 @@
 package applications.trajectory;
 
-import applications.trajectory.points.Point3D;
+import applications.trajectory.geom.LineSegment;
+import applications.trajectory.geom.point.Point3D;
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.Lists;
 import control.FiniteTrajectory4d;
 import control.Trajectory4d;
-import georegression.struct.line.LineParametric3D_F64;
-import georegression.struct.point.Vector3D_F64;
 
 import java.util.Collection;
 import java.util.List;
 
-import static georegression.metric.MiscOps.dot;
+import static applications.trajectory.TrajectoryUtils.sampleTrajectory;
+import static applications.trajectory.geom.point.Point3D.dot;
+import static applications.trajectory.geom.point.Point3D.minus;
+import static applications.trajectory.geom.point.Point3D.plus;
+import static applications.trajectory.geom.point.Point3D.project;
+import static applications.trajectory.geom.point.Point3D.scale;
 
 /** @author Kristof Coninx <kristof.coninx AT cs.kuleuven.be> */
 public class CollisionDetector {
@@ -23,16 +27,8 @@ public class CollisionDetector {
         @Override
         public boolean isCollision(
             double t, FiniteTrajectory4d first, FiniteTrajectory4d second, double minimumDistance) {
-          Point3D firstPoint =
-              Point3D.create(
-                  first.getDesiredPositionX(t),
-                  first.getDesiredPositionY(t),
-                  first.getDesiredPositionZ(t));
-          Point3D secondPoint =
-              Point3D.create(
-                  second.getDesiredPositionX(t),
-                  second.getDesiredPositionY(t),
-                  second.getDesiredPositionZ(t));
+          Point3D firstPoint = project(sampleTrajectory(first, t));
+          Point3D secondPoint = project(sampleTrajectory(second, t));
           if (Point3D.distance(firstPoint, secondPoint) < minimumDistance - TestUtils.EPSILON) {
             return true;
           }
@@ -45,44 +41,13 @@ public class CollisionDetector {
         @Override
         public boolean isCollision(
             double t, FiniteTrajectory4d first, FiniteTrajectory4d second, double minimumDistance) {
-          Point3D firstPointT1 =
-              Point3D.create(
-                  first.getDesiredPositionX(t),
-                  first.getDesiredPositionY(t),
-                  first.getDesiredPositionZ(t));
-          Point3D secondPointT1 =
-              Point3D.create(
-                  first.getDesiredPositionX(t + DEFAULT_TIME_DELTA),
-                  first.getDesiredPositionY(t + DEFAULT_TIME_DELTA),
-                  first.getDesiredPositionZ(t + DEFAULT_TIME_DELTA));
-          Point3D firstPointT2 =
-              Point3D.create(
-                  second.getDesiredPositionX(t),
-                  second.getDesiredPositionY(t),
-                  second.getDesiredPositionZ(t));
-          Point3D secondPointT2 =
-              Point3D.create(
-                  second.getDesiredPositionX(t + DEFAULT_TIME_DELTA),
-                  second.getDesiredPositionY(t + DEFAULT_TIME_DELTA),
-                  second.getDesiredPositionZ(t + DEFAULT_TIME_DELTA));
+          Point3D firstPointT1 = project(sampleTrajectory(first, t));
+          Point3D secondPointT1 = project(sampleTrajectory(first, t + DEFAULT_TIME_DELTA));
+          Point3D firstPointT2 = project(sampleTrajectory(second, t));
+          Point3D secondPointT2 = project(sampleTrajectory(second, t + DEFAULT_TIME_DELTA));
 
-          LineParametric3D_F64 firstSeg =
-              new LineParametric3D_F64(
-                  firstPointT1.getX(),
-                  firstPointT1.getY(),
-                  firstPointT1.getZ(),
-                  secondPointT1.getX() - firstPointT1.getX(),
-                  secondPointT1.getY() - firstPointT1.getY(),
-                  secondPointT1.getZ() - firstPointT1.getZ());
-          LineParametric3D_F64 secondSeg =
-              new LineParametric3D_F64(
-                  firstPointT2.getX(),
-                  firstPointT2.getY(),
-                  firstPointT2.getZ(),
-                  secondPointT2.getX() - firstPointT2.getX(),
-                  secondPointT2.getY() - firstPointT2.getY(),
-                  secondPointT2.getZ() - firstPointT2.getZ());
-
+          LineSegment firstSeg = LineSegment.create(firstPointT1, secondPointT1);
+          LineSegment secondSeg = LineSegment.create(firstPointT2, secondPointT2);
           double distance = distance(firstSeg, secondSeg);
 
           if (distance < minimumDistance - TestUtils.EPSILON) {
@@ -93,11 +58,10 @@ public class CollisionDetector {
       };
 
   //implementation from http://geomalgorithms.com/a07-_distance.html#dist3D_Segment_to_Segment()
-  private static double distance(LineParametric3D_F64 firstSeg, LineParametric3D_F64 secondSeg) {
-    Vector3D_F64 u = firstSeg.getSlope();
-    Vector3D_F64 v = secondSeg.getSlope();
-    Vector3D_F64 w = new Vector3D_F64();
-    w.minus(firstSeg.getPoint(), secondSeg.getPoint());
+  private static double distance(LineSegment firstSeg, LineSegment secondSeg) {
+    Point3D u = firstSeg.getSlope();
+    Point3D v = secondSeg.getSlope();
+    Point3D w = minus(firstSeg.getStartPoint(), secondSeg.getStartPoint());
     double a = dot(u, u);
     double b = dot(u, v);
     double c = dot(v, v);
@@ -150,15 +114,7 @@ public class CollisionDetector {
     sc = Math.abs(sN) < TestUtils.EPSILON ? 0.0 : sN / sD;
     tc = Math.abs(tN) < TestUtils.EPSILON ? 0.0 : tN / tD;
 
-    Vector3D_F64 scU = u.copy();
-    Vector3D_F64 tcV = v.copy();
-
-    scU.scale(sc);
-    tcV.scale(-tc);
-
-    Vector3D_F64 scu_tcvdiff = scU.plus(tcV);
-    Vector3D_F64 dP = w.plus(scu_tcvdiff);
-
+    Point3D dP = plus(w, minus(scale(u, sc), scale(v, tc)));
     return dP.norm();
   }
 
@@ -201,9 +157,6 @@ public class CollisionDetector {
   }
 
   private Collection<Collision> getCollisionsAtTime(double t, CollisionTester tester) {
-    if (Math.abs(t - 4.9) < 0.001) {
-      System.out.println(t);
-    }
     List<Collision> collT = Lists.newArrayList();
     for (int i = 0; i < trajectories.size(); i++) {
       for (int j = i + 1; j < trajectories.size(); j++) {

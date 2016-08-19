@@ -1,5 +1,6 @@
-package applications.trajectory.points;
+package applications.trajectory.geom;
 
+import applications.trajectory.geom.point.Point3D;
 import org.junit.Test;
 
 import static com.google.common.truth.Truth.assertThat;

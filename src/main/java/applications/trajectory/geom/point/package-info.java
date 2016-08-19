@@ -3,4 +3,4 @@
  *
  * @author Kristof Coninx.
  */
-package applications.trajectory.points;
+package applications.trajectory.geom.point;

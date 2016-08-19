@@ -1,7 +1,7 @@
 package applications.parrot.tumsim;
 
 import applications.trajectory.Trajectories;
-import applications.trajectory.points.Point4D;
+import applications.trajectory.geom.point.Point4D;
 import choreo.Choreography;
 import control.FiniteTrajectory4d;
 import control.Trajectory4d;
