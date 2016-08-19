@@ -10,7 +10,7 @@ import control.dto.Pose;
  * @author Hoang Tung Dinh
  */
 // TODO: This interface has only one implementation. It's going to be removed in the future.
-public interface Velocity4dService extends VelocityService {
+public interface Velocity4dService {
   /**
    * Sends an inertial frame velocity message to the drone. The velocity includes four components,
    * including three velocity components in the x-y-z coordinate and one velocity component for the
