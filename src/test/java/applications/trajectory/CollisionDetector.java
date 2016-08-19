@@ -9,6 +9,7 @@ import control.Trajectory4d;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 import static applications.trajectory.TrajectoryUtils.sampleTrajectory;
 import static applications.trajectory.geom.point.Point3D.dot;
@@ -20,26 +21,28 @@ import static applications.trajectory.geom.point.Point3D.scale;
 /** @author Kristof Coninx <kristof.coninx AT cs.kuleuven.be> */
 public class CollisionDetector {
   private static final double DEFAULT_MINIMUM_DISTANCE = 1;
-  private static final double DEFAULT_TIME_DELTA = 0.1;
+  private static final double DEFAULT_TIME_DELTA = 0.01;
+  private static final double EPS = 1.0E-8;
   private static final CollisionTester SINGLE_SAMPLE_DISTANCE_BASED_COLLISION =
       new CollisionTester() {
 
         @Override
-        public boolean isCollision(
+        public Optional<Collision> isCollision(
             double t, FiniteTrajectory4d first, FiniteTrajectory4d second, double minimumDistance) {
           Point3D firstPoint = project(sampleTrajectory(first, t));
           Point3D secondPoint = project(sampleTrajectory(second, t));
-          if (Point3D.distance(firstPoint, secondPoint) < minimumDistance - TestUtils.EPSILON) {
-            return true;
+          double actualDistance = Point3D.distance(firstPoint, secondPoint);
+          if (actualDistance < minimumDistance - TestUtils.EPSILON) {
+            return Optional.of(Collision.create(t, actualDistance, first, second));
           }
-          return false;
+          return Optional.empty();
         }
       };
   private static final CollisionTester TWO_SAMPLE_LINE_DISTANCE_BASED_COLLISION =
       new CollisionTester() {
 
         @Override
-        public boolean isCollision(
+        public Optional<Collision> isCollision(
             double t, FiniteTrajectory4d first, FiniteTrajectory4d second, double minimumDistance) {
           Point3D firstPointT1 = project(sampleTrajectory(first, t));
           Point3D secondPointT1 = project(sampleTrajectory(first, t + DEFAULT_TIME_DELTA));
@@ -50,10 +53,14 @@ public class CollisionDetector {
           LineSegment secondSeg = LineSegment.create(firstPointT2, secondPointT2);
           double distance = distance(firstSeg, secondSeg);
 
-          if (distance < minimumDistance - TestUtils.EPSILON) {
-            return true;
+          double boundary =
+              minimumDistance
+                  - DEFAULT_TIME_DELTA * (BasicTrajectory.MAX_ABSOLUTE_VELOCITY)
+                  - TestUtils.EPSILON;
+          if (distance < boundary) {
+            return Optional.of(Collision.create(t, distance, first, second));
           }
-          return false;
+          return Optional.empty();
         }
       };
 
@@ -131,7 +138,7 @@ public class CollisionDetector {
   }
 
   public List<Collision> findCollisions() {
-    return sampleForCollisions(SINGLE_SAMPLE_DISTANCE_BASED_COLLISION);
+    return sampleForCollisions(TWO_SAMPLE_LINE_DISTANCE_BASED_COLLISION);
   }
 
   private List<Collision> sampleForCollisions(CollisionTester tester) {
@@ -160,25 +167,26 @@ public class CollisionDetector {
     List<Collision> collT = Lists.newArrayList();
     for (int i = 0; i < trajectories.size(); i++) {
       for (int j = i + 1; j < trajectories.size(); j++) {
-        if (tester.isCollision(t, trajectories.get(i), trajectories.get(j), minimumDistance)) {
-          collT.add(Collision.create(t, trajectories.get(i), trajectories.get(j)));
+        Optional<Collision> possibleColl =
+            tester.isCollision(t, trajectories.get(i), trajectories.get(j), minimumDistance);
+        if (possibleColl.isPresent()) {
+          collT.add(possibleColl.get());
         }
       }
     }
     return collT;
   }
 
-  public List<Collision> findDangerouslyDisconnectedSegments() {
-    return sampleForCollisions(TWO_SAMPLE_LINE_DISTANCE_BASED_COLLISION);
-  }
-
   @AutoValue
   public abstract static class Collision {
-    public static Collision create(double time, Trajectory4d first, Trajectory4d second) {
-      return new AutoValue_CollisionDetector_Collision(time, first, second);
+    public static Collision create(
+        double time, double distance, Trajectory4d first, Trajectory4d second) {
+      return new AutoValue_CollisionDetector_Collision(time, distance, first, second);
     }
 
     public abstract double getTimePoint();
+
+    public abstract double getActualDistance();
 
     public abstract Trajectory4d getFirstCollidingTrajectory();
 
@@ -193,7 +201,7 @@ public class CollisionDetector {
      * @param minimumDistance The minimum allowed distance between two trajectories.
      * @return true if a collision occurs.
      */
-    boolean isCollision(
+    Optional<Collision> isCollision(
         double t, FiniteTrajectory4d first, FiniteTrajectory4d second, double minimumDistance);
   }
 }

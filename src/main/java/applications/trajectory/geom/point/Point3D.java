@@ -96,7 +96,7 @@ public abstract class Point3D {
 
   /** @return The norm of this point p as |p| = sqrt(x*x + y*y + z*z). */
   public double norm() {
-    return Math.sqrt(getX() * getX() + getY() * getY() + getZ() * getZ());
+    return Math.sqrt(dot(this,this));
   }
 
   /** @return The X coordinate. */

@@ -264,7 +264,7 @@ public final class CorkscrewTrajectory4D extends PeriodicTrajectory implements F
       if (atEnd) {
         return endPoint;
       }
-      if (linear.getDesiredPosition(timeInSeconds) >= endPoint) {
+      if (linear.getDesiredPosition(timeInSeconds) > endPoint) {
         markEnd();
         return endPoint;
       }

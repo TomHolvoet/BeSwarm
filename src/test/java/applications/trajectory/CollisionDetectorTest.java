@@ -24,6 +24,7 @@ public class CollisionDetectorTest {
   private FiniteTrajectory4d circ2;
   private FiniteTrajectory4d cork1;
   private FiniteTrajectory4d cork1_phase;
+  private double EPS = 0.01;
 
   @Before
   public void setup() {
@@ -67,25 +68,34 @@ public class CollisionDetectorTest {
                     .build())
             .forTime(100)
             .build();
-    this.cork1 =
+
+    FiniteTrajectory4d cork =
         Trajectories.newCorkscrewTrajectory(
             Point4D.create(1, 1, 1, 0), Point3D.create(10, 10, 10), 0.5, 1, 0.10, 0);
+    this.cork1 =
+        Choreography.builder()
+            .withTrajectory(cork)
+            .forTime(cork.getTrajectoryDuration() - EPS)
+            .build();
 
-    this.cork1_phase =
+    cork =
         Trajectories.newCorkscrewTrajectory(
             Point4D.create(1, 1, 1, 0), Point3D.create(10, 10, 10), 0.5, 1, 0.10, Math.PI);
+    this.cork1_phase =
+        Choreography.builder()
+            .withTrajectory(cork)
+            .forTime(cork.getTrajectoryDuration() - EPS)
+            .build();
   }
 
   @Test
   public void testCollisionDetectAtPoint() {
     List<Collision> collisions =
-        new CollisionDetector(Lists.newArrayList(holdPos, lin1), 1)
-            .findDangerouslyDisconnectedSegments();
-    System.out.println(collisions);
+        new CollisionDetector(Lists.newArrayList(holdPos, lin1), 1).findCollisions();
     assertTrue(isCollisionPresentFor(9.9, collisions));
     assertTrue(isCollisionPresentFor(8.5, collisions));
     assertTrue(isCollisionPresentFor(8.1, collisions));
-    assertTrue(isCollisionPresentFor(8.0, collisions));
+    assertFalse(isCollisionPresentFor(8.0, collisions));
     assertFalse(isCollisionPresentFor(7.9, collisions));
     assertFalse(isCollisionPresentFor(7.8, collisions));
   }
@@ -117,7 +127,7 @@ public class CollisionDetectorTest {
   public void testCorkscrew() {
     List<Collision> collisions =
         new CollisionDetector(Lists.newArrayList(cork1, cork1_phase), 1).findCollisions();
-    assertTrue(collisions.isEmpty());
+    assertTrue("Found " + collisions.size() + " collisions: " + collisions, collisions.isEmpty());
   }
 
   @Test
@@ -143,11 +153,6 @@ public class CollisionDetectorTest {
 
     List<Collision> collisions =
         new CollisionDetector(Lists.newArrayList(t1, t2), 1).findCollisions();
-    t1 = t1Builder.build();
-    t2 = t2Builder.build();
-    List<Collision> disconnects =
-        new CollisionDetector(Lists.newArrayList(t1, t2), 1).findDangerouslyDisconnectedSegments();
-    assertTrue(collisions.isEmpty());
-    assertFalse(disconnects.isEmpty());
+    assertFalse("Found " + collisions.size() + " collisions: " + collisions, collisions.isEmpty());
   }
 }
