@@ -4,8 +4,8 @@ import applications.ExampleFlight;
 import applications.trajectory.TrajectoryServer;
 import com.google.common.collect.ImmutableList;
 import commands.Command;
-import commands.FollowTrajectory;
 import commands.WaitForLocalizationDecorator;
+import commands.bebopcommands.BebopFollowTrajectory;
 import commands.bebopcommands.BebopHover;
 import commands.bebopcommands.BebopLand;
 import commands.bebopcommands.BebopTakeOff;
@@ -153,8 +153,8 @@ public abstract class AbstractBebopExample extends AbstractNodeMain implements T
     exampleFlight.fly();
   }
 
-  private static Task createEmergencyTask(LandService landService,
-      FlyingStateService flyingStateService) {
+  private static Task createEmergencyTask(
+      LandService landService, FlyingStateService flyingStateService) {
     final Command land = BebopLand.create(landService, flyingStateService);
     return Task.create(ImmutableList.of(land), TaskType.FIRST_ORDER_EMERGENCY);
   }
@@ -183,8 +183,8 @@ public abstract class AbstractBebopExample extends AbstractNodeMain implements T
     commands.add(hoverFiveSecond);
 
     final Command followTrajectory =
-        FollowTrajectory.builder()
-            .withVelocityService(velocity4dService)
+        BebopFollowTrajectory.builder()
+            .withVelocity4dService(velocity4dService)
             .withStateEstimator(stateEstimator)
             .withTimeProvider(RosTime.create(connectedNode))
             .withTrajectory4d(trajectory4d)

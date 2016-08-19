@@ -34,7 +34,16 @@ public final class BebopFollowTrajectory extends AbstractParrotFollowTrajectory 
         velocity4dService);
   }
 
-  private static final class Builder extends AbstractParrotFollowTrajectory.ParrotBuilder<Builder> {
+  /**
+   * Creates a builder for {@link BebopFollowTrajectory}.
+   *
+   * @return a builder for {@link BebopFollowTrajectory}
+   */
+  public static Builder builder() {
+    return new Builder();
+  }
+
+  public static final class Builder extends AbstractParrotFollowTrajectory.ParrotBuilder<Builder> {
 
     private Builder() {}
 

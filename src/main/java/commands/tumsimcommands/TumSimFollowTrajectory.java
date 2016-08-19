@@ -34,7 +34,16 @@ public final class TumSimFollowTrajectory extends AbstractParrotFollowTrajectory
         velocity4dService);
   }
 
-  private static final class Builder extends AbstractParrotFollowTrajectory.ParrotBuilder<Builder> {
+  /**
+   * Creates a builder for {@link TumSimFollowTrajectory}.
+   *
+   * @return a builder for {@link TumSimFollowTrajectory}
+   */
+  public static Builder builder() {
+    return new Builder();
+  }
+
+  public static final class Builder extends AbstractParrotFollowTrajectory.ParrotBuilder<Builder> {
 
     private Builder() {}
 

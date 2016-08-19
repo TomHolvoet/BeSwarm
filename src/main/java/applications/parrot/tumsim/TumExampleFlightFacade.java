@@ -3,9 +3,9 @@ package applications.parrot.tumsim;
 import applications.ExampleFlight;
 import com.google.common.collect.ImmutableList;
 import commands.Command;
-import commands.FollowTrajectory;
 import commands.WaitForLocalizationDecorator;
 import commands.bebopcommands.BebopHover;
+import commands.tumsimcommands.TumSimFollowTrajectory;
 import commands.tumsimcommands.TumSimLand;
 import commands.tumsimcommands.TumSimTakeoff;
 import control.FiniteTrajectory4d;
@@ -57,8 +57,8 @@ final class TumExampleFlightFacade {
     commands.add(hoverFiveSecond);
 
     final Command followTrajectory =
-        FollowTrajectory.builder()
-            .withVelocityService(velocity4dService)
+        TumSimFollowTrajectory.builder()
+            .withVelocity4dService(velocity4dService)
             .withStateEstimator(stateEstimator)
             .withTimeProvider(RosTime.create(connectedNode))
             .withTrajectory4d(trajectory4d)

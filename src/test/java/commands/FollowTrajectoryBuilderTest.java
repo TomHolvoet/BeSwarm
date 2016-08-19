@@ -1,18 +1,19 @@
 package commands;
 
+import commands.bebopcommands.BebopFollowTrajectory;
 import control.PidParameters;
 import control.Trajectory4d;
 import control.localization.StateEstimator;
 import org.junit.Before;
 import org.junit.Test;
-import services.VelocityService;
+import services.Velocity4dService;
 import utils.TestUtils;
 
 import static org.mockito.Mockito.RETURNS_MOCKS;
 import static org.mockito.Mockito.mock;
 
 /**
- * Tests for {@link FollowTrajectory}'s builder.
+ * Tests for {@link BebopFollowTrajectory}'s builder.
  *
  * @author Hoang Tung Dinh
  */
@@ -30,8 +31,8 @@ public class FollowTrajectoryBuilderTest extends AbstractBuilderTest {
   @Override
   void createAndExecuteCommand(ArgumentHolder argumentHolder) {
     final Command followTrajectory =
-        FollowTrajectory.builder()
-            .withVelocityService(argumentHolder.velocityService())
+        BebopFollowTrajectory.builder()
+            .withVelocity4dService(argumentHolder.velocityService())
             .withStateEstimator(argumentHolder.stateEstimator())
             .withTimeProvider(argumentHolder.timeProvider())
             .withTrajectory4d(trajectory4d)
@@ -52,8 +53,8 @@ public class FollowTrajectoryBuilderTest extends AbstractBuilderTest {
 
   @Test(expected = NullPointerException.class)
   public void testMissingTimeProvider() {
-    FollowTrajectory.builder()
-        .withVelocityService(mock(VelocityService.class))
+    BebopFollowTrajectory.builder()
+        .withVelocity4dService(mock(Velocity4dService.class))
         .withStateEstimator(mock(StateEstimator.class))
         .withTrajectory4d(mock(Trajectory4d.class))
         .withDurationInSeconds(1)
