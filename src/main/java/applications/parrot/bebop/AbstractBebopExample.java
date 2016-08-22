@@ -11,7 +11,7 @@ import commands.bebopcommands.BebopLand;
 import commands.bebopcommands.BebopTakeOff;
 import control.FiniteTrajectory4d;
 import control.PidParameters;
-import control.localization.BebopStateEstimatorWithPoseStampedAndOdom;
+import control.localization.BebopStateEstimatorWithPoseStamped;
 import control.localization.StateEstimator;
 import geometry_msgs.PoseStamped;
 import nav_msgs.Odometry;
@@ -125,8 +125,7 @@ public abstract class AbstractBebopExample extends AbstractNodeMain implements T
     final TakeOffService takeOffService = parrotServiceFactory.createTakeOffService();
     final ResetService resetService = parrotServiceFactory.createResetService();
     final StateEstimator stateEstimator =
-        BebopStateEstimatorWithPoseStampedAndOdom.create(
-            getPoseSubscriber(connectedNode), getOdometrySubscriber(connectedNode));
+        BebopStateEstimatorWithPoseStamped.create(getPoseSubscriber(connectedNode));
     final Task flyTask =
         createFlyTask(
             connectedNode,
