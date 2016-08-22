@@ -7,38 +7,18 @@ import control.dto.Velocity;
 
 import javax.annotation.Nullable;
 
-import static com.google.common.base.Preconditions.checkArgument;
-
 /**
- * A decorator filter for the {@link BodyFrameVelocity} of a {@link Velocity4dService}. The filter
- * is to remove small noises when sending the velocity to the drone. If the difference between two
- * consecutive velocity values is insignificant, the second velocity value will be set to the first
- * velocity value.
+ * An abstract decorator filter for the {@link BodyFrameVelocity} of a {@link Velocity4dService}.
  *
  * @author Hoang Tung Dinh
  */
-public final class BodyFrameVelocityFilter implements Velocity4dService {
+abstract class AbstractBodyFrameVelocityFilter implements Velocity4dService {
 
   private final Velocity4dService velocity4dService;
-  private final double minimumDifference;
   @Nullable private BodyFrameVelocity lastBodyFrameVelocity;
 
-  private BodyFrameVelocityFilter(Velocity4dService velocity4dService, double minimumDifference) {
-    checkArgument(minimumDifference > 0, "minimumDifference must be positive.");
+  AbstractBodyFrameVelocityFilter(Velocity4dService velocity4dService) {
     this.velocity4dService = velocity4dService;
-    this.minimumDifference = minimumDifference;
-  }
-
-  /**
-   * Creates an instance of {@link BodyFrameVelocityFilter}.
-   *
-   * @param velocity4dService the velocity service to be filtered
-   * @param minimumDifference the minimum difference between two consecutive velocity values
-   * @return an instance of {@link BodyFrameVelocityFilter}
-   */
-  public static BodyFrameVelocityFilter create(
-      Velocity4dService velocity4dService, double minimumDifference) {
-    return new BodyFrameVelocityFilter(velocity4dService, minimumDifference);
   }
 
   @Override
@@ -68,12 +48,5 @@ public final class BodyFrameVelocityFilter implements Velocity4dService {
         .build();
   }
 
-  private double filter(double lastVelocity, double currentVelocity) {
-    if (currentVelocity > lastVelocity - minimumDifference
-        && currentVelocity < lastVelocity + minimumDifference) {
-      return lastVelocity;
-    } else {
-      return currentVelocity;
-    }
-  }
+  abstract double filter(double lastVelocity, double currentVelocity);
 }

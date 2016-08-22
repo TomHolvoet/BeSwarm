@@ -11,20 +11,21 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 /**
- * Tests for {@link BodyFrameVelocityFilter}
+ * Tests for {@link MinDiffBodyFrameVelocityFilter}.
  *
  * @author Hoang Tung Dinh
  */
-public class BodyFrameVelocityFilterTest {
+public class MinDiffBodyFrameVelocityFilterTest {
   @Test(expected = IllegalArgumentException.class)
-  public void testIllegalMaxDifference() {
-    BodyFrameVelocityFilter.create(mock(Velocity4dService.class), -0.1);
+  public void testIllegalMinDifference() {
+    MinDiffBodyFrameVelocityFilter.create(mock(Velocity4dService.class), -0.1);
   }
 
   @Test
   public void testFilter() {
     final Velocity4dService velocity4dService = mock(Velocity4dService.class);
-    final Velocity4dService velocityFilter = BodyFrameVelocityFilter.create(velocity4dService, 0.1);
+    final Velocity4dService velocityFilter =
+        MinDiffBodyFrameVelocityFilter.create(velocity4dService, 0.1);
 
     final ArgumentCaptor<BodyFrameVelocity> argumentCaptor =
         ArgumentCaptor.forClass(BodyFrameVelocity.class);
