@@ -1,6 +1,6 @@
 package applications.trajectory;
 
-import applications.trajectory.points.Point4D;
+import applications.trajectory.geom.point.Point4D;
 import com.google.common.collect.Lists;
 import control.FiniteTrajectory4d;
 import org.junit.Before;
@@ -20,7 +20,7 @@ public class WiggleTrajectoryTest {
 
   @Before
   public void setUp() {
-      this.distance = 1;
+    this.distance = 1;
     int times = 3;
     this.angle = Math.PI / 2;
     Point4D p = Point4D.create(CENTERX, CENTERY, CENTERZ, angle);
