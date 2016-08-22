@@ -10,6 +10,7 @@ import control.localization.StateEstimator;
 import org.junit.Before;
 import org.junit.Test;
 import services.Velocity4dService;
+import time.TimeProvider;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.RETURNS_MOCKS;
@@ -28,6 +29,7 @@ public abstract class AbstractBuilderTest {
   private PidParameters pidLinearY;
   private PidParameters pidLinearZ;
   private PidParameters pidAngularZ;
+  private TimeProvider timeProvider;
 
   private static void checkCorrectPidParametersCalled(PidParameters pidParameters) {
     verify(pidParameters, atLeastOnce()).lagTimeInSeconds();
@@ -41,10 +43,13 @@ public abstract class AbstractBuilderTest {
   }
 
   private static void checkCorrectServicesCalled(
-      Velocity4dService velocity4dService, StateEstimator stateEstimator) {
+      Velocity4dService velocity4dService,
+      StateEstimator stateEstimator,
+      TimeProvider timeProvider) {
     verify(velocity4dService, atLeastOnce())
-        .sendVelocity4dMessage(any(InertialFrameVelocity.class), any(Pose.class));
+        .sendInertialFrameVelocity(any(InertialFrameVelocity.class), any(Pose.class));
     verify(stateEstimator, atLeastOnce()).getCurrentState();
+    verify(timeProvider, atLeastOnce()).getCurrentTimeSeconds();
   }
 
   abstract void createAndExecuteCommand(ArgumentHolder argumentHolder);
@@ -62,6 +67,7 @@ public abstract class AbstractBuilderTest {
     pidLinearY = mock(PidParameters.class, RETURNS_MOCKS);
     pidLinearZ = mock(PidParameters.class, RETURNS_MOCKS);
     pidAngularZ = mock(PidParameters.class, RETURNS_MOCKS);
+    timeProvider = mock(TimeProvider.class);
   }
 
   @Test
@@ -75,12 +81,13 @@ public abstract class AbstractBuilderTest {
             .pidLinearZ(pidLinearZ)
             .pidAngularZ(pidAngularZ)
             .durationInSeconds(DURATION_IN_SECONDS)
+            .timeProvider(timeProvider)
             .build();
 
     createAndExecuteCommand(argumentHolder);
     checkCorrectExtraMethodsCalled();
 
-    checkCorrectServicesCalled(velocity4dService, stateEstimator);
+    checkCorrectServicesCalled(velocity4dService, stateEstimator, timeProvider);
     checkCorrectPidParametersCalled(pidLinearX);
     checkCorrectPidParametersCalled(pidLinearY);
     checkCorrectPidParametersCalled(pidLinearZ);
@@ -107,6 +114,8 @@ public abstract class AbstractBuilderTest {
 
     abstract double durationInSeconds();
 
+    abstract TimeProvider timeProvider();
+
     @AutoValue.Builder
     public abstract static class Builder {
       public abstract Builder velocityService(Velocity4dService value);
@@ -122,6 +131,8 @@ public abstract class AbstractBuilderTest {
       public abstract Builder pidAngularZ(PidParameters value);
 
       public abstract Builder durationInSeconds(double value);
+
+      public abstract Builder timeProvider(TimeProvider value);
 
       public abstract ArgumentHolder build();
     }

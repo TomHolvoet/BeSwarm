@@ -8,7 +8,7 @@ import std_msgs.Empty;
 import static org.mockito.Mockito.mock;
 
 /** @author Hoang Tung Dinh */
-public class ParrotLandServiceTest extends ParrotTakeOffAndLandServiceTest<Empty> {
+public class ParrotLandServiceTest extends AbstractParrotServiceTest<Empty> {
 
   @Override
   String createTopicName() {

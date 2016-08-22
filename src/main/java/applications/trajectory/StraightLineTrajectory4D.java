@@ -61,14 +61,6 @@ class StraightLineTrajectory4D extends BasicTrajectory implements FiniteTrajecto
     this.currentTraj = moveTraj;
   }
 
-  private void setHoldPosition(boolean shouldHold) {
-    if (shouldHold) {
-      this.currentTraj = holdTraj;
-    } else {
-      this.currentTraj = moveTraj;
-    }
-  }
-
   @Override
   public double getDesiredPositionX(double timeInSeconds) {
     final double currentTime = getRelativeTime(timeInSeconds);
@@ -142,6 +134,14 @@ class StraightLineTrajectory4D extends BasicTrajectory implements FiniteTrajecto
     protected void positionDelegate(double timeInSeconds) {
       if (timeInSeconds >= endTime) {
         setHoldPosition(true);
+      }
+    }
+
+    private void setHoldPosition(boolean shouldHold) {
+      if (shouldHold) {
+        currentTraj = holdTraj;
+      } else {
+        currentTraj = moveTraj;
       }
     }
   }

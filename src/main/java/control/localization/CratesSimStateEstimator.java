@@ -8,25 +8,30 @@ import control.dto.Pose;
 import control.dto.Velocity;
 import hal_quadrotor.State;
 import services.rossubscribers.MessagesSubscriberService;
+import time.TimeProvider;
 import utils.math.Transformations;
 
 /** @author Hoang Tung Dinh */
 public final class CratesSimStateEstimator implements StateEstimator {
-  private static final double NANO_SECOND_TO_SECOND = 1000000000.0;
   private final MessagesSubscriberService<State> stateSubscriber;
+  private final TimeProvider timeProvider;
 
-  private CratesSimStateEstimator(MessagesSubscriberService<State> stateSubscriber) {
+  private CratesSimStateEstimator(
+      MessagesSubscriberService<State> stateSubscriber, TimeProvider timeProvider) {
     this.stateSubscriber = stateSubscriber;
+    this.timeProvider = timeProvider;
   }
 
   /**
    * Creates a new state estimator for a drone in the Crates simulator.
    *
    * @param stateSubscriber the state subscriber
+   * @param timeProvider the time provider
    * @return a state estimator
    */
-  public static CratesSimStateEstimator create(MessagesSubscriberService<State> stateSubscriber) {
-    return new CratesSimStateEstimator(stateSubscriber);
+  public static CratesSimStateEstimator create(
+      MessagesSubscriberService<State> stateSubscriber, TimeProvider timeProvider) {
+    return new CratesSimStateEstimator(stateSubscriber, timeProvider);
   }
 
   @Override
@@ -58,7 +63,7 @@ public final class CratesSimStateEstimator implements StateEstimator {
     final InertialFrameVelocity inertialFrameVelocity =
         Transformations.bodyFrameVelocityToInertialFrameVelocity(bodyFrameVelocity, pose);
 
-    final double timeStampInSeconds = System.nanoTime() / NANO_SECOND_TO_SECOND;
+    final double timeStampInSeconds = timeProvider.getCurrentTimeSeconds();
     return Optional.of(DroneStateStamped.create(pose, inertialFrameVelocity, timeStampInSeconds));
   }
 }

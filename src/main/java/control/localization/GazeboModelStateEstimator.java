@@ -10,18 +10,22 @@ import geometry_msgs.Point;
 import geometry_msgs.Quaternion;
 import geometry_msgs.Twist;
 import services.rossubscribers.MessagesSubscriberService;
+import time.TimeProvider;
 import utils.math.Transformations;
 
 /** @author Hoang Tung Dinh */
 public final class GazeboModelStateEstimator implements StateEstimator {
-  private static final double NANO_SECOND_TO_SECOND = 1000000000.0;
   private final MessagesSubscriberService<ModelStates> modelStateSubscriber;
   private final String modelName;
+  private final TimeProvider timeProvider;
 
   private GazeboModelStateEstimator(
-      MessagesSubscriberService<ModelStates> modelStateSubscriber, String modelName) {
+      MessagesSubscriberService<ModelStates> modelStateSubscriber,
+      String modelName,
+      TimeProvider timeProvider) {
     this.modelStateSubscriber = modelStateSubscriber;
     this.modelName = modelName;
+    this.timeProvider = timeProvider;
   }
 
   /**
@@ -31,11 +35,14 @@ public final class GazeboModelStateEstimator implements StateEstimator {
    * @param modelStateSubscriber the rostopic subscriber to a topic publishing model state messages
    * @param modelName the name of the drone model. A model state topic in Gazebo contains the states
    *     of all models in the simulation environment, while the drone is one of those models.
+   * @param timeProvider the time provider
    * @return a state estimator instance
    */
   public static GazeboModelStateEstimator create(
-      MessagesSubscriberService<ModelStates> modelStateSubscriber, String modelName) {
-    return new GazeboModelStateEstimator(modelStateSubscriber, modelName);
+      MessagesSubscriberService<ModelStates> modelStateSubscriber,
+      String modelName,
+      TimeProvider timeProvider) {
+    return new GazeboModelStateEstimator(modelStateSubscriber, modelName, timeProvider);
   }
 
   private static InertialFrameVelocity getInertialFrameVelocity(
@@ -83,7 +90,7 @@ public final class GazeboModelStateEstimator implements StateEstimator {
     final InertialFrameVelocity inertialFrameVelocity =
         getInertialFrameVelocity(modelStates, index);
 
-    final double timeStampInSeconds = System.nanoTime() / NANO_SECOND_TO_SECOND;
+    final double timeStampInSeconds = timeProvider.getCurrentTimeSeconds();
     return Optional.of(DroneStateStamped.create(pose, inertialFrameVelocity, timeStampInSeconds));
   }
 }

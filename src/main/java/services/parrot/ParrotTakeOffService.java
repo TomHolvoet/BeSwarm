@@ -1,6 +1,8 @@
 package services.parrot;
 
 import org.ros.node.topic.Publisher;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import services.TakeOffService;
 import std_msgs.Empty;
 
@@ -13,6 +15,7 @@ import static com.google.common.base.Preconditions.checkArgument;
  */
 final class ParrotTakeOffService implements TakeOffService {
 
+  private static final Logger logger = LoggerFactory.getLogger(ParrotTakeOffService.class);
   private final Publisher<Empty> publisher;
 
   private ParrotTakeOffService(Publisher<Empty> publisher) {
@@ -37,10 +40,6 @@ final class ParrotTakeOffService implements TakeOffService {
   public void sendTakingOffMessage() {
     final Empty empty = publisher.newMessage();
     publisher.publish(empty);
-  }
-
-  @Override
-  public void sendTakingOffMessage(double desiredAltitude) {
-    throw new UnsupportedOperationException("Parrot drone does not support this service");
+    logger.debug("Sent take off message to {}", publisher.getTopicName());
   }
 }

@@ -8,8 +8,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import services.TakeOffService;
 
-import static com.google.common.base.Preconditions.checkArgument;
-
 /** @author Hoang Tung Dinh */
 final class CratesTakeOffService implements TakeOffService {
   @VisibleForTesting static final double DEFAULT_TAKE_OFF_ALTITUDE = 5;
@@ -33,19 +31,9 @@ final class CratesTakeOffService implements TakeOffService {
 
   @Override
   public void sendTakingOffMessage() {
-    sendTakingOffMessage(DEFAULT_TAKE_OFF_ALTITUDE);
-  }
-
-  @Override
-  public void sendTakingOffMessage(double desiredAltitude) {
-    checkArgument(
-        desiredAltitude >= 3,
-        "Since the take off controller in the crates simulator uses 2.0 meters as the "
-            + "distance consider reached, the desired altitude must be at least "
-            + "3.0 meters, so that the drone can be at 1.0 meter at least.");
     logger.debug("Send taking off messages.");
     final TakeoffRequest takeoffRequest = srvTakeOff.newMessage();
-    takeoffRequest.setAltitude(desiredAltitude);
+    takeoffRequest.setAltitude(DEFAULT_TAKE_OFF_ALTITUDE);
     CratesUtilities.sendRequest(srvTakeOff, takeoffRequest);
   }
 }

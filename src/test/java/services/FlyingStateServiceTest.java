@@ -8,6 +8,7 @@ import org.ros.message.MessageListener;
 import org.ros.node.topic.Subscriber;
 import services.rossubscribers.FlyingState;
 import services.rossubscribers.MessagesSubscriberService;
+import time.TimeProvider;
 
 import java.util.Map;
 
@@ -29,7 +30,7 @@ public abstract class FlyingStateServiceTest<T, U extends Message> {
   public void testUpdateFlyingState() {
     final Subscriber<U> subscriber = mock(Subscriber.class);
     final MessagesSubscriberService<U> flyingStateSubscriber =
-        MessagesSubscriberService.create(subscriber);
+        MessagesSubscriberService.create(subscriber, mock(TimeProvider.class));
 
     final ArgumentCaptor<MessageListener> argumentCaptor =
         ArgumentCaptor.forClass(MessageListener.class);

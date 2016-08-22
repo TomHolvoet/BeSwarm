@@ -9,6 +9,7 @@ import org.ros.node.topic.Publisher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import services.Velocity4dService;
+import time.TimeProvider;
 import utils.math.Transformations;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -26,6 +27,7 @@ final class ParrotVelocity4dService implements Velocity4dService {
       LoggerFactory.getLogger(ParrotVelocity4dService.class.getName() + ".vel");
 
   private final Publisher<Twist> publisher;
+  private final TimeProvider timeProvider;
 
   private final double minLinearX;
   private final double minLinearY;
@@ -39,6 +41,7 @@ final class ParrotVelocity4dService implements Velocity4dService {
 
   private ParrotVelocity4dService(Builder builder) {
     publisher = builder.publisher;
+    timeProvider = builder.timeProvider;
     minLinearX = builder.minLinearX;
     maxLinearX = builder.maxLinearX;
     minLinearY = builder.minLinearY;
@@ -85,14 +88,20 @@ final class ParrotVelocity4dService implements Velocity4dService {
   }
 
   @Override
-  public void sendVelocity4dMessage(InertialFrameVelocity inertialFrameVelocity, Pose pose) {
+  public void sendInertialFrameVelocity(InertialFrameVelocity inertialFrameVelocity, Pose pose) {
     final BodyFrameVelocity bodyFrameVelocity =
         Transformations.inertialFrameVelocityToBodyFrameVelocity(inertialFrameVelocity, pose);
 
+    sendBodyFrameVelocity(bodyFrameVelocity);
+  }
+
+  @Override
+  public void sendBodyFrameVelocity(BodyFrameVelocity bodyFrameVelocity) {
     final BodyFrameVelocity refinedVelocity = getRefinedVelocity(bodyFrameVelocity);
+
     velocityLogger.trace(
         "{} {} {} {} {}",
-        System.nanoTime() / 1.0E09,
+        timeProvider.getCurrentTimeSeconds(),
         refinedVelocity.linearX(),
         refinedVelocity.linearY(),
         refinedVelocity.linearZ(),
@@ -139,6 +148,7 @@ final class ParrotVelocity4dService implements Velocity4dService {
   /** {@code VelocityPublisher} builder static inner class. */
   public static final class Builder {
     private Publisher<Twist> publisher;
+    private TimeProvider timeProvider;
 
     private Double minLinearX;
     private Double minLinearY;
@@ -161,6 +171,18 @@ final class ParrotVelocity4dService implements Velocity4dService {
      */
     public Builder publisher(Publisher<Twist> val) {
       publisher = val;
+      return this;
+    }
+
+    /**
+     * Sets the {@code timeProvider} and returns a reference to this Builder so that the methods can
+     * be chained together.
+     *
+     * @param val the {@code timeProvider} to set
+     * @return a reference to this Builder
+     */
+    public Builder timeProvider(TimeProvider val) {
+      timeProvider = val;
       return this;
     }
 
@@ -268,6 +290,7 @@ final class ParrotVelocity4dService implements Velocity4dService {
      */
     public ParrotVelocity4dService build() {
       checkNotNull(publisher, "missing publisher");
+      checkNotNull(timeProvider, "missing timeProvider");
       checkNotNull(minLinearX, "missing minLinearX");
       checkNotNull(minLinearY, "missing minLinearY");
       checkNotNull(minLinearZ, "missing minLinearZ");

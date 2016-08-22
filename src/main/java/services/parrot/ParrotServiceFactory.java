@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import services.CommonServiceFactory;
 import services.LandService;
+import services.ResetService;
 import services.TakeOffService;
 import services.Velocity4dService;
 import std_msgs.Empty;
@@ -36,8 +37,17 @@ public abstract class ParrotServiceFactory implements CommonServiceFactory {
     final String topicName = "/" + droneName + "/land";
     final LandService landService =
         ParrotLandService.create(connectedNode.<Empty>newPublisher(topicName, Empty._TYPE));
-    logger.info("Land service connected to {}", topicName);
+    logger.info("AbstractParrotLand service connected to {}", topicName);
     return landService;
+  }
+
+  /**
+   * Creates the reset service for a parrot drone.
+   * @return a {@link ResetService}
+   */
+  public final ResetService createResetService() {
+    final String topicName = "/" + droneName + "/reset";
+    return BebopResetService.create(connectedNode.<Empty>newPublisher(topicName, Empty._TYPE));
   }
 
   /**
