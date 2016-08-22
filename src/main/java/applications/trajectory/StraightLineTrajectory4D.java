@@ -1,8 +1,6 @@
 package applications.trajectory;
 
 import applications.trajectory.geom.point.Point4D;
-import control.FiniteTrajectory4d;
-import control.Trajectory4d;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
@@ -17,135 +15,19 @@ import static com.google.common.base.Preconditions.checkArgument;
  *
  * @author Kristof Coninx <kristof.coninx AT cs.kuleuven.be>
  */
-class StraightLineTrajectory4D extends BasicTrajectory implements FiniteTrajectory4d {
-  private final Point4D srcpoint;
-  private final Point4D targetpoint;
-  private final double velocity;
-  private final Trajectory4d moveTraj;
-  private final Trajectory4d holdTraj;
-  private final double endTime;
-  private final double totalDistance;
-  private Trajectory4d currentTraj;
+class StraightLineTrajectory4D extends AbstractUncheckedStraightLineTrajectory4D {
 
-  StraightLineTrajectory4D(Point4D srcpoint, Point4D targetpoint, double velocity) {
-    this(srcpoint, targetpoint, velocity, 1);
-  }
-
-  StraightLineTrajectory4D(
-      Point4D srcpoint, Point4D targetpoint, double velocity, double velocityCutoffTimePercentage) {
-    this.srcpoint = srcpoint;
-    this.targetpoint = targetpoint;
-    this.velocity = velocity;
-    checkArgument(velocity > 0, "The provided velocity should be strictly greater than 0.");
-    checkArgument(
-        velocity <= BasicTrajectory.MAX_ABSOLUTE_VELOCITY,
-        "The provided velocity should be smaller than BasicTrajectory" + ".MAX_ABSOLUTE_VELOCITY");
-    checkArgument(
-        velocityCutoffTimePercentage <= 1 && velocityCutoffTimePercentage > 0,
-        "Velocity cutoff percentage should represent a percantage between 0 and 1.");
-    Point4D diff = Point4D.minus(targetpoint, srcpoint);
-    this.totalDistance =
-        StrictMath.sqrt(
-            StrictMath.pow(diff.getX(), 2)
-                + StrictMath.pow(diff.getY(), 2)
-                + StrictMath.pow(diff.getZ(), 2));
-    double speed = velocity;
-    checkArgument(totalDistance > 0, "Distance to travel cannot be zero.");
-    this.endTime = totalDistance / speed;
-    Point4D speedComponent =
-        Point4D.create(
-            velocity * (diff.getX() / totalDistance),
-            velocity * (diff.getY() / totalDistance),
-            velocity * (diff.getZ() / totalDistance),
-            diff.getAngle() / endTime);
-    this.holdTraj = new HoldPositionTrajectory4D(targetpoint);
-    this.moveTraj =
-        new HoldPositionForwarder(srcpoint, speedComponent, endTime * velocityCutoffTimePercentage);
-    this.currentTraj = moveTraj;
-  }
-
-  private void setHoldPosition(boolean shouldHold) {
-    if (shouldHold) {
-      this.currentTraj = holdTraj;
-    } else {
-      this.currentTraj = moveTraj;
-    }
-  }
-
-  @Override
-  public double getDesiredPositionX(double timeInSeconds) {
-    final double currentTime = getRelativeTime(timeInSeconds);
-    return getCurrentTrajectory().getDesiredPositionX(currentTime);
-  }
-
-  @Override
-  public double getDesiredPositionY(double timeInSeconds) {
-    final double currentTime = getRelativeTime(timeInSeconds);
-    return getCurrentTrajectory().getDesiredPositionY(currentTime);
-  }
-
-  @Override
-  public double getDesiredPositionZ(double timeInSeconds) {
-    final double currentTime = getRelativeTime(timeInSeconds);
-    return getCurrentTrajectory().getDesiredPositionZ(currentTime);
-  }
-
-  @Override
-  public double getDesiredAngleZ(double timeInSeconds) {
-    final double currentTime = getRelativeTime(timeInSeconds);
-    return getCurrentTrajectory().getDesiredAngleZ(currentTime);
-  }
-
-  @Override
-  public String toString() {
-    return "StraightLineTrajectory4D{"
-        + "velocity="
-        + getVelocity()
-        + ", src point="
-        + getSrcpoint()
-        + ", target point="
-        + getTargetpoint()
-        + '}';
-  }
-
-  @Override
-  public double getTrajectoryDuration() {
-    return this.endTime;
-  }
-
-  protected Trajectory4d getCurrentTrajectory() {
-    return currentTraj;
-  }
-
-  public Point4D getSrcpoint() {
-    return srcpoint;
-  }
-
-  public Point4D getTargetpoint() {
-    return targetpoint;
-  }
-
-  public double getVelocity() {
-    return velocity;
-  }
-
-  public final double getTotalDistance() {
-    return totalDistance;
-  }
-
-  private class HoldPositionForwarder extends Trajectory4DForwardingDecorator {
-    private final double endTime;
-
-    HoldPositionForwarder(Point4D srcComp, Point4D speedComp, double endTime) {
-      super(new LinearTrajectory4D(srcComp, speedComp));
-      this.endTime = endTime;
+    StraightLineTrajectory4D(Point4D srcpoint, Point4D targetpoint, double velocity) {
+        this(srcpoint, targetpoint, velocity, 1);
     }
 
-    @Override
-    protected void positionDelegate(double timeInSeconds) {
-      if (timeInSeconds >= endTime) {
-        setHoldPosition(true);
-      }
+    StraightLineTrajectory4D(
+            Point4D srcpoint, Point4D targetpoint, double velocity,
+            double velocityCutoffTimePercentage) {
+        super(srcpoint, targetpoint, velocity, velocityCutoffTimePercentage);
+        checkArgument(
+                velocity <= BasicTrajectory.MAX_ABSOLUTE_VELOCITY,
+                "The provided velocity should be smaller than BasicTrajectory"
+                        + ".MAX_ABSOLUTE_VELOCITY");
     }
-  }
 }
