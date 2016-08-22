@@ -11,7 +11,7 @@ import static com.google.common.base.Preconditions.checkArgument;
  *
  * @author Hoang Tung Dinh
  */
-final class MaxDiffBodyFrameVelocityFilter extends AbstractBodyFrameVelocityFilter {
+public final class MaxDiffBodyFrameVelocityFilter extends AbstractBodyFrameVelocityFilter {
 
   private final double maximumDifference;
 

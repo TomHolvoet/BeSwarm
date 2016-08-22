@@ -10,7 +10,7 @@ import static com.google.common.base.Preconditions.checkArgument;
  *
  * @author Hoang Tung Dinh
  */
-final class MinDiffBodyFrameVelocityFilter extends AbstractBodyFrameVelocityFilter {
+public final class MinDiffBodyFrameVelocityFilter extends AbstractBodyFrameVelocityFilter {
 
   private final double minimumDifference;
 
