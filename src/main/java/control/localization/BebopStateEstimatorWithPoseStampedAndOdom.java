@@ -13,7 +13,11 @@ import org.slf4j.LoggerFactory;
 import services.rossubscribers.MessagesSubscriberService;
 import utils.math.Transformations;
 
-/** @author Hoang Tung Dinh */
+/**
+ * A localization that gets the pose from ArMarker and the velocity from odometry.
+ *
+ * @author Hoang Tung Dinh
+ */
 public final class BebopStateEstimatorWithPoseStampedAndOdom implements StateEstimator {
 
   private static final Logger logger =

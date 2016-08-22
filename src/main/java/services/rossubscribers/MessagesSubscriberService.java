@@ -111,6 +111,7 @@ public class MessagesSubscriberService<T extends Message> {
      * Creates an instance of this class.
      *
      * @param maxQueueSize the maximum size of the queue storing most recent messages
+     * @param timeProvider the time provider
      * @param <U> the type of the message
      * @return an instance of this class
      */
