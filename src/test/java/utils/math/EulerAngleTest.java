@@ -7,7 +7,11 @@ import org.junit.runner.RunWith;
 
 import static com.google.common.truth.Truth.assertThat;
 
-/** @author Hoang Tung Dinh */
+/**
+ * Tests for {@link EulerAngle#computeAngleDistance(double, double)}'s methods.
+ *
+ * @author Hoang Tung Dinh
+ */
 @RunWith(JUnitParamsRunner.class)
 public class EulerAngleTest {
   private static final double DELTA = 0.01;

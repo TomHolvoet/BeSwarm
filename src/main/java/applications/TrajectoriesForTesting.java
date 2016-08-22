@@ -39,6 +39,17 @@ public final class TrajectoriesForTesting {
     return Choreography.builder().withTrajectory(second).forTime(120).build();
   }
 
+  public static FiniteTrajectory4d getLargeCircle() {
+    Trajectory4d second =
+        Trajectories.circleTrajectoryBuilder()
+            .setLocation(Point3D.create(1.5, -2.5, 1.5))
+            .setRadius(1.5)
+            .setFrequency(0.1)
+            .fixYawAt(-Math.PI / 2)
+            .build();
+    return Choreography.builder().withTrajectory(second).forTime(120).build();
+  }
+
   /**
    * This trajectory can work with pid params: 0.5 0.8 for x, 0.2 1.0 for y, 1.0 0.3 for z, 0.3 0.4
    * for yaw

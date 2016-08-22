@@ -1,5 +1,8 @@
 package services.crates;
 
+import hal_quadrotor.Hover;
+import hal_quadrotor.HoverRequest;
+import hal_quadrotor.HoverResponse;
 import hal_quadrotor.Land;
 import hal_quadrotor.LandRequest;
 import hal_quadrotor.LandResponse;
@@ -19,11 +22,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import services.CommonServiceFactory;
 import services.FlyingStateService;
+import services.HoverService;
 import services.LandService;
 import services.TakeOffService;
 import services.Velocity2dService;
 import services.Velocity3dService;
 import services.rossubscribers.MessagesSubscriberService;
+import time.RosTime;
 
 /** @author Hoang Tung Dinh */
 public final class CratesServiceFactory implements CommonServiceFactory {
@@ -61,7 +66,7 @@ public final class CratesServiceFactory implements CommonServiceFactory {
     try {
       return CratesTakeOffService.create(
           connectedNode.<TakeoffRequest, TakeoffResponse>newServiceClient(
-              namePrefix + "controller/Takeoff", Takeoff._TYPE));
+              namePrefix + "controller/AbstractParrotTakeOff", Takeoff._TYPE));
     } catch (ServiceNotFoundException e) {
       logger.info(
           "Take off service not found. Drone: {}. Model: {}. Exception: {}",
@@ -78,11 +83,11 @@ public final class CratesServiceFactory implements CommonServiceFactory {
     try {
       return CratesLandService.create(
           connectedNode.<LandRequest, LandResponse>newServiceClient(
-              namePrefix + "controller/Land", Land._TYPE));
+              namePrefix + "controller/AbstractParrotLand", Land._TYPE));
     } catch (ServiceNotFoundException e) {
       logger.debug(SERVICE_NOT_FOUND, e);
       throw new IllegalStateException(
-          String.format("Land service not found. Drone: %s. Model: %s", droneName, modelName));
+          String.format("AbstractParrotLand service not found. Drone: %s. Model: %s", droneName, modelName));
     }
   }
 
@@ -91,7 +96,8 @@ public final class CratesServiceFactory implements CommonServiceFactory {
     final String topicName = namePrefix + "Truth";
     final MessagesSubscriberService<State> flyingStateSubscriber =
         MessagesSubscriberService.create(
-            connectedNode.<State>newSubscriber(topicName, State._TYPE));
+            connectedNode.<State>newSubscriber(topicName, State._TYPE),
+            RosTime.create(connectedNode));
     return CratesFlyingStateService.create(flyingStateSubscriber);
   }
 
@@ -127,6 +133,23 @@ public final class CratesServiceFactory implements CommonServiceFactory {
       throw new IllegalStateException(
           String.format(
               "Velocity height service not found. Drone: %s. Model: %s", droneName, modelName));
+    }
+  }
+
+  /**
+   * Creates a {@link HoverService} for the drone.
+   *
+   * @return an instance of {@link HoverService}
+   */
+  public HoverService createHoverService() {
+    try {
+      return CratesHoverService.create(
+          connectedNode.<HoverRequest, HoverResponse>newServiceClient(
+              namePrefix + "controller/AbstractHover", Hover._TYPE));
+    } catch (ServiceNotFoundException e) {
+      logger.debug(SERVICE_NOT_FOUND, e);
+      throw new IllegalStateException(
+          String.format("AbstractHover service not found. Drone: %s. Model: %s", droneName, modelName));
     }
   }
 }

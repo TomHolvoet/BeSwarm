@@ -14,6 +14,7 @@ import java.util.Collection;
 public final class KeyboardEmergency implements EmergencyNotifier, MessageObserver<Key> {
   /** The code of the emergency key. */
   @VisibleForTesting static final short EMERGENCY_KEY = Key.KEY_x;
+
   private final Task task;
   private final Collection<TaskExecutor> taskExecutors = new ArrayList<>();
 

@@ -5,7 +5,7 @@ package services;
  *
  * @author Hoang Tung Dinh
  */
-public interface Velocity3dService extends VelocityService {
+public interface Velocity3dService {
   /**
    * Sends a velocity-3d message. This method requires a 3-component velocity in x-y-z coordinate
    * and the desired angular-z position (the yaw) as the arguments.

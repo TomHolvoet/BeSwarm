@@ -19,10 +19,10 @@ final class CratesFlyingStateService extends AbstractFlyingStateService<State> {
       ImmutableMap.<String, CratesFlyingState>builder()
           .put("AnglesHeight", CratesFlyingState.ANGLES_HEIGHT)
           .put("Emergency", CratesFlyingState.EMERGENCY)
-          .put("Hover", CratesFlyingState.HOVER)
+          .put("AbstractHover", CratesFlyingState.HOVER)
           .put("Idle", CratesFlyingState.IDLE)
-          .put("Land", CratesFlyingState.LAND)
-          .put("Takeoff", CratesFlyingState.TAKE_OFF)
+          .put("AbstractParrotLand", CratesFlyingState.LAND)
+          .put("AbstractParrotTakeOff", CratesFlyingState.TAKE_OFF)
           .put("VelocityHeight", CratesFlyingState.VELOCITY_HEIGHT)
           .put("Velocity", CratesFlyingState.VELOCITY)
           .put("Waypoint", CratesFlyingState.WAYPOINT)
@@ -74,7 +74,7 @@ final class CratesFlyingStateService extends AbstractFlyingStateService<State> {
       }
     },
 
-    HOVER("Hover") {
+    HOVER("AbstractHover") {
       @Override
       FlyingState getConvertedFlyingState() {
         return FlyingState.HOVERING;
@@ -88,14 +88,14 @@ final class CratesFlyingStateService extends AbstractFlyingStateService<State> {
       }
     },
 
-    LAND("Land") {
+    LAND("AbstractParrotLand") {
       @Override
       FlyingState getConvertedFlyingState() {
         return FlyingState.LANDING;
       }
     },
 
-    TAKE_OFF("Takeoff") {
+    TAKE_OFF("AbstractParrotTakeOff") {
       @Override
       FlyingState getConvertedFlyingState() {
         return FlyingState.TAKING_OFF;

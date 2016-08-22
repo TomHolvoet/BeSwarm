@@ -10,6 +10,7 @@ import services.FlyingStateService;
 import services.Velocity4dService;
 import services.rossubscribers.MessagesSubscriberService;
 import std_msgs.UInt8;
+import time.RosTime;
 
 /** @author Hoang Tung Dinh */
 public final class BebopServiceFactory extends ParrotServiceFactory {
@@ -37,6 +38,7 @@ public final class BebopServiceFactory extends ParrotServiceFactory {
     final Velocity4dService velocity4dService =
         ParrotVelocity4dService.builder()
             .publisher(getConnectedNode().<Twist>newPublisher(topicName, Twist._TYPE))
+            .timeProvider(RosTime.create(getConnectedNode()))
             .minLinearX(-1)
             .minLinearY(-1)
             .minLinearZ(-1)
@@ -59,7 +61,7 @@ public final class BebopServiceFactory extends ParrotServiceFactory {
     final String topicName = "/" + getDroneName() + "/flip";
     final FlipService flipService =
         ParrotFlipService.create(getConnectedNode().<UInt8>newPublisher(topicName, UInt8._TYPE));
-    logger.info("Flip service connected to {}", topicName);
+    logger.info("AbstractParrotFlip service connected to {}", topicName);
     return flipService;
   }
 
@@ -71,7 +73,8 @@ public final class BebopServiceFactory extends ParrotServiceFactory {
         MessagesSubscriberService.create(
             getConnectedNode()
                 .<Ardrone3PilotingStateFlyingStateChanged>newSubscriber(
-                    topicName, Ardrone3PilotingStateFlyingStateChanged._TYPE));
+                    topicName, Ardrone3PilotingStateFlyingStateChanged._TYPE),
+            RosTime.create(getConnectedNode()));
 
     return BebopFlyingStateService.create(flyingStateSubscriber);
   }
