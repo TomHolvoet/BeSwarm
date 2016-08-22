@@ -20,6 +20,7 @@ import org.ros.node.AbstractNodeMain;
 import org.ros.node.ConnectedNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import services.CascadeBodyFrameVelocityFilter;
 import services.FlyingStateService;
 import services.LandService;
 import services.ResetService;
@@ -118,7 +119,9 @@ public abstract class AbstractBebopExample extends AbstractNodeMain implements T
         BebopServiceFactory.create(connectedNode, DRONE_NAME);
     final LandService landService = parrotServiceFactory.createLandService();
     final FlyingStateService flyingStateService = parrotServiceFactory.createFlyingStateService();
-    final Velocity4dService velocity4dService = parrotServiceFactory.createVelocity4dService();
+    final Velocity4dService velocity4dService =
+        CascadeBodyFrameVelocityFilter.create(
+            parrotServiceFactory.createVelocity4dService(), 0.000015);
     final TakeOffService takeOffService = parrotServiceFactory.createTakeOffService();
     final ResetService resetService = parrotServiceFactory.createResetService();
     final StateEstimator stateEstimator =
