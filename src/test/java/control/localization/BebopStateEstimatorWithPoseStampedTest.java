@@ -25,7 +25,8 @@ public class BebopStateEstimatorWithPoseStampedTest {
   public void testGetCurrentState() {
     final MessagesSubscriberService<PoseStamped> poseSubscriber =
         mock(MessagesSubscriberService.class);
-    final StateEstimator stateEstimator = BebopStateEstimatorWithPoseStamped.create(poseSubscriber);
+    final StateEstimator stateEstimator =
+        BebopStateEstimatorWithPoseStamped.create(poseSubscriber, 1);
 
     // when there is no pose message yet
     when(poseSubscriber.getMostRecentMessage()).thenReturn(Optional.<PoseStamped>absent());

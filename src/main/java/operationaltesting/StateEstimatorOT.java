@@ -46,7 +46,7 @@ public final class StateEstimatorOT extends AbstractNodeMain {
     final MessagesSubscriberService<Odometry> odomSubscriber = getOdometrySubscriber(connectedNode);
 
     final StateEstimator stateEstimatorWithArMarker =
-        BebopStateEstimatorWithPoseStamped.create(poseSubscriber);
+        BebopStateEstimatorWithPoseStamped.create(poseSubscriber, 3);
     final StateEstimator stateEstimatorWithArMarkerAndOdom =
         BebopStateEstimatorWithPoseStampedAndOdom.create(poseSubscriber, odomSubscriber);
 

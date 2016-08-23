@@ -125,7 +125,7 @@ public abstract class AbstractBebopExample extends AbstractNodeMain implements T
     final TakeOffService takeOffService = parrotServiceFactory.createTakeOffService();
     final ResetService resetService = parrotServiceFactory.createResetService();
     final StateEstimator stateEstimator =
-        BebopStateEstimatorWithPoseStamped.create(getPoseSubscriber(connectedNode));
+        BebopStateEstimatorWithPoseStamped.create(getPoseSubscriber(connectedNode), 3);
     final Task flyTask =
         createFlyTask(
             connectedNode,
