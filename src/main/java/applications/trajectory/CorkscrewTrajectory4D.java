@@ -187,6 +187,18 @@ public final class CorkscrewTrajectory4D extends PeriodicTrajectory implements F
     return translationTransform(getCachePoint()).getAngle();
   }
 
+  @Override
+  public String toString() {
+    return "CorkscrewTrajectory4D{"
+            + "velocity="
+           // + getVelocity()
+            + ", src point="
+         //   + getSrcpoint()
+            + ", target point="
+         //   + getTargetpoint()
+            + '}';
+  }
+
   @AutoValue
   abstract static class Point4DCache {
 

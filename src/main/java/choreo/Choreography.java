@@ -7,6 +7,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Queues;
 import control.FiniteTrajectory4d;
 import control.Trajectory4d;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Queue;
@@ -50,6 +51,10 @@ public final class Choreography extends BasicTrajectory implements FiniteTraject
   private void shiftSegments() {
     if (this.segments.size() > 1) {
       this.timeWindowShift += segments.poll().getDuration();
+      if (LoggerFactory.getLogger(Choreography.class).isDebugEnabled()) {
+        LoggerFactory.getLogger(Choreography.class)
+                .debug("Executing next choreo segment: " + segments.peek());
+      }
     }
   }
 

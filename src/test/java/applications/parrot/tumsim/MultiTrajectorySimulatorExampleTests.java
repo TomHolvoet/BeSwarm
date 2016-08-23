@@ -56,6 +56,7 @@ public class MultiTrajectorySimulatorExampleTests {
     List<FiniteTrajectory4d> trajectories = Lists.newArrayList();
     for (TrajectoryServer s : allDifferentTrajectories) {
       trajectories.add(s.getConcreteTrajectory());
+    System.out.println(s.getConcreteTrajectory().getTrajectoryDuration());
     }
     TestUtils.testTrajectoryCollisions(trajectories);
   }
