@@ -41,7 +41,7 @@ public class TumSimulatorMultiDroneCorkscrewExample1 extends AbstractTumSimulato
   public FiniteTrajectory4d getConcreteTrajectory() {
 
     Point4D startShift =
-        Point4D.create(STARTX + StrictMath.cos(phaseShift), STARTY, STARTZ, ORIENTATION);
+        Point4D.create(STARTX - StrictMath.cos(phaseShift), STARTY, STARTZ, ORIENTATION);
     Trajectory4d init = Trajectories.newHoldPositionTrajectory(startShift);
     FiniteTrajectory4d first =
         Trajectories.newCorkscrewTrajectory(start, end, velocity, radius, frequency, phaseShift);
@@ -52,7 +52,7 @@ public class TumSimulatorMultiDroneCorkscrewExample1 extends AbstractTumSimulato
         .withTrajectory(init)
         .forTime(4)
         .withTrajectory(first)
-            .forTime(first.getTrajectoryDuration())
+        .forTime(first.getTrajectoryDuration())
         .withTrajectory(inter)
         .forTime(5)
         .build();
