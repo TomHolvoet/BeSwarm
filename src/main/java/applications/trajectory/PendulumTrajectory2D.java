@@ -58,6 +58,7 @@ public final class PendulumTrajectory2D extends PeriodicTrajectory implements Tr
     private double phase;
 
     private Builder() {
+      origin = Point4D.origin();
       radius = 1;
       frequency = 5;
     }
