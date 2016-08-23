@@ -57,6 +57,6 @@ public class MultiTrajectorySimulatorExampleTests {
     for (TrajectoryServer s : allDifferentTrajectories) {
       trajectories.add(s.getConcreteTrajectory());
     }
-    TestUtils.testTrajectoryCollisions(trajectories);
+    TestUtils.verifyTrajectoryCollisions(trajectories);
   }
 }

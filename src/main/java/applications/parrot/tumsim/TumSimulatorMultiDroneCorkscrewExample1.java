@@ -22,9 +22,9 @@ public class TumSimulatorMultiDroneCorkscrewExample1 extends AbstractTumSimulato
   private static final double ENDZ = 1.5;
   private static final double ORIENTATION = -Math.PI / 2;
   private static final double DISPLACEMENT = 0.5;
-  public static final double VELOCITY = 0.1;
-  public static final double FREQUENCY = 0.2;
-  public static final double RADIUS = 0.5;
+  public static final double DEFAULT_VELOCITY = 0.1;
+  public static final double DEFAULT_FREQUENCY = 0.2;
+  public static final double DEFAULT_RADIUS = 0.5;
   private final double radius;
   private final double frequency;
   private final double velocity;
@@ -44,9 +44,9 @@ public class TumSimulatorMultiDroneCorkscrewExample1 extends AbstractTumSimulato
    */
   public TumSimulatorMultiDroneCorkscrewExample1(double phaseShift) {
     super("TumRunZDropTrajectory2");
-    this.radius = RADIUS;
-    this.frequency = FREQUENCY;
-    this.velocity = VELOCITY;
+    this.radius = DEFAULT_RADIUS;
+    this.frequency = DEFAULT_FREQUENCY;
+    this.velocity = DEFAULT_VELOCITY;
     this.start = Point4D.create(STARTX, STARTY, STARTZ, ORIENTATION);
     this.end = Point3D.create(ENDX, ENDY, ENDZ);
     this.phaseShift = phaseShift;

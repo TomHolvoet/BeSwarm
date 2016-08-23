@@ -26,14 +26,14 @@ public final class TestUtils {
     }
   }
 
-  public static void testPositionFrequencyRadiusRelation(
+  public static void verifyPositionFrequencyRadiusRelation(
       double frequency, double radius, Trajectory1d target) {
     for (double i = 0; i < 30; i += 1 / frequency) {
       assertEquals(radius, target.getDesiredPosition(i), 0.01);
     }
   }
 
-  public static void testVelocityFrequencyRadiusRelation(double frequency, Trajectory1d target) {
+  public static void verifyVelocityFrequencyRadiusRelation(double frequency, Trajectory1d target) {
     for (double i = 0; i < 30; i += 1 / frequency) {
       assertEquals(0, getVelocity(target, i), 0.01);
     }
@@ -65,24 +65,24 @@ public final class TestUtils {
     return (trajectory.getDesiredAngleZ(t + DELTA) - trajectory.getDesiredAngleZ(t)) / DELTA;
   }
 
-  public static void testTrajectoryPos4D(Trajectory4d traj, double time, Point4D target) {
+  public static void verifyTrajectoryPos4D(Trajectory4d traj, double time, Point4D target) {
     assertEquals(target.getX(), traj.getDesiredPositionX(time), EPSILON);
     assertEquals(target.getY(), traj.getDesiredPositionY(time), EPSILON);
     assertEquals(target.getZ(), traj.getDesiredPositionZ(time), EPSILON);
     assertEquals(target.getAngle(), traj.getDesiredAngleZ(time), EPSILON);
   }
 
-  public static void testTrajectoryCollisions(
+  public static void verifyTrajectoryCollisions(
       List<FiniteTrajectory4d> trajectories, double minimumDistance) {
     CollisionDetector detector = new CollisionDetector(trajectories, minimumDistance);
   }
 
-  public static void testTrajectoryCollisions(List<FiniteTrajectory4d> trajectories) {
+  public static void verifyTrajectoryCollisions(List<FiniteTrajectory4d> trajectories) {
     CollisionDetector detector = new CollisionDetector(trajectories);
-    testForCollisions(detector);
+    verifyForCollisionsOccuring(detector);
   }
 
-  private static void testForCollisions(CollisionDetector detector) {
+  private static void verifyForCollisionsOccuring(CollisionDetector detector) {
     List<CollisionDetector.Collision> collisions = detector.findCollisions();
     assertTrue("Found " + collisions.size() + " collisions: " + collisions, collisions.isEmpty());
   }
