@@ -161,7 +161,7 @@ public final class Choreography extends BasicTrajectory implements FiniteTraject
   }
 
   /** Builder class for building choreography instances. */
-  public static final class Builder implements BuildableStepBuilder, TimingRequiredStepBuilder {
+  public static final class Builder implements BuildableStepBuilder {
 
     private final List<ChoreoSegment> segments;
     private Trajectory4d tempTarget;

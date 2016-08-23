@@ -23,6 +23,14 @@ public abstract class Point4D {
    * @return A 4D point created from a 3D point and a specified angle.
    */
   public static Point4D from(Point3D arg, double angle) {
+    return new AutoValue_Point4D(arg.getX(), arg.getY(), arg.getZ(), angle);
+  }
+
+  /**
+   * @param arg the 3d point to use for information about x,y,z coordinates.
+   * @return A 4D point created from a 3D point and a 0 angle.
+   */
+  public static Point4D from(Point3D arg) {
     return new AutoValue_Point4D(arg.getX(), arg.getY(), arg.getZ(), 0);
   }
 
@@ -49,6 +57,15 @@ public abstract class Point4D {
 
   /**
    * @param targetPoint the destination of the vector.
+   * @return A point instance representing the difference or distance between the given point and
+   *     this point.
+   */
+  public Point4D minus(Point4D targetPoint) {
+    return minus(this, targetPoint);
+  }
+
+  /**
+   * @param targetPoint the destination of the vector.
    * @param sourcePoint the source of the vector.
    * @return A point instance representing the sum of the given points.
    */
@@ -58,6 +75,14 @@ public abstract class Point4D {
         targetPoint.getY() + sourcePoint.getY(),
         targetPoint.getZ() + sourcePoint.getZ(),
         targetPoint.getAngle() + sourcePoint.getAngle());
+  }
+
+  /**
+   * @param targetPoint the destination of the vector.
+   * @return A point instance representing the sum of the given points.
+   */
+  public Point4D plus(Point4D targetPoint) {
+    return plus(this, targetPoint);
   }
 
   /**
@@ -82,23 +107,6 @@ public abstract class Point4D {
    */
   public static Point4D create(double x, double y, double z, double angle) {
     return new AutoValue_Point4D(x, y, z, angle);
-  }
-
-  /**
-   * @param targetPoint the destination of the vector.
-   * @return A point instance representing the sum of the given points.
-   */
-  public Point4D plus(Point4D targetPoint) {
-    return plus(this, targetPoint);
-  }
-
-  /**
-   * @param targetPoint the destination of the vector.
-   * @return A point instance representing the difference or distance between the given point and
-   *     this point.
-   */
-  public Point4D minus(Point4D targetPoint) {
-    return minus(this, targetPoint);
   }
 
   /** @return The X coordinate. */
