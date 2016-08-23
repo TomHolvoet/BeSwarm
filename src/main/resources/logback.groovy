@@ -47,3 +47,22 @@ logger("commands.AbstractFollowTrajectory.poselogger", TRACE, ["FILE_DRONE_POSE"
 logger("commands.AbstractFollowTrajectory.velocitylogger", TRACE, ["FILE_DRONE_VELOCITY"], false)
 logger("services.parrot.ParrotVelocity4dService.vel", TRACE, ["FILE_DRONE_BODY_VELOCITY"], false)
 logger("services.ros_subscribers.MessagesSubscriberService", TRACE, ["FILE_RECEIVED_MESSAGES"], false)
+
+// for operational tests
+appender("FILE_ARMARKER_VELOCITY", FileAppender) {
+    file = "${DIR}/armarkervelocity.log"
+    encoder(PatternLayoutEncoder) {
+        pattern = "%msg %n"
+    }
+}
+logger("operationaltesting.StateEstimatorOT.velocity.armarker", TRACE,
+        ["FILE_ARMARKER_VELOCITY"], false)
+
+appender("FILE_ODOM_VELOCITY", FileAppender) {
+    file = "${DIR}/armarkervelocity.log"
+    encoder(PatternLayoutEncoder) {
+        pattern = "%msg %n"
+    }
+}
+logger("operationaltesting.StateEstimatorOT.velocity.odom", TRACE,
+        ["FILE_ODOM_VELOCITY"], false)

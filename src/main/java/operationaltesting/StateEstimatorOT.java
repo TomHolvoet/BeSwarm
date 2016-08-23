@@ -29,6 +29,10 @@ import java.util.concurrent.TimeUnit;
 public final class StateEstimatorOT extends AbstractNodeMain {
 
   private static final Logger logger = LoggerFactory.getLogger(StateEstimatorOT.class);
+  private static final Logger arMarkerVelLogger =
+      LoggerFactory.getLogger(StateEstimatorOT.class.getName() + ".velocity.armarker");
+  private static final Logger odomVelLogger =
+      LoggerFactory.getLogger(StateEstimatorOT.class.getName() + ".velocity.odom");
   private static final String DRONE_NAME = "bebop";
 
   @Override
@@ -63,12 +67,26 @@ public final class StateEstimatorOT extends AbstractNodeMain {
             if (stateArMarker.isPresent()) {
               final InertialFrameVelocity velocity = stateArMarker.get().inertialFrameVelocity();
               velocityFromArMarker.publish(createTwistMessage(velocity, velocityFromArMarker));
+              arMarkerVelLogger.info(
+                  "{} {} {} {} {}",
+                  connectedNode.getCurrentTime().toSeconds(),
+                  velocity.linearX(),
+                  velocity.linearY(),
+                  velocity.linearZ(),
+                  velocity.angularZ());
             }
 
             if (stateArMarkerAndOdom.isPresent()) {
               final InertialFrameVelocity velocity =
                   stateArMarkerAndOdom.get().inertialFrameVelocity();
               velocityFromOdom.publish(createTwistMessage(velocity, velocityFromOdom));
+              odomVelLogger.info(
+                  "{} {} {} {} {}",
+                  connectedNode.getCurrentTime().toSeconds(),
+                  velocity.linearX(),
+                  velocity.linearY(),
+                  velocity.linearZ(),
+                  velocity.angularZ());
             }
           }
         };
