@@ -85,6 +85,10 @@ class StraightLineTrajectory4D extends BasicTrajectory implements FiniteTrajecto
     return getCurrentTrajectory().getDesiredAngleZ(currentTime);
   }
 
+  protected Trajectory4d getCurrentTrajectory() {
+    return currentTraj;
+  }
+
   @Override
   public String toString() {
     return "StraightLineTrajectory4D{"
@@ -97,13 +101,8 @@ class StraightLineTrajectory4D extends BasicTrajectory implements FiniteTrajecto
         + '}';
   }
 
-  @Override
-  public double getTrajectoryDuration() {
-    return this.endTime;
-  }
-
-  protected Trajectory4d getCurrentTrajectory() {
-    return currentTraj;
+  public double getVelocity() {
+    return velocity;
   }
 
   public Point4D getSrcpoint() {
@@ -114,8 +113,9 @@ class StraightLineTrajectory4D extends BasicTrajectory implements FiniteTrajecto
     return targetpoint;
   }
 
-  public double getVelocity() {
-    return velocity;
+  @Override
+  public double getTrajectoryDuration() {
+    return this.endTime;
   }
 
   public final double getTotalDistance() {

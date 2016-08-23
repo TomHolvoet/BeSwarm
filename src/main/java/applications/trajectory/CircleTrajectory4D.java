@@ -38,22 +38,6 @@ final class CircleTrajectory4D extends PeriodicTrajectory implements Trajectory4
       double radius,
       double frequency,
       double planeAngle,
-      double constantYawAngle) {
-    this(
-        location,
-        phase,
-        radius,
-        frequency,
-        planeAngle,
-        new LinearTrajectory1D(constantYawAngle, 0));
-  }
-
-  private CircleTrajectory4D(
-      Point3D location,
-      double phase,
-      double radius,
-      double frequency,
-      double planeAngle,
       Trajectory1d yawTrajectory) {
     super(phase, Point4D.from(location, 0), radius, frequency);
     this.location = location;
@@ -66,6 +50,22 @@ final class CircleTrajectory4D extends PeriodicTrajectory implements Trajectory4
             .setPhase(phase)
             .build();
     this.angularMotion = yawTrajectory;
+  }
+
+  private CircleTrajectory4D(
+      Point3D location,
+      double phase,
+      double radius,
+      double frequency,
+      double planeAngle,
+      double constantYawAngle) {
+    this(
+        location,
+        phase,
+        radius,
+        frequency,
+        planeAngle,
+        new LinearTrajectory1D(constantYawAngle, 0));
   }
 
   static Builder builder() {
@@ -121,9 +121,9 @@ final class CircleTrajectory4D extends PeriodicTrajectory implements Trajectory4
 
     private Builder() {
       location = Point3D.origin();
-       radius = 1;
-       frequency = 0.05;
-       angularMovement = true;
+      radius = 1;
+      frequency = 0.05;
+      angularMovement = true;
     }
 
     /**

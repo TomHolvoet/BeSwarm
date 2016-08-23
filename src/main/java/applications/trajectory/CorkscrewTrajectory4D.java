@@ -111,47 +111,12 @@ public final class CorkscrewTrajectory4D extends PeriodicTrajectory implements F
     return true;
   }
 
-  static Builder builder() {
-    return new Builder();
-  }
-
   static Point4DCache newCache(Point4D point, double timeMark) {
     return new AutoValue_CorkscrewTrajectory4D_Point4DCache(point, timeMark);
   }
 
-  private static boolean isEqual(double a, double b) {
-    return Math.abs(a - b) < EPSILON;
-  }
-
-  private static Point4D rotationTransform(Point4D toTrans, double aroundX, double aroundY) {
-    return Point4D.from(
-        Transformations.reverseRotation(
-            Point3D.project(toTrans), aroundX, aroundY, 0, RotationOrder.XYZ),
-        0);
-  }
-
-  private void refreshCache(double time) {
-    if (!isEqual(cache.getTimeMark(), time)) {
-      Point4D beforeTransPoint =
-          Point4D.create(
-              unitTrajectory.getDesiredPositionX(time),
-              unitTrajectory.getDesiredPositionY(time),
-              unitTrajectory.getDesiredPositionZ(time),
-              unitTrajectory.getDesiredAngleZ(time));
-      setCache(beforeTransPoint, time);
-    }
-  }
-
-  private void setCache(Point4D beforeTransPoint, double time) {
-    this.cache = newCache(beforeTransPoint, time);
-  }
-
-  private Point4D getCachePoint() {
-    return this.cache.getDestinationPoint();
-  }
-
-  private Point4D translationTransform(Point4D toTrans) {
-    return rotationTransform(toTrans, aroundX, aroundY).plus(origin);
+  static Builder builder() {
+    return new Builder();
   }
 
   @Override
@@ -166,33 +131,39 @@ public final class CorkscrewTrajectory4D extends PeriodicTrajectory implements F
     return translationTransform(getCachePoint()).getX();
   }
 
-  @Override
-  public double getDesiredPositionY(double timeInSeconds) {
-    final double currentTime = getRelativeTime(timeInSeconds);
-    refreshCache(currentTime);
-    return translationTransform(getCachePoint()).getY();
+  private void refreshCache(double time) {
+    if (!isEqual(cache.getTimeMark(), time)) {
+      Point4D beforeTransPoint =
+          Point4D.create(
+              unitTrajectory.getDesiredPositionX(time),
+              unitTrajectory.getDesiredPositionY(time),
+              unitTrajectory.getDesiredPositionZ(time),
+              unitTrajectory.getDesiredAngleZ(time));
+      setCache(beforeTransPoint, time);
+    }
   }
 
-  @Override
-  public double getDesiredPositionZ(double timeInSeconds) {
-    final double currentTime = getRelativeTime(timeInSeconds);
-    refreshCache(currentTime);
-    return translationTransform(getCachePoint()).getZ();
+  private Point4D translationTransform(Point4D toTrans) {
+    return rotationTransform(toTrans, aroundX, aroundY).plus(origin);
   }
 
-  @Override
-  public double getDesiredAngleZ(double timeInSeconds) {
-    final double currentTime = getRelativeTime(timeInSeconds);
-    refreshCache(currentTime);
-    return translationTransform(getCachePoint()).getAngle();
+  private Point4D getCachePoint() {
+    return this.cache.getDestinationPoint();
   }
 
-  private Point4D getOrigin() {
-    return origin;
+  private static boolean isEqual(double a, double b) {
+    return Math.abs(a - b) < EPSILON;
   }
 
-  private Point3D getDestination() {
-    return destination;
+  private void setCache(Point4D beforeTransPoint, double time) {
+    this.cache = newCache(beforeTransPoint, time);
+  }
+
+  private static Point4D rotationTransform(Point4D toTrans, double aroundX, double aroundY) {
+    return Point4D.from(
+        Transformations.reverseRotation(
+            Point3D.project(toTrans), aroundX, aroundY, 0, RotationOrder.XYZ),
+        0);
   }
 
   @Override
@@ -209,6 +180,29 @@ public final class CorkscrewTrajectory4D extends PeriodicTrajectory implements F
         + ", frequency="
         + unitTrajectory.getFrequency()
         + '}';
+  }  @Override
+  public double getDesiredPositionY(double timeInSeconds) {
+    final double currentTime = getRelativeTime(timeInSeconds);
+    refreshCache(currentTime);
+    return translationTransform(getCachePoint()).getY();
+  }
+
+  private Point4D getOrigin() {
+    return origin;
+  }  @Override
+  public double getDesiredPositionZ(double timeInSeconds) {
+    final double currentTime = getRelativeTime(timeInSeconds);
+    refreshCache(currentTime);
+    return translationTransform(getCachePoint()).getZ();
+  }
+
+  private Point3D getDestination() {
+    return destination;
+  }  @Override
+  public double getDesiredAngleZ(double timeInSeconds) {
+    final double currentTime = getRelativeTime(timeInSeconds);
+    refreshCache(currentTime);
+    return translationTransform(getCachePoint()).getAngle();
   }
 
   @AutoValue
@@ -328,7 +322,9 @@ public final class CorkscrewTrajectory4D extends PeriodicTrajectory implements F
       this.radius = circlePlane.getRadius();
     }
 
-    @Override
+    double getSpeed() {
+      return speed;
+    }    @Override
     public double getDesiredPositionX(double timeInSeconds) {
       if (atEnd) {
         return endPoint;
@@ -340,22 +336,31 @@ public final class CorkscrewTrajectory4D extends PeriodicTrajectory implements F
       return linear.getDesiredPosition(timeInSeconds);
     }
 
-    private void markEnd() {
-      this.atEnd = true;
-      this.circlePlane = new NoMovement2DTrajectory();
-    }
-
-    double getSpeed() {
-      return speed;
-    }
-
     private double getRadius() {
       return radius;
+    }    private void markEnd() {
+      this.atEnd = true;
+      this.circlePlane = new NoMovement2DTrajectory();
     }
 
     double getFrequency() {
       return frequency;
     }
+
+    private class NoMovement2DTrajectory implements Trajectory2d {
+
+      @Override
+      public double getDesiredPositionAbscissa(double timeInSeconds) {
+        return 0;
+      }
+
+      @Override
+      public double getDesiredPositionOrdinate(double timeInSeconds) {
+        return 0;
+      }
+    }
+
+
 
     @Override
     public double getDesiredPositionY(double timeInSeconds) {
@@ -377,17 +382,12 @@ public final class CorkscrewTrajectory4D extends PeriodicTrajectory implements F
       return endPoint / speed;
     }
 
-    private class NoMovement2DTrajectory implements Trajectory2d {
 
-      @Override
-      public double getDesiredPositionAbscissa(double timeInSeconds) {
-        return 0;
-      }
-
-      @Override
-      public double getDesiredPositionOrdinate(double timeInSeconds) {
-        return 0;
-      }
-    }
   }
+
+
+
+
+
+
 }

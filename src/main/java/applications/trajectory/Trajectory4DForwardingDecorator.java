@@ -19,18 +19,18 @@ public abstract class Trajectory4DForwardingDecorator implements Trajectory4d {
     this.target = target;
   }
 
+  @Override
+  public double getDesiredPositionX(double timeInSeconds) {
+    positionDelegate(timeInSeconds);
+    return target.getDesiredPositionX(timeInSeconds);
+  }
+
   /**
    * This delegate method will be called before every call to getDesiredPosition()
    *
    * @param timeInSeconds the time argument.
    */
   protected abstract void positionDelegate(double timeInSeconds);
-
-  @Override
-  public double getDesiredPositionX(double timeInSeconds) {
-    positionDelegate(timeInSeconds);
-    return target.getDesiredPositionX(timeInSeconds);
-  }
 
   @Override
   public double getDesiredPositionY(double timeInSeconds) {

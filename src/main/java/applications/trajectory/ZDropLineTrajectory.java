@@ -87,6 +87,10 @@ public class ZDropLineTrajectory extends BasicTrajectory implements FiniteTrajec
     return getTargetTrajectory().getDesiredAngleZ(currentTime);
   }
 
+  private FiniteTrajectory4d getTargetTrajectory() {
+    return target;
+  }
+
   @Override
   public String toString() {
     return "ZDropLineTrajectory{"
@@ -102,9 +106,5 @@ public class ZDropLineTrajectory extends BasicTrajectory implements FiniteTrajec
   @Override
   public double getTrajectoryDuration() {
     return getTargetTrajectory().getTrajectoryDuration();
-  }
-
-  private FiniteTrajectory4d getTargetTrajectory() {
-    return target;
   }
 }

@@ -20,16 +20,6 @@ public abstract class BasicTrajectory {
     this.linearDisplacement = Point4D.origin();
   }
 
-  protected double getStartTime() {
-    return this.startTime;
-  }
-
-  protected void setStartTime(double timeInSeconds) {
-    if (startTime < 0) {
-      startTime = timeInSeconds;
-    }
-  }
-
   /**
    * Return the origin point for linear displacement in 4D.
    *
@@ -42,5 +32,15 @@ public abstract class BasicTrajectory {
   protected double getRelativeTime(double timeInSeconds) {
     setStartTime(timeInSeconds);
     return timeInSeconds - getStartTime();
+  }
+
+  protected double getStartTime() {
+    return this.startTime;
+  }
+
+  protected void setStartTime(double timeInSeconds) {
+    if (startTime < 0) {
+      startTime = timeInSeconds;
+    }
   }
 }

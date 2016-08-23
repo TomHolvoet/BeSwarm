@@ -8,9 +8,11 @@ import control.FiniteTrajectory4d;
 import control.Trajectory4d;
 
 /**
- * Example trajectory for a corkscrew motion with possible parametrization for multiple drone instantiation.
- * Place drone at (0,0,1)
- * @author Kristof Coninx <kristof.coninx AT cs.kuleuven.be> */
+ * Example trajectory for a corkscrew motion with possible parametrization for multiple drone
+ * instantiation. Place drone at (0,0,1)
+ *
+ * @author Kristof Coninx <kristof.coninx AT cs.kuleuven.be>
+ */
 public class TumSimulatorMultiDroneCorkscrewExample1 extends AbstractTumSimulatorExample {
   private static final double STARTX = 1;
   private static final double STARTY = 0;
@@ -20,6 +22,9 @@ public class TumSimulatorMultiDroneCorkscrewExample1 extends AbstractTumSimulato
   private static final double ENDZ = 1.5;
   private static final double ORIENTATION = -Math.PI / 2;
   private static final double DISPLACEMENT = 0.5;
+  public static final double VELOCITY = 0.1;
+  public static final double FREQUENCY = 0.2;
+  public static final double RADIUS = 0.5;
   private final double radius;
   private final double frequency;
   private final double velocity;
@@ -34,13 +39,14 @@ public class TumSimulatorMultiDroneCorkscrewExample1 extends AbstractTumSimulato
 
   /**
    * Constructor with a phase shift in place for multi drone flight.
+   *
    * @param phaseShift the phase shift.
-     */
+   */
   public TumSimulatorMultiDroneCorkscrewExample1(double phaseShift) {
     super("TumRunZDropTrajectory2");
-    this.radius = 0.5;
-    this.frequency = 0.2;
-    this.velocity = 0.1;
+    this.radius = RADIUS;
+    this.frequency = FREQUENCY;
+    this.velocity = VELOCITY;
     this.start = Point4D.create(STARTX, STARTY, STARTZ, ORIENTATION);
     this.end = Point3D.create(ENDX, ENDY, ENDZ);
     this.phaseShift = phaseShift;
