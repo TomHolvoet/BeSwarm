@@ -8,6 +8,9 @@ package applications.parrot.tumsim;
  */
 public class TumSimulatorMultiDroneCorkscrewExample2
     extends TumSimulatorMultiDroneCorkscrewExample1 {
+  /**
+   * Default constructor with PI phase displacement.
+   */
   public TumSimulatorMultiDroneCorkscrewExample2() {
     super(Math.PI);
   }
