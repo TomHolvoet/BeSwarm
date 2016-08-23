@@ -3,13 +3,13 @@ package applications.trajectory;
 import applications.trajectory.geom.LineSegment;
 import applications.trajectory.geom.point.Point3D;
 import com.google.auto.value.AutoValue;
+import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 import control.FiniteTrajectory4d;
 import control.Trajectory4d;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 
 import static applications.trajectory.TrajectoryUtils.sampleTrajectory;
 import static applications.trajectory.geom.point.Point3D.dot;
@@ -35,7 +35,7 @@ public class CollisionDetector {
           if (actualDistance < minimumDistance - TestUtils.EPSILON) {
             return Optional.of(Collision.create(t, actualDistance, first, second));
           }
-          return Optional.empty();
+          return Optional.absent();
         }
       };
   private static final CollisionTester TWO_SAMPLE_LINE_DISTANCE_BASED_COLLISION =
@@ -60,7 +60,7 @@ public class CollisionDetector {
           if (distance < boundary) {
             return Optional.of(Collision.create(t, distance, first, second));
           }
-          return Optional.empty();
+          return Optional.absent();
         }
       };
 
