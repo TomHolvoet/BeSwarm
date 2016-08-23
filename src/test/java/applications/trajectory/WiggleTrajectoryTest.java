@@ -41,10 +41,6 @@ public class WiggleTrajectoryTest {
       samplesAngle.add(wiggle.getDesiredAngleZ(i));
     }
 
-    System.out.println(samplesX);
-    System.out.println(samplesY);
-    System.out.println(samplesZ);
-    System.out.println(samplesAngle);
     TestUtils.assertBounds(samplesX, CENTERX - 0, CENTERX + 0);
     TestUtils.assertBounds(samplesY, CENTERY - distance, CENTERY + distance);
     TestUtils.assertBounds(samplesZ, CENTERZ - 0, CENTERZ + 0);
