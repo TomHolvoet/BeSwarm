@@ -27,7 +27,7 @@ public class CollisionDetectorTest {
   private double EPS = 0.01;
 
   @Before
-  public void setup() {
+  public void setUp() {
     this.holdPos =
         Choreography.builder()
             .withTrajectory(Trajectories.newHoldPositionTrajectory(Point4D.create(5, 0, 5, 0)))
