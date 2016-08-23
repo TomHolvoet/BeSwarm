@@ -59,7 +59,7 @@ logger("operationaltesting.StateEstimatorOT.velocity.armarker", TRACE,
         ["FILE_ARMARKER_VELOCITY"], false)
 
 appender("FILE_ODOM_VELOCITY", FileAppender) {
-    file = "${DIR}/armarkervelocity.log"
+    file = "${DIR}/odomvelocity.log"
     encoder(PatternLayoutEncoder) {
         pattern = "%msg %n"
     }
