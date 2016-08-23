@@ -18,7 +18,6 @@ import org.slf4j.LoggerFactory;
 import services.rossubscribers.MessagesSubscriberService;
 import time.RosTime;
 
-import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -30,8 +29,6 @@ import java.util.concurrent.TimeUnit;
 public final class StateEstimatorOT extends AbstractNodeMain {
 
   private static final Logger logger = LoggerFactory.getLogger(StateEstimatorOT.class);
-  private static final Logger poseLogger =
-      LoggerFactory.getLogger(StateEstimatorOT.class.getName() + ".poselogger");
   private static final String DRONE_NAME = "bebop";
 
   @Override
@@ -76,7 +73,8 @@ public final class StateEstimatorOT extends AbstractNodeMain {
           }
         };
 
-    Executors.newSingleThreadScheduledExecutor()
+    connectedNode
+        .getScheduledExecutorService()
         .scheduleAtFixedRate(dataRecorder, 0, 20, TimeUnit.MILLISECONDS);
   }
 
