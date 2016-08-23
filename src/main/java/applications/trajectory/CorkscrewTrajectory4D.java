@@ -204,33 +204,74 @@ public final class CorkscrewTrajectory4D extends PeriodicTrajectory implements F
     private double frequency = 0.3;
     private double phase = 0;
 
-    private Builder() {}
+    private Builder() {
+      origin = Point4D.origin();
+      destination = Point3D.origin();
+      speed = 1;
+      radius = 0.5;
+      frequency = 0.3;
+    }
 
+    /**
+     * Default value is Point4D.origin()
+     *
+     * @param location The origin of the trajectory.
+     * @return this builder
+     */
     public Builder setOrigin(Point4D origin) {
       this.origin = origin;
       return this;
     }
 
+    /**
+     * Default value is Point3D.origin()
+     *
+     * @param location The destination of the trajectory.
+     * @return this builder
+     */
     public Builder setDestination(Point3D destination) {
       this.destination = destination;
       return this;
     }
 
+    /**
+     * Default value = 1.
+     *
+     * @param speed The linear velocity between origin and destination.
+     * @return this builder
+     */
     public Builder setSpeed(double speed) {
       this.speed = speed;
       return this;
     }
 
+    /**
+     * Default radius = 0.5.
+     *
+     * @param radius The radius of the circle movement.
+     * @return this builder
+     */
     public Builder setRadius(double radius) {
       this.radius = radius;
       return this;
     }
-
+    /**
+     * Default frequency = 0.3.
+     *
+     * @param frequency The frequency of the circle movement.
+     * @return this builder
+     */
     public Builder setFrequency(double frequency) {
       this.frequency = frequency;
       return this;
     }
 
+    /**
+     * Default value = 0.
+     *
+     * @param phase the phase displacement of the movement.
+     * @return this builder
+     */
     public Builder setPhase(double phase) {
       this.phase = phase;
       return this;

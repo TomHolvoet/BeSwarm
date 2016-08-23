@@ -19,8 +19,11 @@ public abstract class Trajectory1DForwardingDecorator implements Trajectory1d {
     this.target = target;
   }
 
-  protected abstract void velocityDelegate(double timeInSeconds);
-
+  /**
+   * This delegate method will be called before every call to getDesiredPosition()
+   *
+   * @param timeInSeconds the time argument.
+   */
   protected abstract void positionDelegate(double timeInSeconds);
 
   @Override

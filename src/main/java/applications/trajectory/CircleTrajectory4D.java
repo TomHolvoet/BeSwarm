@@ -111,36 +111,71 @@ final class CircleTrajectory4D extends PeriodicTrajectory implements Trajectory4
 
   /** Builder class for 4D circle trajectories. */
   public static final class Builder {
-    private Point3D location = Point3D.origin();
-    private double radius = 1;
-    private double frequency = 0.05;
-    private double planeAngle = 0;
-    private double phase = 0;
-    private boolean angularMovement = true;
-    private double yawDirection = 0;
+    private Point3D location;
+    private double radius;
+    private double frequency;
+    private double planeAngle;
+    private double phase;
+    private boolean angularMovement;
+    private double yawDirection;
 
-    private Builder() {}
+    private Builder() {
+      location = Point3D.origin();
+       radius = 1;
+       frequency = 0.05;
+       angularMovement = true;
+    }
 
+    /**
+     * Default value is Point3D.origin()
+     *
+     * @param location The origin of the circle.
+     * @return this builder
+     */
     public Builder setLocation(Point3D location) {
       this.location = location;
       return this;
     }
 
+    /**
+     * Default radius = 1.
+     *
+     * @param radius The radius of the circle.
+     * @return this builder
+     */
     public Builder setRadius(double radius) {
       this.radius = radius;
       return this;
     }
 
+    /**
+     * Default frequency = 0.05.
+     *
+     * @param frequency The frequency of the circle.
+     * @return this builder
+     */
     public Builder setFrequency(double frequency) {
       this.frequency = frequency;
       return this;
     }
 
+    /**
+     * The plane angle.
+     *
+     * @param planeAngle The angle of the trajectory plane with the z-plane.
+     * @return this builder
+     */
     public Builder setPlaneAngle(double planeAngle) {
       this.planeAngle = planeAngle;
       return this;
     }
 
+    /**
+     * Default value = 0.
+     *
+     * @param phase the phase displacement of the movement.
+     * @return this builder
+     */
     public Builder setPhase(double phase) {
       this.phase = phase;
       return this;

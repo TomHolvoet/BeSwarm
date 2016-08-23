@@ -8,6 +8,7 @@ import control.Trajectory4d;
 
 import java.util.List;
 
+import static applications.trajectory.TrajectoryUtils.sampleTrajectory;
 import static com.google.common.base.Preconditions.checkArgument;
 
 /**
@@ -40,12 +41,7 @@ public class ZDropLineTrajectory extends BasicTrajectory implements FiniteTrajec
     initTraj(traj);
     for (int i = 0; i < drops; i++) {
       double mark = (duration / drops) * i;
-      points.add(
-          Point4D.create(
-              traj.getDesiredPositionX(mark),
-              traj.getDesiredPositionY(mark),
-              traj.getDesiredPositionZ(mark),
-              traj.getDesiredAngleZ(mark)));
+      points.add(sampleTrajectory(traj, mark));
     }
     points.add(after);
     for (Point4D p : points) {

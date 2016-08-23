@@ -72,32 +72,65 @@ class SwingTrajectory4D extends PeriodicTrajectory implements Trajectory4d {
 
   /** Builder for 4D swing trajectories. */
   public static class Builder {
-    private Point4D origin = Point4D.origin();
-    private double xzPlaneAngle = 0;
-    private double radius = 0;
-    private double frequency = 0;
-    private double phase = 0;
+    private Point4D origin;
+    private double xzPlaneAngle;
+    private double radius;
+    private double frequency;
+    private double phase;
 
+    Builder() {
+      origin = Point4D.origin();
+    }
+    /**
+     * Default value is Point3D.origin()
+     *
+     * @param location The origin of the circle.
+     * @return this builder
+     */
     public Builder setOrigin(Point4D origin) {
       this.origin = origin;
       return this;
     }
 
+    /**
+     * The plane angle.
+     *
+     * @param planeAngle The angle of the trajectory plane with the xz-plane.
+     * @return this builder
+     */
     public Builder setXzPlaneAngle(double xzPlaneAngle) {
       this.xzPlaneAngle = xzPlaneAngle;
       return this;
     }
 
+    /**
+     * Default radius = 0.
+     *
+     * @param radius The radius of the circle.
+     * @return this builder
+     */
     public Builder setRadius(double radius) {
       this.radius = radius;
       return this;
     }
 
+    /**
+     * Default frequency = 0.
+     *
+     * @param frequency The frequency of the circle.
+     * @return this builder
+     */
     public Builder setFrequency(double frequency) {
       this.frequency = frequency;
       return this;
     }
 
+    /**
+     * Default value = 0.
+     *
+     * @param phase the phase displacement of the movement.
+     * @return this builder
+     */
     public Builder setPhase(double phase) {
       this.phase = phase;
       return this;
