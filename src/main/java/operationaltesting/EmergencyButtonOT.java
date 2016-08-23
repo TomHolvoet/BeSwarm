@@ -29,7 +29,7 @@ import taskexecutor.interruptors.XBox360ControllerEmergency;
 import time.RosTime;
 
 /**
- * A runner for testing the xbox emergency button when flying with bebop. The runner commands the
+ * Operational test for the xbox emergency button when flying with bebop. The runner commands the
  * drone to take off, then waits for five seconds, then starts sending zero velocity for each 50ms.
  * After five seconds, the user presses the emergency land button. The drone is expected to land
  * after that.
