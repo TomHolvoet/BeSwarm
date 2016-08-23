@@ -7,7 +7,10 @@ import choreo.Choreography;
 import control.FiniteTrajectory4d;
 import control.Trajectory4d;
 
-/** @author Kristof Coninx <kristof.coninx AT cs.kuleuven.be> */
+/**
+ * Example trajectory for a corkscrew motion with possible parametrization for multiple drone instantiation.
+ * Place drone at (0,0,1)
+ * @author Kristof Coninx <kristof.coninx AT cs.kuleuven.be> */
 public class TumSimulatorMultiDroneCorkscrewExample1 extends AbstractTumSimulatorExample {
   private static final double STARTX = 1;
   private static final double STARTY = 0;
@@ -23,11 +26,16 @@ public class TumSimulatorMultiDroneCorkscrewExample1 extends AbstractTumSimulato
   private final Point4D start;
   private final Point3D end;
   private final double phaseShift;
+
   /** Default Constructor. */
   public TumSimulatorMultiDroneCorkscrewExample1() {
     this(0);
   }
 
+  /**
+   * Constructor with a phase shift in place for multi drone flight.
+   * @param phaseShift the phase shift.
+     */
   public TumSimulatorMultiDroneCorkscrewExample1(double phaseShift) {
     super("TumRunZDropTrajectory2");
     this.radius = 0.5;

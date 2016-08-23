@@ -207,7 +207,7 @@ public final class CorkscrewTrajectory4D extends PeriodicTrajectory implements F
         + ", radius="
         + unitTrajectory.getRadius()
         + ", frequency="
-            + unitTrajectory.getFrequency()
+        + unitTrajectory.getFrequency()
         + '}';
   }
 
@@ -221,12 +221,12 @@ public final class CorkscrewTrajectory4D extends PeriodicTrajectory implements F
 
   /** Builder for corkscrew trajectories. */
   public static final class Builder {
-    private Point4D origin = Point4D.origin();
-    private Point3D destination = Point3D.origin();
-    private double speed = 1;
-    private double radius = 0.5;
-    private double frequency = 0.3;
-    private double phase = 0;
+    private Point4D origin;
+    private Point3D destination;
+    private double speed;
+    private double radius;
+    private double frequency;
+    private double phase;
 
     private Builder() {
       origin = Point4D.origin();
