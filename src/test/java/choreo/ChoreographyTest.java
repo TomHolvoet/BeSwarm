@@ -23,7 +23,7 @@ public class ChoreographyTest {
   private double frequency = 0.1d;
 
   @Before
-  public void setup() {
+  public void setUp() {
     point = Point4D.create(5, 5, 5, 2);
     holdTrajectory = Trajectories.newHoldPositionTrajectory(point);
     pathTrajectory = Trajectories.newCircleTrajectory4D(Point3D.origin(), radius, frequency, 0);

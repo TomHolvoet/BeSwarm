@@ -38,11 +38,11 @@ class StraightLineTrajectory4D extends BasicTrajectory implements FiniteTrajecto
     this.velocity = velocity;
     checkArgument(velocity > 0, "The provided velocity should be strictly greater than 0.");
     checkArgument(
-        velocity <= BasicTrajectory.MAX_ABSOLUTE_VELOCITY,
-        "The provided velocity should be smaller than BasicTrajectory" + ".MAX_ABSOLUTE_VELOCITY");
-    checkArgument(
         velocityCutoffTimePercentage <= 1 && velocityCutoffTimePercentage > 0,
         "Velocity cutoff percentage should represent a percantage between 0 and 1.");
+    checkArgument(
+        velocity <= BasicTrajectory.MAX_ABSOLUTE_VELOCITY,
+        "The provided velocity should be smaller than BasicTrajectory" + ".MAX_ABSOLUTE_VELOCITY");
     Point4D diff = Point4D.minus(targetpoint, srcpoint);
     this.totalDistance =
         StrictMath.sqrt(
@@ -62,14 +62,6 @@ class StraightLineTrajectory4D extends BasicTrajectory implements FiniteTrajecto
     this.moveTraj =
         new HoldPositionForwarder(srcpoint, speedComponent, endTime * velocityCutoffTimePercentage);
     this.currentTraj = moveTraj;
-  }
-
-  private void setHoldPosition(boolean shouldHold) {
-    if (shouldHold) {
-      this.currentTraj = holdTraj;
-    } else {
-      this.currentTraj = moveTraj;
-    }
   }
 
   @Override
@@ -145,6 +137,14 @@ class StraightLineTrajectory4D extends BasicTrajectory implements FiniteTrajecto
     protected void positionDelegate(double timeInSeconds) {
       if (timeInSeconds >= endTime) {
         setHoldPosition(true);
+      }
+    }
+
+    private void setHoldPosition(boolean shouldHold) {
+      if (shouldHold) {
+        currentTraj = holdTraj;
+      } else {
+        currentTraj = moveTraj;
       }
     }
   }

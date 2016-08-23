@@ -22,7 +22,7 @@ public class SwingTrajectory4DTest {
   private double planeshift = Math.PI / 6d;
 
   @Before
-  public void setup() {
+  public void setUp() {
     target = Trajectories.newPendulumSwingTrajectory(origin, radius, frequency, 0);
     //TODO test this as well.
     targetPlaneShift =

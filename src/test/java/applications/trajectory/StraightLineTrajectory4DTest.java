@@ -21,7 +21,7 @@ public class StraightLineTrajectory4DTest {
   protected Trajectory4d target2;
 
   @Before
-  public void setup() {
+  public void setUp() {
     before = Point4D.create(0, 0, 0, 0);
     afterNotOrigin = Point4D.create(10, 10, 10, 0);
     after = Point4D.create(10, 0, 0, Math.PI / 2);
