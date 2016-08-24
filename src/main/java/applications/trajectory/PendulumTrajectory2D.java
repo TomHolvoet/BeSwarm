@@ -1,6 +1,6 @@
 package applications.trajectory;
 
-import applications.trajectory.points.Point4D;
+import applications.trajectory.geom.point.Point4D;
 import control.Trajectory1d;
 import control.Trajectory2d;
 
@@ -52,28 +52,56 @@ public final class PendulumTrajectory2D extends PeriodicTrajectory implements Tr
 
   /** Builder class for 2D pendulum trajectories. */
   public static final class Builder {
-    private double radius = 1;
-    private double frequency = 5;
-    private Point4D origin = Point4D.origin();
-    private double phase = 0;
+    private double radius;
+    private double frequency;
+    private Point4D origin;
+    private double phase;
 
-    private Builder() {}
+    private Builder() {
+      origin = Point4D.origin();
+      radius = 1;
+      frequency = 5;
+    }
 
+    /**
+     * Default radius = 1.
+     *
+     * @param radius The radius of the circle.
+     * @return this builder
+     */
     public Builder setRadius(double radius) {
       this.radius = radius;
       return this;
     }
 
+    /**
+     * Default frequency = 5.
+     *
+     * @param frequency The frequency of the circle.
+     * @return this builder
+     */
     public Builder setFrequency(double frequency) {
       this.frequency = frequency;
       return this;
     }
 
+    /**
+     * Default value is Point4D.origin()
+     *
+     * @param origin The origin of the circle.
+     * @return this builder
+     */
     public Builder setOrigin(Point4D origin) {
       this.origin = origin;
       return this;
     }
 
+    /**
+     * Default value = 0.
+     *
+     * @param phase the phase displacement of the movement.
+     * @return this builder
+     */
     public Builder setPhase(double phase) {
       this.phase = phase;
       return this;

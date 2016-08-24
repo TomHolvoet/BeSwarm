@@ -1,16 +1,18 @@
 package applications.trajectory;
 
-import applications.trajectory.points.Point4D;
+import applications.trajectory.geom.point.Point4D;
+import control.FiniteTrajectory4d;
 import control.Trajectory1d;
 import control.Trajectory4d;
-import org.junit.Assert;
 
 import java.util.Collections;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /** @author Kristof Coninx <kristof.coninx AT cs.kuleuven.be> */
+//TODO merge this util class with utils.TestUtil
 public final class TestUtils {
   public static final double EPSILON = 0.001;
   public static final double DELTA = EPSILON;
@@ -19,27 +21,31 @@ public final class TestUtils {
 
   public static void assertBounds(List<Double> results, double min, double max) {
     for (Double d : results) {
-      Assert.assertTrue(Collections.min(results) + EPSILON >= min - EPSILON);
-      Assert.assertTrue(Collections.max(results) - EPSILON <= max + EPSILON);
+      assertTrue(Collections.min(results) + EPSILON >= min - EPSILON);
+      assertTrue(Collections.max(results) - EPSILON <= max + EPSILON);
     }
   }
 
-  public static void testPositionFrequencyRadiusRelation(
+  public static void verifyPositionFrequencyRadiusRelation(
       double frequency, double radius, Trajectory1d target) {
     for (double i = 0; i < 30; i += 1 / frequency) {
       assertEquals(radius, target.getDesiredPosition(i), 0.01);
     }
   }
 
-  public static void testVelocityFrequencyRadiusRelation(double frequency, Trajectory1d target) {
+  public static void verifyVelocityFrequencyRadiusRelation(double frequency, Trajectory1d target) {
     for (double i = 0; i < 30; i += 1 / frequency) {
       assertEquals(0, getVelocity(target, i), 0.01);
     }
   }
 
+  public static double getVelocity(Trajectory1d trajectory, double t) {
+    return (trajectory.getDesiredPosition(t + DELTA) - trajectory.getDesiredPosition(t)) / DELTA;
+  }
+
   public static void testSpeedBounds(Trajectory1d target, double maxspeed) {
     for (double i = 0; i < 30; i += 2) {
-      Assert.assertTrue(Math.abs(getVelocity(target, i)) < maxspeed);
+      assertTrue(Math.abs(getVelocity(target, i)) < maxspeed);
     }
   }
 
@@ -59,14 +65,25 @@ public final class TestUtils {
     return (trajectory.getDesiredAngleZ(t + DELTA) - trajectory.getDesiredAngleZ(t)) / DELTA;
   }
 
-  public static double getVelocity(Trajectory1d trajectory, double t) {
-    return (trajectory.getDesiredPosition(t + DELTA) - trajectory.getDesiredPosition(t)) / DELTA;
-  }
-
-  public static void testTrajectoryPos4D(Trajectory4d traj, double time, Point4D target) {
+  public static void verifyTrajectoryPos4D(Trajectory4d traj, double time, Point4D target) {
     assertEquals(target.getX(), traj.getDesiredPositionX(time), EPSILON);
     assertEquals(target.getY(), traj.getDesiredPositionY(time), EPSILON);
     assertEquals(target.getZ(), traj.getDesiredPositionZ(time), EPSILON);
     assertEquals(target.getAngle(), traj.getDesiredAngleZ(time), EPSILON);
+  }
+
+  public static void verifyTrajectoryCollisions(
+      List<FiniteTrajectory4d> trajectories, double minimumDistance) {
+    CollisionDetector detector = new CollisionDetector(trajectories, minimumDistance);
+  }
+
+  public static void verifyTrajectoryCollisions(List<FiniteTrajectory4d> trajectories) {
+    CollisionDetector detector = new CollisionDetector(trajectories);
+    verifyForCollisionsOccuring(detector);
+  }
+
+  private static void verifyForCollisionsOccuring(CollisionDetector detector) {
+    List<CollisionDetector.Collision> collisions = detector.findCollisions();
+    assertTrue("Found " + collisions.size() + " collisions: " + collisions, collisions.isEmpty());
   }
 }

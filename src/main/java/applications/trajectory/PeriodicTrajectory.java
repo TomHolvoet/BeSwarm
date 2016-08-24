@@ -1,6 +1,6 @@
 package applications.trajectory;
 
-import applications.trajectory.points.Point4D;
+import applications.trajectory.geom.point.Point4D;
 
 /**
  * Abstract class for periodic trajectory commonalities.
@@ -21,16 +21,16 @@ public abstract class PeriodicTrajectory extends BasicTrajectory {
     this(0, Point4D.origin(), 1, 1);
   }
 
-  protected PeriodicTrajectory(double phase) {
-    this(phase, Point4D.origin(), 1, 1);
-  }
-
   protected PeriodicTrajectory(
       double phase, Point4D displacement, double radius, double frequency) {
     super(displacement);
     this.phaseDisplacement = phase;
     this.radius = radius;
     this.frequency = frequency;
+  }
+
+  protected PeriodicTrajectory(double phase) {
+    this(phase, Point4D.origin(), 1, 1);
   }
 
   /** @return Displacement in phase in radians. */

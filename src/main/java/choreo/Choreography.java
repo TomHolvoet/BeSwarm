@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Queue;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static org.slf4j.LoggerFactory.getLogger;
 
 /**
  * A choreography represents a sequence of different trajectories to be executed for set durations.
@@ -19,12 +20,15 @@ import static com.google.common.base.Preconditions.checkArgument;
  * from the lower level control point-of-view. Using the builder, one can create choreography
  * instances and configure them with different trajectories to be executed in sequence.
  *
+ * <p>A choreography can and should only be consumed once and cannot be reused.
+ *
  * @author Kristof Coninx <kristof.coninx AT cs.kuleuven.be>
  */
 public final class Choreography extends BasicTrajectory implements FiniteTrajectory4d {
   private final ImmutableList<ChoreoSegment> initialSegments;
   private final Queue<ChoreoSegment> segments;
   private double timeWindowShift;
+  private boolean hasRun;
 
   private Choreography(List<ChoreoSegment> segmentsArg) {
     super();
@@ -39,15 +43,26 @@ public final class Choreography extends BasicTrajectory implements FiniteTraject
   }
 
   private void checkChoreoSegments(double timeInSeconds) {
+    logFirstTime();
     double normTime = normalize(timeInSeconds);
     if (normTime >= getCurrentSegment().getDuration()) {
       shiftSegments();
     }
   }
 
+  private void logFirstTime() {
+    if (!hasRun && getLogger(Choreography.class).isDebugEnabled()) {
+      hasRun = true;
+      getLogger(Choreography.class).debug("Executing first choreo segment: " + segments.peek());
+    }
+  }
+
   private void shiftSegments() {
     if (this.segments.size() > 1) {
       this.timeWindowShift += segments.poll().getDuration();
+      if (getLogger(Choreography.class).isDebugEnabled()) {
+        getLogger(Choreography.class).debug("Executing next choreo segment: " + segments.peek());
+      }
     }
   }
 
@@ -146,7 +161,7 @@ public final class Choreography extends BasicTrajectory implements FiniteTraject
   }
 
   /** Builder class for building choreography instances. */
-  public static final class Builder implements BuildableStepBuilder, TimingRequiredStepBuilder {
+  public static final class Builder implements BuildableStepBuilder {
 
     private final List<ChoreoSegment> segments;
     private Trajectory4d tempTarget;

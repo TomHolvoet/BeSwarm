@@ -1,7 +1,7 @@
 package applications.trajectory;
 
-import applications.trajectory.points.Point3D;
-import applications.trajectory.points.Point4D;
+import applications.trajectory.geom.point.Point3D;
+import applications.trajectory.geom.point.Point4D;
 import com.google.common.collect.Lists;
 import control.FiniteTrajectory4d;
 import org.junit.Before;
@@ -68,6 +68,34 @@ public class CorkscrewTrajectory4DTest {
         startOrientation + EPSILON);
   }
 
+  private void testBounds(
+      FiniteTrajectory4d trajectory,
+      double end,
+      double minBoundX,
+      double maxBoundX,
+      double minBoundY,
+      double maxBoundY,
+      double minBoundZ,
+      double maxBoundZ,
+      double minAngle,
+      double maxAngle) {
+    List<Double> lx = Lists.newArrayList();
+    List<Double> ly = Lists.newArrayList();
+    List<Double> lz = Lists.newArrayList();
+    List<Double> la = Lists.newArrayList();
+
+    for (int i = 0; i < end; i++) {
+      lx.add(trajectory.getDesiredPositionX(i / 10d));
+      ly.add(trajectory.getDesiredPositionY(i / 10d));
+      lz.add(trajectory.getDesiredPositionZ(i / 10d));
+      la.add(trajectory.getDesiredAngleZ(i / 10d));
+    }
+    assertBounds(lx, minBoundX, maxBoundX);
+    assertBounds(ly, minBoundY, maxBoundY);
+    assertBounds(lz, minBoundZ, maxBoundZ);
+    assertBounds(la, minAngle, maxAngle);
+  }
+
   @Test
   public void testTrajectoryZ() {
     double time = 5;
@@ -111,6 +139,20 @@ public class CorkscrewTrajectory4DTest {
   @Test
   public void testTrajectoryVelocityBoundsSimple() {
     testVelocity(this.trajectory);
+  }
+
+  private void testVelocity(FiniteTrajectory4d trajectory) {
+    List<Double> lx = Lists.newArrayList();
+    List<Double> ly = Lists.newArrayList();
+    List<Double> lz = Lists.newArrayList();
+    for (int i = 0; i < 1000; i++) {
+      lx.add(getVelocityX(trajectory, i / 10d));
+      ly.add(getVelocityY(trajectory, i / 10d));
+      lz.add(getVelocityZ(trajectory, i / 10d));
+    }
+    assertBounds(lx, -1, 1);
+    assertBounds(ly, -1, 1);
+    assertBounds(lz, -1, 1);
   }
 
   @Test(expected = IllegalArgumentException.class)
@@ -186,47 +228,5 @@ public class CorkscrewTrajectory4DTest {
         end.getZ() + zDistance,
         orientation - EPSILON,
         orientation + EPSILON);
-  }
-
-  private void testVelocity(FiniteTrajectory4d trajectory) {
-    List<Double> lx = Lists.newArrayList();
-    List<Double> ly = Lists.newArrayList();
-    List<Double> lz = Lists.newArrayList();
-    for (int i = 0; i < 1000; i++) {
-      lx.add(getVelocityX(trajectory, i / 10d));
-      ly.add(getVelocityY(trajectory, i / 10d));
-      lz.add(getVelocityZ(trajectory, i / 10d));
-    }
-    assertBounds(lx, -1, 1);
-    assertBounds(ly, -1, 1);
-    assertBounds(lz, -1, 1);
-  }
-
-  private void testBounds(
-      FiniteTrajectory4d trajectory,
-      double end,
-      double minBoundX,
-      double maxBoundX,
-      double minBoundY,
-      double maxBoundY,
-      double minBoundZ,
-      double maxBoundZ,
-      double minAngle,
-      double maxAngle) {
-    List<Double> lx = Lists.newArrayList();
-    List<Double> ly = Lists.newArrayList();
-    List<Double> lz = Lists.newArrayList();
-    List<Double> la = Lists.newArrayList();
-
-    for (int i = 0; i < end; i++) {
-      lx.add(trajectory.getDesiredPositionX(i / 10d));
-      ly.add(trajectory.getDesiredPositionY(i / 10d));
-      lz.add(trajectory.getDesiredPositionZ(i / 10d));
-      la.add(trajectory.getDesiredAngleZ(i / 10d));
-    }
-    assertBounds(lx, minBoundX, maxBoundX);
-    assertBounds(ly, minBoundY, maxBoundY);
-    assertBounds(lz, minBoundZ, maxBoundZ);
-    assertBounds(la, minAngle, maxAngle);
   }
 }

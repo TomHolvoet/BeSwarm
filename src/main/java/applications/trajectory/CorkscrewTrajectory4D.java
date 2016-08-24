@@ -1,7 +1,7 @@
 package applications.trajectory;
 
-import applications.trajectory.points.Point3D;
-import applications.trajectory.points.Point4D;
+import applications.trajectory.geom.point.Point3D;
+import applications.trajectory.geom.point.Point4D;
 import com.google.auto.value.AutoValue;
 import control.FiniteTrajectory4d;
 import control.Trajectory2d;
@@ -24,10 +24,12 @@ public final class CorkscrewTrajectory4D extends PeriodicTrajectory implements F
   private static final String VELOCITY_ERROR_MESSAGE =
       "velocity component is higher than 1 for the given origin-destination points, "
           + "velocity, radius and frequency values.";
-  private final FiniteTrajectory4d unitTrajectory;
+  private final UnitTrajectory unitTrajectory;
   private final double aroundX;
   private final double aroundY;
   private final Point4D origin;
+  private final Point3D destination;
+
   private Point4DCache cache;
 
   private CorkscrewTrajectory4D(
@@ -39,6 +41,8 @@ public final class CorkscrewTrajectory4D extends PeriodicTrajectory implements F
       double phase) {
     super(phase, Point4D.origin(), radius, frequency);
     this.origin = origin;
+    this.destination = destination;
+    checkArgument(!origin.equals(destination), "Origin should not be the same as destination");
     Point4D destinationProjection = Point4D.from(destination, 0);
     double distance = Point4D.distance(origin, destinationProjection);
     unitTrajectory =
@@ -54,14 +58,8 @@ public final class CorkscrewTrajectory4D extends PeriodicTrajectory implements F
     //translate origin to get angles to unit vectors.
     Point4D translated = destinationProjection.minus(origin);
 
-    //find angles to unit trajectory
-    double x = translated.getX();
-    double y = translated.getY();
-    double z = translated.getZ();
-
-    //check components for excessive speeds.
-    Point3D speedComponent =
-        Point3D.create(speed * (x / distance), speed * (y / distance), speed * (z / distance));
+    //find angles to unit trajectory and check components for excessive speeds.
+    Point3D speedComponent = Point3D.scale(Point3D.project(translated), speed / distance);
 
     checkArgument(
         isValidVelocity(speedComponent.getX(), speed, radius, frequency),
@@ -73,9 +71,11 @@ public final class CorkscrewTrajectory4D extends PeriodicTrajectory implements F
         isValidVelocity(speedComponent.getZ(), speed, radius, frequency),
         "Z " + VELOCITY_ERROR_MESSAGE);
 
-    double zyNorm = Math.sqrt(Math.pow(y, 2) + Math.pow(z, 2));
-    this.aroundX = (Math.PI / 2) - Math.acos(y / zyNorm);
-    this.aroundY = Math.acos(x / Math.sqrt(Math.pow(x, 2) + Math.pow(zyNorm, 2)));
+    double zyNorm = Math.sqrt(Math.pow(translated.getY(), 2) + Math.pow(translated.getZ(), 2));
+    this.aroundX = (Math.PI / 2) - Math.acos(translated.getY() / zyNorm);
+    this.aroundY =
+        Math.acos(
+            translated.getX() / Math.sqrt(Math.pow(translated.getX(), 2) + Math.pow(zyNorm, 2)));
 
     //set initial cache
     this.cache = newCache(Point4D.origin(), -1);
@@ -111,47 +111,12 @@ public final class CorkscrewTrajectory4D extends PeriodicTrajectory implements F
     return true;
   }
 
-  static Builder builder() {
-    return new Builder();
-  }
-
   static Point4DCache newCache(Point4D point, double timeMark) {
     return new AutoValue_CorkscrewTrajectory4D_Point4DCache(point, timeMark);
   }
 
-  private static boolean isEqual(double a, double b) {
-    return Math.abs(a - b) < EPSILON;
-  }
-
-  private static Point4D rotationTransform(Point4D toTrans, double aroundX, double aroundY) {
-    return Point4D.from(
-        Transformations.reverseRotation(
-            Point3D.project(toTrans), aroundX, aroundY, 0, RotationOrder.XYZ),
-        0);
-  }
-
-  private void refreshCache(double time) {
-    if (!isEqual(cache.getTimeMark(), time)) {
-      Point4D beforeTransPoint =
-          Point4D.create(
-              unitTrajectory.getDesiredPositionX(time),
-              unitTrajectory.getDesiredPositionY(time),
-              unitTrajectory.getDesiredPositionZ(time),
-              unitTrajectory.getDesiredAngleZ(time));
-      setCache(beforeTransPoint, time);
-    }
-  }
-
-  private void setCache(Point4D beforeTransPoint, double time) {
-    this.cache = newCache(beforeTransPoint, time);
-  }
-
-  private Point4D getCachePoint() {
-    return this.cache.getDestinationPoint();
-  }
-
-  private Point4D translationTransform(Point4D toTrans) {
-    return rotationTransform(toTrans, aroundX, aroundY).plus(origin);
+  static Builder builder() {
+    return new Builder();
   }
 
   @Override
@@ -166,21 +131,74 @@ public final class CorkscrewTrajectory4D extends PeriodicTrajectory implements F
     return translationTransform(getCachePoint()).getX();
   }
 
+  private void refreshCache(double time) {
+    if (!isEqual(cache.getTimeMark(), time)) {
+      Point4D beforeTransPoint =
+          Point4D.create(
+              unitTrajectory.getDesiredPositionX(time),
+              unitTrajectory.getDesiredPositionY(time),
+              unitTrajectory.getDesiredPositionZ(time),
+              unitTrajectory.getDesiredAngleZ(time));
+      setCache(beforeTransPoint, time);
+    }
+  }
+
+  private Point4D translationTransform(Point4D toTrans) {
+    return rotationTransform(toTrans, aroundX, aroundY).plus(origin);
+  }
+
+  private Point4D getCachePoint() {
+    return this.cache.getDestinationPoint();
+  }
+
+  private static boolean isEqual(double a, double b) {
+    return Math.abs(a - b) < EPSILON;
+  }
+
+  private void setCache(Point4D beforeTransPoint, double time) {
+    this.cache = newCache(beforeTransPoint, time);
+  }
+
+  private static Point4D rotationTransform(Point4D toTrans, double aroundX, double aroundY) {
+    return Point4D.from(
+        Transformations.reverseRotation(
+            Point3D.project(toTrans), aroundX, aroundY, 0, RotationOrder.XYZ),
+        0);
+  }
+
   @Override
+  public String toString() {
+    return "CorkscrewTrajectory4D{"
+        + "velocity="
+        + unitTrajectory.getSpeed()
+        + ", origin point="
+        + getOrigin()
+        + ", destination point="
+        + getDestination()
+        + ", radius="
+        + unitTrajectory.getRadius()
+        + ", frequency="
+        + unitTrajectory.getFrequency()
+        + '}';
+  }  @Override
   public double getDesiredPositionY(double timeInSeconds) {
     final double currentTime = getRelativeTime(timeInSeconds);
     refreshCache(currentTime);
     return translationTransform(getCachePoint()).getY();
   }
 
-  @Override
+  private Point4D getOrigin() {
+    return origin;
+  }  @Override
   public double getDesiredPositionZ(double timeInSeconds) {
     final double currentTime = getRelativeTime(timeInSeconds);
     refreshCache(currentTime);
     return translationTransform(getCachePoint()).getZ();
   }
 
-  @Override
+  private Point3D getDestination() {
+    return destination;
+  }  @Override
   public double getDesiredAngleZ(double timeInSeconds) {
     final double currentTime = getRelativeTime(timeInSeconds);
     refreshCache(currentTime);
@@ -197,40 +215,81 @@ public final class CorkscrewTrajectory4D extends PeriodicTrajectory implements F
 
   /** Builder for corkscrew trajectories. */
   public static final class Builder {
-    private Point4D origin = Point4D.origin();
-    private Point3D destination = Point3D.origin();
-    private double speed = 1;
-    private double radius = 0.5;
-    private double frequency = 0.3;
-    private double phase = 0;
+    private Point4D origin;
+    private Point3D destination;
+    private double speed;
+    private double radius;
+    private double frequency;
+    private double phase;
 
-    private Builder() {}
+    private Builder() {
+      origin = Point4D.origin();
+      destination = Point3D.origin();
+      speed = 1;
+      radius = 0.5;
+      frequency = 0.3;
+    }
 
+    /**
+     * Default value is Point4D.origin()
+     *
+     * @param location The origin of the trajectory.
+     * @return this builder
+     */
     public Builder setOrigin(Point4D origin) {
       this.origin = origin;
       return this;
     }
 
+    /**
+     * Default value is Point3D.origin()
+     *
+     * @param location The destination of the trajectory.
+     * @return this builder
+     */
     public Builder setDestination(Point3D destination) {
       this.destination = destination;
       return this;
     }
 
+    /**
+     * Default value = 1.
+     *
+     * @param speed The linear velocity between origin and destination.
+     * @return this builder
+     */
     public Builder setSpeed(double speed) {
       this.speed = speed;
       return this;
     }
 
+    /**
+     * Default radius = 0.5.
+     *
+     * @param radius The radius of the circle movement.
+     * @return this builder
+     */
     public Builder setRadius(double radius) {
       this.radius = radius;
       return this;
     }
-
+    /**
+     * Default frequency = 0.3.
+     *
+     * @param frequency The frequency of the circle movement.
+     * @return this builder
+     */
     public Builder setFrequency(double frequency) {
       this.frequency = frequency;
       return this;
     }
 
+    /**
+     * Default value = 0.
+     *
+     * @param phase the phase displacement of the movement.
+     * @return this builder
+     */
     public Builder setPhase(double phase) {
       this.phase = phase;
       return this;
@@ -248,33 +307,60 @@ public final class CorkscrewTrajectory4D extends PeriodicTrajectory implements F
     private final LinearTrajectory1D linear;
     private final double endPoint;
     private final double speed;
+    private final double frequency;
+    private final double radius;
     private Trajectory2d circlePlane;
     private boolean atEnd;
 
-    private UnitTrajectory(Trajectory2d circlePlane, double speed, double endPoint) {
+    private UnitTrajectory(CircleTrajectory2D circlePlane, double speed, double endPoint) {
       this.linear = new LinearTrajectory1D(0, speed);
       this.circlePlane = circlePlane;
       this.endPoint = endPoint;
       this.atEnd = false;
       this.speed = speed;
+      this.frequency = circlePlane.getFrequency();
+      this.radius = circlePlane.getRadius();
     }
 
-    @Override
+    double getSpeed() {
+      return speed;
+    }    @Override
     public double getDesiredPositionX(double timeInSeconds) {
       if (atEnd) {
         return endPoint;
       }
-      if (linear.getDesiredPosition(timeInSeconds) >= endPoint) {
+      if (linear.getDesiredPosition(timeInSeconds) > endPoint) {
         markEnd();
         return endPoint;
       }
       return linear.getDesiredPosition(timeInSeconds);
     }
 
-    private void markEnd() {
+    private double getRadius() {
+      return radius;
+    }    private void markEnd() {
       this.atEnd = true;
       this.circlePlane = new NoMovement2DTrajectory();
     }
+
+    double getFrequency() {
+      return frequency;
+    }
+
+    private class NoMovement2DTrajectory implements Trajectory2d {
+
+      @Override
+      public double getDesiredPositionAbscissa(double timeInSeconds) {
+        return 0;
+      }
+
+      @Override
+      public double getDesiredPositionOrdinate(double timeInSeconds) {
+        return 0;
+      }
+    }
+
+
 
     @Override
     public double getDesiredPositionY(double timeInSeconds) {
@@ -296,17 +382,12 @@ public final class CorkscrewTrajectory4D extends PeriodicTrajectory implements F
       return endPoint / speed;
     }
 
-    private class NoMovement2DTrajectory implements Trajectory2d {
 
-      @Override
-      public double getDesiredPositionAbscissa(double timeInSeconds) {
-        return 0;
-      }
-
-      @Override
-      public double getDesiredPositionOrdinate(double timeInSeconds) {
-        return 0;
-      }
-    }
   }
+
+
+
+
+
+
 }

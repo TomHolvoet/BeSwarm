@@ -1,13 +1,13 @@
 package choreo;
 
 import applications.trajectory.Trajectories;
-import applications.trajectory.points.Point3D;
-import applications.trajectory.points.Point4D;
+import applications.trajectory.geom.point.Point3D;
+import applications.trajectory.geom.point.Point4D;
 import control.Trajectory4d;
 import org.junit.Before;
 import org.junit.Test;
 
-import static applications.trajectory.TestUtils.testTrajectoryPos4D;
+import static applications.trajectory.TestUtils.verifyTrajectoryPos4D;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
@@ -38,11 +38,11 @@ public class ChoreographyTest {
 
   @Test
   public void testTwoSegmentTrajectoryChoreo() {
-    testTrajectoryPos4D(choreotarget, 2, Point4D.create(5, 5, 5, 2));
+    verifyTrajectoryPos4D(choreotarget, 2, Point4D.create(5, 5, 5, 2));
     //First invocation past duration still get's old point. all following
     // trigger change in segment for first call.
     choreotarget.getDesiredPositionX(0d + duration);
-    testTrajectoryPos4D(choreotarget, (1 / frequency) + duration, Point4D.create(radius, 0, 0, 0));
+    verifyTrajectoryPos4D(choreotarget, (1 / frequency) + duration, Point4D.create(radius, 0, 0, 0));
   }
 
   @Test
@@ -75,11 +75,11 @@ public class ChoreographyTest {
     choreotarget.getDesiredPositionY(timeShift);
     choreotarget.getDesiredPositionZ(timeShift);
 
-    testTrajectoryPos4D(choreotarget, 2, Point4D.create(5, 5, 5, 2));
+    verifyTrajectoryPos4D(choreotarget, 2, Point4D.create(5, 5, 5, 2));
     //First invocation past duration still get's old point. all following
     // trigger change in segment for first call.
     choreotarget.getDesiredPositionX(timeShift + 0d + duration);
-    testTrajectoryPos4D(
+    verifyTrajectoryPos4D(
         choreotarget, (1 / frequency) + timeShift + duration, Point4D.create(radius, 0, 0, 0));
   }
 

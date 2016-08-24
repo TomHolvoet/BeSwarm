@@ -1,7 +1,7 @@
 package applications.trajectory;
 
-import applications.trajectory.points.Point3D;
-import applications.trajectory.points.Point4D;
+import applications.trajectory.geom.point.Point3D;
+import applications.trajectory.geom.point.Point4D;
 import control.Trajectory2d;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -54,32 +54,69 @@ final class CircleTrajectory2D extends PeriodicTrajectory implements Trajectory2
   }
 
   static class Builder {
-    private double radius = 1;
-    private double frequency = 5;
-    private Point3D origin = Point3D.origin();
-    private boolean clockwise = true;
-    private double phase = 0;
+    private double radius;
+    private double frequency;
+    private Point3D origin;
+    private boolean clockwise;
+    private double phase;
 
+    Builder() {
+      radius = 1;
+      frequency = 5;
+      origin = Point3D.origin();
+      clockwise = true;
+    }
+
+    /**
+     * Default radius = 1.
+     *
+     * @param radius The radius of the circle.
+     * @return this builder
+     */
     public Builder setRadius(double radius) {
       this.radius = radius;
       return this;
     }
 
+    /**
+     * Default frequency = 5.
+     *
+     * @param frequency The frequency of the circle.
+     * @return this builder
+     */
     public Builder setFrequency(double frequency) {
       this.frequency = frequency;
       return this;
     }
 
+    /**
+     * Default value is Point3D.origin()
+     *
+     * @param origin The origin of the circle.
+     * @return this builder
+     */
     public Builder setOrigin(Point3D origin) {
       this.origin = origin;
       return this;
     }
 
+    /**
+     * Default value = true.
+     *
+     * @param clockwise whether this movement is clockwise or not.
+     * @return this builder
+     */
     public Builder setClockwise(boolean clockwise) {
       this.clockwise = clockwise;
       return this;
     }
 
+    /**
+     * Default value = 0.
+     *
+     * @param phase the phase displacement of the movement.
+     * @return this builder
+     */
     public Builder setPhase(double phase) {
       this.phase = phase;
       return this;

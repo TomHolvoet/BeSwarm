@@ -4,9 +4,9 @@ import control.Trajectory1d;
 import control.Trajectory2d;
 import org.junit.Test;
 
-import static applications.trajectory.TestUtils.testPositionFrequencyRadiusRelation;
+import static applications.trajectory.TestUtils.verifyPositionFrequencyRadiusRelation;
 import static applications.trajectory.TestUtils.testSpeedBounds;
-import static applications.trajectory.TestUtils.testVelocityFrequencyRadiusRelation;
+import static applications.trajectory.TestUtils.verifyVelocityFrequencyRadiusRelation;
 
 /** @author Kristof Coninx <kristof.coninx AT cs.kuleuven.be> */
 public abstract class Periodic2DTest {
@@ -19,24 +19,24 @@ public abstract class Periodic2DTest {
   @Test
   public void getTrajectoryLinearAbscissaTestFrequencyAndRadiusRelation() throws Exception {
 
-    testPositionFrequencyRadiusRelation(highFreq, radius, new HighFreq1DAbscissa());
-    testPositionFrequencyRadiusRelation(lowFreq, radius, new LowFreq1DAbscissa());
+    verifyPositionFrequencyRadiusRelation(highFreq, radius, new HighFreq1DAbscissa());
+    verifyPositionFrequencyRadiusRelation(lowFreq, radius, new LowFreq1DAbscissa());
   }
 
   @Test
   public void getTrajectoryAbscissaVelocityTestFrequencyAndRadiusRelation() {
     testSpeedBounds(new HighFreq1DAbscissa(), BasicTrajectory.MAX_ABSOLUTE_VELOCITY);
-    testVelocityFrequencyRadiusRelation(highFreq, new HighFreq1DAbscissa());
+    verifyVelocityFrequencyRadiusRelation(highFreq, new HighFreq1DAbscissa());
 
     testSpeedBounds(new LowFreq1DAbscissa(), BasicTrajectory.MAX_ABSOLUTE_VELOCITY);
-    testVelocityFrequencyRadiusRelation(lowFreq, new LowFreq1DAbscissa());
+    verifyVelocityFrequencyRadiusRelation(lowFreq, new LowFreq1DAbscissa());
   }
 
   @Test
   public void getTrajectoryLinearOrdinateTestFrequencyAndRadiusRelation() throws Exception {
 
-    testPositionFrequencyRadiusRelation(highFreq, 0, new HighFreq1DOrdinate());
-    testPositionFrequencyRadiusRelation(lowFreq, 0, new LowFreq1DOrdinate());
+    verifyPositionFrequencyRadiusRelation(highFreq, 0, new HighFreq1DOrdinate());
+    verifyPositionFrequencyRadiusRelation(lowFreq, 0, new LowFreq1DOrdinate());
   }
 
   @Test

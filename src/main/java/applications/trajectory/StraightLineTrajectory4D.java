@@ -1,6 +1,7 @@
 package applications.trajectory;
 
-import applications.trajectory.points.Point4D;
+import applications.trajectory.geom.point.Point3D;
+import applications.trajectory.geom.point.Point4D;
 import control.FiniteTrajectory4d;
 import control.Trajectory4d;
 
@@ -44,11 +45,7 @@ class StraightLineTrajectory4D extends BasicTrajectory implements FiniteTrajecto
         velocity <= BasicTrajectory.MAX_ABSOLUTE_VELOCITY,
         "The provided velocity should be smaller than BasicTrajectory" + ".MAX_ABSOLUTE_VELOCITY");
     Point4D diff = Point4D.minus(targetpoint, srcpoint);
-    this.totalDistance =
-        StrictMath.sqrt(
-            StrictMath.pow(diff.getX(), 2)
-                + StrictMath.pow(diff.getY(), 2)
-                + StrictMath.pow(diff.getZ(), 2));
+    this.totalDistance = Point3D.project(diff).norm();
     double speed = velocity;
     checkArgument(totalDistance > 0, "Distance to travel cannot be zero.");
     this.endTime = totalDistance / speed;
@@ -88,6 +85,10 @@ class StraightLineTrajectory4D extends BasicTrajectory implements FiniteTrajecto
     return getCurrentTrajectory().getDesiredAngleZ(currentTime);
   }
 
+  protected Trajectory4d getCurrentTrajectory() {
+    return currentTraj;
+  }
+
   @Override
   public String toString() {
     return "StraightLineTrajectory4D{"
@@ -100,13 +101,8 @@ class StraightLineTrajectory4D extends BasicTrajectory implements FiniteTrajecto
         + '}';
   }
 
-  @Override
-  public double getTrajectoryDuration() {
-    return this.endTime;
-  }
-
-  protected Trajectory4d getCurrentTrajectory() {
-    return currentTraj;
+  public double getVelocity() {
+    return velocity;
   }
 
   public Point4D getSrcpoint() {
@@ -117,8 +113,9 @@ class StraightLineTrajectory4D extends BasicTrajectory implements FiniteTrajecto
     return targetpoint;
   }
 
-  public double getVelocity() {
-    return velocity;
+  @Override
+  public double getTrajectoryDuration() {
+    return this.endTime;
   }
 
   public final double getTotalDistance() {

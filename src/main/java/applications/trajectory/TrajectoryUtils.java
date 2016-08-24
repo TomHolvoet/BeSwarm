@@ -1,5 +1,6 @@
 package applications.trajectory;
 
+import applications.trajectory.geom.point.Point4D;
 import control.Trajectory1d;
 import control.Trajectory4d;
 
@@ -81,5 +82,18 @@ public final class TrajectoryUtils {
         return trajectory4d.getDesiredAngleZ(timeInSeconds);
       }
     };
+  }
+
+  /**
+   * Sample a trajectory for a given time.
+   *
+   * @param trajectory the trajectory to sample.
+   * @param time the time point for which to sample a trajectory.
+   * @return a point4D instance containing the sample location values.
+   */
+  public static Point4D sampleTrajectory(Trajectory4d trajectory, double time) {
+    return Point4D.create(
+        trajectory.getDesiredPositionX(time), trajectory.getDesiredPositionY(time),
+        trajectory.getDesiredPositionZ(time), trajectory.getDesiredAngleZ(time));
   }
 }
