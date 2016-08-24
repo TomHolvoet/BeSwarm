@@ -1,9 +1,10 @@
-package applications.parrot.tumsim;
+package applications.parrot.tumsim.multidrone;
 
 import applications.trajectory.MultiTrajectoryServer;
 import applications.trajectory.TrajectoryServer;
 import com.google.common.collect.Lists;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -12,19 +13,18 @@ import java.util.List;
  *
  * @author Kristof Coninx <kristof.coninx AT cs.kuleuven.be>
  */
-public class MultiDroneCorkscrewExample implements MultiTrajectoryServer {
+public abstract class AbstractMultiDroneExample implements MultiTrajectoryServer {
 
-  private final TrajectoryServer drone1Server;
-  private final TrajectoryServer drone2Server;
+  private final List<TrajectoryServer> droneServers;
 
   /** Default constructor. */
-  public MultiDroneCorkscrewExample() {
-    this.drone1Server = new TumSimulatorMultiDroneCorkscrewExample1();
-    this.drone2Server = new TumSimulatorMultiDroneCorkscrewExample2();
+  public AbstractMultiDroneExample(TrajectoryServer... trajectories) {
+    droneServers = Lists.newArrayList();
+    droneServers.addAll(Arrays.asList(trajectories));
   }
 
   @Override
   public List<TrajectoryServer> getAllDifferentTrajectories() {
-    return Lists.newArrayList(drone1Server, drone2Server);
+    return Lists.newArrayList(droneServers);
   }
 }
