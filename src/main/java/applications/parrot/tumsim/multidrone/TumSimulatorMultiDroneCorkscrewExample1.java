@@ -1,5 +1,6 @@
-package applications.parrot.tumsim;
+package applications.parrot.tumsim.multidrone;
 
+import applications.parrot.tumsim.AbstractTumSimulatorExample;
 import applications.trajectory.Trajectories;
 import applications.trajectory.geom.point.Point3D;
 import applications.trajectory.geom.point.Point4D;
@@ -14,6 +15,9 @@ import control.Trajectory4d;
  * @author Kristof Coninx <kristof.coninx AT cs.kuleuven.be>
  */
 public class TumSimulatorMultiDroneCorkscrewExample1 extends AbstractTumSimulatorExample {
+  public static final double DEFAULT_VELOCITY = 0.1;
+  public static final double DEFAULT_FREQUENCY = 0.2;
+  public static final double DEFAULT_RADIUS = 0.5;
   private static final double STARTX = 1;
   private static final double STARTY = 0;
   private static final double STARTZ = 1;
@@ -22,9 +26,6 @@ public class TumSimulatorMultiDroneCorkscrewExample1 extends AbstractTumSimulato
   private static final double ENDZ = 1.5;
   private static final double ORIENTATION = -Math.PI / 2;
   private static final double DISPLACEMENT = 0.5;
-  public static final double DEFAULT_VELOCITY = 0.1;
-  public static final double DEFAULT_FREQUENCY = 0.2;
-  public static final double DEFAULT_RADIUS = 0.5;
   private final double radius;
   private final double frequency;
   private final double velocity;
