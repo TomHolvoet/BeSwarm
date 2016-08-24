@@ -10,6 +10,7 @@ import com.google.auto.value.AutoValue;
  */
 @AutoValue
 public abstract class LineSegment {
+  LineSegment() {}
 
   /** @return The starting point (p1) of the segment l. */
   public abstract Point3D getStartPoint();
