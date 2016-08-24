@@ -17,7 +17,11 @@ public abstract class AbstractMultiDroneExample implements MultiTrajectoryServer
 
   private final List<TrajectoryServer> droneServers;
 
-  /** Default constructor. */
+  /**
+   * Default constructor.
+   *
+   * @param trajectories The trajectories to serve up for the different drones.
+   */
   public AbstractMultiDroneExample(TrajectoryServer... trajectories) {
     droneServers = Lists.newArrayList();
     droneServers.addAll(Arrays.asList(trajectories));
