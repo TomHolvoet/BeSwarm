@@ -1,6 +1,6 @@
 package applications.trajectory;
 
-import applications.trajectory.points.Point3D;
+import applications.trajectory.geom.point.Point3D;
 import com.google.common.collect.Lists;
 import control.Trajectory4d;
 import org.junit.Before;

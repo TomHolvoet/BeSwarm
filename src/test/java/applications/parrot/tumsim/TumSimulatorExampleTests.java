@@ -22,10 +22,13 @@ import static org.junit.Assert.fail;
  * @author Kristof Coninx <kristof.coninx AT cs.kuleuven.be>
  */
 @RunWith(Parameterized.class)
-public class TumSimulatorExampleTest {
+public class TumSimulatorExampleTests {
+  private static final String PACKAGE_FQN = "applications.parrot.tumsim";
+  private static final Class TEST_PARENT = AbstractTumSimulatorExample.class;
+
   private TrajectoryServer server;
 
-  public TumSimulatorExampleTest(Class cl) {
+  public TumSimulatorExampleTests(Class cl) {
     try {
       this.server = (TrajectoryServer) cl.getDeclaredConstructor().newInstance();
     } catch (Exception e) {
@@ -37,13 +40,13 @@ public class TumSimulatorExampleTest {
 
   @Parameterized.Parameters
   public static Collection<? extends Class> getData() {
-    Reflections reflections = new Reflections("applications.parrot.tumsim");
-    return reflections.getSubTypesOf(AbstractTumSimulatorExample.class);
+    Reflections reflections = new Reflections(PACKAGE_FQN);
+    return reflections.getSubTypesOf(TEST_PARENT);
   }
 
   @Test
   public void testTrajectoryInitialization() {
-    LoggerFactory.getLogger(TumSimulatorExampleTest.class)
+    LoggerFactory.getLogger(TumSimulatorExampleTests.class)
         .info(
             "Running example initialization test for instances of " + server.getClass().getName());
     FiniteTrajectory4d traj = server.getConcreteTrajectory();

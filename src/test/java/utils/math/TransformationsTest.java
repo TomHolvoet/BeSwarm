@@ -1,6 +1,6 @@
 package utils.math;
 
-import applications.trajectory.points.Point3D;
+import applications.trajectory.geom.point.Point3D;
 import control.dto.BodyFrameVelocity;
 import control.dto.InertialFrameVelocity;
 import control.dto.Pose;

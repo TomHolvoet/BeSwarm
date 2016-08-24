@@ -3,9 +3,9 @@ package applications.trajectory;
 import control.Trajectory1d;
 import org.junit.Test;
 
-import static applications.trajectory.TestUtils.testPositionFrequencyRadiusRelation;
+import static applications.trajectory.TestUtils.verifyPositionFrequencyRadiusRelation;
 import static applications.trajectory.TestUtils.testSpeedBounds;
-import static applications.trajectory.TestUtils.testVelocityFrequencyRadiusRelation;
+import static applications.trajectory.TestUtils.verifyVelocityFrequencyRadiusRelation;
 
 /** @author Kristof Coninx <kristof.coninx AT cs.kuleuven.be> */
 public abstract class Periodic1DTest {
@@ -18,16 +18,16 @@ public abstract class Periodic1DTest {
 
   @Test
   public void getTrajectoryPositionTestFrequencyAndRadiusRelation() throws Exception {
-    testPositionFrequencyRadiusRelation(highFreq, radius, highFrequencyCircle);
-    testPositionFrequencyRadiusRelation(lowFreq, radius, lowFrequencyCircle);
+    verifyPositionFrequencyRadiusRelation(highFreq, radius, highFrequencyCircle);
+    verifyPositionFrequencyRadiusRelation(lowFreq, radius, lowFrequencyCircle);
   }
 
   @Test
   public void getTrajectoryVelocityTestFrequencyAndRadiusRelation() {
     testSpeedBounds(highFrequencyCircle, BasicTrajectory.MAX_ABSOLUTE_VELOCITY);
-    testVelocityFrequencyRadiusRelation(highFreq, highFrequencyCircle);
+    verifyVelocityFrequencyRadiusRelation(highFreq, highFrequencyCircle);
 
     testSpeedBounds(lowFrequencyCircle, BasicTrajectory.MAX_ABSOLUTE_VELOCITY);
-    testVelocityFrequencyRadiusRelation(lowFreq, lowFrequencyCircle);
+    verifyVelocityFrequencyRadiusRelation(lowFreq, lowFrequencyCircle);
   }
 }
