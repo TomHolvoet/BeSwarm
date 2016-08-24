@@ -12,6 +12,8 @@ import static applications.trajectory.geom.point.Point3D.project;
  */
 @AutoValue
 public abstract class Point4D {
+  Point4D() {}
+
   /** @return A coordinate instance representing (0,0,0,0). */
   public static Point4D origin() {
     return new AutoValue_Point4D(0, 0, 0, 0);
@@ -43,16 +45,14 @@ public abstract class Point4D {
   }
 
   /**
-   * @param targetPoint the destination of the vector.
-   * @param sourcePoint the source of the vector.
-   * @return A point instance representing the difference or distance between the given points.
+   * Gets the euclidean distance between two points.
+   *
+   * @param p0 the first point
+   * @param p1 the second point
+   * @return the euclidean distance between {@code p0} and {@code p1}
    */
-  public static Point4D minus(Point4D targetPoint, Point4D sourcePoint) {
-    return create(
-        targetPoint.getX() - sourcePoint.getX(),
-        targetPoint.getY() - sourcePoint.getY(),
-        targetPoint.getZ() - sourcePoint.getZ(),
-        targetPoint.getAngle() - sourcePoint.getAngle());
+  public static double distance(Point4D p0, Point4D p1) {
+    return Point3D.distance(project(p0), project(p1));
   }
 
   /**
@@ -67,33 +67,14 @@ public abstract class Point4D {
   /**
    * @param targetPoint the destination of the vector.
    * @param sourcePoint the source of the vector.
-   * @return A point instance representing the sum of the given points.
+   * @return A point instance representing the difference or distance between the given points.
    */
-  public static Point4D plus(Point4D targetPoint, Point4D sourcePoint) {
+  public static Point4D minus(Point4D targetPoint, Point4D sourcePoint) {
     return create(
-        targetPoint.getX() + sourcePoint.getX(),
-        targetPoint.getY() + sourcePoint.getY(),
-        targetPoint.getZ() + sourcePoint.getZ(),
-        targetPoint.getAngle() + sourcePoint.getAngle());
-  }
-
-  /**
-   * @param targetPoint the destination of the vector.
-   * @return A point instance representing the sum of the given points.
-   */
-  public Point4D plus(Point4D targetPoint) {
-    return plus(this, targetPoint);
-  }
-
-  /**
-   * Gets the euclidean distance between two points.
-   *
-   * @param p0 the first point
-   * @param p1 the second point
-   * @return the euclidean distance between {@code p0} and {@code p1}
-   */
-  public static double distance(Point4D p0, Point4D p1) {
-    return Point3D.distance(project(p0), project(p1));
+        targetPoint.getX() - sourcePoint.getX(),
+        targetPoint.getY() - sourcePoint.getY(),
+        targetPoint.getZ() - sourcePoint.getZ(),
+        targetPoint.getAngle() - sourcePoint.getAngle());
   }
 
   /**
@@ -120,4 +101,25 @@ public abstract class Point4D {
 
   /** @return The yaw angle orientation. */
   public abstract double getAngle();
+
+  /**
+   * @param targetPoint the destination of the vector.
+   * @return A point instance representing the sum of the given points.
+   */
+  public Point4D plus(Point4D targetPoint) {
+    return plus(this, targetPoint);
+  }
+
+  /**
+   * @param targetPoint the destination of the vector.
+   * @param sourcePoint the source of the vector.
+   * @return A point instance representing the sum of the given points.
+   */
+  public static Point4D plus(Point4D targetPoint, Point4D sourcePoint) {
+    return create(
+        targetPoint.getX() + sourcePoint.getX(),
+        targetPoint.getY() + sourcePoint.getY(),
+        targetPoint.getZ() + sourcePoint.getZ(),
+        targetPoint.getAngle() + sourcePoint.getAngle());
+  }
 }

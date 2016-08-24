@@ -9,17 +9,7 @@ import com.google.auto.value.AutoValue;
  */
 @AutoValue
 public abstract class Point3D {
-  /**
-   * Create a new point object
-   *
-   * @param x the x coordinate.
-   * @param y the Y coordinate.
-   * @param z the Z coordinate.
-   * @return A value class representing the given coordinates.
-   */
-  public static Point3D create(double x, double y, double z) {
-    return new AutoValue_Point3D(x, y, z);
-  }
+  Point3D() {}
 
   /** @return A coordinate instance representing (0,0,0,0). */
   public static Point3D origin() {
@@ -48,6 +38,15 @@ public abstract class Point3D {
             + (p0.getZ() - p1.getZ()) * (p0.getZ() - p1.getZ()));
   }
 
+  /** @return The X coordinate. */
+  public abstract double getX();
+
+  /** @return The Y coordinate. */
+  public abstract double getY();
+
+  /** @return The Z coordinate. */
+  public abstract double getZ();
+
   /**
    * @param targetPoint the destination of the vector.
    * @param sourcePoint the source of the vector.
@@ -58,6 +57,18 @@ public abstract class Point3D {
         targetPoint.getX() - sourcePoint.getX(),
         targetPoint.getY() - sourcePoint.getY(),
         targetPoint.getZ() - sourcePoint.getZ());
+  }
+
+  /**
+   * Create a new point object
+   *
+   * @param x the x coordinate.
+   * @param y the Y coordinate.
+   * @param z the Z coordinate.
+   * @return A value class representing the given coordinates.
+   */
+  public static Point3D create(double x, double y, double z) {
+    return new AutoValue_Point3D(x, y, z);
   }
 
   /**
@@ -73,17 +84,6 @@ public abstract class Point3D {
   }
 
   /**
-   * @param targetPoint the first point.
-   * @param sourcePoint the second point .
-   * @return A double representing the dot product of the given points.
-   */
-  public static double dot(Point3D targetPoint, Point3D sourcePoint) {
-    return targetPoint.getX() * sourcePoint.getX()
-        + targetPoint.getY() * sourcePoint.getY()
-        + targetPoint.getZ() * sourcePoint.getZ();
-  }
-
-  /**
    * @param targetPoint the target point.
    * @param scale the scale factor.
    * @return A Point3D instance representing the scalar multiplication of the given point with the
@@ -96,15 +96,17 @@ public abstract class Point3D {
 
   /** @return The norm of this point p as |p| = sqrt(x*x + y*y + z*z). */
   public double norm() {
-    return Math.sqrt(dot(this,this));
+    return Math.sqrt(dot(this, this));
   }
 
-  /** @return The X coordinate. */
-  public abstract double getX();
-
-  /** @return The Y coordinate. */
-  public abstract double getY();
-
-  /** @return The Z coordinate. */
-  public abstract double getZ();
+  /**
+   * @param targetPoint the first point.
+   * @param sourcePoint the second point .
+   * @return A double representing the dot product of the given points.
+   */
+  public static double dot(Point3D targetPoint, Point3D sourcePoint) {
+    return targetPoint.getX() * sourcePoint.getX()
+        + targetPoint.getY() * sourcePoint.getY()
+        + targetPoint.getZ() * sourcePoint.getZ();
+  }
 }
