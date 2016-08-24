@@ -14,6 +14,15 @@ import control.FiniteTrajectory4d;
  */
 public class TumSimulatorMultiDroneStraightLineExample1 extends AbstractTumSimulatorExample {
 
+  private static final int XCOORD_START = 0;
+  private static final int YCOORD_START = 0;
+  private static final int ZCOORD_START = 1;
+  private static final int ANGLE_START = 0;
+  private static final int XCOORD_END = 0;
+  private static final int YCOORD_END = -4;
+  private static final int ZCOORD_END = 1;
+  private static final int ANGLE_END = 0;
+  private static final int VELOCITY = 1;
   private final double displacement;
 
   /** Default Constructor. */
@@ -30,6 +39,8 @@ public class TumSimulatorMultiDroneStraightLineExample1 extends AbstractTumSimul
   @Override
   public FiniteTrajectory4d getConcreteTrajectory() {
     return Trajectories.newStraightLineTrajectory(
-        Point4D.create(0 + displacement, 0, 1, 0), Point4D.create(0 + displacement, -4, 1, 0), 1);
+        Point4D.create(XCOORD_START + displacement, YCOORD_START, ZCOORD_START, ANGLE_START),
+        Point4D.create(XCOORD_END + displacement, YCOORD_END, ZCOORD_END, ANGLE_END),
+        VELOCITY);
   }
 }
