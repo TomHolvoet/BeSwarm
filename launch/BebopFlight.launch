@@ -12,7 +12,8 @@
 
   <!--ROS driver-->
   <include file="$(find bebop_driver)/launch/bebop_node.launch">
-    <arg name="drone_ip" value="$(arg drone_ip)"/>
+    <arg name="namespace" value="$(arg drone_name)"/>
+    <arg name="ip" value="$(arg drone_ip)"/>
   </include>
 
   <!-- records flight -->
