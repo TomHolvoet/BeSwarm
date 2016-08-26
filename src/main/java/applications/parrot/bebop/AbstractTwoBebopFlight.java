@@ -23,13 +23,15 @@ public abstract class AbstractTwoBebopFlight extends AbstractNodeMain {
   @Override
   public void onStart(final ConnectedNode connectedNode) {
     final String firstBebopName =
-        connectedNode.getParameterTree().getString("beswarm/first_bebop_name");
+        connectedNode.getParameterTree().getString("beswarm/first_drone_name");
     final String secondBebopName =
-        connectedNode.getParameterTree().getString("beswarm/second_bebop_name");
+        connectedNode.getParameterTree().getString("beswarm/second_drone_name");
     final String firstBebopPoseTopic =
-        connectedNode.getParameterTree().getString("beswarm/first_bebop_pose_topic");
+        connectedNode.getParameterTree().getString("beswarm/first_drone_pose_topic");
     final String secondBebopPoseTopic =
-        connectedNode.getParameterTree().getString("beswarm/second_bebop_pose_topic");
+        connectedNode.getParameterTree().getString("beswarm/second_drone_pose_topic");
+
+    // TODO: check drone name and pose topic (need to be different)
 
     final BebopFlight firstBebopFlight =
         BebopFlight.create(
