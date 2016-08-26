@@ -2,7 +2,7 @@
   <!--Arguments-->
   <arg name="drone_name"/>
   <arg name="drone_ip"/>
-  <arg name="drone_pose_topic"/>
+  <arg name="pose_topic_name"/>
 
   <!--Dependent launch files-->
   <!--Localization-->
@@ -17,7 +17,7 @@
 
   <!-- records flight -->
   <node pkg="rosbag" type="record" name="rosbag_record_all"
-        args="/$(arg drone_name)/image_raw /$(arg drone_name)/cmd_vel /$(arg drone_name)/odom /tf /$(arg drone_name)/camera_info /$(arg drone_name)/arlocros/pose"/>
+        args="/$(arg drone_name)/image_raw /$(arg drone_name)/cmd_vel /$(arg drone_name)/odom /tf /$(arg drone_name)/camera_info /$(arg pose_topic_name)"/>
 
   <node pkg="rostopic" type="rostopic" name="point camera downwards"
         args="pub /$(arg drone_name)/camera_control geometry_msgs/Twist '[0.0,0.0,0.0]' '[.00,-50.0,0.0]'"

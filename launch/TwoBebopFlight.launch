@@ -1,31 +1,35 @@
 <launch>
 
   <!--Argument for first drone-->
-  <arg name="first_drone_name" value="drone_1_blue"/>
+  <arg name="first_drone_name" value="bebop_1_blue"/>
   <arg name="first_drone_ip" value="192.168.1.1"/>
+  <arg name="first_drone_pose_topic_name" value="$(arg first_drone_name)/arlocros/pose"/>
 
   <!--Argument for second drone-->
-  <arg name="second_drone_name" value="drone_2_red"/>
+  <arg name="second_drone_name" value="bebop_2_red"/>
   <arg name="second_drone_ip" value="192.168.1.2"/>
+  <arg name="second_drone_pose_topic_name" value="$(arg second_drone_name)/arlocros/pose"/>
 
   <!--Parameters for first drone-->
   <param name="beswarm/first_drone_name" value="$(arg first_drone_name)"/>
-  <param name="beswarm/first_drone_pose_topic" value="$(arg first_drone_name)/arlocros/pose"/>
+  <param name="beswarm/first_drone_pose_topic" value="$(arg first_drone_pose_topic_name)"/>
 
   <!--Parameters for second drone-->
   <param name="beswarm/second_drone_name" value="$(arg second_drone_name)"/>
-  <param name="beswarm/second_drone_pose_topic" value="$(arg second_drone_name)/arlocros/pose"/>
+  <param name="beswarm/second_drone_pose_topic" value="$(arg second_drone_pose_topic_name)"/>
 
   <!--Launch file for first drone-->
   <include file="BebopFlight.launch">
     <arg name="drone_name" value="$(arg first_drone_name)"/>
     <arg name="drone_ip" value="$(arg first_drone_ip)"/>
+    <arg name="pose_topic_name" value="$(arg first_drone_pose_topic_name)"/>
   </include>
 
   <!--Launch file for second drone-->
   <include file="BebopFlight.launch">
     <arg name="drone_name" value="$(arg second_drone_name)"/>
     <arg name="drone_ip" value="$(arg second_drone_ip)"/>
+    <arg name="pose_topic_name" value="$(arg second_drone_pose_topic_name)"/>
   </include>
 
   <!--ROS joy driver, same for all drones-->
