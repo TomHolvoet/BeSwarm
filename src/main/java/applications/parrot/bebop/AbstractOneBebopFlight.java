@@ -1,6 +1,7 @@
 package applications.parrot.bebop;
 
 import applications.ExampleFlight;
+import applications.trajectory.TrajectoryServer;
 import com.google.common.collect.ImmutableList;
 import commands.Command;
 import commands.WaitForLocalizationDecorator;
@@ -14,6 +15,8 @@ import control.localization.BebopStateEstimatorWithPoseStampedAndOdom;
 import control.localization.StateEstimator;
 import geometry_msgs.PoseStamped;
 import nav_msgs.Odometry;
+import org.ros.namespace.GraphName;
+import org.ros.node.AbstractNodeMain;
 import org.ros.node.ConnectedNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,25 +37,19 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.concurrent.TimeUnit;
 
-/** @author Hoang Tung Dinh */
-final class SingleBebopFlight {
-  private static final Logger logger = LoggerFactory.getLogger(SingleBebopFlight.class);
-  private final ExampleFlight exampleFlight;
+/**
+ * Main abstract entry for running Bebop. Implementation of this abstract class must provide a
+ * trajectory for the drone by implementing {@link TrajectoryServer#getConcreteTrajectory()}.
+ *
+ * @author Hoang Tung Dinh
+ */
+public abstract class AbstractOneBebopFlight extends AbstractNodeMain implements TrajectoryServer {
+  private static final Logger logger = LoggerFactory.getLogger(AbstractOneBebopFlight.class);
+  private static final String DRONE_NAME = "bebop";
+  private final String nodeName;
 
-  private SingleBebopFlight(
-      String droneName,
-      FiniteTrajectory4d trajectory,
-      ConnectedNode connectedNode,
-      String poseTopic) {
-    exampleFlight = constructFlight(connectedNode, droneName, trajectory, poseTopic);
-  }
-
-  public static SingleBebopFlight create(
-      String droneName,
-      FiniteTrajectory4d trajectory,
-      ConnectedNode connectedNode,
-      String poseTopic) {
-    return new SingleBebopFlight(droneName, trajectory, connectedNode, poseTopic);
+  protected AbstractOneBebopFlight(String nodeName) {
+    this.nodeName = nodeName;
   }
 
   private static PidParameters getPidParameters(
@@ -68,7 +65,8 @@ final class SingleBebopFlight {
   }
 
   private static MessagesSubscriberService<PoseStamped> getPoseSubscriber(
-      ConnectedNode connectedNode, String poseTopic) {
+      ConnectedNode connectedNode) {
+    final String poseTopic = "/arlocros/pose";
     logger.info("Subscribed to {} for getting pose.", poseTopic);
     return MessagesSubscriberService.create(
         connectedNode.<PoseStamped>newSubscriber(poseTopic, PoseStamped._TYPE),
@@ -76,19 +74,21 @@ final class SingleBebopFlight {
   }
 
   private static MessagesSubscriberService<Odometry> getOdometrySubscriber(
-      ConnectedNode connectedNode, String droneName) {
-    final String odometryTopic = "/" + droneName + "/odom";
+      ConnectedNode connectedNode) {
+    final String odometryTopic = "/" + DRONE_NAME + "/odom";
     logger.info("Subscribed to {} for getting odometry", odometryTopic);
     return MessagesSubscriberService.create(
         connectedNode.<Odometry>newSubscriber(odometryTopic, Odometry._TYPE),
         RosTime.create(connectedNode));
   }
 
-  private static ExampleFlight constructFlight(
-      ConnectedNode connectedNode,
-      String droneName,
-      FiniteTrajectory4d trajectory,
-      String poseTopic) {
+  @Override
+  public GraphName getDefaultNodeName() {
+    return GraphName.of(nodeName);
+  }
+
+  @Override
+  public void onStart(final ConnectedNode connectedNode) {
     final PidParameters pidLinearX =
         getPidParameters(
             connectedNode,
@@ -115,7 +115,7 @@ final class SingleBebopFlight {
             "beswarm/pid_angular_z_ki");
 
     final ParrotServiceFactory parrotServiceFactory =
-        BebopServiceFactory.create(connectedNode, droneName);
+        BebopServiceFactory.create(connectedNode, DRONE_NAME);
     final LandService landService = parrotServiceFactory.createLandService();
     final FlyingStateService flyingStateService = parrotServiceFactory.createFlyingStateService();
     final Velocity4dService velocity4dService =
@@ -125,8 +125,7 @@ final class SingleBebopFlight {
     final ResetService resetService = parrotServiceFactory.createResetService();
     final StateEstimator stateEstimator =
         BebopStateEstimatorWithPoseStampedAndOdom.create(
-            getPoseSubscriber(connectedNode, poseTopic),
-            getOdometrySubscriber(connectedNode, droneName));
+            getPoseSubscriber(connectedNode), getOdometrySubscriber(connectedNode));
     final Task flyTask =
         createFlyTask(
             connectedNode,
@@ -139,8 +138,7 @@ final class SingleBebopFlight {
             velocity4dService,
             takeOffService,
             resetService,
-            stateEstimator,
-            trajectory);
+            stateEstimator);
 
     final Task emergencyTask = createEmergencyTask(landService, flyingStateService);
 
@@ -154,10 +152,6 @@ final class SingleBebopFlight {
       Thread.currentThread().interrupt();
     }
 
-    return exampleFlight;
-  }
-
-  public void startFlying() {
     exampleFlight.fly();
   }
 
@@ -167,7 +161,7 @@ final class SingleBebopFlight {
     return Task.create(ImmutableList.of(land), TaskType.FIRST_ORDER_EMERGENCY);
   }
 
-  private static Task createFlyTask(
+  private Task createFlyTask(
       ConnectedNode connectedNode,
       PidParameters pidLinearX,
       PidParameters pidLinearY,
@@ -178,8 +172,8 @@ final class SingleBebopFlight {
       Velocity4dService velocity4dService,
       TakeOffService takeOffService,
       ResetService resetService,
-      StateEstimator stateEstimator,
-      FiniteTrajectory4d trajectory) {
+      StateEstimator stateEstimator) {
+    final FiniteTrajectory4d trajectory4d = getConcreteTrajectory();
 
     final Collection<Command> commands = new ArrayList<>();
 
@@ -195,8 +189,8 @@ final class SingleBebopFlight {
             .withVelocity4dService(velocity4dService)
             .withStateEstimator(stateEstimator)
             .withTimeProvider(RosTime.create(connectedNode))
-            .withTrajectory4d(trajectory)
-            .withDurationInSeconds(trajectory.getTrajectoryDuration())
+            .withTrajectory4d(trajectory4d)
+            .withDurationInSeconds(trajectory4d.getTrajectoryDuration())
             .withPidLinearXParameters(pidLinearX)
             .withPidLinearYParameters(pidLinearY)
             .withPidLinearZParameters(pidLinearZ)

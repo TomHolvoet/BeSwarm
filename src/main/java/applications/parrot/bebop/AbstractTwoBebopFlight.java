@@ -8,10 +8,16 @@ import org.ros.node.ConnectedNode;
 import java.util.concurrent.Executors;
 
 /** @author Hoang Tung Dinh */
-public abstract class TwoBebopFlight extends AbstractNodeMain {
+public abstract class AbstractTwoBebopFlight extends AbstractNodeMain {
+  private final String nodeName;
+
+  protected AbstractTwoBebopFlight(String nodeName) {
+    this.nodeName = nodeName;
+  }
+
   @Override
   public GraphName getDefaultNodeName() {
-    return GraphName.of("TwoBebopFlight");
+    return GraphName.of(nodeName);
   }
 
   @Override
@@ -25,14 +31,14 @@ public abstract class TwoBebopFlight extends AbstractNodeMain {
     final String secondBebopPoseTopic =
         connectedNode.getParameterTree().getString("beswarm/second_bebop_pose_topic");
 
-    final SingleBebopFlight firstBebopFlight =
-        SingleBebopFlight.create(
+    final BebopFlight firstBebopFlight =
+        BebopFlight.create(
             firstBebopName,
             getConcreteTrajectoryForFirstBebop(),
             connectedNode,
             firstBebopPoseTopic);
-    final SingleBebopFlight secondBebopFlight =
-        SingleBebopFlight.create(
+    final BebopFlight secondBebopFlight =
+        BebopFlight.create(
             secondBebopName,
             getConcreteTrajectoryForSecondBebop(),
             connectedNode,
@@ -42,13 +48,13 @@ public abstract class TwoBebopFlight extends AbstractNodeMain {
     startFlying(secondBebopFlight);
   }
 
-  private static void startFlying(final SingleBebopFlight singleBebopFlight) {
+  private static void startFlying(final BebopFlight bebopFlight) {
     Executors.newSingleThreadExecutor()
         .submit(
             new Runnable() {
               @Override
               public void run() {
-                singleBebopFlight.startFlying();
+                bebopFlight.startFlying();
               }
             });
   }

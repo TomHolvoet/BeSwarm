@@ -34,7 +34,7 @@
 
     <!-- Main Java Application-->
     <!--<node name="BebopKristof" pkg="rosjava_catkin_package_a" type="BeSwarm"-->
-          <!--args="applications.parrot.bebop.AbstractBebopExample" output="screen">-->
+          <!--args="applications.parrot.bebop.AbstractOneBebopFlight" output="screen">-->
     <!--</node>-->
 
     <!-- records flight -->
