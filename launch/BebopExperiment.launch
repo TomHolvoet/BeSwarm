@@ -1,5 +1,5 @@
 <launch>
-    <include file="$(find rosjava_catkin_package_a)/ARLocROS/launch/bebop.launch"/>
+    <include file="$(find rosjava_catkin_package_a)/ARLocROS/launch/onebebop_deprecated.launch"/>
     <include file="$(find bebop_driver)/launch/bebop_node.launch"/>
     <include file="$(find bebop_tools)/launch/joy_teleop.launch"/>
 
