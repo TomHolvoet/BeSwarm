@@ -71,16 +71,35 @@ public final class CorkscrewTrajectory4D extends PeriodicTrajectory implements F
         isValidVelocity(speedComponent.getZ(), speed, radius, frequency),
         "Z " + VELOCITY_ERROR_MESSAGE);
 
-    double zyNorm = Math.sqrt(Math.pow(translated.getY(), 2) + Math.pow(translated.getZ(), 2));
-    this.aroundX = (Math.PI / 2) - Math.acos(translated.getY() / zyNorm);
-    this.aroundY =
-        Math.acos(
-            translated.getX() / Math.sqrt(Math.pow(translated.getX(), 2) + Math.pow(zyNorm, 2)));
+    double y = translated.getY();
+    double z = translated.getZ();
+    double zyNorm = Math.sqrt(StrictMath.pow(y, 2) + StrictMath.pow(z, 2));
 
+      double arx;
+    if (z < 0) {
+      arx = (Math.PI / 2) - (stableAtan(z, y));
+      if (y < 0) {
+        arx += Math.PI;
+      }
+    } else {
+      arx = ((Math.PI / 2) - (StrictMath.acos(translated.getY() / zyNorm)));
+    }
+
+    this.aroundX = arx;
+
+    //          this.aroundX = (Math.PI / 2) - (Math.atan(translated.getZ() / translated.getY()));
+
+    this.aroundY =
+        StrictMath.acos(
+            translated.getX()
+                / StrictMath.sqrt(Math.pow(translated.getX(), 2) + StrictMath.pow(zyNorm, 2)));
     //set initial cache
     this.cache = newCache(Point4D.origin(), -1);
   }
 
+  private static double stableAtan(double y, double x) {
+    return x == 0 ? Math.signum(y) * Math.PI / 2 : StrictMath.atan(y / x);
+  }
   /**
    * Calculates whether for a given velocity vector component, magnitude and perpendicular velocity
    * magnitude from the circle movement parameters, the velocity component is still within
@@ -105,7 +124,6 @@ public final class CorkscrewTrajectory4D extends PeriodicTrajectory implements F
       double speedcomp, double speed, double radius, double frequency) {
     double rfreq2pi = radius * frequency * TWOPI;
     double vcomp = Math.abs(speedcomp) + rfreq2pi * Math.sqrt(1 - Math.pow(speedcomp / speed, 2));
-      System.out.println(vcomp);
     if (vcomp > MAX_ABSOLUTE_VELOCITY) {
       return false;
     }

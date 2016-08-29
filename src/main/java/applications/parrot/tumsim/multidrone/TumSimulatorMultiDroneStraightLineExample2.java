@@ -2,7 +2,7 @@ package applications.parrot.tumsim.multidrone;
 
 /**
  * Example trajectory with displement parameter for multiple drone instantiations. This example can
- * be used for the pingpong room.
+ * be used for the pingpong room. Start at (2,0)
  *
  * @author Kristof Coninx <kristof.coninx AT cs.kuleuven.be>
  * @see <a href="https://github.com/dougvk/tum_simulator">The simulator</a>
