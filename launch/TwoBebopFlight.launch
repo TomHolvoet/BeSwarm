@@ -1,13 +1,13 @@
 <launch>
 
   <!--Argument for first drone-->
-  <arg name="first_drone_name" value="bebop_1_blue"/>
-  <arg name="first_drone_ip" value="192.168.1.1"/>
+  <arg name="first_drone_name" value="bebop1"/>
+  <arg name="first_drone_ip" value="192.168.32.1"/>
   <arg name="first_drone_pose_topic_name" value="$(arg first_drone_name)/arlocros/pose"/>
 
   <!--Argument for second drone-->
-  <arg name="second_drone_name" value="bebop_2_red"/>
-  <arg name="second_drone_ip" value="192.168.1.2"/>
+  <arg name="second_drone_name" value="bebop2"/>
+  <arg name="second_drone_ip" value="192.168.42.1"/>
   <arg name="second_drone_pose_topic_name" value="$(arg second_drone_name)/arlocros/pose"/>
 
   <!--Parameters for first drone-->
@@ -33,7 +33,7 @@
   </include>
 
   <!--ROS joy driver, same for all drones-->
-  <include file="$(find bebop_tools)/launch/joy_teleop.launch"/>
+  <include file="$(find bebop_tools)/launch/rats_joy_teleop.launch"/>
 
   <!--PID parameters, same for all drones-->
   <param name="beswarm/pid_linear_x_kp" value="0.3"/>
