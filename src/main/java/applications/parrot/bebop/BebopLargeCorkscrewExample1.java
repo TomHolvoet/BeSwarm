@@ -1,6 +1,5 @@
 package applications.parrot.bebop;
 
-import applications.parrot.tumsim.AbstractTumSimulatorExample;
 import applications.trajectory.Trajectories;
 import applications.trajectory.geom.point.Point3D;
 import applications.trajectory.geom.point.Point4D;
@@ -13,11 +12,11 @@ import control.Trajectory4d;
  *
  * @author Kristof Coninx <kristof.coninx AT cs.kuleuven.be>
  */
-public class BebopLargeCorkscrewExample1 extends AbstractBebopExample {
+public class BebopLargeCorkscrewExample1 extends AbstractOneBebopFlight {
 
   /** Default constructor. */
   public BebopLargeCorkscrewExample1() {
-    super("TumLargeCorkscrewTrajectory1");
+    super("BebopLargeCorkscrewExample1");
   }
 
   @Override
