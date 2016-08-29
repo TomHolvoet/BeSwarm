@@ -7,7 +7,7 @@ import control.FiniteTrajectory4d;
 
 /**
  * Example trajectory base class with displement parameter for multiple drone instantiations. This
- * example can be used for the pingpong room.
+ * example can be used for the pingpong room. Start at (0,0)
  *
  * @author Kristof Coninx <kristof.coninx AT cs.kuleuven.be>
  * @see <a href="https://github.com/dougvk/tum_simulator">The simulator</a>
@@ -32,7 +32,7 @@ public class TumSimulatorMultiDroneStraightLineExample1 extends AbstractTumSimul
 
   /** @param displacement the displaement in the x direction for multiple drones. */
   public TumSimulatorMultiDroneStraightLineExample1(double displacement) {
-    super("TumRunStraightLineTrajectory1");
+    super("TumRunStraightLineTrajectory" + String.valueOf(displacement));
     this.displacement = displacement;
   }
 
