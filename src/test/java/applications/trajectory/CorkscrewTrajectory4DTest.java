@@ -97,9 +97,58 @@ public class CorkscrewTrajectory4DTest {
   }
 
   private void testBounds(
-      FiniteTrajectory4d trajectory, double end, double radius, Point3D startP, Point3D endP) {
-    double minx = multiMin(startP.getX()-radius,startP.getX()+radius,)
+          FiniteTrajectory4d trajectory, double end, double radius, Point4D startP, Point4D endP) {
+    double minx =
+        multiMin(
+            startP.getX() - radius,
+            startP.getX() + radius,
+            endP.getX() + radius,
+            endP.getX() - radius);
+    double maxx =
+        multiMax(
+            startP.getX() - radius,
+            startP.getX() + radius,
+            endP.getX() + radius,
+            endP.getX() - radius);
 
+    double miny =
+        multiMin(
+            startP.getY() - radius,
+            startP.getY() + radius,
+            endP.getY() + radius,
+            endP.getY() - radius);
+    double maxy =
+        multiMax(
+            startP.getY() - radius,
+            startP.getY() + radius,
+            endP.getY() + radius,
+            endP.getY() - radius);
+
+    double minz =
+        multiMin(
+            startP.getZ() - radius,
+            startP.getZ() + radius,
+            endP.getZ() + radius,
+            endP.getZ() - radius);
+    double maxz =
+        multiMax(
+            startP.getZ() - radius,
+            startP.getZ() + radius,
+            endP.getZ() + radius,
+            endP.getZ() - radius);
+
+    double mina =
+        multiMin(
+            startP.getAngle() - radius,
+            startP.getAngle() + radius,
+            endP.getAngle() + radius,
+            endP.getAngle() - radius);
+    double maxa =
+        multiMax(
+            startP.getAngle() - radius,
+            startP.getAngle() + radius,
+            endP.getAngle() + radius,
+            endP.getAngle() - radius);
   }
 
   private double multiMin(double p1, double p2, double p3, double p4) {
@@ -109,7 +158,6 @@ public class CorkscrewTrajectory4DTest {
   private double multiMax(double p1, double p2, double p3, double p4) {
     return Math.max(Math.max(p1, p2), Math.max(p3, p4));
   }
-
 
   @Test
   public void testTrajectoryZ() {
