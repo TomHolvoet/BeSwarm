@@ -55,7 +55,7 @@ public class CorkscrewTrajectory4DTest {
 
   @Test
   public void testTrajectoryBoundsSimple() {
-    testBounds(
+    verifyBounds(
         trajectory,
         1000,
         x - radius,
@@ -68,7 +68,7 @@ public class CorkscrewTrajectory4DTest {
         startOrientation + EPSILON);
   }
 
-  private void testBounds(
+  private void verifyBounds(
       FiniteTrajectory4d trajectory,
       double end,
       double minBoundX,
@@ -94,6 +94,70 @@ public class CorkscrewTrajectory4DTest {
     assertBounds(ly, minBoundY, maxBoundY);
     assertBounds(lz, minBoundZ, maxBoundZ);
     assertBounds(la, minAngle, maxAngle);
+  }
+
+  private void verifyBounds(
+      FiniteTrajectory4d trajectory, double end, double radius, Point4D startP, Point4D endP) {
+    double minx =
+        multiMin(
+            startP.getX() - radius,
+            startP.getX() + radius,
+            endP.getX() + radius,
+            endP.getX() - radius);
+    double maxx =
+        multiMax(
+            startP.getX() - radius,
+            startP.getX() + radius,
+            endP.getX() + radius,
+            endP.getX() - radius);
+
+    double miny =
+        multiMin(
+            startP.getY() - radius,
+            startP.getY() + radius,
+            endP.getY() + radius,
+            endP.getY() - radius);
+    double maxy =
+        multiMax(
+            startP.getY() - radius,
+            startP.getY() + radius,
+            endP.getY() + radius,
+            endP.getY() - radius);
+
+    double minz =
+        multiMin(
+            startP.getZ() - radius,
+            startP.getZ() + radius,
+            endP.getZ() + radius,
+            endP.getZ() - radius);
+    double maxz =
+        multiMax(
+            startP.getZ() - radius,
+            startP.getZ() + radius,
+            endP.getZ() + radius,
+            endP.getZ() - radius);
+
+    double mina =
+        multiMin(
+            startP.getAngle() - EPSILON,
+            startP.getAngle() + EPSILON,
+            endP.getAngle() + EPSILON,
+            endP.getAngle() - EPSILON);
+    double maxa =
+        multiMax(
+            startP.getAngle() - EPSILON,
+            startP.getAngle() + EPSILON,
+            endP.getAngle() + EPSILON,
+            endP.getAngle() - EPSILON);
+    verifyBounds(trajectory, end, minx, maxx, miny, maxy, minz, maxz, mina, maxz);
+  }
+
+  private double multiMin(double p1, double p2, double p3, double p4) {
+    return Math.min(Math.min(p1, p2), Math.min(p3, p4));
+  }
+
+  private double multiMax(double p1, double p2, double p3, double p4) {
+    return Math.max(Math.max(p1, p2), Math.max(p3, p4));
   }
 
   @Test
@@ -138,10 +202,10 @@ public class CorkscrewTrajectory4DTest {
 
   @Test
   public void testTrajectoryVelocityBoundsSimple() {
-    testVelocity(this.trajectory);
+    verifyVelocity(this.trajectory);
   }
 
-  private void testVelocity(FiniteTrajectory4d trajectory) {
+  private void verifyVelocity(FiniteTrajectory4d trajectory) {
     List<Double> lx = Lists.newArrayList();
     List<Double> ly = Lists.newArrayList();
     List<Double> lz = Lists.newArrayList();
@@ -166,7 +230,7 @@ public class CorkscrewTrajectory4DTest {
             .setFrequency(frequency)
             .setPhase(phase)
             .build();
-    testVelocity(this.trajectory);
+    verifyVelocity(this.trajectory);
   }
 
   @Test(expected = AssertionError.class)
@@ -180,7 +244,7 @@ public class CorkscrewTrajectory4DTest {
             .setFrequency(frequency)
             .setPhase(phase)
             .build();
-    testVelocity(this.trajectory);
+    verifyVelocity(this.trajectory);
   }
 
   @Test
@@ -217,17 +281,7 @@ public class CorkscrewTrajectory4DTest {
     double velocity = 0.1;
     this.trajectory =
         Trajectories.newCorkscrewTrajectory(start, end, velocity, radius, frequency, 0);
-    testBounds(
-        trajectory,
-        1000,
-        start.getX() - radius,
-        end.getX() + radius,
-        end.getY() - radius,
-        start.getY() + radius,
-        start.getZ() - radius,
-        end.getZ() + radius,
-        orientation - EPSILON,
-        orientation + EPSILON);
+    verifyBounds(trajectory, 1000, radius, start, Point4D.from(end, orientation));
   }
 
   @Test
@@ -240,17 +294,7 @@ public class CorkscrewTrajectory4DTest {
     double velocity = 0.1;
     this.trajectory =
         Trajectories.newCorkscrewTrajectory(start, end, velocity, radius, frequency, 0);
-    testBounds(
-        trajectory,
-        1000,
-        start.getX() - radius,
-        end.getX() + radius,
-        end.getY() - radius,
-            start.getY() + radius,
-        end.getZ() - radius,
-        start.getZ() + radius,
-        orientation - EPSILON,
-        orientation + EPSILON);
+    verifyBounds(trajectory, 1000, radius, start, Point4D.from(end, orientation));
   }
 
   @Test
@@ -263,17 +307,7 @@ public class CorkscrewTrajectory4DTest {
     double velocity = 0.1;
     this.trajectory =
         Trajectories.newCorkscrewTrajectory(start, end, velocity, radius, frequency, 0);
-    testBounds(
-        trajectory,
-        1000,
-        start.getX() - radius,
-        end.getX() + radius,
-        end.getY() - radius,
-        start.getY() + radius,
-        end.getZ() - radius,
-        start.getZ() + radius,
-        orientation - EPSILON,
-        orientation + EPSILON);
+    verifyBounds(trajectory, 1000, radius, start, Point4D.from(end, orientation));
   }
 
   @Test
@@ -286,16 +320,6 @@ public class CorkscrewTrajectory4DTest {
     double velocity = 0.1;
     this.trajectory =
         Trajectories.newCorkscrewTrajectory(start, end, velocity, radius, frequency, 0);
-    testBounds(
-        trajectory,
-        1000,
-        start.getX() - radius,
-        end.getX() + radius,
-        end.getY() - radius,
-        start.getY() + radius,
-        start.getZ() - radius,
-        end.getZ() + radius,
-        orientation - EPSILON,
-        orientation + EPSILON);
+    verifyBounds(trajectory, 1000, radius, start, Point4D.from(end, orientation));
   }
 }
