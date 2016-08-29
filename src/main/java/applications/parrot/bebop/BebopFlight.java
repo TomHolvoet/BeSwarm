@@ -1,7 +1,6 @@
 package applications.parrot.bebop;
 
 import applications.ExampleFlight;
-import applications.trajectory.TrajectoryServer;
 import com.google.common.collect.ImmutableList;
 import commands.Command;
 import commands.WaitForLocalizationDecorator;
@@ -15,8 +14,6 @@ import control.localization.BebopStateEstimatorWithPoseStampedAndOdom;
 import control.localization.StateEstimator;
 import geometry_msgs.PoseStamped;
 import nav_msgs.Odometry;
-import org.ros.namespace.GraphName;
-import org.ros.node.AbstractNodeMain;
 import org.ros.node.ConnectedNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,19 +34,25 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.concurrent.TimeUnit;
 
-/**
- * Main abstract entry for running Bebop. Implementation of this abstract class must provide a
- * trajectory for the drone by implementing {@link TrajectoryServer#getConcreteTrajectory()}.
- *
- * @author Hoang Tung Dinh
- */
-public abstract class AbstractBebopExample extends AbstractNodeMain implements TrajectoryServer {
-  private static final Logger logger = LoggerFactory.getLogger(AbstractBebopExample.class);
-  private static final String DRONE_NAME = "bebop";
-  private final String nodeName;
+/** @author Hoang Tung Dinh */
+final class BebopFlight {
+  private static final Logger logger = LoggerFactory.getLogger(BebopFlight.class);
+  private final ExampleFlight exampleFlight;
 
-  protected AbstractBebopExample(String nodeName) {
-    this.nodeName = nodeName;
+  private BebopFlight(
+      String droneName,
+      FiniteTrajectory4d trajectory,
+      ConnectedNode connectedNode,
+      String poseTopic) {
+    exampleFlight = constructFlight(connectedNode, droneName, trajectory, poseTopic);
+  }
+
+  public static BebopFlight create(
+      String droneName,
+      FiniteTrajectory4d trajectory,
+      ConnectedNode connectedNode,
+      String poseTopic) {
+    return new BebopFlight(droneName, trajectory, connectedNode, poseTopic);
   }
 
   private static PidParameters getPidParameters(
@@ -65,8 +68,7 @@ public abstract class AbstractBebopExample extends AbstractNodeMain implements T
   }
 
   private static MessagesSubscriberService<PoseStamped> getPoseSubscriber(
-      ConnectedNode connectedNode) {
-    final String poseTopic = "/arlocros/pose";
+      ConnectedNode connectedNode, String poseTopic) {
     logger.info("Subscribed to {} for getting pose.", poseTopic);
     return MessagesSubscriberService.create(
         connectedNode.<PoseStamped>newSubscriber(poseTopic, PoseStamped._TYPE),
@@ -74,22 +76,19 @@ public abstract class AbstractBebopExample extends AbstractNodeMain implements T
   }
 
   private static MessagesSubscriberService<Odometry> getOdometrySubscriber(
-      ConnectedNode connectedNode) {
-    // TODO: remove this method
-    final String odometryTopic = "/" + DRONE_NAME + "/odom";
+      ConnectedNode connectedNode, String droneName) {
+    final String odometryTopic = "/" + droneName + "/odom";
     logger.info("Subscribed to {} for getting odometry", odometryTopic);
     return MessagesSubscriberService.create(
         connectedNode.<Odometry>newSubscriber(odometryTopic, Odometry._TYPE),
         RosTime.create(connectedNode));
   }
 
-  @Override
-  public GraphName getDefaultNodeName() {
-    return GraphName.of(nodeName);
-  }
-
-  @Override
-  public void onStart(final ConnectedNode connectedNode) {
+  private static ExampleFlight constructFlight(
+      ConnectedNode connectedNode,
+      String droneName,
+      FiniteTrajectory4d trajectory,
+      String poseTopic) {
     final PidParameters pidLinearX =
         getPidParameters(
             connectedNode,
@@ -116,7 +115,7 @@ public abstract class AbstractBebopExample extends AbstractNodeMain implements T
             "beswarm/pid_angular_z_ki");
 
     final ParrotServiceFactory parrotServiceFactory =
-        BebopServiceFactory.create(connectedNode, DRONE_NAME);
+        BebopServiceFactory.create(connectedNode, droneName);
     final LandService landService = parrotServiceFactory.createLandService();
     final FlyingStateService flyingStateService = parrotServiceFactory.createFlyingStateService();
     final Velocity4dService velocity4dService =
@@ -126,7 +125,8 @@ public abstract class AbstractBebopExample extends AbstractNodeMain implements T
     final ResetService resetService = parrotServiceFactory.createResetService();
     final StateEstimator stateEstimator =
         BebopStateEstimatorWithPoseStampedAndOdom.create(
-            getPoseSubscriber(connectedNode), getOdometrySubscriber(connectedNode));
+            getPoseSubscriber(connectedNode, poseTopic),
+            getOdometrySubscriber(connectedNode, droneName));
     final Task flyTask =
         createFlyTask(
             connectedNode,
@@ -139,7 +139,8 @@ public abstract class AbstractBebopExample extends AbstractNodeMain implements T
             velocity4dService,
             takeOffService,
             resetService,
-            stateEstimator);
+            stateEstimator,
+            trajectory);
 
     final Task emergencyTask = createEmergencyTask(landService, flyingStateService);
 
@@ -153,6 +154,10 @@ public abstract class AbstractBebopExample extends AbstractNodeMain implements T
       Thread.currentThread().interrupt();
     }
 
+    return exampleFlight;
+  }
+
+  public void startFlying() {
     exampleFlight.fly();
   }
 
@@ -162,7 +167,7 @@ public abstract class AbstractBebopExample extends AbstractNodeMain implements T
     return Task.create(ImmutableList.of(land), TaskType.FIRST_ORDER_EMERGENCY);
   }
 
-  private Task createFlyTask(
+  private static Task createFlyTask(
       ConnectedNode connectedNode,
       PidParameters pidLinearX,
       PidParameters pidLinearY,
@@ -173,8 +178,8 @@ public abstract class AbstractBebopExample extends AbstractNodeMain implements T
       Velocity4dService velocity4dService,
       TakeOffService takeOffService,
       ResetService resetService,
-      StateEstimator stateEstimator) {
-    final FiniteTrajectory4d trajectory4d = getConcreteTrajectory();
+      StateEstimator stateEstimator,
+      FiniteTrajectory4d trajectory) {
 
     final Collection<Command> commands = new ArrayList<>();
 
@@ -190,8 +195,8 @@ public abstract class AbstractBebopExample extends AbstractNodeMain implements T
             .withVelocity4dService(velocity4dService)
             .withStateEstimator(stateEstimator)
             .withTimeProvider(RosTime.create(connectedNode))
-            .withTrajectory4d(trajectory4d)
-            .withDurationInSeconds(trajectory4d.getTrajectoryDuration())
+            .withTrajectory4d(trajectory)
+            .withDurationInSeconds(trajectory.getTrajectoryDuration())
             .withPidLinearXParameters(pidLinearX)
             .withPidLinearYParameters(pidLinearY)
             .withPidLinearZParameters(pidLinearZ)

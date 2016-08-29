@@ -1,0 +1,55 @@
+<launch>
+
+  <!--Argument for first drone-->
+  <arg name="first_drone_name" value="bebop_1_blue"/>
+  <arg name="first_drone_ip" value="192.168.1.1"/>
+  <arg name="first_drone_pose_topic_name" value="$(arg first_drone_name)/arlocros/pose"/>
+
+  <!--Argument for second drone-->
+  <arg name="second_drone_name" value="bebop_2_red"/>
+  <arg name="second_drone_ip" value="192.168.1.2"/>
+  <arg name="second_drone_pose_topic_name" value="$(arg second_drone_name)/arlocros/pose"/>
+
+  <!--Parameters for first drone-->
+  <param name="beswarm/first_drone_name" value="$(arg first_drone_name)"/>
+  <param name="beswarm/first_drone_pose_topic" value="$(arg first_drone_pose_topic_name)"/>
+
+  <!--Parameters for second drone-->
+  <param name="beswarm/second_drone_name" value="$(arg second_drone_name)"/>
+  <param name="beswarm/second_drone_pose_topic" value="$(arg second_drone_pose_topic_name)"/>
+
+  <!--Launch file for first drone-->
+  <include file="BebopFlight.launch">
+    <arg name="drone_name" value="$(arg first_drone_name)"/>
+    <arg name="drone_ip" value="$(arg first_drone_ip)"/>
+    <arg name="pose_topic_name" value="$(arg first_drone_pose_topic_name)"/>
+  </include>
+
+  <!--Launch file for second drone-->
+  <include file="BebopFlight.launch">
+    <arg name="drone_name" value="$(arg second_drone_name)"/>
+    <arg name="drone_ip" value="$(arg second_drone_ip)"/>
+    <arg name="pose_topic_name" value="$(arg second_drone_pose_topic_name)"/>
+  </include>
+
+  <!--ROS joy driver, same for all drones-->
+  <include file="$(find bebop_tools)/launch/joy_teleop.launch"/>
+
+  <!--PID parameters, same for all drones-->
+  <param name="beswarm/pid_linear_x_kp" value="0.3"/>
+  <param name="beswarm/pid_linear_x_kd" value="1.0"/>
+  <param name="beswarm/pid_linear_x_ki" value="0.0"/>
+
+  <param name="beswarm/pid_linear_y_kp" value="0.3"/>
+  <param name="beswarm/pid_linear_y_kd" value="1.0"/>
+  <param name="beswarm/pid_linear_y_ki" value="0.0"/>
+
+  <param name="beswarm/pid_linear_z_kp" value="0.8"/>
+  <param name="beswarm/pid_linear_z_kd" value="0.2"/>
+  <param name="beswarm/pid_linear_z_ki" value="0.0"/>
+
+  <param name="beswarm/pid_angular_z_kp" value="0.3"/>
+  <param name="beswarm/pid_angular_z_kd" value="0.4"/>
+  <param name="beswarm/pid_angular_z_ki" value="0.0"/>
+
+</launch>
