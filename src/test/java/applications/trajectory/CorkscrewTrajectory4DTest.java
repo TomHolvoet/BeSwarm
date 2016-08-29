@@ -96,6 +96,21 @@ public class CorkscrewTrajectory4DTest {
     assertBounds(la, minAngle, maxAngle);
   }
 
+  private void testBounds(
+      FiniteTrajectory4d trajectory, double end, double radius, Point3D startP, Point3D endP) {
+    double minx = multiMin(startP.getX()-radius,startP.getX()+radius,)
+
+  }
+
+  private double multiMin(double p1, double p2, double p3, double p4) {
+    return Math.min(Math.min(p1, p2), Math.min(p3, p4));
+  }
+
+  private double multiMax(double p1, double p2, double p3, double p4) {
+    return Math.max(Math.max(p1, p2), Math.max(p3, p4));
+  }
+
+
   @Test
   public void testTrajectoryZ() {
     double time = 5;
@@ -246,7 +261,7 @@ public class CorkscrewTrajectory4DTest {
         start.getX() - radius,
         end.getX() + radius,
         end.getY() - radius,
-            start.getY() + radius,
+        start.getY() + radius,
         end.getZ() - radius,
         start.getZ() + radius,
         orientation - EPSILON,
