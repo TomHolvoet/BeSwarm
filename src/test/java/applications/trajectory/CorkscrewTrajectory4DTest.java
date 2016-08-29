@@ -97,7 +97,7 @@ public class CorkscrewTrajectory4DTest {
   }
 
   private void testBounds(
-          FiniteTrajectory4d trajectory, double end, double radius, Point4D startP, Point4D endP) {
+      FiniteTrajectory4d trajectory, double end, double radius, Point4D startP, Point4D endP) {
     double minx =
         multiMin(
             startP.getX() - radius,
@@ -149,6 +149,7 @@ public class CorkscrewTrajectory4DTest {
             startP.getAngle() + radius,
             endP.getAngle() + radius,
             endP.getAngle() - radius);
+    testBounds(trajectory, end, minx, maxx, miny, maxy, minz, maxz, mina, maxz);
   }
 
   private double multiMin(double p1, double p2, double p3, double p4) {
@@ -360,5 +361,6 @@ public class CorkscrewTrajectory4DTest {
         end.getZ() + radius,
         orientation - EPSILON,
         orientation + EPSILON);
+    testBounds(trajectory, 1000, radius, start, Point4D.from(end, orientation));
   }
 }
