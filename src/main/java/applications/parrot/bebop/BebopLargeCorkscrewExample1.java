@@ -17,7 +17,7 @@ public class BebopLargeCorkscrewExample1 extends AbstractBebopExample {
 
   /** Default constructor. */
   public BebopLargeCorkscrewExample1() {
-    super("TumLargeCorkscrewTrajectory1");
+    super("BebopLargeCorkscrewTrajectory1");
   }
 
   @Override
