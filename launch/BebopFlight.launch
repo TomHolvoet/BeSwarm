@@ -6,7 +6,7 @@
 
   <!--Dependent launch files-->
   <!--Localization-->
-  <include file="$(find rosjava_catkin_package_a)/ARLocROS/launch/bebop.launch">
+  <include file="$(find rats)/ARLocROS/launch/bebop.launch">
     <arg name="drone_name" value="$(arg drone_name)"/>
   </include>
 
