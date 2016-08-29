@@ -75,7 +75,7 @@ public final class CorkscrewTrajectory4D extends PeriodicTrajectory implements F
     double z = translated.getZ();
     double zyNorm = Math.sqrt(StrictMath.pow(y, 2) + StrictMath.pow(z, 2));
 
-      double arx;
+    double arx;
     if (z < 0) {
       arx = (Math.PI / 2) - (stableAtan(z, y));
       if (y < 0) {
