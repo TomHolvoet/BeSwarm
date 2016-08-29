@@ -21,7 +21,7 @@ public class TumSimulatorWiggleExample extends AbstractTumSimulatorExample {
     Trajectory4d hold1 = Trajectories.newHoldPositionTrajectory(start);
     return Choreography.builder()
         .withTrajectory(hold1)
-        .forTime(30)
+        .forTime(10)
         .withTrajectory(target1)
         .withTrajectory(hold1)
         .forTime(10)
