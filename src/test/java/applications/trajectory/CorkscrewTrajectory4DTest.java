@@ -155,7 +155,7 @@ public class CorkscrewTrajectory4DTest {
     assertBounds(lz, -1, 1);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test(expected = AssertionError.class)
   public void testTrajectoryVelocityBoundsComplexTrajectory1() {
     this.trajectory =
         CorkscrewTrajectory4D.builder()
@@ -169,7 +169,7 @@ public class CorkscrewTrajectory4DTest {
     testVelocity(this.trajectory);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test(expected = AssertionError.class)
   public void testTrajectoryVelocityBoundsComplexTrajectory2() {
     this.trajectory =
         CorkscrewTrajectory4D.builder()
@@ -225,7 +225,76 @@ public class CorkscrewTrajectory4DTest {
         end.getY() - radius,
         start.getY() + radius,
         start.getZ() - radius,
-        end.getZ() + zDistance,
+        end.getZ() + radius,
+        orientation - EPSILON,
+        orientation + EPSILON);
+  }
+
+  @Test
+  public void testBoundsXYZComplex2() {
+    double orientation = -Math.PI / 2;
+    Point4D start = Point4D.create(0, 0, 5, orientation);
+    Point3D end = Point3D.create(0, -5.0, 1.5);
+    double radius = 0.5;
+    double frequency = 0.1;
+    double velocity = 0.1;
+    this.trajectory =
+        Trajectories.newCorkscrewTrajectory(start, end, velocity, radius, frequency, 0);
+    testBounds(
+        trajectory,
+        1000,
+        start.getX() - radius,
+        end.getX() + radius,
+        end.getY() - radius,
+            start.getY() + radius,
+        end.getZ() - radius,
+        start.getZ() + radius,
+        orientation - EPSILON,
+        orientation + EPSILON);
+  }
+
+  @Test
+  public void testBoundsXYZComplex3() {
+    double orientation = -Math.PI / 2;
+    Point4D start = Point4D.create(0, 0, 5, orientation);
+    Point3D end = Point3D.create(0, 0, 1.5);
+    double radius = 0.5;
+    double frequency = 0.1;
+    double velocity = 0.1;
+    this.trajectory =
+        Trajectories.newCorkscrewTrajectory(start, end, velocity, radius, frequency, 0);
+    testBounds(
+        trajectory,
+        1000,
+        start.getX() - radius,
+        end.getX() + radius,
+        end.getY() - radius,
+        start.getY() + radius,
+        end.getZ() - radius,
+        start.getZ() + radius,
+        orientation - EPSILON,
+        orientation + EPSILON);
+  }
+
+  @Test
+  public void testBoundsXYZComplex4() {
+    double orientation = -Math.PI / 2;
+    Point4D start = Point4D.create(0, 0, 5, orientation);
+    Point3D end = Point3D.create(0, -5, 5);
+    double radius = 0.5;
+    double frequency = 0.1;
+    double velocity = 0.1;
+    this.trajectory =
+        Trajectories.newCorkscrewTrajectory(start, end, velocity, radius, frequency, 0);
+    testBounds(
+        trajectory,
+        1000,
+        start.getX() - radius,
+        end.getX() + radius,
+        end.getY() - radius,
+        start.getY() + radius,
+        start.getZ() - radius,
+        end.getZ() + radius,
         orientation - EPSILON,
         orientation + EPSILON);
   }
