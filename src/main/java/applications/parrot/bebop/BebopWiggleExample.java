@@ -1,6 +1,5 @@
 package applications.parrot.bebop;
 
-import applications.parrot.tumsim.AbstractTumSimulatorExample;
 import applications.trajectory.Trajectories;
 import applications.trajectory.geom.point.Point4D;
 import choreo.Choreography;
@@ -22,7 +21,7 @@ public class BebopWiggleExample extends AbstractBebopExample {
     Trajectory4d hold1 = Trajectories.newHoldPositionTrajectory(start);
     return Choreography.builder()
         .withTrajectory(hold1)
-        .forTime(30)
+        .forTime(10)
         .withTrajectory(target1)
         .withTrajectory(hold1)
         .forTime(10)
