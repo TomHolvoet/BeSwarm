@@ -104,7 +104,8 @@ public final class CorkscrewTrajectory4D extends PeriodicTrajectory implements F
   private static boolean isValidVelocity(
       double speedcomp, double speed, double radius, double frequency) {
     double rfreq2pi = radius * frequency * TWOPI;
-    double vcomp = speedcomp + rfreq2pi * Math.sqrt(1 - Math.pow(speedcomp / speed, 2));
+    double vcomp = Math.abs(speedcomp) + rfreq2pi * Math.sqrt(1 - Math.pow(speedcomp / speed, 2));
+      System.out.println(vcomp);
     if (vcomp > MAX_ABSOLUTE_VELOCITY) {
       return false;
     }
@@ -180,7 +181,9 @@ public final class CorkscrewTrajectory4D extends PeriodicTrajectory implements F
         + ", frequency="
         + unitTrajectory.getFrequency()
         + '}';
-  }  @Override
+  }
+
+  @Override
   public double getDesiredPositionY(double timeInSeconds) {
     final double currentTime = getRelativeTime(timeInSeconds);
     refreshCache(currentTime);
@@ -189,7 +192,9 @@ public final class CorkscrewTrajectory4D extends PeriodicTrajectory implements F
 
   private Point4D getOrigin() {
     return origin;
-  }  @Override
+  }
+
+  @Override
   public double getDesiredPositionZ(double timeInSeconds) {
     final double currentTime = getRelativeTime(timeInSeconds);
     refreshCache(currentTime);
@@ -198,7 +203,9 @@ public final class CorkscrewTrajectory4D extends PeriodicTrajectory implements F
 
   private Point3D getDestination() {
     return destination;
-  }  @Override
+  }
+
+  @Override
   public double getDesiredAngleZ(double timeInSeconds) {
     final double currentTime = getRelativeTime(timeInSeconds);
     refreshCache(currentTime);
@@ -273,6 +280,7 @@ public final class CorkscrewTrajectory4D extends PeriodicTrajectory implements F
       this.radius = radius;
       return this;
     }
+
     /**
      * Default frequency = 0.3.
      *
@@ -324,7 +332,9 @@ public final class CorkscrewTrajectory4D extends PeriodicTrajectory implements F
 
     double getSpeed() {
       return speed;
-    }    @Override
+    }
+
+    @Override
     public double getDesiredPositionX(double timeInSeconds) {
       if (atEnd) {
         return endPoint;
@@ -338,7 +348,9 @@ public final class CorkscrewTrajectory4D extends PeriodicTrajectory implements F
 
     private double getRadius() {
       return radius;
-    }    private void markEnd() {
+    }
+
+    private void markEnd() {
       this.atEnd = true;
       this.circlePlane = new NoMovement2DTrajectory();
     }
@@ -360,8 +372,6 @@ public final class CorkscrewTrajectory4D extends PeriodicTrajectory implements F
       }
     }
 
-
-
     @Override
     public double getDesiredPositionY(double timeInSeconds) {
       return circlePlane.getDesiredPositionOrdinate(timeInSeconds);
@@ -381,13 +391,5 @@ public final class CorkscrewTrajectory4D extends PeriodicTrajectory implements F
     public double getTrajectoryDuration() {
       return endPoint / speed;
     }
-
-
   }
-
-
-
-
-
-
 }
