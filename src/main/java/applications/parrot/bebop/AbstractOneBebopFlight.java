@@ -180,9 +180,9 @@ public abstract class AbstractOneBebopFlight extends AbstractNodeMain implements
     final Command takeOff = BebopTakeOff.create(takeOffService, flyingStateService, resetService);
     commands.add(takeOff);
 
-    final Command hoverFiveSecond =
+    final Command hoverFiveSeconds =
         BebopHover.create(5, RosTime.create(connectedNode), velocity4dService, stateEstimator);
-    commands.add(hoverFiveSecond);
+    commands.add(hoverFiveSeconds);
 
     final Command followTrajectory =
         BebopFollowTrajectory.builder()
@@ -200,8 +200,11 @@ public abstract class AbstractOneBebopFlight extends AbstractNodeMain implements
 
     final Command waitForLocalizationThenFollowTrajectory =
         WaitForLocalizationDecorator.create(stateEstimator, followTrajectory);
-
     commands.add(waitForLocalizationThenFollowTrajectory);
+
+    final Command hoverThreeSeconds =
+        BebopHover.create(3, RosTime.create(connectedNode), velocity4dService, stateEstimator);
+    commands.add(hoverThreeSeconds);
 
     final Command land = BebopLand.create(landService, flyingStateService);
     commands.add(land);

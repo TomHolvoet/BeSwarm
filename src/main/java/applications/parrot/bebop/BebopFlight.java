@@ -209,6 +209,10 @@ final class BebopFlight {
 
     commands.add(waitForLocalizationThenFollowTrajectory);
 
+    final Command hoverThreeSeconds =
+        BebopHover.create(3, RosTime.create(connectedNode), velocity4dService, stateEstimator);
+    commands.add(hoverThreeSeconds);
+
     final Command land = BebopLand.create(landService, flyingStateService);
     commands.add(land);
 

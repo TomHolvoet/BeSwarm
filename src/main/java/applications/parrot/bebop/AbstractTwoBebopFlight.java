@@ -61,7 +61,7 @@ public abstract class AbstractTwoBebopFlight extends AbstractNodeMain {
             });
   }
 
-  protected abstract FiniteTrajectory4d getConcreteTrajectoryForFirstBebop();
+  abstract FiniteTrajectory4d getConcreteTrajectoryForFirstBebop();
 
-  protected abstract FiniteTrajectory4d getConcreteTrajectoryForSecondBebop();
+  abstract FiniteTrajectory4d getConcreteTrajectoryForSecondBebop();
 }
