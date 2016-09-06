@@ -5,6 +5,8 @@
   </include>
   <include file="$(find bebop_tools)/launch/joy_teleop.launch"/>
 
+  <param name="beswarm/pid_lag_time_in_seconds" value="1.0"/>
+
   <param name="beswarm/pid_linear_x_kp" value="0.3"/>
   <param name="beswarm/pid_linear_x_kd" value="1.0"/>
   <param name="beswarm/pid_linear_x_ki" value="0.0"/>

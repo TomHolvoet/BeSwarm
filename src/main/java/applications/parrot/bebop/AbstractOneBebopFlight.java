@@ -53,14 +53,21 @@ public abstract class AbstractOneBebopFlight extends AbstractNodeMain implements
   }
 
   private static PidParameters getPidParameters(
-      ConnectedNode connectedNode, String argKp, String argKd, String argKi) {
+      ConnectedNode connectedNode,
+      String argKp,
+      String argKd,
+      String argKi,
+      String argLagTimeInSeconds) {
     final double pidLinearXKp = connectedNode.getParameterTree().getDouble(argKp);
     final double pidLinearXKd = connectedNode.getParameterTree().getDouble(argKd);
     final double pidLinearXKi = connectedNode.getParameterTree().getDouble(argKi);
+    final double pidLagTimeInSeconds =
+        connectedNode.getParameterTree().getDouble(argLagTimeInSeconds);
     return PidParameters.builder()
         .setKp(pidLinearXKp)
         .setKd(pidLinearXKd)
         .setKi(pidLinearXKi)
+        .setLagTimeInSeconds(pidLagTimeInSeconds)
         .build();
   }
 
@@ -94,25 +101,29 @@ public abstract class AbstractOneBebopFlight extends AbstractNodeMain implements
             connectedNode,
             "beswarm/pid_linear_x_kp",
             "beswarm/pid_linear_x_kd",
-            "beswarm/pid_linear_x_ki");
+            "beswarm/pid_linear_x_ki",
+            "beswarm/pid_lag_time_in_seconds");
     final PidParameters pidLinearY =
         getPidParameters(
             connectedNode,
             "beswarm/pid_linear_y_kp",
             "beswarm/pid_linear_y_kd",
-            "beswarm/pid_linear_y_ki");
+            "beswarm/pid_linear_y_ki",
+            "beswarm/pid_lag_time_in_seconds");
     final PidParameters pidLinearZ =
         getPidParameters(
             connectedNode,
             "beswarm/pid_linear_z_kp",
             "beswarm/pid_linear_z_kd",
-            "beswarm/pid_linear_z_ki");
+            "beswarm/pid_linear_z_ki",
+            "beswarm/pid_lag_time_in_seconds");
     final PidParameters pidAngularZ =
         getPidParameters(
             connectedNode,
             "beswarm/pid_angular_z_kp",
             "beswarm/pid_angular_z_kd",
-            "beswarm/pid_angular_z_ki");
+            "beswarm/pid_angular_z_ki",
+            "beswarm/pid_lag_time_in_seconds");
 
     final ParrotServiceFactory parrotServiceFactory =
         BebopServiceFactory.create(connectedNode, DRONE_NAME);
