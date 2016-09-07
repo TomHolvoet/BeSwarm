@@ -13,10 +13,14 @@ import commands.tumsimcommands.TumSimTakeoff;
 import control.FiniteTrajectory4d;
 import control.PidParameters;
 import control.dto.DroneStateStamped;
+import control.localization.FakeStateEstimatorDecorator;
 import control.localization.GazeboModelStateEstimator;
 import control.localization.StateEstimator;
 import gazebo_msgs.ModelStates;
+import org.apache.commons.math3.random.GaussianRandomGenerator;
+import org.apache.commons.math3.random.MersenneTwister;
 import org.ros.node.ConnectedNode;
+import org.ros.node.parameter.ParameterTree;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import services.FlyingStateService;
@@ -44,37 +48,38 @@ final class TumExampleFlightFacade {
 
   private TumExampleFlightFacade(FiniteTrajectory4d trajectory4d, ConnectedNode connectedNode) {
     final String nodeName = connectedNode.getName().toString();
+    final ParameterTree parameterTree = connectedNode.getParameterTree();
     final PidParameters pidLinearX =
         RosParameters.createPidParameters(
-            connectedNode,
+            parameterTree,
             nodeName + "/pid_linear_x_kp",
             nodeName + "/pid_linear_x_kd",
             nodeName + "/pid_linear_x_ki",
             nodeName + "/pid_lag_time_in_seconds");
     final PidParameters pidLinearY =
         RosParameters.createPidParameters(
-            connectedNode,
+            parameterTree,
             nodeName + "/pid_linear_y_kp",
             nodeName + "/pid_linear_y_kd",
             nodeName + "/pid_linear_y_ki",
             nodeName + "/pid_lag_time_in_seconds");
     final PidParameters pidLinearZ =
         RosParameters.createPidParameters(
-            connectedNode,
+            parameterTree,
             nodeName + "/pid_linear_z_kp",
             nodeName + "/pid_linear_z_kd",
             nodeName + "/pid_linear_z_ki",
             nodeName + "/pid_lag_time_in_seconds");
     final PidParameters pidAngularZ =
         RosParameters.createPidParameters(
-            connectedNode,
+            parameterTree,
             nodeName + "/pid_angular_z_kp",
             nodeName + "/pid_angular_z_kd",
             nodeName + "/pid_angular_z_ki",
             nodeName + "/pid_lag_time_in_seconds");
 
     final ParrotServiceFactory parrotServiceFactory = TumSimServiceFactory.create(connectedNode);
-    stateEstimator = getStateEstimator(connectedNode);
+    stateEstimator = getFakeStateEstimator(getGazeboStateEstimator(connectedNode), connectedNode);
     final LandService landService = parrotServiceFactory.createLandService();
     final FlyingStateService flyingStateService = parrotServiceFactory.createFlyingStateService();
     final TakeOffService takeOffService = parrotServiceFactory.createTakeOffService();
@@ -137,13 +142,38 @@ final class TumExampleFlightFacade {
     return new TumExampleFlightFacade(trajectory4d, connectedNode);
   }
 
-  private static StateEstimator getStateEstimator(ConnectedNode connectedNode) {
+  private static StateEstimator getGazeboStateEstimator(ConnectedNode connectedNode) {
     final MessagesSubscriberService<ModelStates> modelStateSubscriber =
         MessagesSubscriberService.create(
             connectedNode.<ModelStates>newSubscriber("/gazebo/model_states", ModelStates._TYPE),
             RosTime.create(connectedNode));
     return GazeboModelStateEstimator.create(
         modelStateSubscriber, MODEL_NAME, RosTime.create(connectedNode));
+  }
+
+  private static StateEstimator getFakeStateEstimator(
+      StateEstimator stateEstimator, ConnectedNode connectedNode) {
+    final ParameterTree parameterTree = connectedNode.getParameterTree();
+    final String nodeName = connectedNode.getName().toString();
+
+    final double localizationFrequency =
+        parameterTree.getDouble(nodeName + "/localization_frequency");
+    final double localizationNoiseMean =
+        parameterTree.getDouble(nodeName + "/localization_noise_mean");
+    final double localizationNoiseDeviation =
+        parameterTree.getDouble(nodeName + "/localization_noise_deviation");
+    final int localizationNoiseSeed =
+        parameterTree.getInteger(nodeName + "/localization_noise_seed");
+
+    final GaussianRandomGenerator noiseGenerator =
+        new GaussianRandomGenerator(new MersenneTwister(localizationNoiseSeed));
+
+    return FakeStateEstimatorDecorator.create(
+        stateEstimator,
+        localizationFrequency,
+        noiseGenerator,
+        localizationNoiseMean,
+        localizationNoiseDeviation);
   }
 
   /** Starts flying. */

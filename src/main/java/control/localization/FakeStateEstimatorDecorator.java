@@ -6,6 +6,8 @@ import control.dto.InertialFrameVelocity;
 import control.dto.Pose;
 import control.dto.Velocity;
 import org.apache.commons.math3.random.GaussianRandomGenerator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nullable;
 import java.util.concurrent.Executors;
@@ -19,9 +21,14 @@ import java.util.concurrent.TimeUnit;
  * simulation purpose. This decorator assumes that the noise for all pose and velocity dimensions is
  * from the same Gaussian distribution.
  *
+ * <p>TODO: test this class
+ *
  * @author Hoang Tung Dinh
  */
 public final class FakeStateEstimatorDecorator implements StateEstimator {
+
+  private static final Logger logger = LoggerFactory.getLogger(FakeStateEstimatorDecorator.class);
+
   private final StateEstimator actualStateEstimator;
   private final GaussianRandomGenerator noiseGenerator;
   private final double noiseMean;

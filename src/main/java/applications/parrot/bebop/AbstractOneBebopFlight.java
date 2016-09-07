@@ -19,6 +19,7 @@ import nav_msgs.Odometry;
 import org.ros.namespace.GraphName;
 import org.ros.node.AbstractNodeMain;
 import org.ros.node.ConnectedNode;
+import org.ros.node.parameter.ParameterTree;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import services.FlyingStateService;
@@ -78,30 +79,31 @@ public abstract class AbstractOneBebopFlight extends AbstractNodeMain implements
 
   @Override
   public void onStart(final ConnectedNode connectedNode) {
+    final ParameterTree parameterTree = connectedNode.getParameterTree();
     final PidParameters pidLinearX =
         RosParameters.createPidParameters(
-            connectedNode,
+            parameterTree,
             "beswarm/pid_linear_x_kp",
             "beswarm/pid_linear_x_kd",
             "beswarm/pid_linear_x_ki",
             "beswarm/pid_lag_time_in_seconds");
     final PidParameters pidLinearY =
         RosParameters.createPidParameters(
-            connectedNode,
+            parameterTree,
             "beswarm/pid_linear_y_kp",
             "beswarm/pid_linear_y_kd",
             "beswarm/pid_linear_y_ki",
             "beswarm/pid_lag_time_in_seconds");
     final PidParameters pidLinearZ =
         RosParameters.createPidParameters(
-            connectedNode,
+            parameterTree,
             "beswarm/pid_linear_z_kp",
             "beswarm/pid_linear_z_kd",
             "beswarm/pid_linear_z_ki",
             "beswarm/pid_lag_time_in_seconds");
     final PidParameters pidAngularZ =
         RosParameters.createPidParameters(
-            connectedNode,
+            parameterTree,
             "beswarm/pid_angular_z_kp",
             "beswarm/pid_angular_z_kd",
             "beswarm/pid_angular_z_ki",

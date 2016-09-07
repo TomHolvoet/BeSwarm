@@ -9,6 +9,14 @@
   <!--Launch the java node. The main class must extend TumExampleFlightFacade.-->
   <node pkg="agentwise_bebop" type="BeSwarm" name="BeSwarm"
         args="$(arg javanode)" output="screen">
+
+    <!--Parameters for fake localization-->
+    <param name="localization_frequency" value="15.0"/>
+    <param name="localization_noise_mean" value="0.0"/>
+    <param name="localization_noise_deviation" value="0.5"/>
+    <param name="localization_noise_seed" value="123"/>
+
+    <!--Parameters for pid controllers-->
     <param name="pid_lag_time_in_seconds" value="1.0"/>
 
     <param name="pid_linear_x_kp" value="2.0"/>

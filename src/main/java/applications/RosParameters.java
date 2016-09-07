@@ -1,7 +1,7 @@
 package applications;
 
 import control.PidParameters;
-import org.ros.node.ConnectedNode;
+import org.ros.node.parameter.ParameterTree;
 
 /**
  * Utility class for creating appropriate java instances using parameters from ROS parameter server.
@@ -13,16 +13,15 @@ public final class RosParameters {
   private RosParameters() {}
 
   public static PidParameters createPidParameters(
-      ConnectedNode connectedNode,
+      ParameterTree parameterTree,
       String argKp,
       String argKd,
       String argKi,
       String argLagTimeInSeconds) {
-    final double pidLinearXKp = connectedNode.getParameterTree().getDouble(argKp);
-    final double pidLinearXKd = connectedNode.getParameterTree().getDouble(argKd);
-    final double pidLinearXKi = connectedNode.getParameterTree().getDouble(argKi);
-    final double pidLagTimeInSeconds =
-        connectedNode.getParameterTree().getDouble(argLagTimeInSeconds);
+    final double pidLinearXKp = parameterTree.getDouble(argKp);
+    final double pidLinearXKd = parameterTree.getDouble(argKd);
+    final double pidLinearXKi = parameterTree.getDouble(argKi);
+    final double pidLagTimeInSeconds = parameterTree.getDouble(argLagTimeInSeconds);
     return PidParameters.builder()
         .setKp(pidLinearXKp)
         .setKd(pidLinearXKd)
