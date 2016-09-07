@@ -126,6 +126,11 @@ final class TumExampleFlightFacade {
 
   /** Starts flying. */
   void fly() {
+    waitUntilRecevingDroneState();
+    exampleFlight.fly();
+  }
+
+  private void waitUntilRecevingDroneState() {
     Optional<DroneStateStamped> droneState = stateEstimator.getCurrentState();
 
     // wait until we receive at lease a state of the drone before flying. It is to guarantee that
@@ -140,7 +145,5 @@ final class TumExampleFlightFacade {
 
       droneState = stateEstimator.getCurrentState();
     }
-
-    exampleFlight.fly();
   }
 }
