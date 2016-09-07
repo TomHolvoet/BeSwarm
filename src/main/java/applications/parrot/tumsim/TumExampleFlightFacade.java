@@ -78,6 +78,14 @@ final class TumExampleFlightFacade {
             nodeName + "/pid_angular_z_ki",
             nodeName + "/pid_lag_time_in_seconds");
 
+    final String trajectoryDurationParameterName = nodeName + "/trajectory_duration_in_seconds";
+    final double trajectoryDurationInSeconds;
+    if (parameterTree.has(trajectoryDurationParameterName)) {
+      trajectoryDurationInSeconds = parameterTree.getDouble(trajectoryDurationParameterName);
+    } else {
+      trajectoryDurationInSeconds = trajectory4d.getTrajectoryDuration();
+    }
+
     final ParrotServiceFactory parrotServiceFactory = TumSimServiceFactory.create(connectedNode);
     stateEstimator = getFakeStateEstimator(getGazeboStateEstimator(connectedNode), connectedNode);
     final LandService landService = parrotServiceFactory.createLandService();
@@ -101,7 +109,7 @@ final class TumExampleFlightFacade {
             .withStateEstimator(stateEstimator)
             .withTimeProvider(RosTime.create(connectedNode))
             .withTrajectory4d(trajectory4d)
-            .withDurationInSeconds(trajectory4d.getTrajectoryDuration())
+            .withDurationInSeconds(trajectoryDurationInSeconds)
             .withPidLinearXParameters(pidLinearX)
             .withPidLinearYParameters(pidLinearY)
             .withPidLinearZParameters(pidLinearZ)
