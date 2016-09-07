@@ -7,7 +7,7 @@
   <include file="$(find cvg_sim_gazebo)/launch/no_gui_ardrone_empty_world.launch"/>
 
   <!--Launch the java node. The main class must extend TumExampleFlightFacade.-->
-  <node pkg="agentwise_bebop" type="BeSwarmTumSim" name="BeSwarmTumSim"
+  <node pkg="agentwise_bebop" type="BeSwarm" name="BeSwarm"
         args="$(arg javanode)" output="screen"/>
-  
+
 </launch>
