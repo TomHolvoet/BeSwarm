@@ -1,6 +1,7 @@
 package applications.parrot.tumsim;
 
 import applications.ExampleFlight;
+import applications.RosParameters;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import commands.Command;
@@ -42,6 +43,35 @@ final class TumExampleFlightFacade {
   private final StateEstimator stateEstimator;
 
   private TumExampleFlightFacade(FiniteTrajectory4d trajectory4d, ConnectedNode connectedNode) {
+    final PidParameters pidLinearX =
+        RosParameters.createPidParameters(
+            connectedNode,
+            "beswarm/pid_linear_x_kp",
+            "beswarm/pid_linear_x_kd",
+            "beswarm/pid_linear_x_ki",
+            "beswarm/pid_lag_time_in_seconds");
+    final PidParameters pidLinearY =
+        RosParameters.createPidParameters(
+            connectedNode,
+            "beswarm/pid_linear_y_kp",
+            "beswarm/pid_linear_y_kd",
+            "beswarm/pid_linear_y_ki",
+            "beswarm/pid_lag_time_in_seconds");
+    final PidParameters pidLinearZ =
+        RosParameters.createPidParameters(
+            connectedNode,
+            "beswarm/pid_linear_z_kp",
+            "beswarm/pid_linear_z_kd",
+            "beswarm/pid_linear_z_ki",
+            "beswarm/pid_lag_time_in_seconds");
+    final PidParameters pidAngularZ =
+        RosParameters.createPidParameters(
+            connectedNode,
+            "beswarm/pid_angular_z_kp",
+            "beswarm/pid_angular_z_kd",
+            "beswarm/pid_angular_z_ki",
+            "beswarm/pid_lag_time_in_seconds");
+
     final ParrotServiceFactory parrotServiceFactory = TumSimServiceFactory.create(connectedNode);
     stateEstimator = getStateEstimator(connectedNode);
     final LandService landService = parrotServiceFactory.createLandService();
@@ -66,19 +96,10 @@ final class TumExampleFlightFacade {
             .withTimeProvider(RosTime.create(connectedNode))
             .withTrajectory4d(trajectory4d)
             .withDurationInSeconds(trajectory4d.getTrajectoryDuration())
-            .withPidLinearXParameters(
-                PidParameters.builder().setKp(2).setKd(1).setKi(0).setLagTimeInSeconds(0.2).build())
-            .withPidLinearYParameters(
-                PidParameters.builder().setKp(2).setKd(1).setKi(0).setLagTimeInSeconds(0.2).build())
-            .withPidLinearZParameters(
-                PidParameters.builder().setKp(2).setKd(1).setKi(0).setLagTimeInSeconds(0.2).build())
-            .withPidAngularZParameters(
-                PidParameters.builder()
-                    .setKp(1.5)
-                    .setKd(0.75)
-                    .setKi(0)
-                    .setLagTimeInSeconds(0.2)
-                    .build())
+            .withPidLinearXParameters(pidLinearX)
+            .withPidLinearYParameters(pidLinearY)
+            .withPidLinearZParameters(pidLinearZ)
+            .withPidAngularZParameters(pidAngularZ)
             .withControlRateInSeconds(0.01)
             .build();
 

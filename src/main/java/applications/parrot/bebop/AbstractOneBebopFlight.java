@@ -1,6 +1,7 @@
 package applications.parrot.bebop;
 
 import applications.ExampleFlight;
+import applications.RosParameters;
 import applications.trajectory.TrajectoryServer;
 import com.google.common.collect.ImmutableList;
 import commands.Command;
@@ -52,25 +53,6 @@ public abstract class AbstractOneBebopFlight extends AbstractNodeMain implements
     this.nodeName = nodeName;
   }
 
-  private static PidParameters getPidParameters(
-      ConnectedNode connectedNode,
-      String argKp,
-      String argKd,
-      String argKi,
-      String argLagTimeInSeconds) {
-    final double pidLinearXKp = connectedNode.getParameterTree().getDouble(argKp);
-    final double pidLinearXKd = connectedNode.getParameterTree().getDouble(argKd);
-    final double pidLinearXKi = connectedNode.getParameterTree().getDouble(argKi);
-    final double pidLagTimeInSeconds =
-        connectedNode.getParameterTree().getDouble(argLagTimeInSeconds);
-    return PidParameters.builder()
-        .setKp(pidLinearXKp)
-        .setKd(pidLinearXKd)
-        .setKi(pidLinearXKi)
-        .setLagTimeInSeconds(pidLagTimeInSeconds)
-        .build();
-  }
-
   private static MessagesSubscriberService<PoseStamped> getPoseSubscriber(
       ConnectedNode connectedNode) {
     final String poseTopic = "/arlocros/pose";
@@ -97,28 +79,28 @@ public abstract class AbstractOneBebopFlight extends AbstractNodeMain implements
   @Override
   public void onStart(final ConnectedNode connectedNode) {
     final PidParameters pidLinearX =
-        getPidParameters(
+        RosParameters.createPidParameters(
             connectedNode,
             "beswarm/pid_linear_x_kp",
             "beswarm/pid_linear_x_kd",
             "beswarm/pid_linear_x_ki",
             "beswarm/pid_lag_time_in_seconds");
     final PidParameters pidLinearY =
-        getPidParameters(
+        RosParameters.createPidParameters(
             connectedNode,
             "beswarm/pid_linear_y_kp",
             "beswarm/pid_linear_y_kd",
             "beswarm/pid_linear_y_ki",
             "beswarm/pid_lag_time_in_seconds");
     final PidParameters pidLinearZ =
-        getPidParameters(
+        RosParameters.createPidParameters(
             connectedNode,
             "beswarm/pid_linear_z_kp",
             "beswarm/pid_linear_z_kd",
             "beswarm/pid_linear_z_ki",
             "beswarm/pid_lag_time_in_seconds");
     final PidParameters pidAngularZ =
-        getPidParameters(
+        RosParameters.createPidParameters(
             connectedNode,
             "beswarm/pid_angular_z_kp",
             "beswarm/pid_angular_z_kd",
