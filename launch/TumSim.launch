@@ -11,21 +11,21 @@
         args="$(arg javanode)" output="screen">
     <param name="beswarm/pid_lag_time_in_seconds" value="1.0"/>
 
-    <param name="beswarm/pid_linear_x_kp" value="2.0"/>
-    <param name="beswarm/pid_linear_x_kd" value="1.0"/>
-    <param name="beswarm/pid_linear_x_ki" value="0.0"/>
+    <param name="pid_linear_x_kp" value="2.0"/>
+    <param name="pid_linear_x_kd" value="1.0"/>
+    <param name="pid_linear_x_ki" value="0.0"/>
 
-    <param name="beswarm/pid_linear_y_kp" value="2.0"/>
-    <param name="beswarm/pid_linear_y_kd" value="1.0"/>
-    <param name="beswarm/pid_linear_y_ki" value="0.0"/>
+    <param name="pid_linear_y_kp" value="2.0"/>
+    <param name="pid_linear_y_kd" value="1.0"/>
+    <param name="pid_linear_y_ki" value="0.0"/>
 
-    <param name="beswarm/pid_linear_z_kp" value="2.0"/>
-    <param name="beswarm/pid_linear_z_kd" value="1.0"/>
-    <param name="beswarm/pid_linear_z_ki" value="0.0"/>
+    <param name="pid_linear_z_kp" value="2.0"/>
+    <param name="pid_linear_z_kd" value="1.0"/>
+    <param name="pid_linear_z_ki" value="0.0"/>
 
-    <param name="beswarm/pid_angular_z_kp" value="1.5"/>
-    <param name="beswarm/pid_angular_z_kd" value="0.75"/>
-    <param name="beswarm/pid_angular_z_ki" value="0.0"/>
+    <param name="pid_angular_z_kp" value="1.5"/>
+    <param name="pid_angular_z_kd" value="0.75"/>
+    <param name="pid_angular_z_ki" value="0.0"/>
   </node>
 
 </launch>

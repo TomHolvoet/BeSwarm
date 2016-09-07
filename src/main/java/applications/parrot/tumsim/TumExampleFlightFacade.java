@@ -43,34 +43,35 @@ final class TumExampleFlightFacade {
   private final StateEstimator stateEstimator;
 
   private TumExampleFlightFacade(FiniteTrajectory4d trajectory4d, ConnectedNode connectedNode) {
+    final String nodeName = connectedNode.getName().toString();
     final PidParameters pidLinearX =
         RosParameters.createPidParameters(
             connectedNode,
-            "beswarm/pid_linear_x_kp",
-            "beswarm/pid_linear_x_kd",
-            "beswarm/pid_linear_x_ki",
-            "beswarm/pid_lag_time_in_seconds");
+            nodeName + "/pid_linear_x_kp",
+            nodeName + "/pid_linear_x_kd",
+            nodeName + "/pid_linear_x_ki",
+            nodeName + "/pid_lag_time_in_seconds");
     final PidParameters pidLinearY =
         RosParameters.createPidParameters(
             connectedNode,
-            "beswarm/pid_linear_y_kp",
-            "beswarm/pid_linear_y_kd",
-            "beswarm/pid_linear_y_ki",
-            "beswarm/pid_lag_time_in_seconds");
+            nodeName + "/pid_linear_y_kp",
+            nodeName + "/pid_linear_y_kd",
+            nodeName + "/pid_linear_y_ki",
+            nodeName + "/pid_lag_time_in_seconds");
     final PidParameters pidLinearZ =
         RosParameters.createPidParameters(
             connectedNode,
-            "beswarm/pid_linear_z_kp",
-            "beswarm/pid_linear_z_kd",
-            "beswarm/pid_linear_z_ki",
-            "beswarm/pid_lag_time_in_seconds");
+            nodeName + "/pid_linear_z_kp",
+            nodeName + "/pid_linear_z_kd",
+            nodeName + "/pid_linear_z_ki",
+            nodeName + "/pid_lag_time_in_seconds");
     final PidParameters pidAngularZ =
         RosParameters.createPidParameters(
             connectedNode,
-            "beswarm/pid_angular_z_kp",
-            "beswarm/pid_angular_z_kd",
-            "beswarm/pid_angular_z_ki",
-            "beswarm/pid_lag_time_in_seconds");
+            nodeName + "/pid_angular_z_kp",
+            nodeName + "/pid_angular_z_kd",
+            nodeName + "/pid_angular_z_ki",
+            nodeName + "/pid_lag_time_in_seconds");
 
     final ParrotServiceFactory parrotServiceFactory = TumSimServiceFactory.create(connectedNode);
     stateEstimator = getStateEstimator(connectedNode);
