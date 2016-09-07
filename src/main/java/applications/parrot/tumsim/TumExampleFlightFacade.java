@@ -1,15 +1,17 @@
 package applications.parrot.tumsim;
 
 import applications.ExampleFlight;
+import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import commands.Command;
 import commands.WaitForLocalizationDecorator;
-import commands.bebopcommands.BebopHover;
 import commands.tumsimcommands.TumSimFollowTrajectory;
+import commands.tumsimcommands.TumSimHover;
 import commands.tumsimcommands.TumSimLand;
 import commands.tumsimcommands.TumSimTakeoff;
 import control.FiniteTrajectory4d;
 import control.PidParameters;
+import control.dto.DroneStateStamped;
 import control.localization.GazeboModelStateEstimator;
 import control.localization.StateEstimator;
 import gazebo_msgs.ModelStates;
@@ -37,10 +39,11 @@ final class TumExampleFlightFacade {
   private static final Logger logger = LoggerFactory.getLogger(TumExampleFlightFacade.class);
   private static final String MODEL_NAME = "quadrotor";
   private final ExampleFlight exampleFlight;
+  private final StateEstimator stateEstimator;
 
   private TumExampleFlightFacade(FiniteTrajectory4d trajectory4d, ConnectedNode connectedNode) {
     final ParrotServiceFactory parrotServiceFactory = TumSimServiceFactory.create(connectedNode);
-    final StateEstimator stateEstimator = getStateEstimator(connectedNode);
+    stateEstimator = getStateEstimator(connectedNode);
     final LandService landService = parrotServiceFactory.createLandService();
     final FlyingStateService flyingStateService = parrotServiceFactory.createFlyingStateService();
     final TakeOffService takeOffService = parrotServiceFactory.createTakeOffService();
@@ -53,7 +56,7 @@ final class TumExampleFlightFacade {
     commands.add(takeOff);
 
     final Command hoverFiveSecond =
-        BebopHover.create(5, RosTime.create(connectedNode), velocity4dService, stateEstimator);
+        TumSimHover.create(5, RosTime.create(connectedNode), velocity4dService, stateEstimator);
     commands.add(hoverFiveSecond);
 
     final Command followTrajectory =
@@ -123,13 +126,19 @@ final class TumExampleFlightFacade {
 
   /** Starts flying. */
   void fly() {
-    // without this code, the take off message cannot be sent properly (I
-    // don't understand why).
-    try {
-      TimeUnit.SECONDS.sleep(3);
-    } catch (InterruptedException e) {
-      logger.info("Warm up time is interrupted.", e);
-      Thread.currentThread().interrupt();
+    Optional<DroneStateStamped> droneState = stateEstimator.getCurrentState();
+
+    // wait until we receive at lease a state of the drone before flying. It is to guarantee that
+    // the drone model is properly initialized before running this code.
+    while (!droneState.isPresent()) {
+      try {
+        TimeUnit.MILLISECONDS.sleep(100);
+      } catch (InterruptedException e) {
+        logger.info("Sleep while waiting for drone state is interrupted.", e);
+        Thread.currentThread().interrupt();
+      }
+
+      droneState = stateEstimator.getCurrentState();
     }
 
     exampleFlight.fly();
