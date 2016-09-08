@@ -108,7 +108,7 @@ final class TumExampleFlightFacade {
         TumSimHover.create(5, RosTime.create(connectedNode), velocity4dService, stateEstimator);
     commands.add(hoverFiveSecond);
 
-    final Command followTrajectory =
+    final TumSimFollowTrajectory.Builder followTrajectoryBuilder =
         TumSimFollowTrajectory.builder()
             .withVelocity4dService(velocity4dService)
             .withStateEstimator(stateEstimator)
@@ -119,8 +119,14 @@ final class TumExampleFlightFacade {
             .withPidLinearYParameters(pidLinearY)
             .withPidLinearZParameters(pidLinearZ)
             .withPidAngularZParameters(pidAngularZ)
-            .withControlRateInSeconds(getControlRateInSeconds(nodeName, parameterTree))
-            .build();
+            .withControlRateInSeconds(getControlRateInSeconds(nodeName, parameterTree));
+
+    if (parameterTree.getBoolean(nodeName + "/pid_co_filter")) {
+      followTrajectoryBuilder.withControlRateInSeconds(
+          parameterTree.getDouble(nodeName + "/pid_co_filter_time_constant"));
+    }
+
+    final Command followTrajectory = followTrajectoryBuilder.build();
 
     final Command waitForLocalizationThenFollowTrajectory =
         WaitForLocalizationDecorator.create(stateEstimator, followTrajectory);
