@@ -74,4 +74,4 @@ appender("FILE_GROUND_TRUTH_POSE", FileAppender) {
         pattern = "%msg %n"
     }
 }
-logger("control.localization.FakeStateEstimatorDecorator", TRACE, ["FILE_ARMARKER_VELOCITY"], false)
+logger("control.localization.FakeStateEstimatorDecorator", TRACE, ["FILE_GROUND_TRUTH_POSE"], false)
