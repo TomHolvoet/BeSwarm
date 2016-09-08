@@ -56,7 +56,7 @@ public abstract class AbstractParrotFollowTrajectory extends AbstractFollowTraje
     protected void computeAndSendResponse(
         double currentTimeInSeconds, DroneStateStamped currentState) {
       final InertialFrameVelocity nextVelocity =
-          pidController4d.compute(
+          pidController4d.computeNextResponse(
               currentState.pose(), currentState.inertialFrameVelocity(), currentTimeInSeconds);
       velocity4dService.sendInertialFrameVelocity(nextVelocity, currentState.pose());
     }

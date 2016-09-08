@@ -15,7 +15,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  *
  * @author Hoang Tung Dinh
  */
-public final class PidController4d {
+public final class PidController4d implements VelocityController4d {
 
   private final PidController1d pidLinearX;
   private final PidController1d pidLinearY;
@@ -50,7 +50,8 @@ public final class PidController4d {
    *     the drone
    * @return the next velocity (response) of the drone
    */
-  public InertialFrameVelocity compute(
+  @Override
+  public InertialFrameVelocity computeNextResponse(
       Pose currentPose, InertialFrameVelocity currentVelocity, double currentTimeInSeconds) {
     final double linearX =
         pidLinearX.compute(currentPose.x(), currentVelocity.linearX(), currentTimeInSeconds);
