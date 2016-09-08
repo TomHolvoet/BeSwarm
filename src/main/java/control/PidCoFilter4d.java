@@ -24,8 +24,8 @@ public final class PidCoFilter4d implements VelocityController4d {
   }
 
   public static PidCoFilter4d create(
-      VelocityController4d pidController, double filterTimeConstance) {
-    return new PidCoFilter4d(pidController, filterTimeConstance);
+      VelocityController4d pidController, double filterTimeConstant) {
+    return new PidCoFilter4d(pidController, filterTimeConstant);
   }
 
   @Override

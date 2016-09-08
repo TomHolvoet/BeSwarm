@@ -1,14 +1,18 @@
 package commands;
 
 import control.DefaultPidParameters;
+import control.PidCoFilter4d;
 import control.PidController4d;
 import control.PidParameters;
 import control.Trajectory4d;
+import control.VelocityController4d;
 import control.dto.DroneStateStamped;
 import control.dto.InertialFrameVelocity;
 import control.localization.StateEstimator;
 import services.Velocity4dService;
 import time.TimeProvider;
+
+import javax.annotation.Nullable;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -19,7 +23,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public abstract class AbstractParrotFollowTrajectory extends AbstractFollowTrajectory {
 
-  private final PidController4d pidController4d;
+  private final VelocityController4d velocityController4d;
   private final Velocity4dService velocity4dService;
 
   protected AbstractParrotFollowTrajectory(
@@ -29,7 +33,7 @@ public abstract class AbstractParrotFollowTrajectory extends AbstractFollowTraje
       double controlRateInSeconds,
       double droneStateLifeDurationInSeconds,
       TimeProvider timeProvider,
-      PidController4d pidController4d,
+      VelocityController4d velocityController4d,
       Velocity4dService velocity4dService) {
     super(
         stateEstimator,
@@ -39,7 +43,7 @@ public abstract class AbstractParrotFollowTrajectory extends AbstractFollowTraje
         droneStateLifeDurationInSeconds,
         timeProvider);
 
-    this.pidController4d = pidController4d;
+    this.velocityController4d = velocityController4d;
     this.velocity4dService = velocity4dService;
   }
 
@@ -56,7 +60,7 @@ public abstract class AbstractParrotFollowTrajectory extends AbstractFollowTraje
     protected void computeAndSendResponse(
         double currentTimeInSeconds, DroneStateStamped currentState) {
       final InertialFrameVelocity nextVelocity =
-          pidController4d.computeNextResponse(
+          velocityController4d.computeNextResponse(
               currentState.pose(), currentState.inertialFrameVelocity(), currentTimeInSeconds);
       velocity4dService.sendInertialFrameVelocity(nextVelocity, currentState.pose());
     }
@@ -71,6 +75,7 @@ public abstract class AbstractParrotFollowTrajectory extends AbstractFollowTraje
     protected PidParameters pidLinearZParameters;
     protected PidParameters pidAngularZParameters;
     protected Velocity4dService velocity4dService;
+    @Nullable protected Double coFilterTimeConstant;
 
     protected ParrotBuilder() {
       pidLinearXParameters = DefaultPidParameters.LINEAR_X.getParameters();
@@ -139,6 +144,18 @@ public abstract class AbstractParrotFollowTrajectory extends AbstractFollowTraje
       return self();
     }
 
+    /**
+     * Sets the {@code coFilterTimeConstant} and returns a reference to this Builder so that the
+     * methods can be chained together.
+     *
+     * @param val the {@code coFilterTimeConstant} to set
+     * @return a reference to this Builder
+     */
+    public T withCoFilterTimeConstant(double val) {
+      coFilterTimeConstant = val;
+      return self();
+    }
+
     protected void checkMissingParameters() {
       checkNotNull(trajectory4d);
       checkNotNull(durationInSeconds);
@@ -153,14 +170,20 @@ public abstract class AbstractParrotFollowTrajectory extends AbstractFollowTraje
       checkNotNull(timeProvider);
     }
 
-    protected PidController4d createPidController4d() {
-      return PidController4d.builder()
-          .trajectory4d(trajectory4d)
-          .linearXParameters(pidLinearXParameters)
-          .linearYParameters(pidLinearYParameters)
-          .linearZParameters(pidLinearZParameters)
-          .angularZParameters(pidAngularZParameters)
-          .build();
+    protected VelocityController4d createVelocityController4d() {
+      final VelocityController4d pidController =
+          PidController4d.builder()
+              .trajectory4d(trajectory4d)
+              .linearXParameters(pidLinearXParameters)
+              .linearYParameters(pidLinearYParameters)
+              .linearZParameters(pidLinearZParameters)
+              .angularZParameters(pidAngularZParameters)
+              .build();
+      if (coFilterTimeConstant == null) {
+        return pidController;
+      } else {
+        return PidCoFilter4d.create(pidController, coFilterTimeConstant);
+      }
     }
   }
 }

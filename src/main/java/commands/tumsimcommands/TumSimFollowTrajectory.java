@@ -1,8 +1,8 @@
 package commands.tumsimcommands;
 
 import commands.AbstractParrotFollowTrajectory;
-import control.PidController4d;
 import control.Trajectory4d;
+import control.VelocityController4d;
 import control.localization.StateEstimator;
 import services.Velocity4dService;
 import time.TimeProvider;
@@ -21,7 +21,7 @@ public final class TumSimFollowTrajectory extends AbstractParrotFollowTrajectory
       double controlRateInSeconds,
       double droneStateLifeDurationInSeconds,
       TimeProvider timeProvider,
-      PidController4d pidController4d,
+      VelocityController4d velocityController4d,
       Velocity4dService velocity4dService) {
     super(
         stateEstimator,
@@ -30,7 +30,7 @@ public final class TumSimFollowTrajectory extends AbstractParrotFollowTrajectory
         controlRateInSeconds,
         droneStateLifeDurationInSeconds,
         timeProvider,
-        pidController4d,
+        velocityController4d,
         velocity4dService);
   }
 
@@ -67,7 +67,7 @@ public final class TumSimFollowTrajectory extends AbstractParrotFollowTrajectory
           controlRateInSeconds,
           droneStateLifeDurationInSeconds,
           timeProvider,
-          createPidController4d(),
+          createVelocityController4d(),
           velocity4dService);
     }
   }
