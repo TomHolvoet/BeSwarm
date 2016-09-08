@@ -23,8 +23,11 @@ import org.ros.node.ConnectedNode;
 import org.ros.node.parameter.ParameterTree;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import services.CascadeBodyFrameVelocityFilter;
 import services.FlyingStateService;
 import services.LandService;
+import services.MaxDiffBodyFrameVelocityFilter;
+import services.MinDiffBodyFrameVelocityFilter;
 import services.ResetService;
 import services.TakeOffService;
 import services.Velocity4dService;
@@ -93,7 +96,8 @@ final class TumExampleFlightFacade {
     final FlyingStateService flyingStateService = parrotServiceFactory.createFlyingStateService();
     final TakeOffService takeOffService = parrotServiceFactory.createTakeOffService();
     final ResetService resetService = parrotServiceFactory.createResetService();
-    final Velocity4dService velocity4dService = parrotServiceFactory.createVelocity4dService();
+    final Velocity4dService velocity4dService =
+        getVelocity4dService(nodeName, parameterTree, parrotServiceFactory);
 
     final Collection<Command> commands = new ArrayList<>();
 
@@ -139,6 +143,31 @@ final class TumExampleFlightFacade {
     final Task emergencyTask = createEmergencyTask(landService, flyingStateService);
 
     exampleFlight = ExampleFlight.create(connectedNode, flyTask, emergencyTask);
+  }
+
+  private static Velocity4dService getVelocity4dService(
+      String nodeName, ParameterTree parameterTree, ParrotServiceFactory parrotServiceFactory) {
+    final Velocity4dService velocity4dService;
+    final String filterType = parameterTree.getString(nodeName + "/velocity_filter");
+    if ("min".equals(filterType)) {
+      velocity4dService =
+          MinDiffBodyFrameVelocityFilter.create(
+              parrotServiceFactory.createVelocity4dService(),
+              parameterTree.getDouble(nodeName + "/min_diff"));
+    } else if ("max".equals(filterType)) {
+      velocity4dService =
+          MaxDiffBodyFrameVelocityFilter.create(
+              parrotServiceFactory.createVelocity4dService(),
+              parameterTree.getDouble(nodeName + "/max_diff"));
+    } else if ("both".equals(filterType)) {
+      velocity4dService =
+          CascadeBodyFrameVelocityFilter.create(
+              parrotServiceFactory.createVelocity4dService(),
+              parameterTree.getDouble(nodeName + "/cascade_delta"));
+    } else {
+      velocity4dService = parrotServiceFactory.createVelocity4dService();
+    }
+    return velocity4dService;
   }
 
   private static Task createEmergencyTask(

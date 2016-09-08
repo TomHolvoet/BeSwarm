@@ -20,8 +20,20 @@
     <param name="localization_noise_deviation" value="0.5"/>
     <param name="localization_noise_seed" value="123"/>
 
+    <!--Parameters for velocity service filter-->
+    <!--The values of this param can be: none, min, max, cascade. This corresponding to no filter,
+    min difference velocity filter, maximum difference velocity filter, and cascade filter that
+    uses both min and max filters.-->
+    <param name="velocity_filter" value="none"/>
+    <!--The min velocity difference used by min difference velocity filter-->
+    <param name="min_diff" value="0.000015"/>
+    <!--The max velocity difference used by max difference velocity filter-->
+    <param name="max_diff" value="0.001"/>
+    <!--The cascade delta value used by cascade filter-->
+    <param name="cascade_delta" value="0.001"/>
+
     <!--Parameters for pid controllers-->
-    <param name="pid_lag_time_in_seconds" value="1.0"/>
+    <param name="pid_lag_time_in_seconds" value="0.1"/>
 
     <param name="pid_linear_x_kp" value="2.0"/>
     <param name="pid_linear_x_kd" value="1.0"/>
