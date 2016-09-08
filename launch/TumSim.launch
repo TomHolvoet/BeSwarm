@@ -37,6 +37,12 @@
 
     <param name="pid_control_frequency" value="20.0"/>
 
+    <!--Parameters for pid filter. The value of this param can be: true (use the filter) or false
+     (don't use the filter)-->
+    <param name="pid_co_filter" value="false"/>
+    <!--The time constant for the pid co filter.-->
+    <param name="pid_co_filter_time_constant" value="1.0"/>
+
     <param name="pid_linear_x_kp" value="2.0"/>
     <param name="pid_linear_x_kd" value="1.0"/>
     <param name="pid_linear_x_ki" value="0.0"/>
