@@ -122,7 +122,8 @@ final class TumExampleFlightFacade {
             .withControlRateInSeconds(getControlRateInSeconds(nodeName, parameterTree));
 
     if (parameterTree.getBoolean(nodeName + "/pid_co_filter")) {
-      followTrajectoryBuilder.withControlRateInSeconds(
+      logger.info("Run with pid filter.");
+      followTrajectoryBuilder.withCoFilterTimeConstant(
           parameterTree.getDouble(nodeName + "/pid_co_filter_time_constant"));
     }
 
