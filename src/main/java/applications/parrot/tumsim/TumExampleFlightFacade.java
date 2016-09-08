@@ -119,7 +119,7 @@ final class TumExampleFlightFacade {
             .withPidLinearYParameters(pidLinearY)
             .withPidLinearZParameters(pidLinearZ)
             .withPidAngularZParameters(pidAngularZ)
-            .withControlRateInSeconds(0.01)
+            .withControlRateInSeconds(getControlRateInSeconds(nodeName, parameterTree))
             .build();
 
     final Command waitForLocalizationThenFollowTrajectory =
@@ -143,6 +143,10 @@ final class TumExampleFlightFacade {
     final Task emergencyTask = createEmergencyTask(landService, flyingStateService);
 
     exampleFlight = ExampleFlight.create(connectedNode, flyTask, emergencyTask);
+  }
+
+  private static double getControlRateInSeconds(String nodeName, ParameterTree parameterTree) {
+    return 1.0 / parameterTree.getDouble(nodeName + "/pid_control_frequency");
   }
 
   private static Velocity4dService getVelocity4dService(

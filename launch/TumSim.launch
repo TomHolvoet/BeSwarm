@@ -35,6 +35,8 @@
     <!--Parameters for pid controllers-->
     <param name="pid_lag_time_in_seconds" value="0.1"/>
 
+    <param name="pid_control_frequency" value="20.0"/>
+
     <param name="pid_linear_x_kp" value="2.0"/>
     <param name="pid_linear_x_kd" value="1.0"/>
     <param name="pid_linear_x_ki" value="0.0"/>
