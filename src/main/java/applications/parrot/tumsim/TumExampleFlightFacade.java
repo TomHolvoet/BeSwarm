@@ -46,7 +46,8 @@ final class TumExampleFlightFacade {
   private final ExampleFlight exampleFlight;
   private final StateEstimator stateEstimator;
 
-  private TumExampleFlightFacade(FiniteTrajectory4d trajectory4d, ConnectedNode connectedNode) {
+  private TumExampleFlightFacade(
+      FiniteTrajectory4d trajectory4d, final ConnectedNode connectedNode) {
     final String nodeName = connectedNode.getName().toString();
     final ParameterTree parameterTree = connectedNode.getParameterTree();
     final PidParameters pidLinearX =
@@ -124,6 +125,15 @@ final class TumExampleFlightFacade {
 
     final Command land = TumSimLand.create(landService, flyingStateService);
     commands.add(land);
+
+    final Command shutdownNode =
+        new Command() {
+          @Override
+          public void execute() {
+            connectedNode.shutdown();
+          }
+        };
+    commands.add(shutdownNode);
 
     final Task flyTask = Task.create(ImmutableList.copyOf(commands), TaskType.NORMAL_TASK);
     final Task emergencyTask = createEmergencyTask(landService, flyingStateService);
