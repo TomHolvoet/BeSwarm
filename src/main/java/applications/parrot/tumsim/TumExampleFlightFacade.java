@@ -163,7 +163,7 @@ final class TumExampleFlightFacade {
           MaxDiffBodyFrameVelocityFilter.create(
               parrotServiceFactory.createVelocity4dService(),
               parameterTree.getDouble(nodeName + "/max_diff"));
-    } else if ("both".equals(filterType)) {
+    } else if ("cascade".equals(filterType)) {
       velocity4dService =
           CascadeBodyFrameVelocityFilter.create(
               parrotServiceFactory.createVelocity4dService(),
