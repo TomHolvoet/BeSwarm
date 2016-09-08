@@ -66,3 +66,12 @@ appender("FILE_ODOM_VELOCITY", FileAppender) {
 }
 logger("operationaltesting.StateEstimatorOT.velocity.odom", TRACE,
         ["FILE_ODOM_VELOCITY"], false)
+
+// for simulation
+appender("FILE_GROUND_TRUTH_POSE", FileAppender) {
+    file = "${DIR}/groundtruthpose.log"
+    encoder(PatternLayoutEncoder) {
+        pattern = "%msg %n"
+    }
+}
+logger("control.localization.FakeStateEstimatorDecorator", TRACE, ["FILE_ARMARKER_VELOCITY"], false)

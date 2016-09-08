@@ -81,10 +81,21 @@ public final class FakeStateEstimatorDecorator implements StateEstimator {
       final Optional<DroneStateStamped> actualCurrentState = actualStateEstimator.getCurrentState();
       if (actualCurrentState.isPresent()) {
         final DroneStateStamped state = actualCurrentState.get();
+        logGroundTruthPose(state);
         currentState = addNoiseToState(state);
       } else {
         currentState = null;
       }
+    }
+
+    private void logGroundTruthPose(DroneStateStamped state) {
+      logger.trace(
+          "{} {} {} {} {}",
+          state.getTimeStampInSeconds(),
+          state.pose().x(),
+          state.pose().y(),
+          state.pose().z(),
+          state.pose().yaw());
     }
 
     private DroneStateStamped addNoiseToState(DroneStateStamped state) {
