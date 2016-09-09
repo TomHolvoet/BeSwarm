@@ -1,6 +1,7 @@
 package control.localization;
 
 import com.google.common.base.Optional;
+import com.google.common.collect.EvictingQueue;
 import control.dto.DroneStateStamped;
 import control.dto.InertialFrameVelocity;
 import control.dto.Pose;
@@ -10,8 +11,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nullable;
+import java.util.Collection;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+
+import static com.google.common.base.Preconditions.checkArgument;
 
 /**
  * A fake {@link StateEstimator} that is a decorator of another {@link StateEstimator}. User can use
@@ -33,6 +37,7 @@ public final class FakeStateEstimatorDecorator implements StateEstimator {
   private final GaussianRandomGenerator noiseGenerator;
   private final double noiseMean;
   private final double noiseDeviation;
+  private final EvictingQueue<DroneStateStamped> stateQueue;
 
   @Nullable private DroneStateStamped currentState;
 
@@ -41,11 +46,15 @@ public final class FakeStateEstimatorDecorator implements StateEstimator {
       double localizationFrequency,
       GaussianRandomGenerator noiseGenerator,
       double noiseMean,
-      double noiseDeviation) {
+      double noiseDeviation,
+      int numberOfAveragingPoses) {
     this.actualStateEstimator = actualStateEstimator;
     this.noiseGenerator = noiseGenerator;
     this.noiseMean = noiseMean;
     this.noiseDeviation = noiseDeviation;
+
+    checkArgument(numberOfAveragingPoses >= 1, "numberOfAveragingPoses must be at least one.");
+    this.stateQueue = EvictingQueue.create(numberOfAveragingPoses);
 
     final long localizationRateInNanoSeconds = (long) (1000000000L / localizationFrequency);
     Executors.newSingleThreadScheduledExecutor()
@@ -58,9 +67,15 @@ public final class FakeStateEstimatorDecorator implements StateEstimator {
       double localizationFrequency,
       GaussianRandomGenerator noiseGenerator,
       double noiseMean,
-      double noiseDeviation) {
+      double noiseDeviation,
+      int numberOfAveragingPoses) {
     return new FakeStateEstimatorDecorator(
-        actualStateEstimator, localizationFrequency, noiseGenerator, noiseMean, noiseDeviation);
+        actualStateEstimator,
+        localizationFrequency,
+        noiseGenerator,
+        noiseMean,
+        noiseDeviation,
+        numberOfAveragingPoses);
   }
 
   @Override
@@ -82,10 +97,65 @@ public final class FakeStateEstimatorDecorator implements StateEstimator {
       if (actualCurrentState.isPresent()) {
         final DroneStateStamped state = actualCurrentState.get();
         logGroundTruthPose(state);
-        currentState = addNoiseToState(state);
+        final DroneStateStamped newState = addNoiseToState(state);
+        currentState = getAveragedState(newState);
       } else {
         currentState = null;
       }
+    }
+
+    private DroneStateStamped getAveragedState(DroneStateStamped newState) {
+      final double timeStamp = newState.getTimeStampInSeconds();
+      stateQueue.add(newState);
+      final Pose averagedPose = getAveragedPose(stateQueue);
+      final InertialFrameVelocity averagedVelocity = getAveragedVelocity(stateQueue);
+      return DroneStateStamped.create(averagedPose, averagedVelocity, timeStamp);
+    }
+
+    private InertialFrameVelocity getAveragedVelocity(EvictingQueue<DroneStateStamped> stateQueue) {
+      double linearX = 0;
+      double linearY = 0;
+      double linearZ = 0;
+      double angularZ = 0;
+
+      for (final DroneStateStamped state : stateQueue) {
+        final InertialFrameVelocity velocity = state.inertialFrameVelocity();
+        linearX += velocity.linearX();
+        linearY += velocity.linearY();
+        linearZ += velocity.linearZ();
+        angularZ += velocity.angularZ();
+      }
+
+      final int queueSize = stateQueue.size();
+      return Velocity.builder()
+          .setLinearX(linearX / queueSize)
+          .setLinearY(linearY / queueSize)
+          .setLinearZ(linearZ / queueSize)
+          .setAngularZ(angularZ / queueSize)
+          .build();
+    }
+
+    private Pose getAveragedPose(Collection<DroneStateStamped> stateQueue) {
+      double x = 0;
+      double y = 0;
+      double z = 0;
+      double yaw = 0;
+
+      for (final DroneStateStamped state : stateQueue) {
+        final Pose pose = state.pose();
+        x += pose.x();
+        y += pose.y();
+        z += pose.z();
+        yaw += pose.yaw();
+      }
+
+      final int queueSize = stateQueue.size();
+      return Pose.builder()
+          .setX(x / queueSize)
+          .setY(y / queueSize)
+          .setZ(z / queueSize)
+          .setYaw(yaw / queueSize)
+          .build();
     }
 
     private void logGroundTruthPose(DroneStateStamped state) {

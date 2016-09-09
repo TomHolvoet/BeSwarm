@@ -222,6 +222,8 @@ final class TumExampleFlightFacade {
         parameterTree.getDouble(nodeName + "/localization_noise_deviation");
     final int localizationNoiseSeed =
         parameterTree.getInteger(nodeName + "/localization_noise_seed");
+    final int numberOfAveragedPoses =
+        parameterTree.getInteger(nodeName + "/localization_average_poses");
 
     final GaussianRandomGenerator noiseGenerator =
         new GaussianRandomGenerator(new MersenneTwister(localizationNoiseSeed));
@@ -231,7 +233,8 @@ final class TumExampleFlightFacade {
         localizationFrequency,
         noiseGenerator,
         localizationNoiseMean,
-        localizationNoiseDeviation);
+        localizationNoiseDeviation,
+        numberOfAveragedPoses);
   }
 
   /** Starts flying. */

@@ -19,6 +19,8 @@
     <param name="localization_noise_mean" value="0.0"/>
     <param name="localization_noise_deviation" value="0.5"/>
     <param name="localization_noise_seed" value="123"/>
+    <!--Number of poses to be averaged-->
+    <param name="localization_average_poses" value="1"/>
 
     <!--Parameters for velocity service filter-->
     <!--The values of this param can be: none, min, max, cascade. This corresponding to no filter,
