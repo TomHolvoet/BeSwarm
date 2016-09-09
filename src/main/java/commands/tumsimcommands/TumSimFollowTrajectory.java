@@ -1,7 +1,6 @@
 package commands.tumsimcommands;
 
 import commands.AbstractParrotFollowTrajectory;
-import control.Trajectory4d;
 import control.VelocityController4d;
 import control.localization.StateEstimator;
 import services.Velocity4dService;
@@ -16,7 +15,6 @@ public final class TumSimFollowTrajectory extends AbstractParrotFollowTrajectory
 
   private TumSimFollowTrajectory(
       StateEstimator stateEstimator,
-      Trajectory4d trajectory4d,
       double durationInSeconds,
       double controlRateInSeconds,
       double droneStateLifeDurationInSeconds,
@@ -25,7 +23,6 @@ public final class TumSimFollowTrajectory extends AbstractParrotFollowTrajectory
       Velocity4dService velocity4dService) {
     super(
         stateEstimator,
-        trajectory4d,
         durationInSeconds,
         controlRateInSeconds,
         droneStateLifeDurationInSeconds,
@@ -62,12 +59,11 @@ public final class TumSimFollowTrajectory extends AbstractParrotFollowTrajectory
       checkMissingParameters();
       return new TumSimFollowTrajectory(
           stateEstimator,
-          trajectory4d,
           durationInSeconds,
           controlRateInSeconds,
           droneStateLifeDurationInSeconds,
           timeProvider,
-          createVelocityController4d(),
+          velocityController4d,
           velocity4dService);
     }
   }

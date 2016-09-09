@@ -2,7 +2,6 @@ package commands;
 
 import com.google.common.base.Optional;
 import commands.schedulers.PeriodicTaskRunner;
-import control.Trajectory4d;
 import control.dto.DroneStateStamped;
 import control.localization.StateEstimator;
 import org.slf4j.Logger;
@@ -17,13 +16,8 @@ import time.TimeProvider;
 public abstract class AbstractFollowTrajectory implements Command {
 
   private static final Logger logger = LoggerFactory.getLogger(AbstractFollowTrajectory.class);
-  private static final Logger poseLogger =
-      LoggerFactory.getLogger(AbstractFollowTrajectory.class.getName() + ".poselogger");
-  private static final Logger velocityLogger =
-      LoggerFactory.getLogger(AbstractFollowTrajectory.class.getName() + ".velocitylogger");
 
   private final StateEstimator stateEstimator;
-  private final Trajectory4d trajectory4d;
   private final double durationInSeconds;
   private final double controlRateInSeconds;
   private final double droneStateLifeDurationInSeconds;
@@ -31,13 +25,11 @@ public abstract class AbstractFollowTrajectory implements Command {
 
   protected AbstractFollowTrajectory(
       StateEstimator stateEstimator,
-      Trajectory4d trajectory4d,
       double durationInSeconds,
       double controlRateInSeconds,
       double droneStateLifeDurationInSeconds,
       TimeProvider timeProvider) {
     this.stateEstimator = stateEstimator;
-    this.trajectory4d = trajectory4d;
     this.durationInSeconds = durationInSeconds;
     this.controlRateInSeconds = controlRateInSeconds;
     this.droneStateLifeDurationInSeconds = droneStateLifeDurationInSeconds;
@@ -46,7 +38,7 @@ public abstract class AbstractFollowTrajectory implements Command {
 
   @Override
   public final void execute() {
-    logger.debug("Execute follow trajectory command: {}", trajectory4d);
+    logger.debug("Execute follow trajectory command.");
     final Runnable controlLoop = createControlLoop();
     PeriodicTaskRunner.run(controlLoop, controlRateInSeconds, durationInSeconds);
   }
@@ -84,57 +76,11 @@ public abstract class AbstractFollowTrajectory implements Command {
         final double currentTimeInSeconds =
             timeProvider.getCurrentTimeSeconds() - startTimeInSeconds;
         computeAndSendResponse(currentTimeInSeconds, currentState.get());
-        logDroneState(currentState.get(), currentTimeInSeconds);
       }
     }
 
     protected abstract void computeAndSendResponse(
         double currentTimeInSeconds, DroneStateStamped currentState);
-
-    private void logDroneState(DroneStateStamped currentState, double currentTimeInSeconds) {
-      final double systemTimeInSeconds = timeProvider.getCurrentTimeSeconds();
-      poseLogger.trace(
-          "{} {} {} {} {} {} {} {} {}",
-          systemTimeInSeconds,
-          currentState.pose().x(),
-          currentState.pose().y(),
-          currentState.pose().z(),
-          currentState.pose().yaw(),
-          trajectory4d.getDesiredPositionX(currentTimeInSeconds),
-          trajectory4d.getDesiredPositionY(currentTimeInSeconds),
-          trajectory4d.getDesiredPositionZ(currentTimeInSeconds),
-          trajectory4d.getDesiredAngleZ(currentTimeInSeconds));
-
-      final double deltaTimeInSeconds = 0.1;
-      final double desiredVelocityX =
-          (trajectory4d.getDesiredPositionX(currentTimeInSeconds + deltaTimeInSeconds)
-                  - trajectory4d.getDesiredPositionX(currentTimeInSeconds))
-              / deltaTimeInSeconds;
-      final double desiredVelocityY =
-          (trajectory4d.getDesiredPositionY(currentTimeInSeconds + deltaTimeInSeconds)
-                  - trajectory4d.getDesiredPositionY(currentTimeInSeconds))
-              / deltaTimeInSeconds;
-      final double desiredVelocityZ =
-          (trajectory4d.getDesiredPositionZ(currentTimeInSeconds + deltaTimeInSeconds)
-                  - trajectory4d.getDesiredPositionZ(currentTimeInSeconds))
-              / deltaTimeInSeconds;
-      final double desiredVelocityYaw =
-          (trajectory4d.getDesiredAngleZ(currentTimeInSeconds + deltaTimeInSeconds)
-                  - trajectory4d.getDesiredAngleZ(currentTimeInSeconds))
-              / deltaTimeInSeconds;
-
-      velocityLogger.trace(
-          "{} {} {} {} {} {} {} {} {}",
-          systemTimeInSeconds,
-          currentState.inertialFrameVelocity().linearX(),
-          currentState.inertialFrameVelocity().linearY(),
-          currentState.inertialFrameVelocity().linearZ(),
-          currentState.inertialFrameVelocity().angularZ(),
-          desiredVelocityX,
-          desiredVelocityY,
-          desiredVelocityZ,
-          desiredVelocityYaw);
-    }
 
     private void setCounter(DroneStateStamped currentState) {
       final double currentTimeStamp = currentState.getTimeStampInSeconds();
@@ -153,7 +99,6 @@ public abstract class AbstractFollowTrajectory implements Command {
     private static final double DEFAULT_DRONE_STATE_LIFE_DURATION_IN_SECONDS = 0.1;
 
     protected StateEstimator stateEstimator;
-    protected Trajectory4d trajectory4d;
     protected Double durationInSeconds;
     protected Double controlRateInSeconds;
     protected Double droneStateLifeDurationInSeconds;
@@ -175,18 +120,6 @@ public abstract class AbstractFollowTrajectory implements Command {
      */
     public T withStateEstimator(StateEstimator val) {
       stateEstimator = val;
-      return self();
-    }
-
-    /**
-     * Sets the {@code trajectory4d} and returns a reference to this Builder so that the methods can
-     * be chained together.
-     *
-     * @param val the {@code trajectory4d} to set
-     * @return a reference to this Builder
-     */
-    public T withTrajectory4d(Trajectory4d val) {
-      trajectory4d = val;
       return self();
     }
 

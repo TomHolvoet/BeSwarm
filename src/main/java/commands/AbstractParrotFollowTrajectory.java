@@ -1,18 +1,11 @@
 package commands;
 
-import control.DefaultPidParameters;
-import control.PidCoFilter4d;
-import control.PidController4d;
-import control.PidParameters;
-import control.Trajectory4d;
 import control.VelocityController4d;
 import control.dto.DroneStateStamped;
 import control.dto.InertialFrameVelocity;
 import control.localization.StateEstimator;
 import services.Velocity4dService;
 import time.TimeProvider;
-
-import javax.annotation.Nullable;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -28,7 +21,6 @@ public abstract class AbstractParrotFollowTrajectory extends AbstractFollowTraje
 
   protected AbstractParrotFollowTrajectory(
       StateEstimator stateEstimator,
-      Trajectory4d trajectory4d,
       double durationInSeconds,
       double controlRateInSeconds,
       double droneStateLifeDurationInSeconds,
@@ -37,7 +29,6 @@ public abstract class AbstractParrotFollowTrajectory extends AbstractFollowTraje
       Velocity4dService velocity4dService) {
     super(
         stateEstimator,
-        trajectory4d,
         durationInSeconds,
         controlRateInSeconds,
         droneStateLifeDurationInSeconds,
@@ -70,65 +61,20 @@ public abstract class AbstractParrotFollowTrajectory extends AbstractFollowTraje
   public abstract static class ParrotBuilder<T extends ParrotBuilder<T>>
       extends AbstractFollowTrajectory.AbstractBuilder<T> {
 
-    protected PidParameters pidLinearXParameters;
-    protected PidParameters pidLinearYParameters;
-    protected PidParameters pidLinearZParameters;
-    protected PidParameters pidAngularZParameters;
+    protected VelocityController4d velocityController4d;
     protected Velocity4dService velocity4dService;
-    @Nullable protected Double coFilterTimeConstant;
 
-    protected ParrotBuilder() {
-      pidLinearXParameters = DefaultPidParameters.LINEAR_X.getParameters();
-      pidLinearYParameters = DefaultPidParameters.LINEAR_Y.getParameters();
-      pidLinearZParameters = DefaultPidParameters.LINEAR_Z.getParameters();
-      pidAngularZParameters = DefaultPidParameters.ANGULAR_Z.getParameters();
-    }
+    protected ParrotBuilder() {}
 
     /**
-     * Sets the {@code pidLinearXParameters} and returns a reference to this Builder so that the
+     * Sets the {@code velocityController4d} and returns a reference to this Builder so that the
      * methods can be chained together.
      *
-     * @param val the {@code pidLinearXParameters} to set
+     * @param val the {@code velocityController4d} to set
      * @return a reference to this Builder
      */
-    public T withPidLinearXParameters(PidParameters val) {
-      pidLinearXParameters = val;
-      return self();
-    }
-
-    /**
-     * Sets the {@code pidLinearYParameters} and returns a reference to this Builder so that the
-     * methods can be chained together.
-     *
-     * @param val the {@code pidLinearYParameters} to set
-     * @return a reference to this Builder
-     */
-    public T withPidLinearYParameters(PidParameters val) {
-      pidLinearYParameters = val;
-      return self();
-    }
-
-    /**
-     * Sets the {@code pidLinearZParameters} and returns a reference to this Builder so that the
-     * methods can be chained together.
-     *
-     * @param val the {@code pidLinearZParameters} to set
-     * @return a reference to this Builder
-     */
-    public T withPidLinearZParameters(PidParameters val) {
-      pidLinearZParameters = val;
-      return self();
-    }
-
-    /**
-     * Sets the {@code pidAngularZParameters} and returns a reference to this Builder so that the
-     * methods can be chained together.
-     *
-     * @param val the {@code pidAngularZParameters} to set
-     * @return a reference to this Builder
-     */
-    public T withPidAngularZParameters(PidParameters val) {
-      pidAngularZParameters = val;
+    public T withVelocityController4d(VelocityController4d val) {
+      velocityController4d = val;
       return self();
     }
 
@@ -144,46 +90,14 @@ public abstract class AbstractParrotFollowTrajectory extends AbstractFollowTraje
       return self();
     }
 
-    /**
-     * Sets the {@code coFilterTimeConstant} and returns a reference to this Builder so that the
-     * methods can be chained together.
-     *
-     * @param val the {@code coFilterTimeConstant} to set
-     * @return a reference to this Builder
-     */
-    public T withCoFilterTimeConstant(double val) {
-      coFilterTimeConstant = val;
-      return self();
-    }
-
     protected void checkMissingParameters() {
-      checkNotNull(trajectory4d);
       checkNotNull(durationInSeconds);
-      checkNotNull(pidLinearXParameters);
-      checkNotNull(pidLinearYParameters);
-      checkNotNull(pidLinearZParameters);
-      checkNotNull(pidAngularZParameters);
       checkNotNull(controlRateInSeconds);
       checkNotNull(droneStateLifeDurationInSeconds);
       checkNotNull(stateEstimator);
+      checkNotNull(velocityController4d);
       checkNotNull(velocity4dService);
       checkNotNull(timeProvider);
-    }
-
-    protected VelocityController4d createVelocityController4d() {
-      final VelocityController4d pidController =
-          PidController4d.builder()
-              .trajectory4d(trajectory4d)
-              .linearXParameters(pidLinearXParameters)
-              .linearYParameters(pidLinearYParameters)
-              .linearZParameters(pidLinearZParameters)
-              .angularZParameters(pidAngularZParameters)
-              .build();
-      if (coFilterTimeConstant == null) {
-        return pidController;
-      } else {
-        return PidCoFilter4d.create(pidController, coFilterTimeConstant);
-      }
     }
   }
 }

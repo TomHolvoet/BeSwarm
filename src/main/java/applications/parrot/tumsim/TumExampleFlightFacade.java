@@ -11,7 +11,10 @@ import commands.tumsimcommands.TumSimHover;
 import commands.tumsimcommands.TumSimLand;
 import commands.tumsimcommands.TumSimTakeoff;
 import control.FiniteTrajectory4d;
+import control.PidCoFilter4d;
+import control.PidController4d;
 import control.PidParameters;
+import control.VelocityController4d;
 import control.dto.DroneStateStamped;
 import control.localization.FakeStateEstimatorDecorator;
 import control.localization.GazeboModelStateEstimator;
@@ -108,26 +111,31 @@ final class TumExampleFlightFacade {
         TumSimHover.create(5, RosTime.create(connectedNode), velocity4dService, stateEstimator);
     commands.add(hoverFiveSecond);
 
-    final TumSimFollowTrajectory.Builder followTrajectoryBuilder =
+    VelocityController4d velocityController4d =
+        PidController4d.builder()
+            .trajectory4d(trajectory4d)
+            .linearXParameters(pidLinearX)
+            .linearYParameters(pidLinearY)
+            .linearZParameters(pidLinearZ)
+            .angularZParameters(pidAngularZ)
+            .build();
+
+    if (parameterTree.getBoolean(nodeName + "/pid_co_filter")) {
+      logger.info("Run with pid filter.");
+      final double filterTimeConstant =
+          parameterTree.getDouble(nodeName + "/pid_co_filter_time_constant");
+      velocityController4d = PidCoFilter4d.create(velocityController4d, filterTimeConstant);
+    }
+
+    final Command followTrajectory =
         TumSimFollowTrajectory.builder()
             .withVelocity4dService(velocity4dService)
             .withStateEstimator(stateEstimator)
             .withTimeProvider(RosTime.create(connectedNode))
-            .withTrajectory4d(trajectory4d)
             .withDurationInSeconds(trajectoryDurationInSeconds)
-            .withPidLinearXParameters(pidLinearX)
-            .withPidLinearYParameters(pidLinearY)
-            .withPidLinearZParameters(pidLinearZ)
-            .withPidAngularZParameters(pidAngularZ)
-            .withControlRateInSeconds(getControlRateInSeconds(nodeName, parameterTree));
-
-    if (parameterTree.getBoolean(nodeName + "/pid_co_filter")) {
-      logger.info("Run with pid filter.");
-      followTrajectoryBuilder.withCoFilterTimeConstant(
-          parameterTree.getDouble(nodeName + "/pid_co_filter_time_constant"));
-    }
-
-    final Command followTrajectory = followTrajectoryBuilder.build();
+            .withVelocityController4d(velocityController4d)
+            .withControlRateInSeconds(getControlRateInSeconds(nodeName, parameterTree))
+            .build();
 
     final Command waitForLocalizationThenFollowTrajectory =
         WaitForLocalizationDecorator.create(stateEstimator, followTrajectory);

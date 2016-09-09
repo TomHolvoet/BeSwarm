@@ -11,7 +11,9 @@ import commands.bebopcommands.BebopHover;
 import commands.bebopcommands.BebopLand;
 import commands.bebopcommands.BebopTakeOff;
 import control.FiniteTrajectory4d;
+import control.PidController4d;
 import control.PidParameters;
+import control.VelocityController4d;
 import control.localization.BebopStateEstimatorWithPoseStampedAndOdom;
 import control.localization.StateEstimator;
 import geometry_msgs.PoseStamped;
@@ -179,17 +181,22 @@ public abstract class AbstractOneBebopFlight extends AbstractNodeMain implements
         BebopHover.create(5, RosTime.create(connectedNode), velocity4dService, stateEstimator);
     commands.add(hoverFiveSeconds);
 
+    final VelocityController4d velocityController4d =
+        PidController4d.builder()
+            .trajectory4d(trajectory4d)
+            .linearXParameters(pidLinearX)
+            .linearYParameters(pidLinearY)
+            .linearZParameters(pidLinearZ)
+            .angularZParameters(pidAngularZ)
+            .build();
+
     final Command followTrajectory =
         BebopFollowTrajectory.builder()
             .withVelocity4dService(velocity4dService)
             .withStateEstimator(stateEstimator)
             .withTimeProvider(RosTime.create(connectedNode))
-            .withTrajectory4d(trajectory4d)
             .withDurationInSeconds(trajectory4d.getTrajectoryDuration())
-            .withPidLinearXParameters(pidLinearX)
-            .withPidLinearYParameters(pidLinearY)
-            .withPidLinearZParameters(pidLinearZ)
-            .withPidAngularZParameters(pidAngularZ)
+            .withVelocityController4d(velocityController4d)
             .withControlRateInSeconds(0.01)
             .build();
 
