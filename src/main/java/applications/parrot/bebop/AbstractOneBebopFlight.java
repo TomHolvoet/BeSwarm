@@ -11,7 +11,7 @@ import commands.bebopcommands.BebopHover;
 import commands.bebopcommands.BebopLand;
 import commands.bebopcommands.BebopTakeOff;
 import control.FiniteTrajectory4d;
-import control.PidController4d;
+import control.DroneVelocityController;
 import control.PidParameters;
 import control.VelocityController4d;
 import control.VelocityController4dLogger;
@@ -183,12 +183,12 @@ public abstract class AbstractOneBebopFlight extends AbstractNodeMain implements
     commands.add(hoverFiveSeconds);
 
     VelocityController4d velocityController4d =
-        PidController4d.builder()
-            .trajectory4d(trajectory4d)
-            .linearXParameters(pidLinearX)
-            .linearYParameters(pidLinearY)
-            .linearZParameters(pidLinearZ)
-            .angularZParameters(pidAngularZ)
+        DroneVelocityController.pidBuilder()
+            .withTrajectory4d(trajectory4d)
+            .withLinearXParameters(pidLinearX)
+            .withLinearYParameters(pidLinearY)
+            .withLinearZParameters(pidLinearZ)
+            .withAngularZParameters(pidAngularZ)
             .build();
 
     velocityController4d =

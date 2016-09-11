@@ -9,7 +9,7 @@ import commands.bebopcommands.BebopHover;
 import commands.bebopcommands.BebopLand;
 import commands.bebopcommands.BebopTakeOff;
 import control.FiniteTrajectory4d;
-import control.PidController4d;
+import control.DroneVelocityController;
 import control.PidParameters;
 import control.VelocityController4d;
 import control.VelocityController4dLogger;
@@ -196,12 +196,12 @@ final class BebopFlight {
     commands.add(hoverFiveSecond);
 
     VelocityController4d velocityController4d =
-        PidController4d.builder()
-            .trajectory4d(trajectory)
-            .linearXParameters(pidLinearX)
-            .linearYParameters(pidLinearY)
-            .linearZParameters(pidLinearZ)
-            .angularZParameters(pidAngularZ)
+        DroneVelocityController.pidBuilder()
+            .withTrajectory4d(trajectory)
+            .withLinearXParameters(pidLinearX)
+            .withLinearYParameters(pidLinearY)
+            .withLinearZParameters(pidLinearZ)
+            .withAngularZParameters(pidAngularZ)
             .build();
 
     velocityController4d =

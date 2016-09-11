@@ -13,7 +13,7 @@ import commands.tumsimcommands.TumSimTakeoff;
 import control.VelocityController4dLogger;
 import control.FiniteTrajectory4d;
 import control.PidCoFilter4d;
-import control.PidController4d;
+import control.DroneVelocityController;
 import control.PidParameters;
 import control.VelocityController4d;
 import control.dto.DroneStateStamped;
@@ -113,12 +113,12 @@ final class TumExampleFlightFacade {
     commands.add(hoverFiveSecond);
 
     VelocityController4d velocityController4d =
-        PidController4d.builder()
-            .trajectory4d(trajectory4d)
-            .linearXParameters(pidLinearX)
-            .linearYParameters(pidLinearY)
-            .linearZParameters(pidLinearZ)
-            .angularZParameters(pidAngularZ)
+        DroneVelocityController.pidBuilder()
+            .withTrajectory4d(trajectory4d)
+            .withLinearXParameters(pidLinearX)
+            .withLinearYParameters(pidLinearY)
+            .withLinearZParameters(pidLinearZ)
+            .withAngularZParameters(pidAngularZ)
             .build();
 
     if (parameterTree.getBoolean(nodeName + "/pid_co_filter")) {
