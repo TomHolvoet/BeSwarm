@@ -1,0 +1,101 @@
+<configuration>
+  <timestamp key="bySecond" datePattern="yyyy-MM-dd-HH-mm-ss"/>
+  <property name="DIR" value="${HOME}/logs/${bySecond}"/>
+
+  <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>%-4relative [%thread] %-5level %logger{35} - %msg %n</pattern>
+    </encoder>
+  </appender>
+
+  <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+    <file>${DIR}/beswarm.log</file>
+    <encoder>
+      <pattern>%-4relative [%thread] %-5level %logger{35} - %msg%n</pattern>
+    </encoder>
+  </appender>
+
+  <appender name="FILE_DRONE_BODY_VELOCITY" class="ch.qos.logback.core.FileAppender">
+    <file>${DIR}/drone_body_velocity.log</file>
+    <encoder>
+      <pattern>%msg %n</pattern>
+    </encoder>
+  </appender>
+
+  <appender name="FILE_RECEIVED_MESSAGES" class="ch.qos.logback.core.FileAppender">
+    <file>${DIR}/received_messages.log</file>
+    <encoder>
+      <pattern>%msg %n</pattern>
+    </encoder>
+  </appender>
+
+  <appender name="FILE_ARMARKER_VELOCITY" class="ch.qos.logback.core.FileAppender">
+    <file>${DIR}/armarkervelocity.log</file>
+    <encoder>
+      <pattern>%msg %n</pattern>
+    </encoder>
+  </appender>
+
+  <appender name="FILE_ODOM_VELOCITY" class="ch.qos.logback.core.FileAppender">
+    <file>${DIR}/odomvelocity.log</file>
+    <encoder>
+      <pattern>%msg %n</pattern>
+    </encoder>
+  </appender>
+
+  <appender name="FILE_GROUND_TRUTH_POSE" class="ch.qos.logback.core.FileAppender">
+    <file>${DIR}/groundtruthpose.log</file>
+    <encoder>
+      <pattern>%msg %n</pattern>
+    </encoder>
+  </appender>
+
+  <appender name="SIFT" class="ch.qos.logback.classic.sift.SiftingAppender">
+    <discriminator>
+      <key>loggerName</key>
+      <defaultValue>unknown</defaultValue>
+    </discriminator>
+    <sift>
+      <appender name="FILE-${userid}" class="ch.qos.logback.core.FileAppender">
+        <file>${DIR}/${loggerName}.log</file>
+        <layout class="ch.qos.logback.classic.PatternLayout">
+          <pattern>%msg %n</pattern>
+        </layout>
+      </appender>
+    </sift>
+  </appender>
+
+  <root level="DEBUG">
+    <appender-ref ref="STDOUT"/>
+    <appender-ref ref="FILE"/>
+  </root>
+
+  <logger name="services.parrot.ParrotVelocity4dService.vel" level="TRACE" additivity="false">
+    <appender-ref ref="FILE_DRONE_BODY_VELOCITY"/>
+  </logger>
+
+  <logger name="services.ros_subscribers.MessagesSubscriberService" level="TRACE"
+          additivity="false">
+    <appender-ref ref="FILE_RECEIVED_MESSAGES"/>
+  </logger>
+
+  <logger name="control.VelocityController4dLogger" level="TRACE" additivity="false">
+    <appender-ref ref="FILE_SIFT"/>
+  </logger>
+
+  <logger name="operationaltesting.StateEstimatorOT.velocity.armarker" level="TRACE"
+          additivity="false">
+    <appender-ref ref="FILE_ARMARKER_VELOCITY"/>
+  </logger>
+
+  <logger name="operationaltesting.StateEstimatorOT.velocity.odom" level="TRACE"
+          additivity="false">
+    <appender-ref ref="FILE_ODOM_VELOCITY"/>
+  </logger>
+
+  <logger name="control.localization.FakeStateEstimatorDecorator" level="TRACE"
+          additivity="false">
+    <appender-ref ref="FILE_GROUND_TRUTH_POSE"/>
+  </logger>
+
+</configuration>
