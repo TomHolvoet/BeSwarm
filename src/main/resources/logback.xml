@@ -50,7 +50,7 @@
     </encoder>
   </appender>
 
-  <appender name="SIFT" class="ch.qos.logback.classic.sift.SiftingAppender">
+  <appender name="FILE_SIFT" class="ch.qos.logback.classic.sift.SiftingAppender">
     <discriminator>
       <key>loggerName</key>
       <defaultValue>unknown</defaultValue>
