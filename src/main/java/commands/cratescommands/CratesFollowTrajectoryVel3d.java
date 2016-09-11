@@ -1,7 +1,7 @@
 package commands.cratescommands;
 
 import commands.AbstractFollowTrajectory;
-import control.PidController1d;
+import control.LinearPidController1d;
 import control.Trajectory1d;
 import control.dto.DroneStateStamped;
 import control.localization.StateEstimator;
@@ -20,9 +20,9 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public final class CratesFollowTrajectoryVel3d extends AbstractFollowTrajectory {
 
   private final Velocity3dService velocity3dService;
-  private final PidController1d pidControllerLinearX;
-  private final PidController1d pidControllerLinearY;
-  private final PidController1d pidControllerLinearZ;
+  private final LinearPidController1d pidControllerLinearX;
+  private final LinearPidController1d pidControllerLinearY;
+  private final LinearPidController1d pidControllerLinearZ;
   private final Trajectory1d trajectoryAngularZ;
 
   private CratesFollowTrajectoryVel3d(
@@ -32,9 +32,9 @@ public final class CratesFollowTrajectoryVel3d extends AbstractFollowTrajectory 
       double droneStateLifeDurationInSeconds,
       TimeProvider timeProvider,
       Velocity3dService velocity3dService,
-      PidController1d pidControllerLinearX,
-      PidController1d pidControllerLinearY,
-      PidController1d pidControllerLinearZ,
+      LinearPidController1d pidControllerLinearX,
+      LinearPidController1d pidControllerLinearY,
+      LinearPidController1d pidControllerLinearZ,
       Trajectory1d trajectoryAngularZ) {
     super(
         stateEstimator,
@@ -71,17 +71,17 @@ public final class CratesFollowTrajectoryVel3d extends AbstractFollowTrajectory 
     protected void computeAndSendResponse(
         double currentTimeInSeconds, DroneStateStamped currentState) {
       final double nextVelocityX =
-          pidControllerLinearX.compute(
+          pidControllerLinearX.computeNextResponse(
               currentState.pose().x(),
               currentState.inertialFrameVelocity().linearX(),
               currentTimeInSeconds);
       final double nextVelocityY =
-          pidControllerLinearY.compute(
+          pidControllerLinearY.computeNextResponse(
               currentState.pose().y(),
               currentState.inertialFrameVelocity().linearY(),
               currentTimeInSeconds);
       final double nextVelocityZ =
-          pidControllerLinearZ.compute(
+          pidControllerLinearZ.computeNextResponse(
               currentState.pose().z(),
               currentState.inertialFrameVelocity().linearZ(),
               currentTimeInSeconds);
@@ -97,9 +97,9 @@ public final class CratesFollowTrajectoryVel3d extends AbstractFollowTrajectory 
   /** {@code CratesFollowTrajectoryVel3d} builder static inner class. */
   public static final class Builder extends AbstractBuilder<Builder> {
     private Velocity3dService velocity3dService;
-    private PidController1d pidControllerLinearX;
-    private PidController1d pidControllerLinearY;
-    private PidController1d pidControllerLinearZ;
+    private LinearPidController1d pidControllerLinearX;
+    private LinearPidController1d pidControllerLinearY;
+    private LinearPidController1d pidControllerLinearZ;
     private Trajectory1d trajectoryAngularZ;
 
     private Builder() {}
@@ -128,7 +128,7 @@ public final class CratesFollowTrajectoryVel3d extends AbstractFollowTrajectory 
      * @param val the {@code pidControllerLinearX} to set
      * @return a reference to this Builder
      */
-    public Builder withPidControllerLinearX(PidController1d val) {
+    public Builder withPidControllerLinearX(LinearPidController1d val) {
       pidControllerLinearX = val;
       return this;
     }
@@ -140,7 +140,7 @@ public final class CratesFollowTrajectoryVel3d extends AbstractFollowTrajectory 
      * @param val the {@code pidControllerLinearY} to set
      * @return a reference to this Builder
      */
-    public Builder withPidControllerLinearY(PidController1d val) {
+    public Builder withPidControllerLinearY(LinearPidController1d val) {
       pidControllerLinearY = val;
       return this;
     }
@@ -152,7 +152,7 @@ public final class CratesFollowTrajectoryVel3d extends AbstractFollowTrajectory 
      * @param val the {@code pidControllerLinearZ} to set
      * @return a reference to this Builder
      */
-    public Builder withPidControllerLinearZ(PidController1d val) {
+    public Builder withPidControllerLinearZ(LinearPidController1d val) {
       pidControllerLinearZ = val;
       return this;
     }

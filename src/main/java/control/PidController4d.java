@@ -4,32 +4,29 @@ import applications.trajectory.TrajectoryUtils;
 import control.dto.InertialFrameVelocity;
 import control.dto.Pose;
 import control.dto.Velocity;
-import utils.math.EulerAngle;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * A four-dimensional PID controller for the drone. It is the composition of 4 one-dimensional PID
- * controllers {@link PidController1d} (three controllers for the three linear velocities, one
+ * controllers {@link LinearPidController1d} (three controllers for the three linear velocities, one
  * controller for the angular velocity).
  *
  * @author Hoang Tung Dinh
  */
 public final class PidController4d implements VelocityController4d {
 
-  private final PidController1d pidLinearX;
-  private final PidController1d pidLinearY;
-  private final PidController1d pidLinearZ;
-  private final PidController1d pidAngularZ;
-  private final Trajectory1d angularTrajectoryZ;
+  private final VelocityController1d pidLinearX;
+  private final VelocityController1d pidLinearY;
+  private final VelocityController1d pidLinearZ;
+  private final VelocityController1d pidAngularZ;
 
   private PidController4d(Builder builder) {
-
-    angularTrajectoryZ = builder.angularTrajectoryZ;
-    pidLinearX = PidController1d.create(builder.linearXParameters, builder.linearTrajectoryX);
-    pidLinearY = PidController1d.create(builder.linearYParameters, builder.linearTrajectoryY);
-    pidLinearZ = PidController1d.create(builder.linearZParameters, builder.linearTrajectoryZ);
-    pidAngularZ = PidController1d.create(builder.angularZParameters, angularTrajectoryZ);
+    pidLinearX = LinearPidController1d.create(builder.linearXParameters, builder.linearTrajectoryX);
+    pidLinearY = LinearPidController1d.create(builder.linearYParameters, builder.linearTrajectoryY);
+    pidLinearZ = LinearPidController1d.create(builder.linearZParameters, builder.linearTrajectoryZ);
+    pidAngularZ =
+        AngularPidController1d.create(builder.angularZParameters, builder.angularTrajectoryZ);
   }
 
   /**
@@ -54,17 +51,17 @@ public final class PidController4d implements VelocityController4d {
   public InertialFrameVelocity computeNextResponse(
       Pose currentPose, InertialFrameVelocity currentVelocity, double currentTimeInSeconds) {
     final double linearX =
-        pidLinearX.compute(currentPose.x(), currentVelocity.linearX(), currentTimeInSeconds);
+        pidLinearX.computeNextResponse(
+            currentPose.x(), currentVelocity.linearX(), currentTimeInSeconds);
     final double linearY =
-        pidLinearY.compute(currentPose.y(), currentVelocity.linearY(), currentTimeInSeconds);
+        pidLinearY.computeNextResponse(
+            currentPose.y(), currentVelocity.linearY(), currentTimeInSeconds);
     final double linearZ =
-        pidLinearZ.compute(currentPose.z(), currentVelocity.linearZ(), currentTimeInSeconds);
-
-    final double desiredYaw = angularTrajectoryZ.getDesiredPosition(currentTimeInSeconds);
-    final double angularError = EulerAngle.computeAngleDistance(currentPose.yaw(), desiredYaw);
-    final double adaptedCurrentYaw = desiredYaw - angularError;
+        pidLinearZ.computeNextResponse(
+            currentPose.z(), currentVelocity.linearZ(), currentTimeInSeconds);
     final double angularZ =
-        pidAngularZ.compute(adaptedCurrentYaw, currentVelocity.angularZ(), currentTimeInSeconds);
+        pidAngularZ.computeNextResponse(
+            currentPose.yaw(), currentVelocity.angularZ(), currentTimeInSeconds);
 
     return Velocity.builder()
         .setLinearX(linearX)
