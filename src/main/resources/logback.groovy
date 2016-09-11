@@ -15,21 +15,8 @@ appender("FILE", FileAppender) {
     }
 }
 
-appender("FILE_DRONE_POSE", FileAppender) {
-    file = "${DIR}/dronepose.log"
-    encoder(PatternLayoutEncoder) {
-        pattern = "%msg %n"
-    }
-}
-
 appender("FILE_DRONE_BODY_VELOCITY", FileAppender) {
     file = "${DIR}/drone_body_velocity.log"
-    encoder(PatternLayoutEncoder) {
-        pattern = "%msg %n"
-    }
-}
-appender("FILE_DRONE_VELOCITY", FileAppender) {
-    file = "${DIR}/dronevelocity.log"
     encoder(PatternLayoutEncoder) {
         pattern = "%msg %n"
     }
@@ -42,13 +29,27 @@ appender("FILE_RECEIVED_MESSAGES", FileAppender) {
     }
 }
 
+appender("FILE_SIFT", GSiftingAppender) {
+    discriminator(MDCBasedDiscriminator) {
+        key = "loggerName"
+        defaultValue = "unknown"
+    }
+    sift {
+        appender("FILE-${loggerName}", FileAppender) {
+            file = "${DIR}/${loggerName}.log"
+            encoder(PatternLayoutEncoder) {
+                pattern = "%msg %n"
+            }
+        }
+    }
+}
+
 root(DEBUG, ["STDOUT", "FILE"])
-logger("commands.AbstractFollowTrajectory.poselogger", TRACE, ["FILE_DRONE_POSE"], false)
-logger("commands.AbstractFollowTrajectory.velocitylogger", TRACE, ["FILE_DRONE_VELOCITY"], false)
 logger("services.parrot.ParrotVelocity4dService.vel", TRACE, ["FILE_DRONE_BODY_VELOCITY"], false)
 logger("services.ros_subscribers.MessagesSubscriberService", TRACE, ["FILE_RECEIVED_MESSAGES"], false)
+logger("control.VelocityController4dLogger", TRACE, ["FILE_SIFT"], false)
 
-// for operational tests
+// ----------------- for operational tests -----------------
 appender("FILE_ARMARKER_VELOCITY", FileAppender) {
     file = "${DIR}/armarkervelocity.log"
     encoder(PatternLayoutEncoder) {
@@ -67,7 +68,7 @@ appender("FILE_ODOM_VELOCITY", FileAppender) {
 logger("operationaltesting.StateEstimatorOT.velocity.odom", TRACE,
         ["FILE_ODOM_VELOCITY"], false)
 
-// for simulation
+// ----------------- for simulation -----------------
 appender("FILE_GROUND_TRUTH_POSE", FileAppender) {
     file = "${DIR}/groundtruthpose.log"
     encoder(PatternLayoutEncoder) {

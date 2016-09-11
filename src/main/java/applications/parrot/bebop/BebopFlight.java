@@ -12,6 +12,7 @@ import control.FiniteTrajectory4d;
 import control.PidController4d;
 import control.PidParameters;
 import control.VelocityController4d;
+import control.VelocityController4dLogger;
 import control.localization.BebopStateEstimatorWithPoseStampedAndOdom;
 import control.localization.StateEstimator;
 import geometry_msgs.PoseStamped;
@@ -142,7 +143,8 @@ final class BebopFlight {
             takeOffService,
             resetService,
             stateEstimator,
-            trajectory);
+            trajectory,
+            droneName);
 
     final Task emergencyTask = createEmergencyTask(landService, flyingStateService);
 
@@ -181,7 +183,8 @@ final class BebopFlight {
       TakeOffService takeOffService,
       ResetService resetService,
       StateEstimator stateEstimator,
-      FiniteTrajectory4d trajectory) {
+      FiniteTrajectory4d trajectory,
+      String droneName) {
 
     final Collection<Command> commands = new ArrayList<>();
 
@@ -192,7 +195,7 @@ final class BebopFlight {
         BebopHover.create(5, RosTime.create(connectedNode), velocity4dService, stateEstimator);
     commands.add(hoverFiveSecond);
 
-    final VelocityController4d velocityController4d =
+    VelocityController4d velocityController4d =
         PidController4d.builder()
             .trajectory4d(trajectory)
             .linearXParameters(pidLinearX)
@@ -200,6 +203,10 @@ final class BebopFlight {
             .linearZParameters(pidLinearZ)
             .angularZParameters(pidAngularZ)
             .build();
+
+    velocityController4d =
+        VelocityController4dLogger.create(
+            velocityController4d, trajectory, RosTime.create(connectedNode), droneName);
 
     final Command followTrajectory =
         BebopFollowTrajectory.builder()

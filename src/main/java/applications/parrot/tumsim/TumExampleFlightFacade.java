@@ -10,6 +10,7 @@ import commands.tumsimcommands.TumSimFollowTrajectory;
 import commands.tumsimcommands.TumSimHover;
 import commands.tumsimcommands.TumSimLand;
 import commands.tumsimcommands.TumSimTakeoff;
+import control.VelocityController4dLogger;
 import control.FiniteTrajectory4d;
 import control.PidCoFilter4d;
 import control.PidController4d;
@@ -126,6 +127,10 @@ final class TumExampleFlightFacade {
           parameterTree.getDouble(nodeName + "/pid_co_filter_time_constant");
       velocityController4d = PidCoFilter4d.create(velocityController4d, filterTimeConstant);
     }
+
+    velocityController4d =
+        VelocityController4dLogger.create(
+            velocityController4d, trajectory4d, RosTime.create(connectedNode), "drone");
 
     final Command followTrajectory =
         TumSimFollowTrajectory.builder()

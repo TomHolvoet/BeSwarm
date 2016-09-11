@@ -15,7 +15,7 @@ public final class Transformations {
   private Transformations() {}
 
   /**
-   * Compute euler angle from quarternion angle. The resulting angles are always in range [-pi, pi]
+   * Compute euler angle from quaternion angle. The resulting angles are always in range [-pi, pi]
    *
    * @param quaternion the angle in quaternion representation
    * @return the angle in euler representation.
