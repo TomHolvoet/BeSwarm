@@ -1,0 +1,11 @@
+<launch>
+  <!--Launch the java node. The main class must extend TumExampleFlightFacade.-->
+  <node pkg="agentwise_bebop" type="BeSwarm" name="BeSwarm"
+        args="operationaltesting.PidCpuUsageOT" output="screen">
+
+    <param name="number_of_controllers" value="8"/>
+    <param name="control_frequency" value="50.0"/>
+    <param name="duration_in_seconds" value="120.0"/>
+  </node>
+
+</launch>
