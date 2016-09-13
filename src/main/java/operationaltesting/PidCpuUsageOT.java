@@ -135,6 +135,7 @@ public final class PidCpuUsageOT extends AbstractNodeMain {
     private final TimeProvider timeProvider;
     private final VelocityController4d velocityController;
     private final String controllerName;
+    private long lastTimeInNanoSecs = -1;
 
     private ControllerTimeLogger(
         TimeProvider timeProvider, VelocityController4d velocityController, String controllerName) {
@@ -154,7 +155,14 @@ public final class PidCpuUsageOT extends AbstractNodeMain {
       final InertialFrameVelocity nextVelocity =
           velocityController.computeNextResponse(
               currentPose, currentVelocity, currentTimeInSeconds);
-      logger.trace("{} {}", controllerName, timeProvider.getCurrentTimeSeconds());
+      final long currentTimeInNanoSecs = timeProvider.getCurrentTimeNanoSeconds();
+      if (lastTimeInNanoSecs == -1) {
+        lastTimeInNanoSecs = currentTimeInNanoSecs;
+      } else {
+        final long durationInNanoSecs = currentTimeInNanoSecs - lastTimeInNanoSecs;
+        logger.trace("{} {}", controllerName, durationInNanoSecs);
+        lastTimeInNanoSecs = currentTimeInNanoSecs;
+      }
       return nextVelocity;
     }
   }
