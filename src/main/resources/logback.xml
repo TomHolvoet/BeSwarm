@@ -65,6 +65,13 @@
     </sift>
   </appender>
 
+  <appender name="FILE_PID_TIME" class="ch.qos.logback.core.FileAppender">
+    <file>${DIR}/pidtime.log</file>
+    <encoder>
+      <pattern>%msg %n</pattern>
+    </encoder>
+  </appender>
+
   <root level="DEBUG">
     <appender-ref ref="STDOUT"/>
     <appender-ref ref="FILE"/>
@@ -96,6 +103,11 @@
   <logger name="control.localization.FakeStateEstimatorDecorator" level="TRACE"
           additivity="false">
     <appender-ref ref="FILE_GROUND_TRUTH_POSE"/>
+  </logger>
+
+  <logger name="operationaltesting.PidCpuUsageOT" level="TRACE"
+          additivity="false">
+    <appender-ref ref="FILE_PID_TIME"/>
   </logger>
 
 </configuration>
