@@ -3,8 +3,8 @@ package applications.trajectory;
 import control.Trajectory1d;
 import org.junit.Test;
 
-import static applications.trajectory.TestUtils.verifyPositionFrequencyRadiusRelation;
 import static applications.trajectory.TestUtils.testSpeedBounds;
+import static applications.trajectory.TestUtils.verifyPositionFrequencyRadiusRelation;
 import static applications.trajectory.TestUtils.verifyVelocityFrequencyRadiusRelation;
 
 /** @author Kristof Coninx <kristof.coninx AT cs.kuleuven.be> */

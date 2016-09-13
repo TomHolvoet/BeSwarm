@@ -27,39 +27,38 @@ import static org.junit.Assert.fail;
  */
 @RunWith(Parameterized.class)
 public class MultiTrajectorySimulatorExampleTests {
-    private static final String PACKAGE_FQN = "applications.parrot.tumsim.multidrone"; //TODO
-    // decide.
-    private static final Class TEST_PARENT = AbstractMultiDroneExample.class;
+  private static final String PACKAGE_FQN = "applications.parrot.tumsim.multidrone"; //TODO
+  // decide.
+  private static final Class TEST_PARENT = AbstractMultiDroneExample.class;
 
-    private MultiTrajectoryServer server;
+  private MultiTrajectoryServer server;
 
-    public MultiTrajectorySimulatorExampleTests(Class cl) {
-        try {
-            this.server = (MultiTrajectoryServer) cl.getDeclaredConstructor().newInstance();
-        } catch (Exception e) {
-            fail(
-                    "Instantiation with default constructor should be possible for "
-                            + "TumSimulatorExamples");
-        }
+  public MultiTrajectorySimulatorExampleTests(Class cl) {
+    try {
+      this.server = (MultiTrajectoryServer) cl.getDeclaredConstructor().newInstance();
+    } catch (Exception e) {
+      fail(
+          "Instantiation with default constructor should be possible for "
+              + "TumSimulatorExamples");
     }
+  }
 
-    @Parameterized.Parameters
-    public static Collection<? extends Class> getData() {
-        Reflections reflections = new Reflections(PACKAGE_FQN);
-        return reflections.getSubTypesOf(TEST_PARENT);
-    }
+  @Parameterized.Parameters
+  public static Collection<? extends Class> getData() {
+    Reflections reflections = new Reflections(PACKAGE_FQN);
+    return reflections.getSubTypesOf(TEST_PARENT);
+  }
 
-    @Test
-    public void testTrajectoryInitialization() {
-        LoggerFactory.getLogger(MultiTrajectorySimulatorExampleTests.class)
-                .info(
-                        "Running example initialization test for instances of " + server.getClass()
-                                .getName());
-        List<TrajectoryServer> allDifferentTrajectories = server.getAllDifferentTrajectories();
-        List<FiniteTrajectory4d> trajectories = Lists.newArrayList();
-        for (TrajectoryServer s : allDifferentTrajectories) {
-            trajectories.add(s.getConcreteTrajectory());
-        }
-        TestUtils.verifyTrajectoryCollisions(trajectories);
+  @Test
+  public void testTrajectoryInitialization() {
+    LoggerFactory.getLogger(MultiTrajectorySimulatorExampleTests.class)
+        .info(
+            "Running example initialization test for instances of " + server.getClass().getName());
+    List<TrajectoryServer> allDifferentTrajectories = server.getAllDifferentTrajectories();
+    List<FiniteTrajectory4d> trajectories = Lists.newArrayList();
+    for (TrajectoryServer s : allDifferentTrajectories) {
+      trajectories.add(s.getConcreteTrajectory());
     }
+    TestUtils.verifyTrajectoryCollisions(trajectories);
+  }
 }
