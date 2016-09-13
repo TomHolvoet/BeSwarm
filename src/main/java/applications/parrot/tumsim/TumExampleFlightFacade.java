@@ -1,7 +1,6 @@
 package applications.parrot.tumsim;
 
 import applications.ExampleFlight;
-import applications.RosParameters;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import commands.Command;
@@ -10,12 +9,12 @@ import commands.tumsimcommands.TumSimFollowTrajectory;
 import commands.tumsimcommands.TumSimHover;
 import commands.tumsimcommands.TumSimLand;
 import commands.tumsimcommands.TumSimTakeoff;
-import control.VelocityController4dLogger;
+import control.DroneVelocityController;
 import control.FiniteTrajectory4d;
 import control.PidCoFilter4d;
-import control.DroneVelocityController;
 import control.PidParameters;
 import control.VelocityController4d;
+import control.VelocityController4dLogger;
 import control.dto.DroneStateStamped;
 import control.localization.FakeStateEstimatorDecorator;
 import control.localization.GazeboModelStateEstimator;
@@ -58,28 +57,28 @@ final class TumExampleFlightFacade {
     final String nodeName = connectedNode.getName().toString();
     final ParameterTree parameterTree = connectedNode.getParameterTree();
     final PidParameters pidLinearX =
-        RosParameters.createPidParameters(
+        PidParameters.createUsingRosParams(
             parameterTree,
             nodeName + "/pid_linear_x_kp",
             nodeName + "/pid_linear_x_kd",
             nodeName + "/pid_linear_x_ki",
             nodeName + "/pid_lag_time_in_seconds");
     final PidParameters pidLinearY =
-        RosParameters.createPidParameters(
+        PidParameters.createUsingRosParams(
             parameterTree,
             nodeName + "/pid_linear_y_kp",
             nodeName + "/pid_linear_y_kd",
             nodeName + "/pid_linear_y_ki",
             nodeName + "/pid_lag_time_in_seconds");
     final PidParameters pidLinearZ =
-        RosParameters.createPidParameters(
+        PidParameters.createUsingRosParams(
             parameterTree,
             nodeName + "/pid_linear_z_kp",
             nodeName + "/pid_linear_z_kd",
             nodeName + "/pid_linear_z_ki",
             nodeName + "/pid_lag_time_in_seconds");
     final PidParameters pidAngularZ =
-        RosParameters.createPidParameters(
+        PidParameters.createUsingRosParams(
             parameterTree,
             nodeName + "/pid_angular_z_kp",
             nodeName + "/pid_angular_z_kd",

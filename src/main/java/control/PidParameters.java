@@ -1,6 +1,7 @@
 package control;
 
 import com.google.auto.value.AutoValue;
+import org.ros.node.parameter.ParameterTree;
 
 /**
  * A value class which stores parameters for a pid controller.
@@ -23,6 +24,34 @@ public abstract class PidParameters {
         .setMaxVelocity(Double.MAX_VALUE)
         .setMinIntegralError(-Double.MAX_VALUE)
         .setMaxIntegralError(Double.MAX_VALUE);
+  }
+
+  /**
+   * Creates a {@link PidParameters}'s instance using the parameters got from ROS parameter servers.
+   *
+   * @param parameterTree the parameter tree got from ROS
+   * @param rosParamKpName the parameter storing Kp value
+   * @param rosParamKdName the parameter storing Kd value
+   * @param rosParamKiName the parameter storing Ki value
+   * @param rosParamLagTimeInSecondsName the parameter storing the lag time value
+   * @return a {@link PidParameters}'s instance
+   */
+  public static PidParameters createUsingRosParams(
+      ParameterTree parameterTree,
+      String rosParamKpName,
+      String rosParamKdName,
+      String rosParamKiName,
+      String rosParamLagTimeInSecondsName) {
+    final double pidLinearXKp = parameterTree.getDouble(rosParamKpName);
+    final double pidLinearXKd = parameterTree.getDouble(rosParamKdName);
+    final double pidLinearXKi = parameterTree.getDouble(rosParamKiName);
+    final double pidLagTimeInSeconds = parameterTree.getDouble(rosParamLagTimeInSecondsName);
+    return builder()
+        .setKp(pidLinearXKp)
+        .setKd(pidLinearXKd)
+        .setKi(pidLinearXKi)
+        .setLagTimeInSeconds(pidLagTimeInSeconds)
+        .build();
   }
 
   /**

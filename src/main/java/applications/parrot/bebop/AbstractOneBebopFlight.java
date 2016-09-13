@@ -1,7 +1,6 @@
 package applications.parrot.bebop;
 
 import applications.ExampleFlight;
-import applications.RosParameters;
 import applications.trajectory.TrajectoryServer;
 import com.google.common.collect.ImmutableList;
 import commands.Command;
@@ -10,8 +9,8 @@ import commands.bebopcommands.BebopFollowTrajectory;
 import commands.bebopcommands.BebopHover;
 import commands.bebopcommands.BebopLand;
 import commands.bebopcommands.BebopTakeOff;
-import control.FiniteTrajectory4d;
 import control.DroneVelocityController;
+import control.FiniteTrajectory4d;
 import control.PidParameters;
 import control.VelocityController4d;
 import control.VelocityController4dLogger;
@@ -84,28 +83,28 @@ public abstract class AbstractOneBebopFlight extends AbstractNodeMain implements
   public void onStart(final ConnectedNode connectedNode) {
     final ParameterTree parameterTree = connectedNode.getParameterTree();
     final PidParameters pidLinearX =
-        RosParameters.createPidParameters(
+        PidParameters.createUsingRosParams(
             parameterTree,
             "beswarm/pid_linear_x_kp",
             "beswarm/pid_linear_x_kd",
             "beswarm/pid_linear_x_ki",
             "beswarm/pid_lag_time_in_seconds");
     final PidParameters pidLinearY =
-        RosParameters.createPidParameters(
+        PidParameters.createUsingRosParams(
             parameterTree,
             "beswarm/pid_linear_y_kp",
             "beswarm/pid_linear_y_kd",
             "beswarm/pid_linear_y_ki",
             "beswarm/pid_lag_time_in_seconds");
     final PidParameters pidLinearZ =
-        RosParameters.createPidParameters(
+        PidParameters.createUsingRosParams(
             parameterTree,
             "beswarm/pid_linear_z_kp",
             "beswarm/pid_linear_z_kd",
             "beswarm/pid_linear_z_ki",
             "beswarm/pid_lag_time_in_seconds");
     final PidParameters pidAngularZ =
-        RosParameters.createPidParameters(
+        PidParameters.createUsingRosParams(
             parameterTree,
             "beswarm/pid_angular_z_kp",
             "beswarm/pid_angular_z_kd",
