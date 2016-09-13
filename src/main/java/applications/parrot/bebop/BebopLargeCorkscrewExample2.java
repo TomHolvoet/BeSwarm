@@ -12,7 +12,7 @@ import control.Trajectory4d;
  *
  * @author Kristof Coninx <kristof.coninx AT cs.kuleuven.be>
  */
-public class BebopLargeCorkscrewExample2 extends AbstractBebopExample {
+public class BebopLargeCorkscrewExample2 extends AbstractOneBebopFlight {
 
   /** Default constructor. */
   public BebopLargeCorkscrewExample2() {

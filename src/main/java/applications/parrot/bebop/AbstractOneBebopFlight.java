@@ -1,6 +1,7 @@
 package applications.parrot.bebop;
 
 import applications.ExampleFlight;
+import applications.RosParameters;
 import applications.trajectory.TrajectoryServer;
 import com.google.common.collect.ImmutableList;
 import commands.Command;
@@ -10,7 +11,10 @@ import commands.bebopcommands.BebopHover;
 import commands.bebopcommands.BebopLand;
 import commands.bebopcommands.BebopTakeOff;
 import control.FiniteTrajectory4d;
+import control.DroneVelocityController;
 import control.PidParameters;
+import control.VelocityController4d;
+import control.VelocityController4dLogger;
 import control.localization.BebopStateEstimatorWithPoseStampedAndOdom;
 import control.localization.StateEstimator;
 import geometry_msgs.PoseStamped;
@@ -18,6 +22,7 @@ import nav_msgs.Odometry;
 import org.ros.namespace.GraphName;
 import org.ros.node.AbstractNodeMain;
 import org.ros.node.ConnectedNode;
+import org.ros.node.parameter.ParameterTree;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import services.FlyingStateService;
@@ -43,25 +48,13 @@ import java.util.concurrent.TimeUnit;
  *
  * @author Hoang Tung Dinh
  */
-public abstract class AbstractBebopExample extends AbstractNodeMain implements TrajectoryServer {
-  private static final Logger logger = LoggerFactory.getLogger(AbstractBebopExample.class);
+public abstract class AbstractOneBebopFlight extends AbstractNodeMain implements TrajectoryServer {
+  private static final Logger logger = LoggerFactory.getLogger(AbstractOneBebopFlight.class);
   private static final String DRONE_NAME = "bebop";
   private final String nodeName;
 
-  protected AbstractBebopExample(String nodeName) {
+  protected AbstractOneBebopFlight(String nodeName) {
     this.nodeName = nodeName;
-  }
-
-  private static PidParameters getPidParameters(
-      ConnectedNode connectedNode, String argKp, String argKd, String argKi) {
-    final double pidLinearXKp = connectedNode.getParameterTree().getDouble(argKp);
-    final double pidLinearXKd = connectedNode.getParameterTree().getDouble(argKd);
-    final double pidLinearXKi = connectedNode.getParameterTree().getDouble(argKi);
-    return PidParameters.builder()
-        .setKp(pidLinearXKp)
-        .setKd(pidLinearXKd)
-        .setKi(pidLinearXKi)
-        .build();
   }
 
   private static MessagesSubscriberService<PoseStamped> getPoseSubscriber(
@@ -75,7 +68,6 @@ public abstract class AbstractBebopExample extends AbstractNodeMain implements T
 
   private static MessagesSubscriberService<Odometry> getOdometrySubscriber(
       ConnectedNode connectedNode) {
-    // TODO: remove this method
     final String odometryTopic = "/" + DRONE_NAME + "/odom";
     logger.info("Subscribed to {} for getting odometry", odometryTopic);
     return MessagesSubscriberService.create(
@@ -90,30 +82,35 @@ public abstract class AbstractBebopExample extends AbstractNodeMain implements T
 
   @Override
   public void onStart(final ConnectedNode connectedNode) {
+    final ParameterTree parameterTree = connectedNode.getParameterTree();
     final PidParameters pidLinearX =
-        getPidParameters(
-            connectedNode,
+        RosParameters.createPidParameters(
+            parameterTree,
             "beswarm/pid_linear_x_kp",
             "beswarm/pid_linear_x_kd",
-            "beswarm/pid_linear_x_ki");
+            "beswarm/pid_linear_x_ki",
+            "beswarm/pid_lag_time_in_seconds");
     final PidParameters pidLinearY =
-        getPidParameters(
-            connectedNode,
+        RosParameters.createPidParameters(
+            parameterTree,
             "beswarm/pid_linear_y_kp",
             "beswarm/pid_linear_y_kd",
-            "beswarm/pid_linear_y_ki");
+            "beswarm/pid_linear_y_ki",
+            "beswarm/pid_lag_time_in_seconds");
     final PidParameters pidLinearZ =
-        getPidParameters(
-            connectedNode,
+        RosParameters.createPidParameters(
+            parameterTree,
             "beswarm/pid_linear_z_kp",
             "beswarm/pid_linear_z_kd",
-            "beswarm/pid_linear_z_ki");
+            "beswarm/pid_linear_z_ki",
+            "beswarm/pid_lag_time_in_seconds");
     final PidParameters pidAngularZ =
-        getPidParameters(
-            connectedNode,
+        RosParameters.createPidParameters(
+            parameterTree,
             "beswarm/pid_angular_z_kp",
             "beswarm/pid_angular_z_kd",
-            "beswarm/pid_angular_z_ki");
+            "beswarm/pid_angular_z_ki",
+            "beswarm/pid_lag_time_in_seconds");
 
     final ParrotServiceFactory parrotServiceFactory =
         BebopServiceFactory.create(connectedNode, DRONE_NAME);
@@ -181,28 +178,40 @@ public abstract class AbstractBebopExample extends AbstractNodeMain implements T
     final Command takeOff = BebopTakeOff.create(takeOffService, flyingStateService, resetService);
     commands.add(takeOff);
 
-    final Command hoverFiveSecond =
+    final Command hoverFiveSeconds =
         BebopHover.create(5, RosTime.create(connectedNode), velocity4dService, stateEstimator);
-    commands.add(hoverFiveSecond);
+    commands.add(hoverFiveSeconds);
+
+    VelocityController4d velocityController4d =
+        DroneVelocityController.pidBuilder()
+            .withTrajectory4d(trajectory4d)
+            .withLinearXParameters(pidLinearX)
+            .withLinearYParameters(pidLinearY)
+            .withLinearZParameters(pidLinearZ)
+            .withAngularZParameters(pidAngularZ)
+            .build();
+
+    velocityController4d =
+        VelocityController4dLogger.create(
+            velocityController4d, trajectory4d, RosTime.create(connectedNode), DRONE_NAME);
 
     final Command followTrajectory =
         BebopFollowTrajectory.builder()
             .withVelocity4dService(velocity4dService)
             .withStateEstimator(stateEstimator)
             .withTimeProvider(RosTime.create(connectedNode))
-            .withTrajectory4d(trajectory4d)
             .withDurationInSeconds(trajectory4d.getTrajectoryDuration())
-            .withPidLinearXParameters(pidLinearX)
-            .withPidLinearYParameters(pidLinearY)
-            .withPidLinearZParameters(pidLinearZ)
-            .withPidAngularZParameters(pidAngularZ)
+            .withVelocityController4d(velocityController4d)
             .withControlRateInSeconds(0.01)
             .build();
 
     final Command waitForLocalizationThenFollowTrajectory =
         WaitForLocalizationDecorator.create(stateEstimator, followTrajectory);
-
     commands.add(waitForLocalizationThenFollowTrajectory);
+
+    final Command hoverThreeSeconds =
+        BebopHover.create(3, RosTime.create(connectedNode), velocity4dService, stateEstimator);
+    commands.add(hoverThreeSeconds);
 
     final Command land = BebopLand.create(landService, flyingStateService);
     commands.add(land);

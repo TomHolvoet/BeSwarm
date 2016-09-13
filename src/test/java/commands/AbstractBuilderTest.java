@@ -2,7 +2,7 @@ package commands;
 
 import com.google.auto.value.AutoValue;
 import com.google.common.base.Optional;
-import control.PidParameters;
+import control.VelocityController4d;
 import control.dto.DroneStateStamped;
 import control.dto.InertialFrameVelocity;
 import control.dto.Pose;
@@ -13,6 +13,7 @@ import services.Velocity4dService;
 import time.TimeProvider;
 
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyDouble;
 import static org.mockito.Mockito.RETURNS_MOCKS;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
@@ -25,36 +26,23 @@ public abstract class AbstractBuilderTest {
   private static final double DURATION_IN_SECONDS = 0.5;
   private Velocity4dService velocity4dService;
   private StateEstimator stateEstimator;
-  private PidParameters pidLinearX;
-  private PidParameters pidLinearY;
-  private PidParameters pidLinearZ;
-  private PidParameters pidAngularZ;
+  private VelocityController4d velocityController4d;
   private TimeProvider timeProvider;
-
-  private static void checkCorrectPidParametersCalled(PidParameters pidParameters) {
-    verify(pidParameters, atLeastOnce()).lagTimeInSeconds();
-    verify(pidParameters, atLeastOnce()).kp();
-    verify(pidParameters, atLeastOnce()).ki();
-    verify(pidParameters, atLeastOnce()).kd();
-    verify(pidParameters, atLeastOnce()).maxIntegralError();
-    verify(pidParameters, atLeastOnce()).minIntegralError();
-    verify(pidParameters, atLeastOnce()).maxVelocity();
-    verify(pidParameters, atLeastOnce()).minVelocity();
-  }
 
   private static void checkCorrectServicesCalled(
       Velocity4dService velocity4dService,
+      VelocityController4d velocityController4d,
       StateEstimator stateEstimator,
       TimeProvider timeProvider) {
     verify(velocity4dService, atLeastOnce())
         .sendInertialFrameVelocity(any(InertialFrameVelocity.class), any(Pose.class));
+    verify(velocityController4d, atLeastOnce())
+        .computeNextResponse(any(Pose.class), any(InertialFrameVelocity.class), anyDouble());
     verify(stateEstimator, atLeastOnce()).getCurrentState();
     verify(timeProvider, atLeastOnce()).getCurrentTimeSeconds();
   }
 
   abstract void createAndExecuteCommand(ArgumentHolder argumentHolder);
-
-  abstract void checkCorrectExtraMethodsCalled();
 
   @Before
   public void setUp() {
@@ -63,10 +51,7 @@ public abstract class AbstractBuilderTest {
     when(stateEstimator.getCurrentState())
         .thenReturn(Optional.of(mock(DroneStateStamped.class, RETURNS_MOCKS)));
 
-    pidLinearX = mock(PidParameters.class, RETURNS_MOCKS);
-    pidLinearY = mock(PidParameters.class, RETURNS_MOCKS);
-    pidLinearZ = mock(PidParameters.class, RETURNS_MOCKS);
-    pidAngularZ = mock(PidParameters.class, RETURNS_MOCKS);
+    velocityController4d = mock(VelocityController4d.class, RETURNS_MOCKS);
     timeProvider = mock(TimeProvider.class);
   }
 
@@ -76,22 +61,15 @@ public abstract class AbstractBuilderTest {
         ArgumentHolder.builder()
             .velocityService(velocity4dService)
             .stateEstimator(stateEstimator)
-            .pidLinearX(pidLinearX)
-            .pidLinearY(pidLinearY)
-            .pidLinearZ(pidLinearZ)
-            .pidAngularZ(pidAngularZ)
+            .velocityController4d(velocityController4d)
             .durationInSeconds(DURATION_IN_SECONDS)
             .timeProvider(timeProvider)
             .build();
 
     createAndExecuteCommand(argumentHolder);
-    checkCorrectExtraMethodsCalled();
 
-    checkCorrectServicesCalled(velocity4dService, stateEstimator, timeProvider);
-    checkCorrectPidParametersCalled(pidLinearX);
-    checkCorrectPidParametersCalled(pidLinearY);
-    checkCorrectPidParametersCalled(pidLinearZ);
-    checkCorrectPidParametersCalled(pidAngularZ);
+    checkCorrectServicesCalled(
+        velocity4dService, velocityController4d, stateEstimator, timeProvider);
   }
 
   @AutoValue
@@ -104,13 +82,7 @@ public abstract class AbstractBuilderTest {
 
     abstract StateEstimator stateEstimator();
 
-    abstract PidParameters pidLinearX();
-
-    abstract PidParameters pidLinearY();
-
-    abstract PidParameters pidLinearZ();
-
-    abstract PidParameters pidAngularZ();
+    abstract VelocityController4d velocityController4d();
 
     abstract double durationInSeconds();
 
@@ -122,13 +94,7 @@ public abstract class AbstractBuilderTest {
 
       public abstract Builder stateEstimator(StateEstimator value);
 
-      public abstract Builder pidLinearX(PidParameters value);
-
-      public abstract Builder pidLinearY(PidParameters value);
-
-      public abstract Builder pidLinearZ(PidParameters value);
-
-      public abstract Builder pidAngularZ(PidParameters value);
+      public abstract Builder velocityController4d(VelocityController4d value);
 
       public abstract Builder durationInSeconds(double value);
 

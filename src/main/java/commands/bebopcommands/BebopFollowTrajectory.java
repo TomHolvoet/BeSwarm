@@ -1,8 +1,7 @@
 package commands.bebopcommands;
 
 import commands.AbstractParrotFollowTrajectory;
-import control.PidController4d;
-import control.Trajectory4d;
+import control.VelocityController4d;
 import control.localization.StateEstimator;
 import services.Velocity4dService;
 import time.TimeProvider;
@@ -16,21 +15,19 @@ public final class BebopFollowTrajectory extends AbstractParrotFollowTrajectory 
 
   private BebopFollowTrajectory(
       StateEstimator stateEstimator,
-      Trajectory4d trajectory4d,
       double durationInSeconds,
       double controlRateInSeconds,
       double droneStateLifeDurationInSeconds,
       TimeProvider timeProvider,
-      PidController4d pidController4d,
+      VelocityController4d velocityController4d,
       Velocity4dService velocity4dService) {
     super(
         stateEstimator,
-        trajectory4d,
         durationInSeconds,
         controlRateInSeconds,
         droneStateLifeDurationInSeconds,
         timeProvider,
-        pidController4d,
+        velocityController4d,
         velocity4dService);
   }
 
@@ -62,12 +59,11 @@ public final class BebopFollowTrajectory extends AbstractParrotFollowTrajectory 
       checkMissingParameters();
       return new BebopFollowTrajectory(
           stateEstimator,
-          trajectory4d,
           durationInSeconds,
           controlRateInSeconds,
           droneStateLifeDurationInSeconds,
           timeProvider,
-          createPidController4d(),
+          velocityController4d,
           velocity4dService);
     }
   }

@@ -1,11 +1,8 @@
 package commands.cratescommands;
 
-import applications.trajectory.TrajectoryUtils;
 import commands.AbstractFollowTrajectory;
-import control.PidController1d;
-import control.PidParameters;
+import control.LinearPidController1d;
 import control.Trajectory1d;
-import control.Trajectory4d;
 import control.dto.DroneStateStamped;
 import control.localization.StateEstimator;
 import services.Velocity2dService;
@@ -23,24 +20,24 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public final class CratesFollowTrajectoryVel2d extends AbstractFollowTrajectory {
 
   private final Velocity2dService velocity2dService;
-  private final PidController1d pidControllerLinearX;
-  private final PidController1d pidControllerLinearY;
+  private final LinearPidController1d pidControllerLinearX;
+  private final LinearPidController1d pidControllerLinearY;
   private final Trajectory1d trajectoryLinearZ;
   private final Trajectory1d trajectoryAngularZ;
 
   private CratesFollowTrajectoryVel2d(
       StateEstimator stateEstimator,
-      Trajectory4d trajectory4d,
       double durationInSeconds,
       double controlRateInSeconds,
       double droneStateLifeDurationInSeconds,
       TimeProvider timeProvider,
       Velocity2dService velocity2dService,
-      PidController1d pidControllerLinearX,
-      PidController1d pidControllerLinearY) {
+      LinearPidController1d pidControllerLinearX,
+      LinearPidController1d pidControllerLinearY,
+      Trajectory1d trajectoryLinearZ,
+      Trajectory1d trajectoryAngularZ) {
     super(
         stateEstimator,
-        trajectory4d,
         durationInSeconds,
         controlRateInSeconds,
         droneStateLifeDurationInSeconds,
@@ -48,8 +45,8 @@ public final class CratesFollowTrajectoryVel2d extends AbstractFollowTrajectory 
     this.velocity2dService = velocity2dService;
     this.pidControllerLinearX = pidControllerLinearX;
     this.pidControllerLinearY = pidControllerLinearY;
-    trajectoryLinearZ = TrajectoryUtils.getTrajectoryLinearZ(trajectory4d);
-    trajectoryAngularZ = TrajectoryUtils.getTrajectoryAngularZ(trajectory4d);
+    this.trajectoryLinearZ = trajectoryLinearZ;
+    this.trajectoryAngularZ = trajectoryAngularZ;
   }
 
   /**
@@ -72,12 +69,12 @@ public final class CratesFollowTrajectoryVel2d extends AbstractFollowTrajectory 
     protected void computeAndSendResponse(
         double currentTimeInSeconds, DroneStateStamped currentState) {
       final double nextVelocityX =
-          pidControllerLinearX.compute(
+          pidControllerLinearX.computeNextResponse(
               currentState.pose().x(),
               currentState.inertialFrameVelocity().linearX(),
               currentTimeInSeconds);
       final double nextVelocityY =
-          pidControllerLinearY.compute(
+          pidControllerLinearY.computeNextResponse(
               currentState.pose().y(),
               currentState.inertialFrameVelocity().linearY(),
               currentTimeInSeconds);
@@ -91,10 +88,12 @@ public final class CratesFollowTrajectoryVel2d extends AbstractFollowTrajectory 
   }
 
   /** {@code CratesFollowTrajectoryVel2d} builder static inner class. */
-  public static final class Builder extends AbstractFollowTrajectory.AbstractBuilder<Builder> {
+  public static final class Builder extends AbstractBuilder<Builder> {
     private Velocity2dService velocity2dService;
-    private PidParameters pidLinearXParameters;
-    private PidParameters pidLinearYParameters;
+    private LinearPidController1d pidControllerLinearX;
+    private LinearPidController1d pidControllerLinearY;
+    private Trajectory1d trajectoryLinearZ;
+    private Trajectory1d trajectoryAngularZ;
 
     private Builder() {}
 
@@ -116,26 +115,50 @@ public final class CratesFollowTrajectoryVel2d extends AbstractFollowTrajectory 
     }
 
     /**
-     * Sets the {@code pidLinearXParameters} and returns a reference to this Builder so that the
+     * Sets the {@code pidControllerLinearX} and returns a reference to this Builder so that the
      * methods can be chained together.
      *
-     * @param val the {@code pidLinearXParameters} to set
+     * @param val the {@code pidControllerLinearX} to set
      * @return a reference to this Builder
      */
-    public Builder withPidLinearXParameters(PidParameters val) {
-      pidLinearXParameters = val;
+    public Builder withPidControllerLinearX(LinearPidController1d val) {
+      pidControllerLinearX = val;
       return this;
     }
 
     /**
-     * Sets the {@code pidLinearYParameters} and returns a reference to this Builder so that the
+     * Sets the {@code pidControllerLinearY} and returns a reference to this Builder so that the
      * methods can be chained together.
      *
-     * @param val the {@code pidLinearYParameters} to set
+     * @param val the {@code pidControllerLinearY} to set
      * @return a reference to this Builder
      */
-    public Builder withPidLinearYParameters(PidParameters val) {
-      pidLinearYParameters = val;
+    public Builder withPidControllerLinearY(LinearPidController1d val) {
+      pidControllerLinearY = val;
+      return this;
+    }
+
+    /**
+     * Sets the {@code trajectoryLinearZ} and returns a reference to this Builder so that the
+     * methods can be chained together.
+     *
+     * @param val the {@code trajectoryLinearZ} to set
+     * @return a reference to this Builder
+     */
+    public Builder withTrajectoryLinearZ(Trajectory1d val) {
+      trajectoryLinearZ = val;
+      return this;
+    }
+
+    /**
+     * Sets the {@code trajectoryAngularZ} and returns a reference to this Builder so that the
+     * methods can be chained together.
+     *
+     * @param val the {@code trajectoryAngularZ} to set
+     * @return a reference to this Builder
+     */
+    public Builder withTrajectoryAngularZ(Trajectory1d val) {
+      trajectoryAngularZ = val;
       return this;
     }
 
@@ -146,33 +169,28 @@ public final class CratesFollowTrajectoryVel2d extends AbstractFollowTrajectory 
      *     CratesFollowTrajectoryVel2d.Builder}
      */
     public CratesFollowTrajectoryVel2d build() {
-      checkNotNull(trajectory4d);
       checkNotNull(durationInSeconds);
-      checkNotNull(pidLinearXParameters);
-      checkNotNull(pidLinearYParameters);
+      checkNotNull(pidControllerLinearX);
+      checkNotNull(pidControllerLinearY);
       checkNotNull(controlRateInSeconds);
       checkNotNull(droneStateLifeDurationInSeconds);
       checkNotNull(stateEstimator);
       checkNotNull(velocity2dService);
       checkNotNull(timeProvider);
-
-      final PidController1d pidLinearX =
-          PidController1d.create(
-              pidLinearXParameters, TrajectoryUtils.getTrajectoryLinearX(trajectory4d));
-      final PidController1d pidLinearY =
-          PidController1d.create(
-              pidLinearYParameters, TrajectoryUtils.getTrajectoryLinearY(trajectory4d));
+      checkNotNull(trajectoryLinearZ);
+      checkNotNull(trajectoryAngularZ);
 
       return new CratesFollowTrajectoryVel2d(
           stateEstimator,
-          trajectory4d,
           durationInSeconds,
           controlRateInSeconds,
           droneStateLifeDurationInSeconds,
           timeProvider,
           velocity2dService,
-          pidLinearX,
-          pidLinearY);
+          pidControllerLinearX,
+          pidControllerLinearY,
+          trajectoryLinearZ,
+          trajectoryAngularZ);
     }
   }
 }

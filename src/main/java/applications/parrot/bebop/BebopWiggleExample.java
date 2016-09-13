@@ -7,7 +7,7 @@ import control.FiniteTrajectory4d;
 import control.Trajectory4d;
 
 /** @author Kristof Coninx <kristof.coninx AT cs.kuleuven.be> */
-public class BebopWiggleExample extends AbstractBebopExample {
+public class BebopWiggleExample extends AbstractOneBebopFlight {
 
   /** Default Constructor. */
   public BebopWiggleExample() {

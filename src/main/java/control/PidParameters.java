@@ -18,7 +18,7 @@ public abstract class PidParameters {
    */
   public static Builder builder() {
     return new AutoValue_PidParameters.Builder()
-        .setLagTimeInSeconds(0)
+        .setLagTimeInSeconds(0.2)
         .setMinVelocity(-Double.MAX_VALUE)
         .setMaxVelocity(Double.MAX_VALUE)
         .setMinIntegralError(-Double.MAX_VALUE)

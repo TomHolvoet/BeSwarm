@@ -13,7 +13,11 @@ import services.rossubscribers.MessagesSubscriberService;
 import time.TimeProvider;
 import utils.math.Transformations;
 
-/** @author Hoang Tung Dinh */
+/**
+ * A state estimator that gets drone state directly from gazebo's ground truth.
+ *
+ * @author Hoang Tung Dinh
+ */
 public final class GazeboModelStateEstimator implements StateEstimator {
   private final MessagesSubscriberService<ModelStates> modelStateSubscriber;
   private final String modelName;

@@ -4,15 +4,15 @@ import applications.TrajectoriesForTesting;
 import control.FiniteTrajectory4d;
 
 /** @author Hoang Tung Dinh */
-public class BebopSlowCircleExample extends AbstractBebopExample {
+public class OneBebopLargeCircleFlight extends AbstractOneBebopFlight {
 
   /** Default constructor. */
-  public BebopSlowCircleExample() {
-    super("BebopSlowCircleExample");
+  public OneBebopLargeCircleFlight() {
+    super("OneBebopLargeCircleFlight");
   }
 
   @Override
   public FiniteTrajectory4d getConcreteTrajectory() {
-    return TrajectoriesForTesting.getSlowCircle();
+    return TrajectoriesForTesting.getLargeCircle();
   }
 }

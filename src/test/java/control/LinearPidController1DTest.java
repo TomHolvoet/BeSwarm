@@ -5,7 +5,7 @@ import org.junit.Test;
 import static com.google.common.truth.Truth.assertThat;
 
 /** @author Hoang Tung Dinh */
-public class PidController1dTest {
+public class LinearPidController1DTest {
 
   private static final double DELTA = 0.000001;
 
@@ -20,9 +20,9 @@ public class PidController1dTest {
             return 10;
           }
         };
-    final PidController1d pidController1d = PidController1d.create(pidParameters, trajectory1d);
+    final LinearPidController1d linearPidController1D = LinearPidController1d.create(pidParameters, trajectory1d);
 
-    assertThat(pidController1d.compute(0, 0, 0)).isWithin(DELTA).of(0.5);
-    assertThat(pidController1d.compute(0.5, 0.5, 0)).isWithin(DELTA).of(-0.025);
+    assertThat(linearPidController1D.computeNextResponse(0, 0, 0)).isWithin(DELTA).of(0.5);
+    assertThat(linearPidController1D.computeNextResponse(0.5, 0.5, 0)).isWithin(DELTA).of(-0.025);
   }
 }

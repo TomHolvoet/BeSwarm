@@ -1,12 +1,12 @@
 package control;
 
 /**
- * The one-dimensional PID controller.
+ * The one-dimensional PID controller to control linear velocity.
  *
  * @author Hoang Tung Dinh
  * @see <a href="https://en.wikipedia.org/wiki/PID_controller">Equation</a>
  */
-public final class PidController1d {
+public final class LinearPidController1d implements VelocityController1d {
 
   private static final double DELTA_TIME_IN_SECOND = 0.1;
   private final PidParameters parameters;
@@ -15,20 +15,20 @@ public final class PidController1d {
   // initialized to 0
   private double accumulatedError;
 
-  private PidController1d(PidParameters parameters, Trajectory1d trajectory) {
+  private LinearPidController1d(PidParameters parameters, Trajectory1d trajectory) {
     this.parameters = parameters;
     this.trajectory = trajectory;
   }
 
   /**
-   * Creates a {@link PidController1d} instance.
+   * Creates a {@link LinearPidController1d} instance.
    *
    * @param parameters the pid parameters for this pid controller
    * @param trajectory the trajectory that this pid controller will try to follow
    * @return an instance of this class
    */
-  public static PidController1d create(PidParameters parameters, Trajectory1d trajectory) {
-    return new PidController1d(parameters, trajectory);
+  public static LinearPidController1d create(PidParameters parameters, Trajectory1d trajectory) {
+    return new LinearPidController1d(parameters, trajectory);
   }
 
   private static double getDesiredVelocity(Trajectory1d trajectory, double desiredTimeInSeconds) {
@@ -38,18 +38,11 @@ public final class PidController1d {
     return (secondPoint - firstPoint) / DELTA_TIME_IN_SECOND;
   }
 
-  /**
-   * Compute the next velocity (response) of the control loop.
-   *
-   * @param currentPoint the current position of the drone
-   * @param currentVelocity the current velocity of the drone
-   * @param currentTimeInSeconds the current time
-   * @return the next velocity (response) of the drone
-   * @see <a href="https://en.wikipedia.org/wiki/PID_controller">Equation</a>
-   */
-  public double compute(double currentPoint, double currentVelocity, double currentTimeInSeconds) {
+  @Override
+  public double computeNextResponse(
+      double currentPosition, double currentVelocity, double currentTimeInSeconds) {
     final double desiredTimeInSeconds = currentTimeInSeconds + parameters.lagTimeInSeconds();
-    final double error = trajectory.getDesiredPosition(desiredTimeInSeconds) - currentPoint;
+    final double error = trajectory.getDesiredPosition(desiredTimeInSeconds) - currentPosition;
 
     updateAccumulatedError(desiredTimeInSeconds, error);
 
