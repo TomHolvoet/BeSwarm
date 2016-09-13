@@ -63,6 +63,16 @@ public class CollisionDetector {
           return Optional.absent();
         }
       };
+  private final List<FiniteTrajectory4d> trajectories;
+  private final double minimumDistance;
+  public CollisionDetector(List<FiniteTrajectory4d> trajectories) {
+    this(trajectories, applications.trajectory.CollisionDetector.DEFAULT_MINIMUM_DISTANCE);
+  }
+
+  public CollisionDetector(List<FiniteTrajectory4d> trajectories, double minimumDistance) {
+    this.trajectories = Lists.newArrayList(trajectories);
+    this.minimumDistance = minimumDistance;
+  }
 
   //implementation from http://geomalgorithms.com/a07-_distance.html#dist3D_Segment_to_Segment()
   private static double distance(LineSegment firstSeg, LineSegment secondSeg) {
@@ -125,18 +135,6 @@ public class CollisionDetector {
     return dP.norm();
   }
 
-  private final List<FiniteTrajectory4d> trajectories;
-  private final double minimumDistance;
-
-  public CollisionDetector(List<FiniteTrajectory4d> trajectories) {
-    this(trajectories, applications.trajectory.CollisionDetector.DEFAULT_MINIMUM_DISTANCE);
-  }
-
-  public CollisionDetector(List<FiniteTrajectory4d> trajectories, double minimumDistance) {
-    this.trajectories = Lists.newArrayList(trajectories);
-    this.minimumDistance = minimumDistance;
-  }
-
   public List<Collision> findCollisions() {
     return sampleForCollisions(TWO_SAMPLE_LINE_DISTANCE_BASED_COLLISION);
   }
@@ -177,6 +175,18 @@ public class CollisionDetector {
     return collT;
   }
 
+  private interface CollisionTester {
+    /**
+     * @param t The time point to sample.
+     * @param first The first trajectory.
+     * @param second The second trajectory.
+     * @param minimumDistance The minimum allowed distance between two trajectories.
+     * @return true if a collision occurs.
+     */
+    Optional<Collision> isCollision(
+        double t, FiniteTrajectory4d first, FiniteTrajectory4d second, double minimumDistance);
+  }
+
   @AutoValue
   public abstract static class Collision {
     public static Collision create(
@@ -191,17 +201,5 @@ public class CollisionDetector {
     public abstract Trajectory4d getFirstCollidingTrajectory();
 
     public abstract Trajectory4d getSecondCollidingTrajectory();
-  }
-
-  private interface CollisionTester {
-    /**
-     * @param t The time point to sample.
-     * @param first The first trajectory.
-     * @param second The second trajectory.
-     * @param minimumDistance The minimum allowed distance between two trajectories.
-     * @return true if a collision occurs.
-     */
-    Optional<Collision> isCollision(
-        double t, FiniteTrajectory4d first, FiniteTrajectory4d second, double minimumDistance);
   }
 }

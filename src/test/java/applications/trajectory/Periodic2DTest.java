@@ -4,8 +4,8 @@ import control.Trajectory1d;
 import control.Trajectory2d;
 import org.junit.Test;
 
-import static applications.trajectory.TestUtils.verifyPositionFrequencyRadiusRelation;
 import static applications.trajectory.TestUtils.testSpeedBounds;
+import static applications.trajectory.TestUtils.verifyPositionFrequencyRadiusRelation;
 import static applications.trajectory.TestUtils.verifyVelocityFrequencyRadiusRelation;
 
 /** @author Kristof Coninx <kristof.coninx AT cs.kuleuven.be> */

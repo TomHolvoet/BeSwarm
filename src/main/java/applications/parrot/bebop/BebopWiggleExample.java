@@ -1,4 +1,4 @@
-package applications.parrot.tumsim;
+package applications.parrot.bebop;
 
 import applications.trajectory.Trajectories;
 import applications.trajectory.geom.point.Point4D;
@@ -7,10 +7,10 @@ import control.FiniteTrajectory4d;
 import control.Trajectory4d;
 
 /** @author Kristof Coninx <kristof.coninx AT cs.kuleuven.be> */
-public class TumSimulatorWiggleExample extends AbstractTumSimulatorExample {
+public class BebopWiggleExample extends AbstractOneBebopFlight {
 
   /** Default Constructor. */
-  public TumSimulatorWiggleExample() {
+  public BebopWiggleExample() {
     super("WiggleTrajectory");
   }
 

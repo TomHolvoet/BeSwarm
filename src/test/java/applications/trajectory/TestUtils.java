@@ -20,10 +20,8 @@ public final class TestUtils {
   private TestUtils() {}
 
   public static void assertBounds(List<Double> results, double min, double max) {
-    for (Double d : results) {
-      assertTrue(Collections.min(results) + EPSILON >= min - EPSILON);
-      assertTrue(Collections.max(results) - EPSILON <= max + EPSILON);
-    }
+    assertTrue(Collections.min(results) + EPSILON >= min - EPSILON);
+    assertTrue(Collections.max(results) - EPSILON <= max + EPSILON);
   }
 
   public static void verifyPositionFrequencyRadiusRelation(
