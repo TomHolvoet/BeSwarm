@@ -6,14 +6,25 @@ import ilog.concert.IloModeler;
 import ilog.concert.IloNumExpr;
 import ilog.concert.IloNumVar;
 import ilog.cplex.IloCplex;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
 
-/** @author Hoang Tung Dinh */
+/**
+ * An example cplex solver.
+ *
+ * @author Hoang Tung Dinh
+ */
 public final class ExampleSolver {
 
+  private static final Logger logger = LoggerFactory.getLogger(ExampleSolver.class);
+
+  private ExampleSolver() {}
+
   public static void main(String[] args) {
+    // this one will not be used in the future. We will use LD_LIBRARY_PATH instead.
     System.load(
         "/Users/Tung/Applications/IBM/ILOG/CPLEX_Studio1263/cplex/bin/x86-64_osx"
             + "/libcplex1263.jnilib");
@@ -44,15 +55,14 @@ public final class ExampleSolver {
       model.end();
 
     } catch (IloException e) {
-      System.err.println("Concert exception '" + e + "' caught");
+      logger.info("Concert exception caught", e);
     }
   }
 
   private static void printSolution(double[] values) {
     for (final double val : values) {
-      System.out.print(val + " ");
+      logger.info(String.valueOf(val));
     }
-    System.out.println();
   }
 
   private static void addObjectiveFunction(
