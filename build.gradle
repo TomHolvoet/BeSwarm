@@ -8,6 +8,14 @@ apply plugin: "jacoco"
 apply plugin: 'application'
 mainClassName = 'org.ros.RosRun'
 
+// delete starting scripts generated in build/scripts. It is for avoiding the non-unique
+// executable issue when using roslaunch.
+installApp {
+    doLast {
+        delete('build/scripts')
+    }
+}
+
 jacoco {
     toolVersion = "0.7.5.201505241946"
     reportsDir = file("$buildDir/customJacocoReportDir")
