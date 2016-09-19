@@ -32,6 +32,8 @@ public final class ExampleSolver {
       addGoalPositionConstraints(decisionVars, model);
       addObjectiveFunction(decisionVars, model, discreteTimeInSecs);
 
+      model.solve();
+
       model.output().println("Solution status = " + model.getStatus());
       model.output().println("Solution value  = " + model.getObjValue());
 
