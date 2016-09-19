@@ -74,10 +74,20 @@ public final class ExampleSolver {
       final IloNumVar b = vars[1];
 
       for (final double t : discreteTimeInSecs) {
-        objectiveExpression.addTerm(6 * t, a);
-        objectiveExpression.addTerm(2, b);
+        // for the absolute value
+        final IloNumVar u = model.numVar(-Double.MAX_VALUE, Double.MAX_VALUE);
+        // expr: 6at + 2b
+        final IloNumExpr expr = model.sum(model.prod(6 * t, a), model.prod(2, b));
+        // constraint: u >= 6at + 2b
+        model.addGe(u, expr);
+        // constraint: u >= -(6at + 2b)
+        model.addGe(u, model.prod(-1, expr));
+        
+        objectiveExpression.addTerm(1, u);
       }
     }
+
+    model.addMinimize(objectiveExpression);
   }
 
   private static void addGoalPositionConstraints(IloNumVar[][] decisionVars, IloModeler model)
