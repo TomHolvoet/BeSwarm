@@ -1,6 +1,6 @@
 <configuration>
   <timestamp key="bySecond" datePattern="yyyy-MM-dd-HH-mm-ss"/>
-  <property name="DIR" value="${LOG_DIR}:-${HOME}/logs/${bySecond}"/>
+  <property name="DIR" value="${LOG_DIR:-${HOME}/logs/${bySecond}}"/>
 
   <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
     <encoder>
