@@ -66,7 +66,7 @@ public final class ExampleSolver {
   }
 
   private static void addObjectiveFunction(
-      IloNumVar[][] decisionVars, IloModeler model, Iterable<Double> discreteTimeInSecs)
+      IloNumVar[][] decisionVars, IloCplex model, Iterable<Double> discreteTimeInSecs)
       throws IloException {
     final IloLinearNumExpr objectiveExpression = model.linearNumExpr();
     for (final IloNumVar[] vars : decisionVars) {
@@ -74,15 +74,10 @@ public final class ExampleSolver {
       final IloNumVar b = vars[1];
 
       for (final double t : discreteTimeInSecs) {
-        // for the absolute value
+        // expr: |6at + 2b|
+        final IloNumExpr expr = model.abs(model.sum(model.prod(6 * t, a), model.prod(2, b)));
         final IloNumVar u = model.numVar(-Double.MAX_VALUE, Double.MAX_VALUE);
-        // expr: 6at + 2b
-        final IloNumExpr expr = model.sum(model.prod(6 * t, a), model.prod(2, b));
-        // constraint: u >= 6at + 2b
-        model.addGe(u, expr);
-        // constraint: u >= -(6at + 2b)
-        model.addGe(u, model.prod(-1, expr));
-        
+        model.addEq(u, expr);
         objectiveExpression.addTerm(1, u);
       }
     }
