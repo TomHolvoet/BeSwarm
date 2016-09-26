@@ -30,8 +30,5 @@ f = open('result.pdf', 'wb')
 outfile.write(f)
 f.close()
 
-os.remove('pos_x.pdf')
-os.remove('pos_y.pdf')
-os.remove('pos_z.pdf')
-os.remove('yaw.pdf')
-os.remove('pos_xy.pdf')
+for file in pdfs:
+    os.remove(file)
