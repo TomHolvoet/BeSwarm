@@ -72,6 +72,13 @@
     </encoder>
   </appender>
 
+  <appender name="FILE_MULTI_TRAJECTORIES" class="ch.qos.logback.core.FileAppender">
+    <file>${DIR}/trajectories.log</file>
+    <encoder>
+      <pattern>%msg %n</pattern>
+    </encoder>
+  </appender>
+
   <root level="DEBUG">
     <appender-ref ref="STDOUT"/>
     <appender-ref ref="FILE"/>
@@ -108,6 +115,11 @@
   <logger name="operationaltesting.PidCpuUsageOT" level="TRACE"
           additivity="false">
     <appender-ref ref="FILE_PID_TIME"/>
+  </logger>
+
+  <logger name="applications.visualization.MultiTrajectoryLogger" level="TRACE"
+          additivity="false">
+    <appender-ref ref="FILE_MULTI_TRAJECTORIES"/>
   </logger>
 
 </configuration>

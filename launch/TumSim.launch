@@ -10,8 +10,8 @@
   <node pkg="agentwise_bebop" type="BeSwarm" name="BeSwarm"
         args="$(arg javanode)" output="screen">
 
-    <!--The duration for the trajectory. This is an optional parameter. If you want to use the
-    default duration from the choleography then comment the below line.-->
+    <!--The durationInSeconds for the trajectory. This is an optional parameter. If you want to use the
+    default durationInSeconds from the choleography then comment the below line.-->
     <param name="trajectory_duration_in_seconds" value="60.0"/>
 
     <!--Parameters for fake localization-->
