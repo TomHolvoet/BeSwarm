@@ -1,5 +1,6 @@
 package solvers;
 
+import ilog.concert.IloConstraint;
 import ilog.concert.IloException;
 import ilog.concert.IloLinearNumExpr;
 import ilog.concert.IloModeler;
@@ -29,6 +30,7 @@ public final class ExampleSolver {
         "/Users/Tung/Applications/IBM/ILOG/CPLEX_Studio1263/cplex/bin/x86-64_osx"
             + "/libcplex1263.jnilib");
     try {
+      final long startTime = System.nanoTime();
       final IloCplex model = new IloCplex();
       final IloNumVar[][] decisionVars = new IloNumVar[3][4];
 
@@ -39,6 +41,7 @@ public final class ExampleSolver {
       final List<Double> discreteTimeInSecs = createDiscreteTime();
       addVelocityConstraints(decisionVars, model, discreteTimeInSecs);
       addAccelerationConstraints(decisionVars, model, discreteTimeInSecs);
+      addAvoidObstacleConstraints(decisionVars, model, discreteTimeInSecs);
       addInitialPositionConstraints(decisionVars, model);
       addGoalPositionConstraints(decisionVars, model);
       addObjectiveFunction(decisionVars, model, discreteTimeInSecs);
@@ -59,6 +62,24 @@ public final class ExampleSolver {
     }
   }
 
+  private static void addAvoidObstacleConstraints(
+      IloNumVar[][] decisionVars, IloCplex model, Iterable<Double> discreteTimeInSecs)
+      throws IloException {
+    for (final double time : discreteTimeInSecs) {
+      final IloNumExpr posX = createPositionExpression(decisionVars[0], model, time);
+      final IloNumExpr posY = createPositionExpression(decisionVars[1], model, time);
+      final IloNumExpr posZ = createPositionExpression(decisionVars[2], model, time);
+
+      final IloConstraint c1 = model.ge(model.sum(0.5, model.prod(-1, posZ)), 0);
+      final IloConstraint c2 = model.le(model.sum(1.5, model.prod(-1, posZ)), 0);
+      final IloConstraint c3 = model.ge(model.sum(0.5, model.prod(-1, posX)), 0);
+      final IloConstraint c4 = model.le(model.sum(1.5, model.prod(-1, posX)), 0);
+      final IloConstraint c5 = model.ge(model.sum(0.5, model.prod(-1, posY)), 0);
+      final IloConstraint c6 = model.le(model.sum(1.5, model.prod(-1, posY)), 0);
+      model.add(model.or(new IloConstraint[] {c1, c2, c3, c4, c5, c6}));
+    }
+  }
+
   private static void printSolution(double[] values) {
     for (final double val : values) {
       logger.info(String.valueOf(val));
@@ -74,10 +95,14 @@ public final class ExampleSolver {
       final IloNumVar b = vars[1];
 
       for (final double t : discreteTimeInSecs) {
-        // expr: |6at + 2b|
-        final IloNumExpr expr = model.abs(model.sum(model.prod(6 * t, a), model.prod(2, b)));
+        // for the absolute value
         final IloNumVar u = model.numVar(-Double.MAX_VALUE, Double.MAX_VALUE);
-        model.addEq(u, expr);
+        // expr: 6at + 2b
+        final IloNumExpr expr = model.sum(model.prod(6 * t, a), model.prod(2, b));
+        // constraint: u >= 6at + 2b
+        model.addGe(u, expr);
+        // constraint: u >= -(6at + 2b)
+        model.addGe(u, model.prod(-1, expr));
         objectiveExpression.addTerm(1, u);
       }
     }
@@ -87,23 +112,28 @@ public final class ExampleSolver {
 
   private static void addGoalPositionConstraints(IloNumVar[][] decisionVars, IloModeler model)
       throws IloException {
-    final IloNumExpr posX = createPositionExpression(decisionVars[0], model);
-    final IloNumExpr posY = createPositionExpression(decisionVars[1], model);
-    final IloNumExpr posZ = createPositionExpression(decisionVars[2], model);
+    final IloNumExpr posX = createPositionExpression(decisionVars[0], model, 1);
+    final IloNumExpr posY = createPositionExpression(decisionVars[1], model, 1);
+    final IloNumExpr posZ = createPositionExpression(decisionVars[2], model, 1);
 
     model.addEq(posX, 2);
     model.addEq(posY, 2);
     model.addEq(posZ, 2);
   }
 
-  private static IloNumExpr createPositionExpression(IloNumVar[] decisionVar, IloModeler model)
-      throws IloException {
+  private static IloNumExpr createPositionExpression(
+      IloNumVar[] decisionVar, IloModeler model, double time) throws IloException {
     final IloNumVar a = decisionVar[0];
     final IloNumVar b = decisionVar[1];
     final IloNumVar c = decisionVar[2];
     final IloNumVar d = decisionVar[3];
 
-    return model.sum(a, b, c, d);
+    // at^3 + bt^2 + ct + d
+    return model.sum(
+        model.prod(StrictMath.pow(time, 3), a),
+        model.prod(StrictMath.pow(time, 2), b),
+        model.prod(time, c),
+        d);
   }
 
   private static void addInitialPositionConstraints(IloNumVar[][] decisionVars, IloModeler model)
@@ -132,8 +162,8 @@ public final class ExampleSolver {
 
     for (final double t : discreteTimeInSecs) {
       final IloNumExpr acceleration = model.sum(model.prod(6 * t, a), model.prod(2, b));
-      model.addLe(acceleration, 3);
-      model.addGe(acceleration, -3);
+      model.addLe(acceleration, 10);
+      model.addGe(acceleration, -10);
     }
   }
 
@@ -155,15 +185,15 @@ public final class ExampleSolver {
     for (final double t : discreteTimeInSecs) {
       // 3at^2 + 2bt + c
       final IloNumExpr velocity = model.sum(model.prod(3 * t * t, a), model.prod(2 * t, b), c);
-      model.addLe(velocity, 3);
-      model.addGe(velocity, -3);
+      model.addLe(velocity, 10);
+      model.addGe(velocity, -10);
     }
   }
 
   private static List<Double> createDiscreteTime() {
     final List<Double> times = new ArrayList<>();
-    for (int i = 0; i < 1001; i++) {
-      times.add(i * 0.001);
+    for (int i = 0; i < 101; i++) {
+      times.add(i * 0.01);
     }
 
     return times;
