@@ -92,7 +92,7 @@ public class BebopLandTest {
       throws InterruptedException {
     when(flyingStateService.getCurrentFlyingState()).thenReturn(flyingStateOptional);
     reset(landService);
-    TimeUnit.MILLISECONDS.sleep(200);
+    TimeUnit.MILLISECONDS.sleep(300);
     verify(landService, atLeast(2)).sendLandingMessage();
     assertThat(future.isDone()).isFalse();
   }
