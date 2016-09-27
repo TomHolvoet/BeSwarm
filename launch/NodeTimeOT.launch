@@ -1,0 +1,4 @@
+<launch>
+  <node pkg="rats" type="BeSwarm" name="BeSwarm" args="operationaltesting.NodeTimeOT"
+        output="screen"/>
+</launch>
