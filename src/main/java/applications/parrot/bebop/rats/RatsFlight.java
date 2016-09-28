@@ -39,7 +39,14 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.concurrent.TimeUnit;
 
-/** @author Hoang Tung Dinh */
+/**
+ * A single drone flight for a rats show. The drone first waits until it receives the synchronized
+ * start time. Then, it will use that start time to construct and execute a flight. The flight is as
+ * follows: wait until take off time -> take off -> hover until start flying time -> follow
+ * trajectory -> hover 3 seconds -> land.
+ *
+ * @author Hoang Tung Dinh
+ */
 final class RatsFlight {
   private static final Logger logger = LoggerFactory.getLogger(RatsFlight.class);
   private final FiniteTrajectory4d trajectory;
@@ -139,7 +146,7 @@ final class RatsFlight {
         .build();
   }
 
-  private Command createHoverUntilCommand(
+  private static Command createHoverUntilCommand(
       BebopServices bebopServices,
       RatsParameter ratsParameter,
       double syncStartTimeInSecs,
@@ -150,14 +157,14 @@ final class RatsFlight {
         timeProvider, realStartFlyingTime, bebopServices.velocity4dService());
   }
 
-  private Command createTakeOffCommand(BebopServices bebopServices) {
+  private static Command createTakeOffCommand(BebopServices bebopServices) {
     return BebopTakeOff.create(
         bebopServices.takeOffService(),
         bebopServices.flyingStateService(),
         bebopServices.resetService());
   }
 
-  private Command createWaitUntilCommand(
+  private static Command createWaitUntilCommand(
       RatsParameter ratsParameter, double syncStartTimeInSecs, TimeProvider timeProvider) {
     final double realTakeOffTime = syncStartTimeInSecs + ratsParameter.absoluteTakeOffTimeInSecs();
     return BebopWaitUntil.create(timeProvider, realTakeOffTime);
@@ -189,23 +196,6 @@ final class RatsFlight {
         RosTime.create(connectedNode));
   }
 
-  private static MessagesSubscriberService<PoseStamped> createPoseSubscriber(
-      ConnectedNode connectedNode, String poseTopic) {
-    logger.info("Subscribed to {} for getting pose.", poseTopic);
-    return MessagesSubscriberService.create(
-        connectedNode.<PoseStamped>newSubscriber(poseTopic, PoseStamped._TYPE),
-        RosTime.create(connectedNode));
-  }
-
-  private static MessagesSubscriberService<Odometry> createOdometrySubscriber(
-      ConnectedNode connectedNode, String droneName) {
-    final String odometryTopic = "/" + droneName + "/odom";
-    logger.info("Subscribed to {} for getting odometry", odometryTopic);
-    return MessagesSubscriberService.create(
-        connectedNode.<Odometry>newSubscriber(odometryTopic, Odometry._TYPE),
-        RosTime.create(connectedNode));
-  }
-
   @AutoValue
   abstract static class BebopServices {
     BebopServices() {}
@@ -229,6 +219,23 @@ final class RatsFlight {
           takeOffService,
           resetService,
           stateEstimator);
+    }
+
+    private static MessagesSubscriberService<PoseStamped> createPoseSubscriber(
+        ConnectedNode connectedNode, String poseTopic) {
+      logger.info("Subscribed to {} for getting pose.", poseTopic);
+      return MessagesSubscriberService.create(
+          connectedNode.<PoseStamped>newSubscriber(poseTopic, PoseStamped._TYPE),
+          RosTime.create(connectedNode));
+    }
+
+    private static MessagesSubscriberService<Odometry> createOdometrySubscriber(
+        ConnectedNode connectedNode, String droneName) {
+      final String odometryTopic = "/" + droneName + "/odom";
+      logger.info("Subscribed to {} for getting odometry", odometryTopic);
+      return MessagesSubscriberService.create(
+          connectedNode.<Odometry>newSubscriber(odometryTopic, Odometry._TYPE),
+          RosTime.create(connectedNode));
     }
 
     abstract LandService landService();
