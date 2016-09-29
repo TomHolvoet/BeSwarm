@@ -11,40 +11,40 @@ abstract class RatsParameter {
 
   static RatsParameter createFromParameterTree(ParameterTree parameterTree) {
     return builder()
-        .absoluteTakeOffTimeInSecs(parameterTree.getDouble("~takeoff_time_in_secs"))
-        .absoluteStartFlyingTimeInSecs(parameterTree.getDouble("~start_flying_time_in_secs"))
-        .timeSyncTopic(parameterTree.getString("~time_sync_topic"))
+        .absoluteTakeOffTimeInSecs(parameterTree.getDouble("/takeoff_time_in_secs"))
+        .absoluteStartFlyingTimeInSecs(parameterTree.getDouble("/start_flying_time_in_secs"))
+        .timeSyncTopic(parameterTree.getString("/time_sync_topic"))
         .pidLinearX(
             PidParameters.createUsingRosParams(
                 parameterTree,
-                "~pid_linear_x_kp",
-                "~pid_linear_x_kd",
-                "~pid_linear_x_ki",
-                "~pid_lag_time_in_seconds"))
+                "/pid_linear_x_kp",
+                "/pid_linear_x_kd",
+                "/pid_linear_x_ki",
+                "/pid_lag_time_in_seconds"))
         .pidLinearY(
             PidParameters.createUsingRosParams(
                 parameterTree,
-                "~pid_linear_y_kp",
-                "~pid_linear_y_kd",
-                "~pid_linear_y_ki",
-                "~pid_lag_time_in_seconds"))
+                "/pid_linear_y_kp",
+                "/pid_linear_y_kd",
+                "/pid_linear_y_ki",
+                "/pid_lag_time_in_seconds"))
         .pidLinearZ(
             PidParameters.createUsingRosParams(
                 parameterTree,
-                "~pid_linear_z_kp",
-                "~pid_linear_z_kd",
-                "~pid_linear_z_ki",
-                "~pid_lag_time_in_seconds"))
+                "/pid_linear_z_kp",
+                "/pid_linear_z_kd",
+                "/pid_linear_z_ki",
+                "/pid_lag_time_in_seconds"))
         .pidAngularZ(
             PidParameters.createUsingRosParams(
                 parameterTree,
-                "~pid_angular_z_kp",
-                "~pid_angular_z_kd",
-                "~pid_angular_z_ki",
-                "~pid_lag_time_in_seconds"))
-        .droneName(parameterTree.getString("~drone_name"))
-        .poseTopic(parameterTree.getString("~pose_topic"))
-        .controlFrequencyInHz(parameterTree.getDouble("~control_frequency_in_hz"))
+                "/pid_angular_z_kp",
+                "/pid_angular_z_kd",
+                "/pid_angular_z_ki",
+                "/pid_lag_time_in_seconds"))
+        .droneName(parameterTree.getString("/drone_name"))
+        .poseTopic(parameterTree.getString("/pose_topic"))
+        .controlFrequencyInHz(parameterTree.getDouble("/control_frequency_in_hz"))
         .build();
   }
 
