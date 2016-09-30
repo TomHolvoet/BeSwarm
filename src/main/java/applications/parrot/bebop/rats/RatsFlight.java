@@ -47,7 +47,7 @@ import java.util.concurrent.TimeUnit;
  *
  * @author Hoang Tung Dinh
  */
-final class RatsFlight {
+public final class RatsFlight {
   private static final Logger logger = LoggerFactory.getLogger(RatsFlight.class);
   private final FiniteTrajectory4d trajectory;
   private final ConnectedNode connectedNode;
