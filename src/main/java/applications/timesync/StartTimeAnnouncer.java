@@ -18,9 +18,11 @@ public final class StartTimeAnnouncer extends AbstractNodeMain {
 
   @Override
   public void onStart(final ConnectedNode connectedNode) {
+    final String timeSyncTopic = connectedNode.getParameterTree().getString("/time_sync_topic");
+
     final Time startTime = connectedNode.getCurrentTime();
     final Publisher<std_msgs.Time> startTimePublisher =
-        connectedNode.newPublisher("start_time", std_msgs.Time._TYPE);
+        connectedNode.newPublisher(timeSyncTopic, std_msgs.Time._TYPE);
 
     final std_msgs.Time timeMsgs = startTimePublisher.newMessage();
     timeMsgs.setData(startTime);
