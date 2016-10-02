@@ -18,11 +18,11 @@ import java.util.List;
  *
  * @author Hoang Tung Dinh
  */
-public final class ExampleSolver {
+public final class ExampleCplexSolver {
 
-  private static final Logger logger = LoggerFactory.getLogger(ExampleSolver.class);
+  private static final Logger logger = LoggerFactory.getLogger(ExampleCplexSolver.class);
 
-  private ExampleSolver() {}
+  private ExampleCplexSolver() {}
 
   public static void main(String[] args) {
     // this one will not be used in the future. We will use LD_LIBRARY_PATH instead.
@@ -30,7 +30,6 @@ public final class ExampleSolver {
         "/Users/Tung/Applications/IBM/ILOG/CPLEX_Studio1263/cplex/bin/x86-64_osx"
             + "/libcplex1263.jnilib");
     try {
-      final long startTime = System.nanoTime();
       final IloCplex model = new IloCplex();
       final IloNumVar[][] decisionVars = new IloNumVar[3][4];
 
