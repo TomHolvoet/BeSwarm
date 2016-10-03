@@ -134,7 +134,7 @@ public final class RatsFlight {
             velocityController4d,
             trajectory,
             RosTime.create(connectedNode),
-            ratsParameter.droneName());
+            ratsParameter.loggerName());
 
     return BebopFollowTrajectory.builder()
         .withVelocity4dService(bebopServices.velocity4dService())

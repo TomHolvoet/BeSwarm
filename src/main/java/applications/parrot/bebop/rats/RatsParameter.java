@@ -45,6 +45,7 @@ abstract class RatsParameter {
         .droneName(parameterTree.getString("/drone_name"))
         .poseTopic(parameterTree.getString("/pose_topic"))
         .controlFrequencyInHz(parameterTree.getDouble("/control_frequency_in_hz"))
+        .loggerName(parameterTree.getString("/logger_name"))
         .build();
   }
 
@@ -72,6 +73,8 @@ abstract class RatsParameter {
 
   abstract double controlFrequencyInHz();
 
+  abstract String loggerName();
+
   @AutoValue.Builder
   public abstract static class Builder {
     abstract Builder absoluteTakeOffTimeInSecs(double value);
@@ -93,6 +96,8 @@ abstract class RatsParameter {
     abstract Builder poseTopic(String value);
 
     abstract Builder controlFrequencyInHz(double value);
+
+    abstract Builder loggerName(String value);
 
     abstract RatsParameter build();
   }
