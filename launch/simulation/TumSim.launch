@@ -10,8 +10,12 @@
   <node pkg="rats" type="BeSwarm" name="BeSwarm"
         args="$(arg javanode)" output="screen">
 
+    <!--Use constraint-based programming or not.-->
+    <param name="cp_node" value="true"/>
+
     <!--The durationInSeconds for the trajectory. This is an optional parameter. If you want to use the
-    default durationInSeconds from the choleography then comment the below line.-->
+    default durationInSeconds from the choleography then comment the below line. This parameter
+    is only regarded if non-cp mode is used-->
     <param name="trajectory_duration_in_seconds" value="60.0"/>
 
     <!--Parameters for fake localization-->

@@ -4,6 +4,7 @@ import applications.ExampleFlight;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import commands.Command;
+import commands.ParrotFollowTrajectoryWithCP;
 import commands.WaitForLocalizationDecorator;
 import commands.tumsimcommands.TumSimFollowTrajectory;
 import commands.tumsimcommands.TumSimHover;
@@ -16,10 +17,11 @@ import control.PidParameters;
 import control.VelocityController4d;
 import control.VelocityController4dLogger;
 import control.dto.DroneStateStamped;
+import gazebo_msgs.ModelStates;
 import localization.FakeStateEstimatorDecorator;
 import localization.GazeboModelStateEstimator;
 import localization.StateEstimator;
-import gazebo_msgs.ModelStates;
+import monitors.PoseOutdatedMonitor;
 import org.apache.commons.math3.random.GaussianRandomGenerator;
 import org.apache.commons.math3.random.MersenneTwister;
 import org.ros.node.ConnectedNode;
@@ -111,40 +113,57 @@ final class TumExampleFlightFacade {
         TumSimHover.create(5, RosTime.create(connectedNode), velocity4dService, stateEstimator);
     commands.add(hoverFiveSecond);
 
-    VelocityController4d velocityController4d =
-        DroneVelocityController.pidBuilder()
-            .withTrajectory4d(trajectory4d)
-            .withLinearXParameters(pidLinearX)
-            .withLinearYParameters(pidLinearY)
-            .withLinearZParameters(pidLinearZ)
-            .withAngularZParameters(pidAngularZ)
-            .build();
+    if (parameterTree.getBoolean(nodeName + "/cp_mode")) {
+      final PoseOutdatedMonitor poseOutdatedMonitor =
+          PoseOutdatedMonitor.create(stateEstimator, RosTime.create(connectedNode), 0.2);
+      final Command followTrajectoryWithCP =
+          ParrotFollowTrajectoryWithCP.builder()
+              .withStateEstimator(stateEstimator)
+              .withPoseOutdatedMonitor(poseOutdatedMonitor)
+              .withTrajectory(trajectory4d)
+              .withControlRateInSeconds(getControlRateInSeconds(nodeName, parameterTree))
+              .withPidLinearX(pidLinearX)
+              .withPidLinearY(pidLinearY)
+              .withPidLinearZ(pidLinearZ)
+              .withPidAngularZ(pidAngularZ)
+              .withVelocity4dService(velocity4dService)
+              .build();
+      commands.add(followTrajectoryWithCP);
+    } else {
+      VelocityController4d velocityController4d =
+          DroneVelocityController.pidBuilder()
+              .withTrajectory4d(trajectory4d)
+              .withLinearXParameters(pidLinearX)
+              .withLinearYParameters(pidLinearY)
+              .withLinearZParameters(pidLinearZ)
+              .withAngularZParameters(pidAngularZ)
+              .build();
 
-    if (parameterTree.getBoolean(nodeName + "/pid_co_filter")) {
-      logger.info("Run with pid filter.");
-      final double filterTimeConstant =
-          parameterTree.getDouble(nodeName + "/pid_co_filter_time_constant");
-      velocityController4d = PidCoFilter4d.create(velocityController4d, filterTimeConstant);
+      if (parameterTree.getBoolean(nodeName + "/pid_co_filter")) {
+        logger.info("Run with pid filter.");
+        final double filterTimeConstant =
+            parameterTree.getDouble(nodeName + "/pid_co_filter_time_constant");
+        velocityController4d = PidCoFilter4d.create(velocityController4d, filterTimeConstant);
+      }
+
+      velocityController4d =
+          VelocityController4dLogger.create(
+              velocityController4d, trajectory4d, RosTime.create(connectedNode), "drone");
+
+      final Command followTrajectory =
+          TumSimFollowTrajectory.builder()
+              .withVelocity4dService(velocity4dService)
+              .withStateEstimator(stateEstimator)
+              .withTimeProvider(RosTime.create(connectedNode))
+              .withDurationInSeconds(trajectoryDurationInSeconds)
+              .withVelocityController4d(velocityController4d)
+              .withControlRateInSeconds(getControlRateInSeconds(nodeName, parameterTree))
+              .build();
+
+      final Command waitForLocalizationThenFollowTrajectory =
+          WaitForLocalizationDecorator.create(stateEstimator, followTrajectory);
+      commands.add(waitForLocalizationThenFollowTrajectory);
     }
-
-    velocityController4d =
-        VelocityController4dLogger.create(
-            velocityController4d, trajectory4d, RosTime.create(connectedNode), "drone");
-
-    final Command followTrajectory =
-        TumSimFollowTrajectory.builder()
-            .withVelocity4dService(velocity4dService)
-            .withStateEstimator(stateEstimator)
-            .withTimeProvider(RosTime.create(connectedNode))
-            .withDurationInSeconds(trajectoryDurationInSeconds)
-            .withVelocityController4d(velocityController4d)
-            .withControlRateInSeconds(getControlRateInSeconds(nodeName, parameterTree))
-            .build();
-
-    final Command waitForLocalizationThenFollowTrajectory =
-        WaitForLocalizationDecorator.create(stateEstimator, followTrajectory);
-
-    commands.add(waitForLocalizationThenFollowTrajectory);
 
     final Command land = TumSimLand.create(landService, flyingStateService);
     commands.add(land);
