@@ -35,7 +35,6 @@ public final class ExampleRatsCP {
                 .withPidLinearZ(DefaultPidParameters.LINEAR_Z.getParameters())
                 .withPidAngularZ(DefaultPidParameters.ANGULAR_Z.getParameters())
                 .build();
-        ratsCP.buildModel();
         logger.info(ratsCP.solve().toString());
         runningTime += System.nanoTime() - startTime;
       }

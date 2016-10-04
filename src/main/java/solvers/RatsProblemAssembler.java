@@ -90,7 +90,7 @@ public final class RatsProblemAssembler {
     return model.numVarArray(4, lowerBound, upperBound);
   }
 
-  public void buildModel() throws IloException {
+  private void buildModel() throws IloException {
     addReferenceVelocityConstraints();
     addL1NormConstraint();
     addLinearPidConstraints();
@@ -99,6 +99,8 @@ public final class RatsProblemAssembler {
   }
 
   public Optional<BodyFrameVelocity> solve() throws IloException {
+    buildModel();
+
     final boolean solvable = model.solve();
     if (solvable) {
       final double velX = model.getValue(velBodyX);
