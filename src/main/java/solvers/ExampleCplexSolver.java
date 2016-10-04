@@ -30,31 +30,39 @@ public final class ExampleCplexSolver {
         "/Users/Tung/Applications/IBM/ILOG/CPLEX_Studio1263/cplex/bin/x86-64_osx"
             + "/libcplex1263.jnilib");
     try {
-      final IloCplex model = new IloCplex();
-      final IloNumVar[][] decisionVars = new IloNumVar[3][4];
+      long runningTime = 0;
+      for (int i = 0; i < 1000; i++) {
+        final long startTime = System.nanoTime();
+        final IloCplex model = new IloCplex();
+        final IloNumVar[][] decisionVars = new IloNumVar[3][4];
 
-      decisionVars[0] = createNumVarArray(new String[] {"ax", "bx", "cx", "dx"}, model);
-      decisionVars[1] = createNumVarArray(new String[] {"ay", "by", "cy", "dy"}, model);
-      decisionVars[2] = createNumVarArray(new String[] {"az", "bz", "cz", "dz"}, model);
+        decisionVars[0] = createNumVarArray(new String[]{"ax", "bx", "cx", "dx"}, model);
+        decisionVars[1] = createNumVarArray(new String[]{"ay", "by", "cy", "dy"}, model);
+        decisionVars[2] = createNumVarArray(new String[]{"az", "bz", "cz", "dz"}, model);
 
-      final List<Double> discreteTimeInSecs = createDiscreteTime();
-      addVelocityConstraints(decisionVars, model, discreteTimeInSecs);
-      addAccelerationConstraints(decisionVars, model, discreteTimeInSecs);
-      addAvoidObstacleConstraints(decisionVars, model, discreteTimeInSecs);
-      addInitialPositionConstraints(decisionVars, model);
-      addGoalPositionConstraints(decisionVars, model);
-      addObjectiveFunction(decisionVars, model, discreteTimeInSecs);
+        final List<Double> discreteTimeInSecs = createDiscreteTime();
+        addVelocityConstraints(decisionVars, model, discreteTimeInSecs);
+        addAccelerationConstraints(decisionVars, model, discreteTimeInSecs);
+        addAvoidObstacleConstraints(decisionVars, model, discreteTimeInSecs);
+        addInitialPositionConstraints(decisionVars, model);
+        addGoalPositionConstraints(decisionVars, model);
+        addObjectiveFunction(decisionVars, model, discreteTimeInSecs);
 
-      model.solve();
+        model.solve();
 
-      model.output().println("Solution status = " + model.getStatus());
-      model.output().println("Solution value  = " + model.getObjValue());
+        runningTime += System.nanoTime() - startTime;
 
-      printSolution(model.getValues(decisionVars[0]));
-      printSolution(model.getValues(decisionVars[1]));
-      printSolution(model.getValues(decisionVars[2]));
+        model.output().println("Solution status = " + model.getStatus());
+        model.output().println("Solution value  = " + model.getObjValue());
 
-      model.end();
+        printSolution(model.getValues(decisionVars[0]));
+        printSolution(model.getValues(decisionVars[1]));
+        printSolution(model.getValues(decisionVars[2]));
+
+        model.end();
+      }
+
+      logger.info("Running time is: {}", (runningTime / 1000.0) / 1.0E9);
 
     } catch (IloException e) {
       logger.info("Concert exception caught", e);
