@@ -1,5 +1,6 @@
 package solvers;
 
+import control.DefaultPidParameters;
 import control.dto.Pose;
 import control.dto.Velocity;
 import ilog.concert.IloException;
@@ -28,9 +29,11 @@ public final class ExampleRatsCP {
                 .withDesiredPose(Pose.builder().setX(3).setY(2).setZ(1).setYaw(0).build())
                 .withCurrentRefVelocity(Velocity.createZeroVelocity())
                 .withDesiredRefVelocity(Velocity.createZeroVelocity())
-                .withKp(2)
-                .withKd(1)
                 .withPoseValid(1)
+                .withPidLinearX(DefaultPidParameters.LINEAR_X.getParameters())
+                .withPidLinearY(DefaultPidParameters.LINEAR_Y.getParameters())
+                .withPidLinearZ(DefaultPidParameters.LINEAR_Z.getParameters())
+                .withPidAngularZ(DefaultPidParameters.ANGULAR_Z.getParameters())
                 .build();
         ratsCP.buildModel();
         logger.info(ratsCP.solve().toString());

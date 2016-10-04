@@ -1,6 +1,7 @@
 package solvers;
 
 import com.google.common.base.Optional;
+import control.PidParameters;
 import control.dto.BodyFrameVelocity;
 import control.dto.InertialFrameVelocity;
 import control.dto.Pose;
@@ -36,19 +37,22 @@ public final class RatsProblemAssembler {
   private final InertialFrameVelocity currentRefVelocity;
   private final InertialFrameVelocity desiredRefVelocity;
 
-  private final double kp;
-  private final double kd;
+  private final PidParameters pidLinearX;
+  private final PidParameters pidLinearY;
+  private final PidParameters pidLinearZ;
+  private final PidParameters pidAngularZ;
 
   private final IloCplex model;
 
   private RatsProblemAssembler(Builder builder) throws IloException {
-
     this.currentPose = builder.currentPose;
     this.desiredPose = builder.desiredPose;
     this.currentRefVelocity = builder.currentRefVelocity;
     this.desiredRefVelocity = builder.desiredRefVelocity;
-    this.kp = builder.kp;
-    this.kd = builder.kd;
+    this.pidLinearX = builder.pidLinearX;
+    this.pidLinearY = builder.pidLinearY;
+    this.pidLinearZ = builder.pidLinearZ;
+    this.pidAngularZ = builder.pidAngularZ;
     this.model = new IloCplex();
     model.setOut(null);
 
@@ -153,16 +157,16 @@ public final class RatsProblemAssembler {
   private void addLinearPidConstraints() throws IloException {
     model.addEq(
         velPidX,
-        kp * (desiredPose.x() - currentPose.x())
-            + kd * (desiredRefVelocity.linearX() - currentRefVelocity.linearX()));
+        pidLinearX.kp() * (desiredPose.x() - currentPose.x())
+            + pidLinearX.kd() * (desiredRefVelocity.linearX() - currentRefVelocity.linearX()));
     model.addEq(
         velPidY,
-        kp * (desiredPose.y() - currentPose.y())
-            + kd * (desiredRefVelocity.linearY() - currentRefVelocity.linearY()));
+        pidLinearY.kp() * (desiredPose.y() - currentPose.y())
+            + pidLinearY.kd() * (desiredRefVelocity.linearY() - currentRefVelocity.linearY()));
     model.addEq(
         velPidZ,
-        kp * (desiredPose.z() - currentPose.z())
-            + kd * (desiredRefVelocity.linearZ() - currentRefVelocity.linearZ()));
+        pidLinearZ.kp() * (desiredPose.z() - currentPose.z())
+            + pidLinearZ.kd() * (desiredRefVelocity.linearZ() - currentRefVelocity.linearZ()));
   }
 
   private void addAngularPidConstraint() throws IloException {
@@ -170,7 +174,8 @@ public final class RatsProblemAssembler {
         EulerAngle.computeAngleDistance(desiredPose.yaw(), currentPose.yaw());
     model.addEq(
         velPidYaw,
-        kp * yawDifference + kd * (desiredRefVelocity.angularZ() - currentRefVelocity.angularZ()));
+        pidAngularZ.kp() * yawDifference
+            + pidAngularZ.kd() * (desiredRefVelocity.angularZ() - currentRefVelocity.angularZ()));
   }
 
   private void addL1NormObjectiveFunction() throws IloException {
@@ -183,9 +188,11 @@ public final class RatsProblemAssembler {
     private Pose desiredPose;
     private InertialFrameVelocity currentRefVelocity;
     private InertialFrameVelocity desiredRefVelocity;
-    private double kp;
-    private double kd;
     private int poseValid;
+    private PidParameters pidLinearX;
+    private PidParameters pidLinearY;
+    private PidParameters pidLinearZ;
+    private PidParameters pidAngularZ;
 
     private Builder() {}
 
@@ -238,30 +245,6 @@ public final class RatsProblemAssembler {
     }
 
     /**
-     * Sets the {@code kp} and returns a reference to this Builder so that the methods can be
-     * chained together.
-     *
-     * @param val the {@code kp} to set
-     * @return a reference to this Builder
-     */
-    public Builder withKp(double val) {
-      kp = val;
-      return this;
-    }
-
-    /**
-     * Sets the {@code kd} and returns a reference to this Builder so that the methods can be
-     * chained together.
-     *
-     * @param val the {@code kd} to set
-     * @return a reference to this Builder
-     */
-    public Builder withKd(double val) {
-      kd = val;
-      return this;
-    }
-
-    /**
      * Sets the {@code poseValid} and returns a reference to this Builder so that the methods can be
      * chained together.
      *
@@ -270,6 +253,54 @@ public final class RatsProblemAssembler {
      */
     public Builder withPoseValid(int val) {
       poseValid = val;
+      return this;
+    }
+
+    /**
+     * Sets the {@code pidLinearX} and returns a reference to this Builder so that the methods can
+     * be chained together.
+     *
+     * @param val the {@code pidLinearX} to set
+     * @return a reference to this Builder
+     */
+    public Builder withPidLinearX(PidParameters val) {
+      pidLinearX = val;
+      return this;
+    }
+
+    /**
+     * Sets the {@code pidLinearY} and returns a reference to this Builder so that the methods can
+     * be chained together.
+     *
+     * @param val the {@code pidLinearY} to set
+     * @return a reference to this Builder
+     */
+    public Builder withPidLinearY(PidParameters val) {
+      pidLinearY = val;
+      return this;
+    }
+
+    /**
+     * Sets the {@code pidLinearZ} and returns a reference to this Builder so that the methods can
+     * be chained together.
+     *
+     * @param val the {@code pidLinearZ} to set
+     * @return a reference to this Builder
+     */
+    public Builder withPidLinearZ(PidParameters val) {
+      pidLinearZ = val;
+      return this;
+    }
+
+    /**
+     * Sets the {@code pidAngularZ} and returns a reference to this Builder so that the methods can
+     * be chained together.
+     *
+     * @param val the {@code pidAngularZ} to set
+     * @return a reference to this Builder
+     */
+    public Builder withPidAngularZ(PidParameters val) {
+      pidAngularZ = val;
       return this;
     }
 
