@@ -1,4 +1,4 @@
-package control.localization;
+package localization;
 
 import control.dto.BodyFrameVelocity;
 import control.dto.InertialFrameVelocity;

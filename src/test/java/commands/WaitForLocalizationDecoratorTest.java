@@ -2,7 +2,7 @@ package commands;
 
 import com.google.common.base.Optional;
 import control.dto.DroneStateStamped;
-import control.localization.StateEstimator;
+import localization.StateEstimator;
 import org.junit.Test;
 
 import java.util.concurrent.Executors;

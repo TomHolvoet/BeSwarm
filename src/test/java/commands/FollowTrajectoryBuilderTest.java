@@ -2,7 +2,7 @@ package commands;
 
 import commands.bebopcommands.BebopFollowTrajectory;
 import control.VelocityController4d;
-import control.localization.StateEstimator;
+import localization.StateEstimator;
 import org.junit.Test;
 import services.Velocity4dService;
 

@@ -1,7 +1,7 @@
 package commands.bebopcommands;
 
 import commands.AbstractParrotHover;
-import control.localization.StateEstimator;
+import localization.StateEstimator;
 import services.Velocity4dService;
 import time.TimeProvider;
 

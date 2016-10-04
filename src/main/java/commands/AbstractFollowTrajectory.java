@@ -3,7 +3,7 @@ package commands;
 import com.google.common.base.Optional;
 import commands.schedulers.PeriodicTaskRunner;
 import control.dto.DroneStateStamped;
-import control.localization.StateEstimator;
+import localization.StateEstimator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import time.TimeProvider;

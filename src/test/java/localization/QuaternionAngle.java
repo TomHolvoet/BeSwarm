@@ -1,4 +1,4 @@
-package control.localization;
+package localization;
 
 import com.google.auto.value.AutoValue;
 

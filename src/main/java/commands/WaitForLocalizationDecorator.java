@@ -2,7 +2,7 @@ package commands;
 
 import com.google.common.base.Optional;
 import control.dto.DroneStateStamped;
-import control.localization.StateEstimator;
+import localization.StateEstimator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

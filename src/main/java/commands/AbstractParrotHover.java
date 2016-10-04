@@ -2,7 +2,7 @@ package commands;
 
 import control.dto.BodyFrameVelocity;
 import control.dto.Velocity;
-import control.localization.StateEstimator;
+import localization.StateEstimator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import services.Velocity4dService;

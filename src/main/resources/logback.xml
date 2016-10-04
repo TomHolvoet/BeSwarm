@@ -107,7 +107,7 @@
     <appender-ref ref="FILE_ODOM_VELOCITY"/>
   </logger>
 
-  <logger name="control.localization.FakeStateEstimatorDecorator" level="TRACE"
+  <logger name="localization.FakeStateEstimatorDecorator" level="TRACE"
           additivity="false">
     <appender-ref ref="FILE_GROUND_TRUTH_POSE"/>
   </logger>

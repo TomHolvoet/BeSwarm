@@ -4,6 +4,6 @@
  * @author Hoang Tung Dinh
  */
 @ParametersAreNonnullByDefault
-package control.localization;
+package localization;
 
 import javax.annotation.ParametersAreNonnullByDefault;

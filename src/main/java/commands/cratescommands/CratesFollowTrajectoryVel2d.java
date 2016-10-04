@@ -4,7 +4,7 @@ import commands.AbstractFollowTrajectory;
 import control.LinearPidController1d;
 import control.Trajectory1d;
 import control.dto.DroneStateStamped;
-import control.localization.StateEstimator;
+import localization.StateEstimator;
 import services.Velocity2dService;
 import time.TimeProvider;
 
