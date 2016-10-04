@@ -124,7 +124,6 @@ public final class RatsProblemAssembler {
               .setLinearZ(velZ)
               .setAngularZ(velYaw)
               .build();
-
       model.end();
       return Optional.of(resultingVelocity);
     } else {
