@@ -11,7 +11,7 @@
         args="$(arg javanode)" output="screen">
 
     <!--Use constraint-based programming or not.-->
-    <param name="cp_node" value="true"/>
+    <param name="cp_mode" value="true"/>
 
     <!--The durationInSeconds for the trajectory. This is an optional parameter. If you want to use the
     default durationInSeconds from the choleography then comment the below line. This parameter
