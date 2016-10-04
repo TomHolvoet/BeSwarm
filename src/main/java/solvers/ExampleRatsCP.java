@@ -19,19 +19,23 @@ public final class ExampleRatsCP {
             + "/libcplex1263.jnilib");
 
     try {
-      final long startTime = System.nanoTime();
-      final RatsProblemAssembler ratsCP =
-          RatsProblemAssembler.create(
-              Pose.createZeroPose(),
-              Pose.builder().setX(3).setY(2).setZ(1).setYaw(0).build(),
-              Velocity.createZeroVelocity(),
-              Velocity.createZeroVelocity(),
-              2,
-              1,
-              1);
-      ratsCP.buildModel();
-      logger.info(ratsCP.solve().toString());
-      logger.info(String.valueOf((System.nanoTime() - startTime) / 1.0E9));
+      long runningTime = 0;
+      for (int i = 0; i < 1000; i++) {
+        final long startTime = System.nanoTime();
+        final RatsProblemAssembler ratsCP =
+            RatsProblemAssembler.create(
+                Pose.createZeroPose(),
+                Pose.builder().setX(3).setY(2).setZ(1).setYaw(0).build(),
+                Velocity.createZeroVelocity(),
+                Velocity.createZeroVelocity(),
+                2,
+                1,
+                1);
+        ratsCP.buildModel();
+        logger.info(ratsCP.solve().toString());
+        runningTime += System.nanoTime() - startTime;
+      }
+      logger.info("Running time is {}", String.valueOf((runningTime / 1000.0) / 1.0E9));
     } catch (IloException e) {
       logger.info("Solver exception!!!", e);
     }
