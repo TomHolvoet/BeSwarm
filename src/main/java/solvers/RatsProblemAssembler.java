@@ -41,15 +41,14 @@ public final class RatsProblemAssembler {
 
   private final IloCplex model;
 
-  public RatsProblemAssembler(
+  private RatsProblemAssembler(
       Pose currentPose,
       Pose desiredPose,
       InertialFrameVelocity currentRefVelocity,
       InertialFrameVelocity desiredRefVelocity,
       double kp,
       double kd,
-      int poseValid,
-      IloCplex model)
+      int poseValid)
       throws IloException {
 
     this.currentPose = currentPose;
@@ -58,7 +57,7 @@ public final class RatsProblemAssembler {
     this.desiredRefVelocity = desiredRefVelocity;
     this.kp = kp;
     this.kd = kd;
-    this.model = model;
+    this.model = new IloCplex();
 
     // bound: [-1, 1]
     final IloNumVar[] bodyVelVars = initBodyVelocityVars(model, -1 * poseValid, 1 * poseValid);
@@ -84,6 +83,19 @@ public final class RatsProblemAssembler {
     l1Norm = model.numVar(-Double.MAX_VALUE, Double.MAX_VALUE);
   }
 
+  public static RatsProblemAssembler create(
+      Pose currentPose,
+      Pose desiredPose,
+      InertialFrameVelocity currentRefVelocity,
+      InertialFrameVelocity desiredRefVelocity,
+      double kp,
+      double kd,
+      int poseValid)
+      throws IloException {
+    return new RatsProblemAssembler(
+        currentPose, desiredPose, currentRefVelocity, desiredRefVelocity, kp, kd, poseValid);
+  }
+
   private static IloNumVar[] initBodyVelocityVars(
       IloModeler model, double lowerBound, double upperBound) throws IloException {
     return model.numVarArray(4, lowerBound, upperBound);
@@ -94,6 +106,7 @@ public final class RatsProblemAssembler {
     addL1NormConstraint();
     addLinearPidConstraints();
     addAngularPidConstraint();
+    addL1NormObjectiveFunction();
   }
 
   public Optional<BodyFrameVelocity> solve() throws IloException {
@@ -111,6 +124,7 @@ public final class RatsProblemAssembler {
               .setLinearZ(velZ)
               .setAngularZ(velYaw)
               .build();
+
       model.end();
       return Optional.of(resultingVelocity);
     } else {
@@ -173,5 +187,9 @@ public final class RatsProblemAssembler {
     model.addEq(
         velPidYaw,
         kp * yawDifference + kd * (desiredRefVelocity.angularZ() - currentRefVelocity.angularZ()));
+  }
+
+  private void addL1NormObjectiveFunction() throws IloException {
+    model.addMinimize(l1Norm);
   }
 }
