@@ -7,7 +7,7 @@
   <include file="$(find cvg_sim_gazebo)/launch/no_gui_ardrone_empty_world.launch"/>
 
   <!--Launch the java node. The main class must extend TumExampleFlightFacade.-->
-  <node pkg="agentwise_bebop" type="BeSwarm" name="BeSwarm"
+  <node pkg="rats" type="BeSwarm" name="BeSwarm"
         args="$(arg javanode)" output="screen">
 
     <!--The durationInSeconds for the trajectory. This is an optional parameter. If you want to use the
