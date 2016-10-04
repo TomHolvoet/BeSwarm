@@ -4,9 +4,9 @@ import com.google.common.base.Optional;
 import commands.schedulers.PeriodicTaskRunner;
 import control.dto.DroneStateStamped;
 import localization.StateEstimator;
+import org.ros.time.TimeProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import time.TimeProvider;
 
 /**
  * Follow trajectory command.
@@ -53,7 +53,7 @@ public abstract class AbstractFollowTrajectory implements Command {
     private double lastTimeStamp = Double.MIN_VALUE;
 
     protected AbstractControlLoop() {
-      this.startTimeInSeconds = timeProvider.getCurrentTimeSeconds();
+      this.startTimeInSeconds = timeProvider.getCurrentTime().toSeconds();
       this.stateLifeDurationInNumberOfControlLoops =
           (int) Math.ceil(droneStateLifeDurationInSeconds / controlRateInSeconds);
     }
@@ -74,7 +74,7 @@ public abstract class AbstractFollowTrajectory implements Command {
       } else {
         logger.trace("Got pose and velocity. Start computing the next velocity response.");
         final double currentTimeInSeconds =
-            timeProvider.getCurrentTimeSeconds() - startTimeInSeconds;
+            timeProvider.getCurrentTime().toSeconds() - startTimeInSeconds;
         computeAndSendResponse(currentTimeInSeconds, currentState.get());
       }
     }

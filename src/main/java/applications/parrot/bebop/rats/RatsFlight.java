@@ -20,6 +20,7 @@ import localization.StateEstimator;
 import geometry_msgs.PoseStamped;
 import nav_msgs.Odometry;
 import org.ros.node.ConnectedNode;
+import org.ros.time.TimeProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import services.FlyingStateService;
@@ -33,7 +34,6 @@ import std_msgs.Time;
 import taskexecutor.Task;
 import taskexecutor.TaskType;
 import time.RosTime;
-import time.TimeProvider;
 
 import java.util.ArrayList;
 import java.util.Collection;

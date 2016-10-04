@@ -3,7 +3,7 @@ package monitors;
 import com.google.common.base.Optional;
 import control.dto.DroneStateStamped;
 import localization.StateEstimator;
-import time.TimeProvider;
+import org.ros.time.TimeProvider;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -52,7 +52,7 @@ public final class PoseOutdatedMonitor {
       final Optional<DroneStateStamped> currentState = stateEstimator.getCurrentState();
 
       if (currentState.isPresent()) {
-        final double currentTime = timeProvider.getCurrentTimeSeconds();
+        final double currentTime = timeProvider.getCurrentTime().toSeconds();
         if (currentTime - currentState.get().getTimeStampInSeconds() >= expiredTimeInSecs) {
           poseStatus.set(PoseStatus.OUTDATED);
         } else {

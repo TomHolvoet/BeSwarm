@@ -2,8 +2,8 @@ package commands.tumsimcommands;
 
 import commands.AbstractParrotHover;
 import localization.StateEstimator;
+import org.ros.time.TimeProvider;
 import services.Velocity4dService;
-import time.TimeProvider;
 
 /**
  * AbstractHover command for the ArDrone in the Tum simulator.

@@ -9,8 +9,8 @@ import gazebo_msgs.ModelStates;
 import geometry_msgs.Point;
 import geometry_msgs.Quaternion;
 import geometry_msgs.Twist;
+import org.ros.time.TimeProvider;
 import services.rossubscribers.MessagesSubscriberService;
-import time.TimeProvider;
 import utils.math.Transformations;
 
 /**
@@ -94,7 +94,7 @@ public final class GazeboModelStateEstimator implements StateEstimator {
     final InertialFrameVelocity inertialFrameVelocity =
         getInertialFrameVelocity(modelStates, index);
 
-    final double timeStampInSeconds = timeProvider.getCurrentTimeSeconds();
+    final double timeStampInSeconds = timeProvider.getCurrentTime().toSeconds();
     return Optional.of(DroneStateStamped.create(pose, inertialFrameVelocity, timeStampInSeconds));
   }
 }

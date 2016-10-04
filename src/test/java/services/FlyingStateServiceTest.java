@@ -6,13 +6,14 @@ import org.mockito.ArgumentCaptor;
 import org.ros.internal.message.Message;
 import org.ros.message.MessageListener;
 import org.ros.node.topic.Subscriber;
+import org.ros.time.TimeProvider;
 import services.rossubscribers.FlyingState;
 import services.rossubscribers.MessagesSubscriberService;
-import time.TimeProvider;
 
 import java.util.Map;
 
 import static com.google.common.truth.Truth.assertThat;
+import static org.mockito.Mockito.RETURNS_MOCKS;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
@@ -30,7 +31,7 @@ public abstract class FlyingStateServiceTest<T, U extends Message> {
   public void testUpdateFlyingState() {
     final Subscriber<U> subscriber = mock(Subscriber.class);
     final MessagesSubscriberService<U> flyingStateSubscriber =
-        MessagesSubscriberService.create(subscriber, mock(TimeProvider.class));
+        MessagesSubscriberService.create(subscriber, mock(TimeProvider.class, RETURNS_MOCKS));
 
     final ArgumentCaptor<MessageListener> argumentCaptor =
         ArgumentCaptor.forClass(MessageListener.class);

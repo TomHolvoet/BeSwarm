@@ -17,12 +17,12 @@ import localization.StateEstimator;
 import org.ros.namespace.GraphName;
 import org.ros.node.AbstractNodeMain;
 import org.ros.node.ConnectedNode;
+import org.ros.time.TimeProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import services.Velocity4dService;
 import services.parrot.BebopServiceFactory;
 import time.RosTime;
-import time.TimeProvider;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -155,7 +155,7 @@ public final class PidCpuUsageOT extends AbstractNodeMain {
       final InertialFrameVelocity nextVelocity =
           velocityController.computeNextResponse(
               currentPose, currentVelocity, currentTimeInSeconds);
-      final long currentTimeInNanoSecs = timeProvider.getCurrentTimeNanoSeconds();
+      final long currentTimeInNanoSecs = timeProvider.getCurrentTime().totalNsecs();
       if (lastTimeInNanoSecs == -1) {
         lastTimeInNanoSecs = currentTimeInNanoSecs;
       } else {
@@ -185,7 +185,7 @@ public final class PidCpuUsageOT extends AbstractNodeMain {
           DroneStateStamped.create(
               Pose.createZeroPose(),
               Velocity.createZeroVelocity(),
-              timeProvider.getCurrentTimeSeconds()));
+              timeProvider.getCurrentTime().toSeconds()));
     }
   }
 }

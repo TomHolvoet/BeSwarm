@@ -1,6 +1,6 @@
 package commands;
 
-import time.TimeProvider;
+import org.ros.time.TimeProvider;
 
 import static com.google.common.base.Preconditions.checkArgument;
 

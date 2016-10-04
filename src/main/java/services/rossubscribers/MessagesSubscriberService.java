@@ -6,9 +6,9 @@ import com.google.common.collect.Queues;
 import org.ros.internal.message.Message;
 import org.ros.message.MessageListener;
 import org.ros.node.topic.Subscriber;
+import org.ros.time.TimeProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import time.TimeProvider;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -123,7 +123,7 @@ public class MessagesSubscriberService<T extends Message> {
     @Override
     public void onNewMessage(K newMessage) {
       logger.trace(
-          "{} {}", timeProvider.getCurrentTimeSeconds(), newMessage.toRawMessage().getType());
+          "{} {}", timeProvider.getCurrentTime().toSeconds(), newMessage.toRawMessage().getType());
       messageQueue.add(newMessage);
       mostRecentMessage = newMessage;
       notifyMessageObservers(newMessage);

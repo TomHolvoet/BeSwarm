@@ -1,6 +1,8 @@
 package time;
 
+import org.ros.message.Time;
 import org.ros.node.ConnectedNode;
+import org.ros.time.TimeProvider;
 
 /**
  * A {@link TimeProvider}'s instance using ROS timer.
@@ -25,12 +27,7 @@ public final class RosTime implements TimeProvider {
   }
 
   @Override
-  public long getCurrentTimeNanoSeconds() {
-    return connectedNode.getCurrentTime().totalNsecs();
-  }
-
-  @Override
-  public double getCurrentTimeSeconds() {
-    return connectedNode.getCurrentTime().toSeconds();
+  public Time getCurrentTime() {
+    return connectedNode.getCurrentTime();
   }
 }

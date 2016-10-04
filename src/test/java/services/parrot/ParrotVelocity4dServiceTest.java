@@ -14,8 +14,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.ros.node.topic.Publisher;
+import org.ros.time.TimeProvider;
 import services.Velocity4dService;
-import time.TimeProvider;
 import utils.TestUtils;
 import utils.math.VelocityProvider;
 import utils.math.VelocityProviderWithThreshold;
@@ -24,6 +24,7 @@ import javax.annotation.Nullable;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
+import static org.mockito.Mockito.RETURNS_MOCKS;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -66,7 +67,7 @@ public class ParrotVelocity4dServiceTest {
     final Velocity4dService parrotVelocity4dService =
         ParrotVelocity4dService.builder()
             .publisher(publisher)
-            .timeProvider(mock(TimeProvider.class))
+            .timeProvider(mock(TimeProvider.class, RETURNS_MOCKS))
             .build();
     parrotVelocity4dService.sendInertialFrameVelocity(inertialFrameVelocity, pose);
     checkMessageSetUp(bodyFrameVelocity, linear, angular);
@@ -80,7 +81,7 @@ public class ParrotVelocity4dServiceTest {
     final Velocity4dService parrotVelocity4dService =
         ParrotVelocity4dService.builder()
             .publisher(publisher)
-            .timeProvider(mock(TimeProvider.class))
+            .timeProvider(mock(TimeProvider.class, RETURNS_MOCKS))
             .minLinearX(-0.25)
             .minLinearY(-0.25)
             .minLinearZ(-0.25)

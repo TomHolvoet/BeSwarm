@@ -2,10 +2,10 @@ package control;
 
 import control.dto.InertialFrameVelocity;
 import control.dto.Pose;
+import org.ros.time.TimeProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
-import time.TimeProvider;
 
 /**
  * A decorator for logging the state of a {@link VelocityController4d}. This class is assumed to be
@@ -46,7 +46,7 @@ public final class VelocityController4dLogger implements VelocityController4d {
   @Override
   public InertialFrameVelocity computeNextResponse(
       Pose currentPose, InertialFrameVelocity currentVelocity, double currentTimeInSeconds) {
-    final double currentSystemTimeInSeconds = systemTimeProvider.getCurrentTimeSeconds();
+    final double currentSystemTimeInSeconds = systemTimeProvider.getCurrentTime().toSeconds();
     logPose(currentPose, currentTimeInSeconds, currentSystemTimeInSeconds);
     logVelocity(currentVelocity, currentTimeInSeconds, currentSystemTimeInSeconds);
     return velocityController4d.computeNextResponse(

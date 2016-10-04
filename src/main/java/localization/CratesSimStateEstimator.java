@@ -7,8 +7,8 @@ import control.dto.InertialFrameVelocity;
 import control.dto.Pose;
 import control.dto.Velocity;
 import hal_quadrotor.State;
+import org.ros.time.TimeProvider;
 import services.rossubscribers.MessagesSubscriberService;
-import time.TimeProvider;
 import utils.math.Transformations;
 
 /** @author Hoang Tung Dinh */
@@ -63,7 +63,7 @@ public final class CratesSimStateEstimator implements StateEstimator {
     final InertialFrameVelocity inertialFrameVelocity =
         Transformations.bodyFrameVelocityToInertialFrameVelocity(bodyFrameVelocity, pose);
 
-    final double timeStampInSeconds = timeProvider.getCurrentTimeSeconds();
+    final double timeStampInSeconds = timeProvider.getCurrentTime().toSeconds();
     return Optional.of(DroneStateStamped.create(pose, inertialFrameVelocity, timeStampInSeconds));
   }
 }

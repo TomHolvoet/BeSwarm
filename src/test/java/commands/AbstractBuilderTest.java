@@ -9,11 +9,12 @@ import control.dto.Pose;
 import localization.StateEstimator;
 import org.junit.Before;
 import org.junit.Test;
+import org.ros.time.TimeProvider;
 import services.Velocity4dService;
-import time.TimeProvider;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyDouble;
+import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
 import static org.mockito.Mockito.RETURNS_MOCKS;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
@@ -39,7 +40,7 @@ public abstract class AbstractBuilderTest {
     verify(velocityController4d, atLeastOnce())
         .computeNextResponse(any(Pose.class), any(InertialFrameVelocity.class), anyDouble());
     verify(stateEstimator, atLeastOnce()).getCurrentState();
-    verify(timeProvider, atLeastOnce()).getCurrentTimeSeconds();
+    verify(timeProvider, atLeastOnce()).getCurrentTime();
   }
 
   abstract void createAndExecuteCommand(ArgumentHolder argumentHolder);
@@ -52,7 +53,7 @@ public abstract class AbstractBuilderTest {
         .thenReturn(Optional.of(mock(DroneStateStamped.class, RETURNS_MOCKS)));
 
     velocityController4d = mock(VelocityController4d.class, RETURNS_MOCKS);
-    timeProvider = mock(TimeProvider.class);
+    timeProvider = mock(TimeProvider.class, RETURNS_MOCKS);
   }
 
   @Test

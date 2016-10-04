@@ -1,9 +1,9 @@
 package commands.bebopcommands;
 
 import commands.Command;
+import org.ros.time.TimeProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import time.TimeProvider;
 
 import java.util.concurrent.TimeUnit;
 
@@ -30,7 +30,7 @@ public final class BebopWaitUntil implements Command {
 
   @Override
   public void execute() {
-    while (timeProvider.getCurrentTimeSeconds() < endTimeInSecs) {
+    while (timeProvider.getCurrentTime().toSeconds() < endTimeInSecs) {
       try {
         TimeUnit.MILLISECONDS.sleep(20);
       } catch (InterruptedException e) {

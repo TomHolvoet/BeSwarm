@@ -6,10 +6,10 @@ import control.dto.Pose;
 import control.dto.Velocity;
 import geometry_msgs.Twist;
 import org.ros.node.topic.Publisher;
+import org.ros.time.TimeProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import services.Velocity4dService;
-import time.TimeProvider;
 import utils.math.Transformations;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -101,7 +101,7 @@ final class ParrotVelocity4dService implements Velocity4dService {
 
     velocityLogger.trace(
         "{} {} {} {} {}",
-        timeProvider.getCurrentTimeSeconds(),
+        timeProvider.getCurrentTime().toSeconds(),
         refinedVelocity.linearX(),
         refinedVelocity.linearY(),
         refinedVelocity.linearZ(),

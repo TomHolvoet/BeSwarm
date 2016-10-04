@@ -3,10 +3,10 @@ package commands.bebopcommands;
 import commands.Command;
 import control.dto.BodyFrameVelocity;
 import control.dto.Velocity;
+import org.ros.time.TimeProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import services.Velocity4dService;
-import time.TimeProvider;
 
 import java.util.concurrent.TimeUnit;
 
@@ -41,7 +41,7 @@ public final class BebopHoverUntil implements Command {
     final BodyFrameVelocity bodyFrameVelocity = Velocity.createZeroVelocity();
     velocity4dService.sendBodyFrameVelocity(bodyFrameVelocity);
 
-    while (timeProvider.getCurrentTimeSeconds() < endTimeInSeconds) {
+    while (timeProvider.getCurrentTime().toSeconds() < endTimeInSeconds) {
       try {
         TimeUnit.MILLISECONDS.sleep(20);
       } catch (InterruptedException e) {

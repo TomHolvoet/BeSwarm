@@ -3,8 +3,8 @@ package commands.bebopcommands;
 import commands.AbstractParrotFollowTrajectory;
 import control.VelocityController4d;
 import localization.StateEstimator;
+import org.ros.time.TimeProvider;
 import services.Velocity4dService;
-import time.TimeProvider;
 
 /**
  * Follow trajectory command for bebop.
