@@ -122,6 +122,7 @@ final class TumExampleFlightFacade {
               .withPoseOutdatedMonitor(poseOutdatedMonitor)
               .withTrajectory(trajectory4d)
               .withControlRateInSeconds(getControlRateInSeconds(nodeName, parameterTree))
+              .withTimeProvider(RosTime.create(connectedNode))
               .withPidLinearX(pidLinearX)
               .withPidLinearY(pidLinearY)
               .withPidLinearZ(pidLinearZ)

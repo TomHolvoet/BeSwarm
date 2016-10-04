@@ -18,6 +18,8 @@ import org.slf4j.LoggerFactory;
 import services.Velocity4dService;
 import solvers.RatsProblemAssembler;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 /** @author Hoang Tung Dinh */
 public final class ParrotFollowTrajectoryWithCP implements Command {
 
@@ -113,7 +115,7 @@ public final class ParrotFollowTrajectoryWithCP implements Command {
     private StateEstimator stateEstimator;
     private PoseOutdatedMonitor poseOutdatedMonitor;
     private FiniteTrajectory4d trajectory;
-    private double controlRateInSeconds;
+    private Double controlRateInSeconds;
     private TimeProvider timeProvider;
     private PidParameters pidLinearX;
     private PidParameters pidLinearY;
@@ -250,6 +252,16 @@ public final class ParrotFollowTrajectoryWithCP implements Command {
      *     ParrotFollowTrajectoryWithCP.Builder}
      */
     public ParrotFollowTrajectoryWithCP build() {
+      checkNotNull(stateEstimator);
+      checkNotNull(poseOutdatedMonitor);
+      checkNotNull(trajectory);
+      checkNotNull(controlRateInSeconds);
+      checkNotNull(timeProvider);
+      checkNotNull(pidLinearX);
+      checkNotNull(pidLinearY);
+      checkNotNull(pidLinearZ);
+      checkNotNull(pidAngularZ);
+      checkNotNull(velocity4dService);
       return new ParrotFollowTrajectoryWithCP(this);
     }
   }
