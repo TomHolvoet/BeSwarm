@@ -26,7 +26,7 @@ public final class PoseOutdatedMonitor {
     this.expiredTimeInSecs = expiredTimeInSecs;
 
     Executors.newSingleThreadScheduledExecutor()
-        .scheduleAtFixedRate(new Monitor(), 0, 50, TimeUnit.MILLISECONDS);
+        .scheduleAtFixedRate(new Probe(), 0, 50, TimeUnit.MILLISECONDS);
   }
 
   public static PoseOutdatedMonitor create(
@@ -43,9 +43,9 @@ public final class PoseOutdatedMonitor {
     OUTDATED
   }
 
-  private final class Monitor implements Runnable {
+  private final class Probe implements Runnable {
 
-    private Monitor() {}
+    private Probe() {}
 
     @Override
     public void run() {
