@@ -74,7 +74,7 @@ public final class BebopStateEstimatorWithPoseStampedAndOdom implements StateEst
     final Optional<Odometry> odometryOptional = odometrySubscriber.getMostRecentMessage();
     if (odometryOptional.isPresent()) {
       final BodyFrameVelocity bodyFrameVelocity =
-          Velocity.createLocalVelocityFrom(odometryOptional.get().getTwist().getTwist());
+          Velocity.createFromTwist(odometryOptional.get().getTwist().getTwist());
       final InertialFrameVelocity inertialFrameVelocity =
           Transformations.bodyFrameVelocityToInertialFrameVelocity(bodyFrameVelocity, pose);
       return Optional.of(inertialFrameVelocity);

@@ -1,6 +1,7 @@
 package control.dto;
 
 import com.google.auto.value.AutoValue;
+import control.Trajectory4d;
 import geometry_msgs.PoseStamped;
 import utils.math.Transformations;
 
@@ -48,7 +49,15 @@ public abstract class Pose {
    * @return a pose with all components equal to zero
    */
   public static Pose createZeroPose() {
-    return Pose.builder().setX(0).setY(0).setZ(0).setYaw(0).build();
+    return builder().setX(0).setY(0).setZ(0).setYaw(0).build();
+  }
+
+  public static Pose createFromTrajectory(Trajectory4d trajectory, double timeInSecs) {
+    final double x = trajectory.getDesiredPositionX(timeInSecs);
+    final double y = trajectory.getDesiredPositionY(timeInSecs);
+    final double z = trajectory.getDesiredPositionZ(timeInSecs);
+    final double yaw = trajectory.getDesiredAngleZ(timeInSecs);
+    return builder().setX(x).setY(y).setZ(z).setYaw(yaw).build();
   }
 
   /**
