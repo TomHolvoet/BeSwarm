@@ -1,7 +1,6 @@
-package commands.bebopcommands;
+package commands;
 
 import com.google.common.base.Optional;
-import commands.Command;
 import commands.schedulers.PeriodicTaskRunner;
 import control.FiniteTrajectory4d;
 import control.PidParameters;
@@ -20,9 +19,9 @@ import services.Velocity4dService;
 import solvers.RatsProblemAssembler;
 
 /** @author Hoang Tung Dinh */
-public final class BebopFollowTrajectoryWithCP implements Command {
+public final class ParrotFollowTrajectoryWithCP implements Command {
 
-  private static final Logger logger = LoggerFactory.getLogger(BebopFollowTrajectoryWithCP.class);
+  private static final Logger logger = LoggerFactory.getLogger(ParrotFollowTrajectoryWithCP.class);
 
   private final StateEstimator stateEstimator;
   private final PoseOutdatedMonitor poseOutdatedMonitor;
@@ -35,7 +34,7 @@ public final class BebopFollowTrajectoryWithCP implements Command {
   private final PidParameters pidAngularZ;
   private final Velocity4dService velocity4dService;
 
-  private BebopFollowTrajectoryWithCP(Builder builder) {
+  private ParrotFollowTrajectoryWithCP(Builder builder) {
     stateEstimator = builder.stateEstimator;
     poseOutdatedMonitor = builder.poseOutdatedMonitor;
     trajectory = builder.trajectory;
@@ -54,7 +53,7 @@ public final class BebopFollowTrajectoryWithCP implements Command {
 
   @Override
   public void execute() {
-    logger.debug("Start executing BebopFollowTrajectoryWithCP command.");
+    logger.debug("Start executing ParrotFollowTrajectoryWithCP command.");
     final Runnable controlLoop = new ControlLoop();
     PeriodicTaskRunner.run(controlLoop, controlRateInSeconds, trajectory.getTrajectoryDuration());
   }
@@ -109,7 +108,7 @@ public final class BebopFollowTrajectoryWithCP implements Command {
     }
   }
 
-  /** {@code BebopFollowTrajectoryWithCP} builder static inner class. */
+  /** {@code ParrotFollowTrajectoryWithCP} builder static inner class. */
   public static final class Builder {
     private StateEstimator stateEstimator;
     private PoseOutdatedMonitor poseOutdatedMonitor;
@@ -245,13 +244,13 @@ public final class BebopFollowTrajectoryWithCP implements Command {
     }
 
     /**
-     * Returns a {@code BebopFollowTrajectoryWithCP} built from the parameters previously set.
+     * Returns a {@code ParrotFollowTrajectoryWithCP} built from the parameters previously set.
      *
-     * @return a {@code BebopFollowTrajectoryWithCP} built with parameters of this {@code
-     *     BebopFollowTrajectoryWithCP.Builder}
+     * @return a {@code ParrotFollowTrajectoryWithCP} built with parameters of this {@code
+     *     ParrotFollowTrajectoryWithCP.Builder}
      */
-    public BebopFollowTrajectoryWithCP build() {
-      return new BebopFollowTrajectoryWithCP(this);
+    public ParrotFollowTrajectoryWithCP build() {
+      return new ParrotFollowTrajectoryWithCP(this);
     }
   }
 }
