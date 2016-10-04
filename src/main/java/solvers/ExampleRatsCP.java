@@ -23,19 +23,20 @@ public final class ExampleRatsCP {
       for (int i = 0; i < 1000; i++) {
         final long startTime = System.nanoTime();
         final RatsProblemAssembler ratsCP =
-            RatsProblemAssembler.create(
-                Pose.createZeroPose(),
-                Pose.builder().setX(3).setY(2).setZ(1).setYaw(0).build(),
-                Velocity.createZeroVelocity(),
-                Velocity.createZeroVelocity(),
-                2,
-                1,
-                1);
+            RatsProblemAssembler.builder()
+                .withCurrentPose(Pose.createZeroPose())
+                .withDesiredPose(Pose.builder().setX(3).setY(2).setZ(1).setYaw(0).build())
+                .withCurrentRefVelocity(Velocity.createZeroVelocity())
+                .withDesiredRefVelocity(Velocity.createZeroVelocity())
+                .withKp(2)
+                .withKd(1)
+                .withPoseValid(1)
+                .build();
         ratsCP.buildModel();
         logger.info(ratsCP.solve().toString());
         runningTime += System.nanoTime() - startTime;
       }
-      logger.info("Running time is {}", String.valueOf((runningTime / 1000.0) / 1.0E9));
+      logger.info("Running time is {}", (runningTime / 1000.0) / 1.0E9);
     } catch (IloException e) {
       logger.info("Solver exception!!!", e);
     }

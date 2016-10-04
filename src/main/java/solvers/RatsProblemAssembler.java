@@ -41,26 +41,20 @@ public final class RatsProblemAssembler {
 
   private final IloCplex model;
 
-  private RatsProblemAssembler(
-      Pose currentPose,
-      Pose desiredPose,
-      InertialFrameVelocity currentRefVelocity,
-      InertialFrameVelocity desiredRefVelocity,
-      double kp,
-      double kd,
-      int poseValid)
-      throws IloException {
+  private RatsProblemAssembler(Builder builder) throws IloException {
 
-    this.currentPose = currentPose;
-    this.desiredPose = desiredPose;
-    this.currentRefVelocity = currentRefVelocity;
-    this.desiredRefVelocity = desiredRefVelocity;
-    this.kp = kp;
-    this.kd = kd;
+    this.currentPose = builder.currentPose;
+    this.desiredPose = builder.desiredPose;
+    this.currentRefVelocity = builder.currentRefVelocity;
+    this.desiredRefVelocity = builder.desiredRefVelocity;
+    this.kp = builder.kp;
+    this.kd = builder.kd;
     this.model = new IloCplex();
+    model.setOut(null);
 
     // bound: [-1, 1]
-    final IloNumVar[] bodyVelVars = initBodyVelocityVars(model, -1 * poseValid, 1 * poseValid);
+    final IloNumVar[] bodyVelVars =
+        initBodyVelocityVars(model, -1 * builder.poseValid, 1 * builder.poseValid);
     velBodyX = bodyVelVars[0];
     velBodyY = bodyVelVars[1];
     velBodyZ = bodyVelVars[2];
@@ -83,17 +77,8 @@ public final class RatsProblemAssembler {
     l1Norm = model.numVar(-Double.MAX_VALUE, Double.MAX_VALUE);
   }
 
-  public static RatsProblemAssembler create(
-      Pose currentPose,
-      Pose desiredPose,
-      InertialFrameVelocity currentRefVelocity,
-      InertialFrameVelocity desiredRefVelocity,
-      double kp,
-      double kd,
-      int poseValid)
-      throws IloException {
-    return new RatsProblemAssembler(
-        currentPose, desiredPose, currentRefVelocity, desiredRefVelocity, kp, kd, poseValid);
+  public static Builder builder() {
+    return new Builder();
   }
 
   private static IloNumVar[] initBodyVelocityVars(
@@ -190,5 +175,112 @@ public final class RatsProblemAssembler {
 
   private void addL1NormObjectiveFunction() throws IloException {
     model.addMinimize(l1Norm);
+  }
+
+  /** {@code RatsProblemAssembler} builder static inner class. */
+  public static final class Builder {
+    private Pose currentPose;
+    private Pose desiredPose;
+    private InertialFrameVelocity currentRefVelocity;
+    private InertialFrameVelocity desiredRefVelocity;
+    private double kp;
+    private double kd;
+    private int poseValid;
+
+    private Builder() {}
+
+    /**
+     * Sets the {@code currentPose} and returns a reference to this Builder so that the methods can
+     * be chained together.
+     *
+     * @param val the {@code currentPose} to set
+     * @return a reference to this Builder
+     */
+    public Builder withCurrentPose(Pose val) {
+      currentPose = val;
+      return this;
+    }
+
+    /**
+     * Sets the {@code desiredPose} and returns a reference to this Builder so that the methods can
+     * be chained together.
+     *
+     * @param val the {@code desiredPose} to set
+     * @return a reference to this Builder
+     */
+    public Builder withDesiredPose(Pose val) {
+      desiredPose = val;
+      return this;
+    }
+
+    /**
+     * Sets the {@code currentRefVelocity} and returns a reference to this Builder so that the
+     * methods can be chained together.
+     *
+     * @param val the {@code currentRefVelocity} to set
+     * @return a reference to this Builder
+     */
+    public Builder withCurrentRefVelocity(InertialFrameVelocity val) {
+      currentRefVelocity = val;
+      return this;
+    }
+
+    /**
+     * Sets the {@code desiredRefVelocity} and returns a reference to this Builder so that the
+     * methods can be chained together.
+     *
+     * @param val the {@code desiredRefVelocity} to set
+     * @return a reference to this Builder
+     */
+    public Builder withDesiredRefVelocity(InertialFrameVelocity val) {
+      desiredRefVelocity = val;
+      return this;
+    }
+
+    /**
+     * Sets the {@code kp} and returns a reference to this Builder so that the methods can be
+     * chained together.
+     *
+     * @param val the {@code kp} to set
+     * @return a reference to this Builder
+     */
+    public Builder withKp(double val) {
+      kp = val;
+      return this;
+    }
+
+    /**
+     * Sets the {@code kd} and returns a reference to this Builder so that the methods can be
+     * chained together.
+     *
+     * @param val the {@code kd} to set
+     * @return a reference to this Builder
+     */
+    public Builder withKd(double val) {
+      kd = val;
+      return this;
+    }
+
+    /**
+     * Sets the {@code poseValid} and returns a reference to this Builder so that the methods can be
+     * chained together.
+     *
+     * @param val the {@code poseValid} to set
+     * @return a reference to this Builder
+     */
+    public Builder withPoseValid(int val) {
+      poseValid = val;
+      return this;
+    }
+
+    /**
+     * Returns a {@code RatsProblemAssembler} built from the parameters previously set.
+     *
+     * @return a {@code RatsProblemAssembler} built with parameters of this {@code
+     *     RatsProblemAssembler.Builder}
+     */
+    public RatsProblemAssembler build() throws IloException {
+      return new RatsProblemAssembler(this);
+    }
   }
 }
