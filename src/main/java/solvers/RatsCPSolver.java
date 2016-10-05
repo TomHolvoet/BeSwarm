@@ -13,6 +13,8 @@ import ilog.concert.IloNumVar;
 import ilog.cplex.IloCplex;
 import utils.math.EulerAngle;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 /** @author Hoang Tung Dinh */
 public final class RatsCPSolver {
   private final IloNumVar velBodyX;
@@ -45,7 +47,8 @@ public final class RatsCPSolver {
   private static final double MAX_BODY_VEL = 1;
   private static final double MIN_BODY_VEL = -1;
 
-  private final int poseValid;
+  private final int poseValidSC;
+  private final int onTrajectorySC;
 
   private final IloCplex model;
 
@@ -58,7 +61,8 @@ public final class RatsCPSolver {
     this.pidLinearY = builder.pidLinearY;
     this.pidLinearZ = builder.pidLinearZ;
     this.pidAngularZ = builder.pidAngularZ;
-    this.poseValid = builder.poseValid;
+    this.poseValidSC = builder.poseValid;
+    this.onTrajectorySC = builder.onTrajectory;
     this.model = new IloCplex();
     model.setOut(null);
 
@@ -126,12 +130,27 @@ public final class RatsCPSolver {
     addLinearPidConstraints();
     addAngularPidConstraint();
     addHoverWhenPoseOutdatedConstraint();
+    addHoverWhenOutOfTrajectoryConstraint();
     addL1NormObjectiveFunction();
   }
 
+  private void addHoverWhenOutOfTrajectoryConstraint() throws IloException {
+    setVelBodyBound(MIN_BODY_VEL * onTrajectorySC, MAX_BODY_VEL * onTrajectorySC);
+  }
+
   private void addHoverWhenPoseOutdatedConstraint() throws IloException {
-    velBodyX.setLB(MIN_BODY_VEL * poseValid);
-    velBodyX.setUB(MAX_BODY_VEL * poseValid);
+    setVelBodyBound(MIN_BODY_VEL * poseValidSC, MAX_BODY_VEL * poseValidSC);
+  }
+
+  private void setVelBodyBound(double lowerBound, double upperBound) throws IloException {
+    velBodyX.setLB(lowerBound);
+    velBodyX.setUB(upperBound);
+    velBodyY.setLB(lowerBound);
+    velBodyY.setUB(upperBound);
+    velBodyZ.setLB(lowerBound);
+    velBodyZ.setUB(upperBound);
+    velBodyYaw.setLB(lowerBound);
+    velBodyYaw.setUB(upperBound);
   }
 
   private void addReferenceVelocityConstraints() throws IloException {
@@ -201,7 +220,8 @@ public final class RatsCPSolver {
     private Pose desiredPose;
     private InertialFrameVelocity currentRefVelocity;
     private InertialFrameVelocity desiredRefVelocity;
-    private int poseValid;
+    private Integer poseValid;
+    private Integer onTrajectory;
     private PidParameters pidLinearX;
     private PidParameters pidLinearY;
     private PidParameters pidLinearZ;
@@ -258,14 +278,26 @@ public final class RatsCPSolver {
     }
 
     /**
-     * Sets the {@code poseValid} and returns a reference to this Builder so that the methods can be
-     * chained together.
+     * Sets the {@code poseValidSC} and returns a reference to this Builder so that the methods can
+     * be chained together.
      *
-     * @param val the {@code poseValid} to set
+     * @param val the {@code poseValidSC} to set
      * @return a reference to this Builder
      */
     public Builder withPoseValid(int val) {
       poseValid = val;
+      return this;
+    }
+
+    /**
+     * Sets the {@code onTrajectorySC} and returns a reference to this Builder so that the methods
+     * can be chained together.
+     *
+     * @param val the {@code onTrajectorySC} to set
+     * @return a reference to this Builder
+     */
+    public Builder withOnTrajectory(int val) {
+      onTrajectory = val;
       return this;
     }
 
@@ -320,10 +352,19 @@ public final class RatsCPSolver {
     /**
      * Returns a {@code RatsCPSolver} built from the parameters previously set.
      *
-     * @return a {@code RatsCPSolver} built with parameters of this {@code
-     *     RatsCPSolver.Builder}
+     * @return a {@code RatsCPSolver} built with parameters of this {@code RatsCPSolver.Builder}
      */
     public RatsCPSolver build() throws IloException {
+      checkNotNull(currentPose);
+      checkNotNull(desiredPose);
+      checkNotNull(currentRefVelocity);
+      checkNotNull(desiredRefVelocity);
+      checkNotNull(poseValid);
+      checkNotNull(onTrajectory);
+      checkNotNull(pidLinearX);
+      checkNotNull(pidLinearY);
+      checkNotNull(pidLinearZ);
+      checkNotNull(pidAngularZ);
       return new RatsCPSolver(this);
     }
   }
