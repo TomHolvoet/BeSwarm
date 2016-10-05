@@ -53,7 +53,7 @@ public final class OfflineCollisionChecker {
     return collisionList;
   }
 
-  public static class Collision {
+  public static final class Collision {
     private final FiniteTrajectory4d firstTrajectory;
     private final FiniteTrajectory4d secondTrajectory;
     private final double collisionTimeInSecs;
