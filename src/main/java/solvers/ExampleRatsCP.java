@@ -30,6 +30,7 @@ public final class ExampleRatsCP {
                 .withCurrentRefVelocity(Velocity.createZeroVelocity())
                 .withDesiredRefVelocity(Velocity.createZeroVelocity())
                 .withPoseValid(1)
+                .withOnTrajectory(1)
                 .withPidLinearX(DefaultPidParameters.LINEAR_X.getParameters())
                 .withPidLinearY(DefaultPidParameters.LINEAR_Y.getParameters())
                 .withPidLinearZ(DefaultPidParameters.LINEAR_Z.getParameters())

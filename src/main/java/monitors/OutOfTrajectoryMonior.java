@@ -48,7 +48,11 @@ public final class OutOfTrajectoryMonior {
         trajectory, timeProvider, stateEstimator, startTimeInSecs, minimumDeviationInMeters);
   }
 
-  private enum Status {
+  public Status getStatus() {
+    return status.get();
+  }
+
+  public enum Status {
     WITH_IN_MINIMUM_DEVIATION,
     OUT_OF_TRAJECTORY,
     NO_INFORMATION
