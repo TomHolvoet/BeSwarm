@@ -23,8 +23,8 @@ public final class ExampleRatsCP {
       long runningTime = 0;
       for (int i = 0; i < 1000; i++) {
         final long startTime = System.nanoTime();
-        final RatsProblemAssembler ratsCP =
-            RatsProblemAssembler.builder()
+        final RatsCPSolver ratsCP =
+            RatsCPSolver.builder()
                 .withCurrentPose(Pose.createZeroPose())
                 .withDesiredPose(Pose.builder().setX(3).setY(2).setZ(1).setYaw(0).build())
                 .withCurrentRefVelocity(Velocity.createZeroVelocity())

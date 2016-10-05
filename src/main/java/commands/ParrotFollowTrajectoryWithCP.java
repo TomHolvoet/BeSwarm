@@ -16,7 +16,7 @@ import org.ros.time.TimeProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import services.Velocity4dService;
-import solvers.RatsProblemAssembler;
+import solvers.RatsCPSolver;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -81,8 +81,8 @@ public final class ParrotFollowTrajectoryWithCP implements Command {
 
       if (currentState.isPresent()) {
         try {
-          final RatsProblemAssembler ratsProblem =
-              RatsProblemAssembler.builder()
+          final RatsCPSolver ratsCP =
+              RatsCPSolver.builder()
                   .withCurrentPose(currentState.get().pose())
                   .withDesiredPose(desiredPose)
                   .withCurrentRefVelocity(currentState.get().inertialFrameVelocity())
@@ -97,7 +97,7 @@ public final class ParrotFollowTrajectoryWithCP implements Command {
                   .withPidAngularZ(pidAngularZ)
                   .build();
 
-          final Optional<BodyFrameVelocity> bodyFrameVelocity = ratsProblem.solve();
+          final Optional<BodyFrameVelocity> bodyFrameVelocity = ratsCP.solve();
 
           if (bodyFrameVelocity.isPresent()) {
             velocity4dService.sendBodyFrameVelocity(bodyFrameVelocity.get());

@@ -14,7 +14,7 @@ import ilog.cplex.IloCplex;
 import utils.math.EulerAngle;
 
 /** @author Hoang Tung Dinh */
-public final class RatsProblemAssembler {
+public final class RatsCPSolver {
   private final IloNumVar velBodyX;
   private final IloNumVar velBodyY;
   private final IloNumVar velBodyZ;
@@ -49,7 +49,7 @@ public final class RatsProblemAssembler {
 
   private final IloCplex model;
 
-  private RatsProblemAssembler(Builder builder) throws IloException {
+  private RatsCPSolver(Builder builder) throws IloException {
     this.currentPose = builder.currentPose;
     this.desiredPose = builder.desiredPose;
     this.currentRefVelocity = builder.currentRefVelocity;
@@ -195,7 +195,7 @@ public final class RatsProblemAssembler {
     model.addMinimize(l1Norm);
   }
 
-  /** {@code RatsProblemAssembler} builder static inner class. */
+  /** {@code RatsCPSolver} builder static inner class. */
   public static final class Builder {
     private Pose currentPose;
     private Pose desiredPose;
@@ -318,13 +318,13 @@ public final class RatsProblemAssembler {
     }
 
     /**
-     * Returns a {@code RatsProblemAssembler} built from the parameters previously set.
+     * Returns a {@code RatsCPSolver} built from the parameters previously set.
      *
-     * @return a {@code RatsProblemAssembler} built with parameters of this {@code
-     *     RatsProblemAssembler.Builder}
+     * @return a {@code RatsCPSolver} built with parameters of this {@code
+     *     RatsCPSolver.Builder}
      */
-    public RatsProblemAssembler build() throws IloException {
-      return new RatsProblemAssembler(this);
+    public RatsCPSolver build() throws IloException {
+      return new RatsCPSolver(this);
     }
   }
 }
