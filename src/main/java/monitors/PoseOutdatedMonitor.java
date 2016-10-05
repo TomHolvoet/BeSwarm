@@ -14,6 +14,7 @@ public final class PoseOutdatedMonitor {
   private final StateEstimator stateEstimator;
   private final TimeProvider timeProvider;
   private final double expiredTimeInSecs;
+  private static final long MONITOR_RATE_IN_MILLIS = 50;
 
   private final AtomicReference<PoseStatus> poseStatus = new AtomicReference<>(PoseStatus.OUTDATED);
 
@@ -26,7 +27,7 @@ public final class PoseOutdatedMonitor {
     this.expiredTimeInSecs = expiredTimeInSecs;
 
     Executors.newSingleThreadScheduledExecutor()
-        .scheduleAtFixedRate(new Probe(), 0, 50, TimeUnit.MILLISECONDS);
+        .scheduleAtFixedRate(new Probe(), 0, MONITOR_RATE_IN_MILLIS, TimeUnit.MILLISECONDS);
   }
 
   public static PoseOutdatedMonitor create(
