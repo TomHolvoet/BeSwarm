@@ -42,6 +42,11 @@ public final class RatsProblemAssembler {
   private final PidParameters pidLinearZ;
   private final PidParameters pidAngularZ;
 
+  private static final double MAX_BODY_VEL = 1;
+  private static final double MIN_BODY_VEL = -1;
+
+  private final int poseValid;
+
   private final IloCplex model;
 
   private RatsProblemAssembler(Builder builder) throws IloException {
@@ -53,12 +58,12 @@ public final class RatsProblemAssembler {
     this.pidLinearY = builder.pidLinearY;
     this.pidLinearZ = builder.pidLinearZ;
     this.pidAngularZ = builder.pidAngularZ;
+    this.poseValid = builder.poseValid;
     this.model = new IloCplex();
     model.setOut(null);
 
     // bound: [-1, 1]
-    final IloNumVar[] bodyVelVars =
-        initBodyVelocityVars(model, -1 * builder.poseValid, 1 * builder.poseValid);
+    final IloNumVar[] bodyVelVars = initBodyVelocityVars(model, MIN_BODY_VEL, MAX_BODY_VEL);
     velBodyX = bodyVelVars[0];
     velBodyY = bodyVelVars[1];
     velBodyZ = bodyVelVars[2];
@@ -90,14 +95,6 @@ public final class RatsProblemAssembler {
     return model.numVarArray(4, lowerBound, upperBound);
   }
 
-  private void buildModel() throws IloException {
-    addReferenceVelocityConstraints();
-    addL1NormConstraint();
-    addLinearPidConstraints();
-    addAngularPidConstraint();
-    addL1NormObjectiveFunction();
-  }
-
   public Optional<BodyFrameVelocity> solve() throws IloException {
     buildModel();
 
@@ -121,6 +118,20 @@ public final class RatsProblemAssembler {
       model.end();
       return Optional.absent();
     }
+  }
+
+  private void buildModel() throws IloException {
+    addReferenceVelocityConstraints();
+    addL1NormConstraint();
+    addLinearPidConstraints();
+    addAngularPidConstraint();
+    addHoverWhenPoseOutdatedConstraint();
+    addL1NormObjectiveFunction();
+  }
+
+  private void addHoverWhenPoseOutdatedConstraint() throws IloException {
+    velBodyX.setLB(MIN_BODY_VEL * poseValid);
+    velBodyX.setUB(MAX_BODY_VEL * poseValid);
   }
 
   private void addReferenceVelocityConstraints() throws IloException {
