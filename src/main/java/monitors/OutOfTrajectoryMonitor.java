@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
 /** @author Hoang Tung Dinh */
-public final class OutOfTrajectoryMonior {
+public final class OutOfTrajectoryMonitor {
   private final FiniteTrajectory4d trajectory;
   private final TimeProvider timeProvider;
   private final StateEstimator stateEstimator;
@@ -22,7 +22,7 @@ public final class OutOfTrajectoryMonior {
 
   private final AtomicReference<Status> status = new AtomicReference<>(Status.NO_INFORMATION);
 
-  private OutOfTrajectoryMonior(
+  private OutOfTrajectoryMonitor(
       FiniteTrajectory4d trajectory,
       TimeProvider timeProvider,
       StateEstimator stateEstimator,
@@ -38,13 +38,13 @@ public final class OutOfTrajectoryMonior {
         .scheduleAtFixedRate(new Probe(), 0, MONITOR_RATE_IN_MILLIS, TimeUnit.MILLISECONDS);
   }
 
-  public static OutOfTrajectoryMonior create(
+  public static OutOfTrajectoryMonitor create(
       FiniteTrajectory4d trajectory,
       TimeProvider timeProvider,
       StateEstimator stateEstimator,
       double startTimeInSecs,
       double minimumDeviationInMeters) {
-    return new OutOfTrajectoryMonior(
+    return new OutOfTrajectoryMonitor(
         trajectory, timeProvider, stateEstimator, startTimeInSecs, minimumDeviationInMeters);
   }
 

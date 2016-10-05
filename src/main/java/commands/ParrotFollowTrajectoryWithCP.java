@@ -11,7 +11,7 @@ import control.dto.Pose;
 import control.dto.Velocity;
 import ilog.concert.IloException;
 import localization.StateEstimator;
-import monitors.OutOfTrajectoryMonior;
+import monitors.OutOfTrajectoryMonitor;
 import monitors.PoseOutdatedMonitor;
 import org.ros.time.TimeProvider;
 import org.slf4j.Logger;
@@ -28,7 +28,6 @@ public final class ParrotFollowTrajectoryWithCP implements Command {
 
   private final StateEstimator stateEstimator;
   private final PoseOutdatedMonitor poseOutdatedMonitor;
-  private final OutOfTrajectoryMonior outOfTrajectoryMonior;
   private final FiniteTrajectory4d trajectory;
   private final double controlRateInSeconds;
   private final TimeProvider timeProvider;
@@ -41,7 +40,6 @@ public final class ParrotFollowTrajectoryWithCP implements Command {
   private ParrotFollowTrajectoryWithCP(Builder builder) {
     stateEstimator = builder.stateEstimator;
     poseOutdatedMonitor = builder.poseOutdatedMonitor;
-    outOfTrajectoryMonior = builder.outOfTrajectoryMonior;
     trajectory = builder.trajectory;
     controlRateInSeconds = builder.controlRateInSeconds;
     timeProvider = builder.timeProvider;
@@ -66,9 +64,13 @@ public final class ParrotFollowTrajectoryWithCP implements Command {
   private final class ControlLoop implements Runnable {
 
     private final double startTimeInSecs;
+    private final OutOfTrajectoryMonitor outOfTrajectoryMonitor;
 
     private ControlLoop() {
       this.startTimeInSecs = timeProvider.getCurrentTime().toSeconds();
+      this.outOfTrajectoryMonitor =
+          OutOfTrajectoryMonitor.create(
+              trajectory, timeProvider, stateEstimator, startTimeInSecs, 0.5);
     }
 
     @Override
@@ -95,8 +97,8 @@ public final class ParrotFollowTrajectoryWithCP implements Command {
                           ? 1
                           : 0)
                   .withOnTrajectory(
-                      outOfTrajectoryMonior.getStatus()
-                              == OutOfTrajectoryMonior.Status.WITH_IN_MINIMUM_DEVIATION
+                      outOfTrajectoryMonitor.getStatus()
+                              == OutOfTrajectoryMonitor.Status.WITH_IN_MINIMUM_DEVIATION
                           ? 1
                           : 0)
                   .withPidLinearX(pidLinearX)
@@ -122,9 +124,8 @@ public final class ParrotFollowTrajectoryWithCP implements Command {
   public static final class Builder {
     private StateEstimator stateEstimator;
     private PoseOutdatedMonitor poseOutdatedMonitor;
-    private OutOfTrajectoryMonior outOfTrajectoryMonior;
     private FiniteTrajectory4d trajectory;
-    private double controlRateInSeconds;
+    private Double controlRateInSeconds;
     private TimeProvider timeProvider;
     private PidParameters pidLinearX;
     private PidParameters pidLinearY;
@@ -155,18 +156,6 @@ public final class ParrotFollowTrajectoryWithCP implements Command {
      */
     public Builder withPoseOutdatedMonitor(PoseOutdatedMonitor val) {
       poseOutdatedMonitor = val;
-      return this;
-    }
-
-    /**
-     * Sets the {@code outOfTrajectoryMonior} and returns a reference to this Builder so that the
-     * methods can be chained together.
-     *
-     * @param val the {@code outOfTrajectoryMonior} to set
-     * @return a reference to this Builder
-     */
-    public Builder withOutOfTrajectoryMonior(OutOfTrajectoryMonior val) {
-      outOfTrajectoryMonior = val;
       return this;
     }
 
@@ -283,7 +272,6 @@ public final class ParrotFollowTrajectoryWithCP implements Command {
       checkNotNull(pidLinearZ);
       checkNotNull(pidAngularZ);
       checkNotNull(velocity4dService);
-      checkNotNull(outOfTrajectoryMonior);
       return new ParrotFollowTrajectoryWithCP(this);
     }
   }
