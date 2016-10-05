@@ -34,7 +34,7 @@ public abstract class Pose {
    * @return a {@link Pose} instance equivalent to the {@code poseStamped}
    */
   public static Pose create(PoseStamped poseStamped) {
-    return Pose.builder()
+    return builder()
         .setX(poseStamped.getPose().getPosition().getX())
         .setY(poseStamped.getPose().getPosition().getY())
         .setZ(poseStamped.getPose().getPosition().getZ())
@@ -72,6 +72,21 @@ public abstract class Pose {
         && StrictMath.abs(p1.y() - p2.y()) < EPS
         && StrictMath.abs(p1.z() - p2.z()) < EPS
         && StrictMath.abs(p1.yaw() - p2.yaw()) < EPS;
+  }
+
+  /**
+   * Computes the eucllidean distance between two poses. The yaw is not taken into account.
+   *
+   * @param p1 the first pose
+   * @param p2 the second pose
+   * @return the eucllidean distance between the two poses
+   */
+  public static double computeEucllideanDistance(Pose p1, Pose p2) {
+    final double deltaX = p1.x() - p2.x();
+    final double deltaY = p1.y() - p2.y();
+    final double deltaZ = p1.z() - p2.z();
+
+    return StrictMath.sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ);
   }
 
   /**
