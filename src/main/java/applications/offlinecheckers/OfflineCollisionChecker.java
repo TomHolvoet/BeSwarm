@@ -1,13 +1,12 @@
 package applications.offlinecheckers;
 
 import com.google.common.base.MoreObjects;
+import com.google.common.base.Optional;
 import control.FiniteTrajectory4d;
 import control.dto.Pose;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Queue;
 
 /** @author Hoang Tung Dinh */
@@ -27,9 +26,15 @@ public final class OfflineCollisionChecker {
     return new OfflineCollisionChecker(minimumDistance, trajectories);
   }
 
-  public List<Collision> checkCollision() {
+  /**
+   * Checks whether there is any collision among multiple trajectories. This method will returns the
+   * first collision if there is at least one collision, or return absent if there is no collision.
+   *
+   * @return the first collision if there is at least on collision or absent if there is no
+   *     collision
+   */
+  public Optional<Collision> checkCollision() {
     final Queue<FiniteTrajectory4d> trajectoryList = new LinkedList<>(trajectories);
-    final List<Collision> collisionList = new ArrayList<>();
 
     while (!trajectoryList.isEmpty()) {
       final FiniteTrajectory4d trajectory = trajectoryList.remove();
@@ -42,7 +47,7 @@ public final class OfflineCollisionChecker {
           final Pose secondPose = Pose.createFromTrajectory(otherTrajectory, t);
           final double distance = Pose.computeEucllideanDistance(firstPose, secondPose);
           if (distance < minimumDistance) {
-            collisionList.add(Collision.create(trajectory, otherTrajectory, t));
+            return Optional.of(Collision.create(trajectory, otherTrajectory, t));
           } else {
             t += DELTA_TIME;
           }
@@ -50,7 +55,7 @@ public final class OfflineCollisionChecker {
       }
     }
 
-    return collisionList;
+    return Optional.absent();
   }
 
   public static final class Collision {
