@@ -31,6 +31,7 @@ public final class ExampleCplexSolver {
             + "/libcplex1263.jnilib");
     try {
       long runningTime = 0;
+      int counter = 0;
       for (int i = 0; i < 1000; i++) {
         final long startTime = System.nanoTime();
         final IloCplex model = new IloCplex();
@@ -48,9 +49,13 @@ public final class ExampleCplexSolver {
         addGoalPositionConstraints(decisionVars, model);
         addObjectiveFunction(decisionVars, model, discreteTimeInSecs);
 
+        model.setOut(null);
         model.solve();
 
-        runningTime += System.nanoTime() - startTime;
+        if (i > 10) {
+          runningTime += System.nanoTime() - startTime;
+          counter++;
+        }
 
         model.output().println("Solution status = " + model.getStatus());
         model.output().println("Solution value  = " + model.getObjValue());
@@ -62,7 +67,7 @@ public final class ExampleCplexSolver {
         model.end();
       }
 
-      logger.info("Running time is: {}", (runningTime / 1000.0) / 1.0E9);
+      logger.info("Running time is: {}", (runningTime / (double) counter) / 1.0E9);
 
     } catch (IloException e) {
       logger.info("Concert exception caught", e);
