@@ -10,30 +10,31 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 /** @author Hoang Tung Dinh */
-public final class OfflineCollisionChecker {
+public final class OfflineMinimumDistanceChecker {
   private final double minimumDistance;
   private final Collection<FiniteTrajectory4d> trajectories;
   private static final double DELTA_TIME = 0.001;
 
-  private OfflineCollisionChecker(
+  private OfflineMinimumDistanceChecker(
       double minimumDistance, Collection<FiniteTrajectory4d> trajectories) {
     this.minimumDistance = minimumDistance;
     this.trajectories = trajectories;
   }
 
-  public static OfflineCollisionChecker create(
+  public static OfflineMinimumDistanceChecker create(
       double minimumDistance, Collection<FiniteTrajectory4d> trajectories) {
-    return new OfflineCollisionChecker(minimumDistance, trajectories);
+    return new OfflineMinimumDistanceChecker(minimumDistance, trajectories);
   }
 
   /**
-   * Checks whether there is any collision among multiple trajectories. This method will returns the
-   * first collision if there is at least one collision, or return absent if there is no collision.
+   * Checks whether there is any violation of the minimum distance constraint among violation
+   * trajectories. This method will returns the first violation if there is at least one collision,
+   * or return absent if there is no violation.
    *
-   * @return the first collision if there is at least on collision or absent if there is no
-   *     collision
+   * @return the first collision if there is at least on violation or absent if there is no
+   *     violation
    */
-  public Optional<Collision> checkCollision() {
+  public Optional<Violation> checkMinimumDistanceConstraint() {
     final Queue<FiniteTrajectory4d> trajectoryList = new LinkedList<>(trajectories);
 
     while (!trajectoryList.isEmpty()) {
@@ -47,7 +48,7 @@ public final class OfflineCollisionChecker {
           final Pose secondPose = Pose.createFromTrajectory(otherTrajectory, t);
           final double distance = Pose.computeEucllideanDistance(firstPose, secondPose);
           if (distance < minimumDistance) {
-            return Optional.of(Collision.create(trajectory, otherTrajectory, t));
+            return Optional.of(Violation.create(trajectory, otherTrajectory, t));
           } else {
             t += DELTA_TIME;
           }
@@ -58,12 +59,12 @@ public final class OfflineCollisionChecker {
     return Optional.absent();
   }
 
-  public static final class Collision {
+  public static final class Violation {
     private final FiniteTrajectory4d firstTrajectory;
     private final FiniteTrajectory4d secondTrajectory;
     private final double collisionTimeInSecs;
 
-    private Collision(
+    private Violation(
         FiniteTrajectory4d firstTrajectory,
         FiniteTrajectory4d secondTrajectory,
         double collisionTimeInSecs) {
@@ -72,11 +73,11 @@ public final class OfflineCollisionChecker {
       this.collisionTimeInSecs = collisionTimeInSecs;
     }
 
-    public static Collision create(
+    public static Violation create(
         FiniteTrajectory4d firstTrajectory,
         FiniteTrajectory4d secondTrajectory,
         double collisionTimeInSecs) {
-      return new Collision(firstTrajectory, secondTrajectory, collisionTimeInSecs);
+      return new Violation(firstTrajectory, secondTrajectory, collisionTimeInSecs);
     }
 
     @Override
