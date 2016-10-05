@@ -38,7 +38,7 @@ public final class OfflineCollisionChecker {
           final double distance = Pose.computeEucllideanDistance(firstPose, secondPose);
           if (distance < minimumDistance) {
             return String.format(
-                "There is a collision at {} between trajectory {} and trajectory {}",
+                "There is a collision at %f between trajectory %s and trajectory %s",
                 t,
                 trajectory,
                 otherTrajectory);
@@ -49,6 +49,6 @@ public final class OfflineCollisionChecker {
       }
     }
 
-    return String.format("Yay! There is no collision.");
+    return "Yay! There is no collision.";
   }
 }
