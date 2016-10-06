@@ -10,31 +10,23 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 /** @author Hoang Tung Dinh */
-public final class OfflineMinimumDistanceChecker {
-  private final double minimumDistance;
-  private final Collection<FiniteTrajectory4d> trajectories;
+public final class OfflineMinimumDistanceCheckers {
   private static final double DELTA_TIME = 0.001;
 
-  private OfflineMinimumDistanceChecker(
-      double minimumDistance, Collection<FiniteTrajectory4d> trajectories) {
-    this.minimumDistance = minimumDistance;
-    this.trajectories = trajectories;
-  }
-
-  public static OfflineMinimumDistanceChecker create(
-      double minimumDistance, Collection<FiniteTrajectory4d> trajectories) {
-    return new OfflineMinimumDistanceChecker(minimumDistance, trajectories);
-  }
+  private OfflineMinimumDistanceCheckers() {}
 
   /**
    * Checks whether there is any violation of the minimum distance constraint among violation
    * trajectories. This method will returns the first violation if there is at least one collision,
    * or return absent if there is no violation.
    *
-   * @return the first collision if there is at least on violation or absent if there is no
+   * @param trajectories the collection of all trajectories to be checked
+   * @param minimumDistance the minimum distance between two trajectories
+   * @return the first violation if there is at least on violation or absent if there is no
    *     violation
    */
-  public Optional<Violation> checkMinimumDistanceConstraint() {
+  public static Optional<Violation> checkMinimum3dDistanceConstraint(
+      Collection<FiniteTrajectory4d> trajectories, double minimumDistance) {
     final Queue<FiniteTrajectory4d> trajectoryList = new LinkedList<>(trajectories);
 
     while (!trajectoryList.isEmpty()) {
@@ -46,7 +38,43 @@ public final class OfflineMinimumDistanceChecker {
         while (t <= duration) {
           final Pose firstPose = Pose.createFromTrajectory(trajectory, t);
           final Pose secondPose = Pose.createFromTrajectory(otherTrajectory, t);
-          final double distance = Pose.computeEucllideanDistance(firstPose, secondPose);
+          final double distance = Pose.computeEuclideanDistance(firstPose, secondPose);
+          if (distance < minimumDistance) {
+            return Optional.of(Violation.create(trajectory, otherTrajectory, t));
+          } else {
+            t += DELTA_TIME;
+          }
+        }
+      }
+    }
+
+    return Optional.absent();
+  }
+
+  /**
+   * Checks whether there is any violation of the 2d x-y minimum distance constraint among violation
+   * trajectories. This method will returns the first violation if there is at least one violation,
+   * or return absent if there is no violation.
+   *
+   * @param trajectories the collection of all trajectories to be checked
+   * @param minimumDistance the minimum distance between two trajectories
+   * @return the first violation if there is at least on violation or absent if there is no
+   *     violation
+   */
+  public static Optional<Violation> checkMinimum2dDistanceConstraint(
+      Collection<FiniteTrajectory4d> trajectories, double minimumDistance) {
+    final Queue<FiniteTrajectory4d> trajectoryList = new LinkedList<>(trajectories);
+
+    while (!trajectoryList.isEmpty()) {
+      final FiniteTrajectory4d trajectory = trajectoryList.remove();
+      final double duration = trajectory.getTrajectoryDuration();
+
+      for (final FiniteTrajectory4d otherTrajectory : trajectoryList) {
+        double t = 0;
+        while (t <= duration) {
+          final Pose firstPose = Pose.createFromTrajectory(trajectory, t);
+          final Pose secondPose = Pose.createFromTrajectory(otherTrajectory, t);
+          final double distance = Pose.compute2dEuclideanDistance(firstPose, secondPose);
           if (distance < minimumDistance) {
             return Optional.of(Violation.create(trajectory, otherTrajectory, t));
           } else {

@@ -8,7 +8,7 @@ import junitparams.Parameters;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.util.List;
+import java.util.Collection;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -109,9 +109,9 @@ public class OfflineMinimumDistanceCheckerTest {
 
   @Test
   @Parameters(method = "inputValues")
-  public void testViolationChecker(List<FiniteTrajectory4d> trajectories, Result result) {
-    final Optional<OfflineMinimumDistanceChecker.Violation> violation =
-        OfflineMinimumDistanceChecker.create(1, trajectories).checkMinimumDistanceConstraint();
+  public void testViolationChecker(Collection<FiniteTrajectory4d> trajectories, Result result) {
+    final Optional<OfflineMinimumDistanceCheckers.Violation> violation =
+        OfflineMinimumDistanceCheckers.checkMinimum3dDistanceConstraint(trajectories, 1);
     final Result computedResult =
         violation.isPresent() ? Result.HAS_VIOLATION : Result.NO_VIOLATION;
     assertThat(computedResult).isEqualTo(result);

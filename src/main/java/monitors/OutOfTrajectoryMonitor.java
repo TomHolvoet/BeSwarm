@@ -68,7 +68,7 @@ public final class OutOfTrajectoryMonitor {
       if (currentState.isPresent()) {
         final Pose desiredPose = Pose.createFromTrajectory(trajectory, currentTrajectoryTime);
         final double distance =
-            Pose.computeEucllideanDistance(desiredPose, currentState.get().pose());
+            Pose.computeEuclideanDistance(desiredPose, currentState.get().pose());
         if (distance > minimumDeviationInMeters) {
           status.set(Status.OUT_OF_TRAJECTORY);
         } else {
