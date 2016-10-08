@@ -13,6 +13,14 @@ public abstract class Pid4dParameters {
     return new AutoValue_Pid4dParameters(linearX, linearY, linearZ, angularZ);
   }
 
+  public static Pid4dParameters createWithDefaultValues() {
+    return new AutoValue_Pid4dParameters(
+        DefaultPidParameters.LINEAR_X.getParameters(),
+        DefaultPidParameters.LINEAR_Y.getParameters(),
+        DefaultPidParameters.LINEAR_Z.getParameters(),
+        DefaultPidParameters.ANGULAR_Z.getParameters());
+  }
+
   public abstract PidParameters linearX();
 
   public abstract PidParameters linearY();

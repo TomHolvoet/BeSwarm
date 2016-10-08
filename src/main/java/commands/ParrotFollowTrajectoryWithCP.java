@@ -3,6 +3,7 @@ package commands;
 import com.google.common.base.Optional;
 import commands.schedulers.PeriodicTaskRunner;
 import control.FiniteTrajectory4d;
+import control.Pid4dParameters;
 import control.PidParameters;
 import control.dto.BodyFrameVelocity;
 import control.dto.DroneStateStamped;
@@ -101,10 +102,8 @@ public final class ParrotFollowTrajectoryWithCP implements Command {
                               == OutOfTrajectoryMonitor.Status.WITH_IN_MINIMUM_DEVIATION
                           ? 1
                           : 0)
-                  .withPidLinearX(pidLinearX)
-                  .withPidLinearY(pidLinearY)
-                  .withPidLinearZ(pidLinearZ)
-                  .withPidAngularZ(pidAngularZ)
+                  .withPid4dParameters(
+                      Pid4dParameters.create(pidLinearX, pidLinearY, pidLinearZ, pidAngularZ))
                   .build();
 
           final Optional<BodyFrameVelocity> bodyFrameVelocity = ratsCP.solve();

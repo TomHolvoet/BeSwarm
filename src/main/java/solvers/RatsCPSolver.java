@@ -1,7 +1,7 @@
 package solvers;
 
 import com.google.common.base.Optional;
-import control.PidParameters;
+import control.Pid4dParameters;
 import control.dto.BodyFrameVelocity;
 import control.dto.InertialFrameVelocity;
 import control.dto.Pose;
@@ -39,10 +39,7 @@ public final class RatsCPSolver {
   private final InertialFrameVelocity currentRefVelocity;
   private final InertialFrameVelocity desiredRefVelocity;
 
-  private final PidParameters pidLinearX;
-  private final PidParameters pidLinearY;
-  private final PidParameters pidLinearZ;
-  private final PidParameters pidAngularZ;
+  private final Pid4dParameters pid4dParameters;
 
   private static final double MAX_BODY_VEL = 1;
   private static final double MIN_BODY_VEL = -1;
@@ -57,10 +54,7 @@ public final class RatsCPSolver {
     this.desiredPose = builder.desiredPose;
     this.currentRefVelocity = builder.currentRefVelocity;
     this.desiredRefVelocity = builder.desiredRefVelocity;
-    this.pidLinearX = builder.pidLinearX;
-    this.pidLinearY = builder.pidLinearY;
-    this.pidLinearZ = builder.pidLinearZ;
-    this.pidAngularZ = builder.pidAngularZ;
+    this.pid4dParameters = builder.pid4dParameters;
     this.poseValidSC = builder.poseValid;
     this.onTrajectorySC = builder.onTrajectory;
     this.model = new IloCplex();
@@ -189,16 +183,19 @@ public final class RatsCPSolver {
   private void addLinearPidConstraints() throws IloException {
     model.addEq(
         velPidX,
-        pidLinearX.kp() * (desiredPose.x() - currentPose.x())
-            + pidLinearX.kd() * (desiredRefVelocity.linearX() - currentRefVelocity.linearX()));
+        pid4dParameters.linearX().kp() * (desiredPose.x() - currentPose.x())
+            + pid4dParameters.linearX().kd()
+                * (desiredRefVelocity.linearX() - currentRefVelocity.linearX()));
     model.addEq(
         velPidY,
-        pidLinearY.kp() * (desiredPose.y() - currentPose.y())
-            + pidLinearY.kd() * (desiredRefVelocity.linearY() - currentRefVelocity.linearY()));
+        pid4dParameters.linearY().kp() * (desiredPose.y() - currentPose.y())
+            + pid4dParameters.linearY().kd()
+                * (desiredRefVelocity.linearY() - currentRefVelocity.linearY()));
     model.addEq(
         velPidZ,
-        pidLinearZ.kp() * (desiredPose.z() - currentPose.z())
-            + pidLinearZ.kd() * (desiredRefVelocity.linearZ() - currentRefVelocity.linearZ()));
+        pid4dParameters.linearZ().kp() * (desiredPose.z() - currentPose.z())
+            + pid4dParameters.linearZ().kd()
+                * (desiredRefVelocity.linearZ() - currentRefVelocity.linearZ()));
   }
 
   private void addAngularPidConstraint() throws IloException {
@@ -206,8 +203,9 @@ public final class RatsCPSolver {
         EulerAngle.computeAngleDistance(desiredPose.yaw(), currentPose.yaw());
     model.addEq(
         velPidYaw,
-        pidAngularZ.kp() * yawDifference
-            + pidAngularZ.kd() * (desiredRefVelocity.angularZ() - currentRefVelocity.angularZ()));
+        pid4dParameters.angularZ().kp() * yawDifference
+            + pid4dParameters.angularZ().kd()
+                * (desiredRefVelocity.angularZ() - currentRefVelocity.angularZ()));
   }
 
   private void addL1NormObjectiveFunction() throws IloException {
@@ -222,10 +220,7 @@ public final class RatsCPSolver {
     private InertialFrameVelocity desiredRefVelocity;
     private Integer poseValid;
     private Integer onTrajectory;
-    private PidParameters pidLinearX;
-    private PidParameters pidLinearY;
-    private PidParameters pidLinearZ;
-    private PidParameters pidAngularZ;
+    private Pid4dParameters pid4dParameters;
 
     private Builder() {}
 
@@ -302,50 +297,14 @@ public final class RatsCPSolver {
     }
 
     /**
-     * Sets the {@code pidLinearX} and returns a reference to this Builder so that the methods can
-     * be chained together.
+     * Sets the {@code pid4dParameters} and returns a reference to this Builder so that the methods
+     * can be chained together.
      *
-     * @param val the {@code pidLinearX} to set
+     * @param val the {@code pid4dParameters} to set
      * @return a reference to this Builder
      */
-    public Builder withPidLinearX(PidParameters val) {
-      pidLinearX = val;
-      return this;
-    }
-
-    /**
-     * Sets the {@code pidLinearY} and returns a reference to this Builder so that the methods can
-     * be chained together.
-     *
-     * @param val the {@code pidLinearY} to set
-     * @return a reference to this Builder
-     */
-    public Builder withPidLinearY(PidParameters val) {
-      pidLinearY = val;
-      return this;
-    }
-
-    /**
-     * Sets the {@code pidLinearZ} and returns a reference to this Builder so that the methods can
-     * be chained together.
-     *
-     * @param val the {@code pidLinearZ} to set
-     * @return a reference to this Builder
-     */
-    public Builder withPidLinearZ(PidParameters val) {
-      pidLinearZ = val;
-      return this;
-    }
-
-    /**
-     * Sets the {@code pidAngularZ} and returns a reference to this Builder so that the methods can
-     * be chained together.
-     *
-     * @param val the {@code pidAngularZ} to set
-     * @return a reference to this Builder
-     */
-    public Builder withPidAngularZ(PidParameters val) {
-      pidAngularZ = val;
+    public Builder withPid4dParameters(Pid4dParameters val) {
+      pid4dParameters = val;
       return this;
     }
 
@@ -361,10 +320,7 @@ public final class RatsCPSolver {
       checkNotNull(desiredRefVelocity);
       checkNotNull(poseValid);
       checkNotNull(onTrajectory);
-      checkNotNull(pidLinearX);
-      checkNotNull(pidLinearY);
-      checkNotNull(pidLinearZ);
-      checkNotNull(pidAngularZ);
+      checkNotNull(pid4dParameters);
       return new RatsCPSolver(this);
     }
   }
