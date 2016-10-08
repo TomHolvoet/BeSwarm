@@ -7,7 +7,6 @@ import control.dto.InertialFrameVelocity;
 import control.dto.Pose;
 import control.dto.Velocity;
 import ilog.concert.IloException;
-import ilog.concert.IloModeler;
 import ilog.concert.IloNumExpr;
 import ilog.concert.IloNumVar;
 import ilog.cplex.IloCplex;
@@ -17,20 +16,9 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 /** @author Hoang Tung Dinh */
 public final class RatsCPSolver {
-  private final IloNumVar velBodyX;
-  private final IloNumVar velBodyY;
-  private final IloNumVar velBodyZ;
-  private final IloNumVar velBodyYaw;
-
-  private final IloNumVar velRefX;
-  private final IloNumVar velRefY;
-  private final IloNumVar velRefZ;
-  private final IloNumVar velRefYaw;
-
-  private final IloNumVar velPidX;
-  private final IloNumVar velPidY;
-  private final IloNumVar velPidZ;
-  private final IloNumVar velPidYaw;
+  private final Velocity4dCPVars velBody;
+  private final Velocity4dCPVars velRef;
+  private final Velocity4dCPVars velPid;
 
   private final IloNumVar l1Norm;
 
@@ -61,25 +49,13 @@ public final class RatsCPSolver {
     model.setOut(null);
 
     // bound: [-1, 1]
-    final IloNumVar[] bodyVelVars = initBodyVelocityVars(model, MIN_BODY_VEL, MAX_BODY_VEL);
-    velBodyX = bodyVelVars[0];
-    velBodyY = bodyVelVars[1];
-    velBodyZ = bodyVelVars[2];
-    velBodyYaw = bodyVelVars[3];
+    velBody = Velocity4dCPVars.createFromModel(model, MIN_BODY_VEL, MAX_BODY_VEL);
 
     // no bound
-    final IloNumVar[] refVelVars = initBodyVelocityVars(model, -Double.MAX_VALUE, Double.MAX_VALUE);
-    velRefX = refVelVars[0];
-    velRefY = refVelVars[1];
-    velRefZ = refVelVars[2];
-    velRefYaw = refVelVars[3];
+    velRef = Velocity4dCPVars.createFromModel(model, -Double.MAX_VALUE, Double.MAX_VALUE);
 
     // no bound
-    final IloNumVar[] pidVelVars = initBodyVelocityVars(model, -Double.MAX_VALUE, Double.MAX_VALUE);
-    velPidX = pidVelVars[0];
-    velPidY = pidVelVars[1];
-    velPidZ = pidVelVars[2];
-    velPidYaw = pidVelVars[3];
+    velPid = Velocity4dCPVars.createFromModel(model, -Double.MAX_VALUE, Double.MAX_VALUE);
 
     l1Norm = model.numVar(-Double.MAX_VALUE, Double.MAX_VALUE);
   }
@@ -88,20 +64,15 @@ public final class RatsCPSolver {
     return new Builder();
   }
 
-  private static IloNumVar[] initBodyVelocityVars(
-      IloModeler model, double lowerBound, double upperBound) throws IloException {
-    return model.numVarArray(4, lowerBound, upperBound);
-  }
-
   public Optional<BodyFrameVelocity> solve() throws IloException {
     buildModel();
 
     final boolean solvable = model.solve();
     if (solvable) {
-      final double velX = model.getValue(velBodyX);
-      final double velY = model.getValue(velBodyY);
-      final double velZ = model.getValue(velBodyZ);
-      final double velYaw = model.getValue(velBodyYaw);
+      final double velX = model.getValue(velBody.x());
+      final double velY = model.getValue(velBody.y());
+      final double velZ = model.getValue(velBody.z());
+      final double velYaw = model.getValue(velBody.yaw());
 
       final BodyFrameVelocity resultingVelocity =
           Velocity.builder()
@@ -137,14 +108,14 @@ public final class RatsCPSolver {
   }
 
   private void setVelBodyBound(double lowerBound, double upperBound) throws IloException {
-    velBodyX.setLB(lowerBound);
-    velBodyX.setUB(upperBound);
-    velBodyY.setLB(lowerBound);
-    velBodyY.setUB(upperBound);
-    velBodyZ.setLB(lowerBound);
-    velBodyZ.setUB(upperBound);
-    velBodyYaw.setLB(lowerBound);
-    velBodyYaw.setUB(upperBound);
+    velBody.x().setLB(lowerBound);
+    velBody.x().setUB(upperBound);
+    velBody.y().setLB(lowerBound);
+    velBody.y().setUB(upperBound);
+    velBody.z().setLB(lowerBound);
+    velBody.z().setUB(upperBound);
+    velBody.yaw().setLB(lowerBound);
+    velBody.yaw().setUB(upperBound);
   }
 
   private void addReferenceVelocityConstraints() throws IloException {
@@ -152,20 +123,20 @@ public final class RatsCPSolver {
     final double cos = StrictMath.cos(currentPose.yaw());
 
     // Vrx = Vbx*cos(theta) - Vby*sin(theta)
-    model.addEq(velRefX, model.diff(model.prod(velBodyX, cos), model.prod(velBodyY, sin)));
+    model.addEq(velRef.x(), model.diff(model.prod(velBody.x(), cos), model.prod(velBody.y(), sin)));
     // Vrx = Vbx*sin(theta) + Vby*cos(theta)
-    model.addEq(velRefY, model.sum(model.prod(velBodyX, sin), model.prod(velBodyY, cos)));
+    model.addEq(velRef.y(), model.sum(model.prod(velBody.x(), sin), model.prod(velBody.y(), cos)));
     //Vrz = Vbz
-    model.addEq(velRefZ, velBodyZ);
+    model.addEq(velRef.z(), velBody.z());
     // Vryaw = Vbyaw
-    model.addEq(velRefYaw, velBodyYaw);
+    model.addEq(velRef.yaw(), velBody.yaw());
   }
 
   private void addL1NormConstraint() throws IloException {
-    final IloNumVar deltaVelX = createAbsoluteVarConstraint(velRefX, velPidX);
-    final IloNumVar deltaVelY = createAbsoluteVarConstraint(velRefY, velPidY);
-    final IloNumVar deltaVelZ = createAbsoluteVarConstraint(velRefZ, velPidZ);
-    final IloNumVar deltaVelYaw = createAbsoluteVarConstraint(velRefYaw, velPidYaw);
+    final IloNumVar deltaVelX = createAbsoluteVarConstraint(velRef.x(), velPid.x());
+    final IloNumVar deltaVelY = createAbsoluteVarConstraint(velRef.y(), velPid.y());
+    final IloNumVar deltaVelZ = createAbsoluteVarConstraint(velRef.z(), velPid.z());
+    final IloNumVar deltaVelYaw = createAbsoluteVarConstraint(velRef.yaw(), velPid.yaw());
     model.addEq(l1Norm, model.sum(deltaVelX, deltaVelY, deltaVelZ, deltaVelYaw));
   }
 
@@ -182,17 +153,17 @@ public final class RatsCPSolver {
 
   private void addLinearPidConstraints() throws IloException {
     model.addEq(
-        velPidX,
+        velPid.x(),
         pid4dParameters.linearX().kp() * (desiredPose.x() - currentPose.x())
             + pid4dParameters.linearX().kd()
                 * (desiredRefVelocity.linearX() - currentRefVelocity.linearX()));
     model.addEq(
-        velPidY,
+        velPid.y(),
         pid4dParameters.linearY().kp() * (desiredPose.y() - currentPose.y())
             + pid4dParameters.linearY().kd()
                 * (desiredRefVelocity.linearY() - currentRefVelocity.linearY()));
     model.addEq(
-        velPidZ,
+        velPid.z(),
         pid4dParameters.linearZ().kp() * (desiredPose.z() - currentPose.z())
             + pid4dParameters.linearZ().kd()
                 * (desiredRefVelocity.linearZ() - currentRefVelocity.linearZ()));
@@ -202,7 +173,7 @@ public final class RatsCPSolver {
     final double yawDifference =
         EulerAngle.computeAngleDistance(desiredPose.yaw(), currentPose.yaw());
     model.addEq(
-        velPidYaw,
+        velPid.yaw(),
         pid4dParameters.angularZ().kp() * yawDifference
             + pid4dParameters.angularZ().kd()
                 * (desiredRefVelocity.angularZ() - currentRefVelocity.angularZ()));
