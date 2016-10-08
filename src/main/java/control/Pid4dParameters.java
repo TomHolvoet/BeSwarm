@@ -14,7 +14,7 @@ public abstract class Pid4dParameters {
   }
 
   public static Pid4dParameters createWithDefaultValues() {
-    return new AutoValue_Pid4dParameters(
+    return create(
         DefaultPidParameters.LINEAR_X.getParameters(),
         DefaultPidParameters.LINEAR_Y.getParameters(),
         DefaultPidParameters.LINEAR_Z.getParameters(),
