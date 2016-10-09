@@ -69,8 +69,7 @@ public final class KeepDistanceCGP implements ConstraintGeneratorPheromone {
         StrictMath.sqrt(
             planeCoeffs.a() * planeCoeffs.a()
                 + planeCoeffs.b() * planeCoeffs.b()
-                + planeCoeffs.c()
-                + planeCoeffs.c());
+                + planeCoeffs.c() * planeCoeffs.c());
     return model.prod(numerator, 1 / denominator);
   }
 
