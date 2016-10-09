@@ -16,8 +16,19 @@ public abstract class CPInfo {
       Pose currentPose,
       double controlRateInSecs,
       Velocity4dCPVars velRef,
-      double maxAcceleration) {
-    return new AutoValue_CPInfo(model, currentPose, controlRateInSecs, velRef, maxAcceleration);
+      Velocity4dCPVars velBody,
+      double maxAcceleration,
+      double minVelocity,
+      double maxVelocity) {
+    return new AutoValue_CPInfo(
+        model,
+        currentPose,
+        controlRateInSecs,
+        velRef,
+        velBody,
+        maxAcceleration,
+        minVelocity,
+        maxVelocity);
   }
 
   public abstract IloCplex model();
@@ -28,5 +39,11 @@ public abstract class CPInfo {
 
   public abstract Velocity4dCPVars velRef();
 
+  public abstract Velocity4dCPVars velBody();
+
   public abstract double maxAcceleration();
+
+  public abstract double minVelocity();
+
+  public abstract double maxVelocity();
 }
