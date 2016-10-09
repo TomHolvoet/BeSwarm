@@ -100,22 +100,12 @@ public final class RatsCPSolver {
   }
 
   private void addHoverWhenOutOfTrajectoryConstraint() throws IloException {
-    setVelBodyBound(MIN_BODY_VEL * onTrajectorySC, MAX_BODY_VEL * onTrajectorySC);
+    Velocity4dCPVars.setBoundary(
+        velBody, MIN_BODY_VEL * onTrajectorySC, MAX_BODY_VEL * onTrajectorySC);
   }
 
   private void addHoverWhenPoseOutdatedConstraint() throws IloException {
-    setVelBodyBound(MIN_BODY_VEL * poseValidSC, MAX_BODY_VEL * poseValidSC);
-  }
-
-  private void setVelBodyBound(double lowerBound, double upperBound) throws IloException {
-    velBody.x().setLB(lowerBound);
-    velBody.x().setUB(upperBound);
-    velBody.y().setLB(lowerBound);
-    velBody.y().setUB(upperBound);
-    velBody.z().setLB(lowerBound);
-    velBody.z().setUB(upperBound);
-    velBody.yaw().setLB(lowerBound);
-    velBody.yaw().setUB(upperBound);
+    Velocity4dCPVars.setBoundary(velBody, MIN_BODY_VEL * poseValidSC, MAX_BODY_VEL * poseValidSC);
   }
 
   private void addReferenceVelocityConstraints() throws IloException {

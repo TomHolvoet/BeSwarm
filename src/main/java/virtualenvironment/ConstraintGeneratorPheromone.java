@@ -1,8 +1,10 @@
 package virtualenvironment;
 
+import ilog.concert.IloException;
+
 /** @author Hoang Tung Dinh */
 public interface ConstraintGeneratorPheromone {
   double lifeTimeInSecs();
 
-  void addConstraint(CPInfo cpInfo);
+  void addConstraints(CPInfo cpInfo) throws IloException;
 }

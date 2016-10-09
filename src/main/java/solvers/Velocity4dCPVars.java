@@ -21,6 +21,18 @@ public abstract class Velocity4dCPVars {
     return create(vars[0], vars[1], vars[2], vars[3]);
   }
 
+  public static void setBoundary(Velocity4dCPVars velocity, double lowerBound, double upperBound)
+      throws IloException {
+    velocity.x().setLB(lowerBound);
+    velocity.x().setUB(upperBound);
+    velocity.y().setLB(lowerBound);
+    velocity.y().setUB(upperBound);
+    velocity.z().setLB(lowerBound);
+    velocity.z().setUB(upperBound);
+    velocity.yaw().setLB(lowerBound);
+    velocity.yaw().setUB(upperBound);
+  }
+
   public abstract IloNumVar x();
 
   public abstract IloNumVar y();
