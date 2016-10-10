@@ -28,7 +28,7 @@ public abstract class AbstractParrotServiceTest<T extends Message> {
 
   @Test
   public void testSendMessage() {
-    final Publisher<T> publisher = mock(Publisher.class, RETURNS_DEEP_STUBS);
+    final Publisher publisher = mock(Publisher.class, RETURNS_DEEP_STUBS);
     when(publisher.getTopicName().toString()).thenReturn(createTopicName());
 
     final T message = createNewMessage();

@@ -33,7 +33,7 @@ import static org.mockito.Mockito.when;
 @RunWith(JUnitParamsRunner.class)
 public class ParrotVelocity4dServiceTest {
 
-  @Nullable private Publisher<Twist> publisher;
+  @Nullable private Publisher publisher;
   @Nullable private Twist twist;
   @Nullable private Vector3 linear;
   @Nullable private Vector3 angular;

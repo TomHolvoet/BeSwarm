@@ -15,15 +15,17 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 import static com.google.common.truth.Truth.assertThat;
+import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 /** @author Hoang Tung Dinh */
 public abstract class CratesLandServiceTest {
 
-  private ServiceClient<LandRequest, LandResponse> serviceClient;
+  private ServiceClient serviceClient;
   private ArgumentCaptor<ServiceResponseListener> argumentCaptor;
   private LandService cratesLandService;
   private Future<?> future;
@@ -40,7 +42,8 @@ public abstract class CratesLandServiceTest {
 
   @Before
   public void setUp() throws InterruptedException {
-    serviceClient = mock(ServiceClient.class);
+    serviceClient = mock(ServiceClient.class, RETURNS_DEEP_STUBS);
+    when(serviceClient.newMessage()).thenReturn(mock(LandRequest.class));
     argumentCaptor = ArgumentCaptor.forClass(ServiceResponseListener.class);
 
     cratesLandService = CratesLandService.create(serviceClient);

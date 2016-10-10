@@ -22,7 +22,7 @@ import static org.mockito.Mockito.when;
 /** @author Hoang Tung Dinh */
 public abstract class CratesTakeOffServiceTest {
 
-  private ServiceClient<TakeoffRequest, TakeoffResponse> serviceClient;
+  private ServiceClient serviceClient;
   private ArgumentCaptor<ServiceResponseListener> serviceResponseListenerArgumentCaptor;
   private ArgumentCaptor<TakeoffRequest> takeoffRequestArgumentCaptor;
   private TakeOffService cratesTakeOffService;

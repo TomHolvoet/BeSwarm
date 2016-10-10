@@ -40,8 +40,7 @@ public abstract class CratesVelocity3dServiceTest {
 
   @Test
   public void testSendVelocityMessage() throws InterruptedException {
-    final ServiceClient<VelocityRequest, VelocityResponse> serviceClient =
-        mock(ServiceClient.class, RETURNS_DEEP_STUBS);
+    final ServiceClient serviceClient = mock(ServiceClient.class, RETURNS_DEEP_STUBS);
     when(serviceClient.newMessage()).thenReturn(mock(VelocityRequest.class));
 
     final Velocity3dService cratesVelocity3dService = CratesVelocity3dService.create(serviceClient);

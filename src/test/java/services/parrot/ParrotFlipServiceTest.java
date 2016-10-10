@@ -19,7 +19,7 @@ public class ParrotFlipServiceTest {
 
   @Test
   public void testSendFlipMessage() {
-    final Publisher<UInt8> publisher = mock(Publisher.class, RETURNS_DEEP_STUBS);
+    final Publisher publisher = mock(Publisher.class, RETURNS_DEEP_STUBS);
     when(publisher.getTopicName().toString()).thenReturn("/bebop/flip");
 
     final FlipService parrotFlipService = ParrotFlipService.create(publisher);

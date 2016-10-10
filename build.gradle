@@ -49,8 +49,8 @@ jacocoTestReport {
 //    additionalSourceDirs = files(sourceSets.main.allJava.srcDirs)
 }
 
-sourceCompatibility = 1.7
-targetCompatibility = 1.7
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
 
 repositories {
     mavenCentral()
@@ -107,7 +107,7 @@ dependencies {
     // for unit tests
     testCompile 'pl.pragmatists:JUnitParams:1.0.5'
     testCompile 'junit:junit:4.12'
-    testCompile 'org.mockito:mockito-all:1.10.19'
+    testCompile 'org.mockito:mockito-core:2.1.0'
     testCompile 'org.reflections:reflections:0.9.10'
     // https://mvnrepository.com/artifact/org.georegression/georegression
 //    testCompile 'org.georegression:georegression:0.11'
