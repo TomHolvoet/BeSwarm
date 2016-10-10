@@ -17,7 +17,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 /** @author Hoang Tung Dinh */
 public final class RatsCPSolver {
-  private final Velocity4dCPVars<IloNumVar> velBody;
+  private final Velocity4dCp<IloNumVar> velBody;
   private final IloNumExpr l1Norm;
 
   private static final double MAX_BODY_VEL = 1;
@@ -40,8 +40,8 @@ public final class RatsCPSolver {
     model.setOut(null);
 
     // bound: [-1, 1]
-    velBody = Velocity4dCPVars.createVariables(model, MIN_BODY_VEL, MAX_BODY_VEL);
-    final Velocity4dCPVars<IloNumExpr> velRef =
+    velBody = Velocity4dCp.createVariables(model, MIN_BODY_VEL, MAX_BODY_VEL);
+    final Velocity4dCp<IloNumExpr> velRef =
         initializeReferenceVelocityExpressions(model, currentPose, velBody);
     final Velocity velPid =
         initializePidVelocity(
@@ -86,16 +86,16 @@ public final class RatsCPSolver {
   }
 
   private void addHoverWhenOutOfTrajectoryConstraint() throws IloException {
-    Velocity4dCPVars.setBoundary(
+    Velocity4dCp.setBoundary(
         velBody, MIN_BODY_VEL * onTrajectorySC, MAX_BODY_VEL * onTrajectorySC);
   }
 
   private void addHoverWhenPoseOutdatedConstraint() throws IloException {
-    Velocity4dCPVars.setBoundary(velBody, MIN_BODY_VEL * poseValidSC, MAX_BODY_VEL * poseValidSC);
+    Velocity4dCp.setBoundary(velBody, MIN_BODY_VEL * poseValidSC, MAX_BODY_VEL * poseValidSC);
   }
 
-  private static Velocity4dCPVars<IloNumExpr> initializeReferenceVelocityExpressions(
-      IloModeler model, Pose currentPose, Velocity4dCPVars<IloNumVar> velBody) throws IloException {
+  private static Velocity4dCp<IloNumExpr> initializeReferenceVelocityExpressions(
+      IloModeler model, Pose currentPose, Velocity4dCp<IloNumVar> velBody) throws IloException {
     final double sin = StrictMath.sin(currentPose.yaw());
     final double cos = StrictMath.cos(currentPose.yaw());
 
@@ -110,11 +110,11 @@ public final class RatsCPSolver {
     // Vryaw = Vbyaw
     final IloNumExpr velRefYaw = velBody.yaw();
 
-    return Velocity4dCPVars.create(velRefX, velRefY, velRefZ, velRefYaw);
+    return Velocity4dCp.create(velRefX, velRefY, velRefZ, velRefYaw);
   }
 
   private static IloNumExpr initializeL1NormExpression(
-      IloModeler model, Velocity4dCPVars<IloNumExpr> velRef, InertialFrameVelocity velPid)
+      IloModeler model, Velocity4dCp<IloNumExpr> velRef, InertialFrameVelocity velPid)
       throws IloException {
     final IloNumVar deltaVelX = createAbsoluteVarConstraint(model, velRef.x(), velPid.linearX());
     final IloNumVar deltaVelY = createAbsoluteVarConstraint(model, velRef.y(), velPid.linearY());

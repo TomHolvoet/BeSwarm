@@ -7,7 +7,7 @@ import ilog.concert.IloException;
 import ilog.concert.IloModeler;
 import ilog.concert.IloNumExpr;
 import ilog.cplex.IloCplex;
-import solvers.Velocity4dCPVars;
+import solvers.Velocity4dCp;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
@@ -87,7 +87,7 @@ public final class KeepDistanceCGP implements ConstraintGeneratorPheromone {
   private static PoseCpExpr computeFuturePose(CPInfo cpInfo) throws IloException {
     final Pose currentPose = cpInfo.currentPose();
     final IloCplex model = cpInfo.model();
-    final Velocity4dCPVars velRef = cpInfo.velRef();
+    final Velocity4dCp velRef = cpInfo.velRef();
     final double timeDelta = cpInfo.controlRateInSecs();
 
     final IloNumExpr futureX = model.sum(currentPose.x(), model.prod(velRef.x(), timeDelta));
@@ -100,7 +100,7 @@ public final class KeepDistanceCGP implements ConstraintGeneratorPheromone {
 
   private static void addHoverWhenTooCloseConstraints(CPInfo cpInfo, int cDistance)
       throws IloException {
-    Velocity4dCPVars.setBoundary(
+    Velocity4dCp.setBoundary(
         cpInfo.velBody(), cDistance * cpInfo.minVelocity(), cDistance * cpInfo.maxVelocity());
   }
 
