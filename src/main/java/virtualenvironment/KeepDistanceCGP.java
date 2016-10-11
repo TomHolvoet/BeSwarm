@@ -42,7 +42,7 @@ public final class KeepDistanceCGP implements ConstraintGeneratorPheromone {
   }
 
   @Override
-  public void addConstraints(CpState cpState) throws IloException {
+  public void getConstraints(CpState cpState) throws IloException {
     final int cDistance = computeCDistance(cpState);
     addHoverWhenTooCloseConstraints(cpState, cDistance);
     addKeepDistanceConstraints(cpState, cDistance);

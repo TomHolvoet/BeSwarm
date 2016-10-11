@@ -2,6 +2,8 @@ package virtualenvironment;
 
 import com.google.auto.value.AutoValue;
 import control.dto.Pose;
+import ilog.concert.IloNumExpr;
+import ilog.concert.IloNumVar;
 import ilog.cplex.IloCplex;
 import solvers.Velocity4dCp;
 
@@ -15,8 +17,8 @@ public abstract class CpState {
       IloCplex model,
       Pose currentPose,
       double controlRateInSecs,
-      Velocity4dCp velRef,
-      Velocity4dCp velBody,
+      Velocity4dCp<IloNumExpr> velRef,
+      Velocity4dCp<IloNumVar> velBody,
       double maxAcceleration,
       double minVelocity,
       double maxVelocity) {
@@ -37,9 +39,9 @@ public abstract class CpState {
 
   public abstract double controlRateInSecs();
 
-  public abstract Velocity4dCp velRef();
+  public abstract Velocity4dCp<IloNumExpr> velRef();
 
-  public abstract Velocity4dCp velBody();
+  public abstract Velocity4dCp<IloNumVar> velBody();
 
   public abstract double maxAcceleration();
 

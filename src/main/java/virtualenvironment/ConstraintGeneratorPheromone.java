@@ -6,5 +6,5 @@ import ilog.concert.IloException;
 public interface ConstraintGeneratorPheromone {
   double lifeTimeInSecs();
 
-  void addConstraints(CpState cpState) throws IloException;
+  void getConstraints(CpState cpState) throws IloException;
 }
