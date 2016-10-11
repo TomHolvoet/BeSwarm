@@ -24,7 +24,7 @@ public final class BebopTwoHover extends AbstractNodeMain {
   @Override
   public void onStart(ConnectedNode connectedNode) {
     final Trajectory4d rawTrajectory =
-        Trajectories.newHoldPositionTrajectory(Point4D.create(0, -5, 1, -StrictMath.PI / 2));
+        Trajectories.newHoldPositionTrajectory(Point4D.create(0, -2, 1, -StrictMath.PI / 2));
 
     final FiniteTrajectory4d trajectory =
         Choreography.builder().withTrajectory(rawTrajectory).forTime(3).build();
