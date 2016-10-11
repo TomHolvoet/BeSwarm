@@ -42,17 +42,17 @@ public final class KeepDistanceCGP implements ConstraintGeneratorPheromone {
   }
 
   @Override
-  public void addConstraints(CPInfo cpInfo) throws IloException {
-    final int cDistance = computeCDistance(cpInfo);
-    addHoverWhenTooCloseConstraints(cpInfo, cDistance);
-    addKeepDistanceConstraints(cpInfo, cDistance);
+  public void addConstraints(CpState cpState) throws IloException {
+    final int cDistance = computeCDistance(cpState);
+    addHoverWhenTooCloseConstraints(cpState, cDistance);
+    addKeepDistanceConstraints(cpState, cDistance);
   }
 
-  private void addKeepDistanceConstraints(CPInfo cpInfo, int cDistance) throws IloException {
-    final PoseCpExpr futurePose = computeFuturePose(cpInfo);
-    final PlaneScalarCoeffs planeCoeffs = computePlaneCoeffs(cpInfo);
-    final IloNumExpr distanceToPlane = computeDistanceExpr(cpInfo.model(), planeCoeffs, futurePose);
-    cpInfo.model().addGe(distanceToPlane, cDistance * minimumDistance);
+  private void addKeepDistanceConstraints(CpState cpState, int cDistance) throws IloException {
+    final PoseCpExpr futurePose = computeFuturePose(cpState);
+    final PlaneScalarCoeffs planeCoeffs = computePlaneCoeffs(cpState);
+    final IloNumExpr distanceToPlane = computeDistanceExpr(cpState.model(), planeCoeffs, futurePose);
+    cpState.model().addGe(distanceToPlane, cDistance * minimumDistance);
   }
 
   private static IloNumExpr computeDistanceExpr(
@@ -73,10 +73,10 @@ public final class KeepDistanceCGP implements ConstraintGeneratorPheromone {
     return model.prod(numerator, 1 / denominator);
   }
 
-  private PlaneScalarCoeffs computePlaneCoeffs(CPInfo cpInfo) {
-    final double coeffA = cpInfo.currentPose().x() - poseOfPheromoneDropper.x();
-    final double coeffB = cpInfo.currentPose().y() - poseOfPheromoneDropper.y();
-    final double coeffC = cpInfo.currentPose().z() - poseOfPheromoneDropper.z();
+  private PlaneScalarCoeffs computePlaneCoeffs(CpState cpState) {
+    final double coeffA = cpState.currentPose().x() - poseOfPheromoneDropper.x();
+    final double coeffB = cpState.currentPose().y() - poseOfPheromoneDropper.y();
+    final double coeffC = cpState.currentPose().z() - poseOfPheromoneDropper.z();
     final double coeffD =
         -coeffA * poseOfPheromoneDropper.x()
             - coeffB * poseOfPheromoneDropper.y()
@@ -84,11 +84,11 @@ public final class KeepDistanceCGP implements ConstraintGeneratorPheromone {
     return PlaneScalarCoeffs.create(coeffA, coeffB, coeffC, coeffD);
   }
 
-  private static PoseCpExpr computeFuturePose(CPInfo cpInfo) throws IloException {
-    final Pose currentPose = cpInfo.currentPose();
-    final IloCplex model = cpInfo.model();
-    final Velocity4dCp velRef = cpInfo.velRef();
-    final double timeDelta = cpInfo.controlRateInSecs();
+  private static PoseCpExpr computeFuturePose(CpState cpState) throws IloException {
+    final Pose currentPose = cpState.currentPose();
+    final IloCplex model = cpState.model();
+    final Velocity4dCp velRef = cpState.velRef();
+    final double timeDelta = cpState.controlRateInSecs();
 
     final IloNumExpr futureX = model.sum(currentPose.x(), model.prod(velRef.x(), timeDelta));
     final IloNumExpr futureY = model.sum(currentPose.y(), model.prod(velRef.y(), timeDelta));
@@ -98,14 +98,14 @@ public final class KeepDistanceCGP implements ConstraintGeneratorPheromone {
     return PoseCpExpr.create(futureX, futureY, futureZ, futureYaw);
   }
 
-  private static void addHoverWhenTooCloseConstraints(CPInfo cpInfo, int cDistance)
+  private static void addHoverWhenTooCloseConstraints(CpState cpState, int cDistance)
       throws IloException {
     Velocity4dCp.setBoundary(
-        cpInfo.velBody(), cDistance * cpInfo.minVelocity(), cDistance * cpInfo.maxVelocity());
+        cpState.velBody(), cDistance * cpState.minVelocity(), cDistance * cpState.maxVelocity());
   }
 
-  private int computeCDistance(CPInfo cpInfo) {
-    return Pose.computeEuclideanDistance(poseOfPheromoneDropper, cpInfo.currentPose())
+  private int computeCDistance(CpState cpState) {
+    return Pose.computeEuclideanDistance(poseOfPheromoneDropper, cpState.currentPose())
             >= minimumDistance
         ? 1
         : 0;

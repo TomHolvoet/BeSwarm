@@ -7,11 +7,11 @@ import solvers.Velocity4dCp;
 
 /** @author Hoang Tung Dinh */
 @AutoValue
-public abstract class CPInfo {
+public abstract class CpState {
 
-  CPInfo() {}
+  CpState() {}
 
-  public static CPInfo create(
+  public static CpState create(
       IloCplex model,
       Pose currentPose,
       double controlRateInSecs,
@@ -20,7 +20,7 @@ public abstract class CPInfo {
       double maxAcceleration,
       double minVelocity,
       double maxVelocity) {
-    return new AutoValue_CPInfo(
+    return new AutoValue_CpState(
         model,
         currentPose,
         controlRateInSecs,
