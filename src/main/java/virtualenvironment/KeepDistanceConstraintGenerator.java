@@ -112,7 +112,7 @@ public final class KeepDistanceConstraintGenerator implements ConstraintGenerato
     PoseCpExpr() {}
 
     public static PoseCpExpr create(IloNumExpr x, IloNumExpr y, IloNumExpr z, IloNumExpr yaw) {
-      return new AutoValue_KeepDistanceCGP_PoseCpExpr(x, y, z, yaw);
+      return new AutoValue_KeepDistanceConstraintGenerator_PoseCpExpr(x, y, z, yaw);
     }
 
     abstract IloNumExpr x();
