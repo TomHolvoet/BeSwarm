@@ -17,28 +17,22 @@ import static com.google.common.base.Preconditions.checkArgument;
  *
  * @author Hoang Tung Dinh
  */
-public final class KeepDistanceCGP implements ConstraintGeneratorPheromone {
+public final class KeepDistanceConstraintGenerator implements ConstraintGenerator {
 
-  private final double lifeTimeInSecs;
   private final Pose poseOfPheromoneDropper;
   private final double minimumDistance;
 
-  private KeepDistanceCGP(
+  private KeepDistanceConstraintGenerator(
       double lifeTimeInSecs, Pose poseOfPheromoneDropper, double minimumDistance) {
     checkArgument(minimumDistance > 0, "Minimum distance must be positive.");
-    this.lifeTimeInSecs = lifeTimeInSecs;
     this.poseOfPheromoneDropper = poseOfPheromoneDropper;
     this.minimumDistance = minimumDistance;
   }
 
-  public static KeepDistanceCGP create(
+  public static KeepDistanceConstraintGenerator create(
       double lifeTimeInSecs, Pose poseOfPheromoneDropper, double minimumDistance) {
-    return new KeepDistanceCGP(lifeTimeInSecs, poseOfPheromoneDropper, minimumDistance);
-  }
-
-  @Override
-  public double lifeTimeInSecs() {
-    return lifeTimeInSecs;
+    return new KeepDistanceConstraintGenerator(
+        lifeTimeInSecs, poseOfPheromoneDropper, minimumDistance);
   }
 
   @Override
@@ -51,7 +45,8 @@ public final class KeepDistanceCGP implements ConstraintGeneratorPheromone {
   private void addKeepDistanceConstraints(CpState cpState, int cDistance) throws IloException {
     final PoseCpExpr futurePose = computeFuturePose(cpState);
     final PlaneScalarCoeffs planeCoeffs = computePlaneCoeffs(cpState);
-    final IloNumExpr distanceToPlane = computeDistanceExpr(cpState.model(), planeCoeffs, futurePose);
+    final IloNumExpr distanceToPlane =
+        computeDistanceExpr(cpState.model(), planeCoeffs, futurePose);
     cpState.model().addGe(distanceToPlane, cDistance * minimumDistance);
   }
 
