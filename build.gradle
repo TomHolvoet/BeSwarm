@@ -86,7 +86,7 @@ dependencies {
     compile 'com.github.jabrena:NyARToolkit-4.1.1:v4.1.1'
     compile 'org.slf4j:slf4j-api:1.7.20'
     compile 'ch.qos.logback:logback-classic:1.1.7'
-    compile 'com.google.guava:guava:11.0.2'
+    compile 'com.google.guava:guava:19.0'
     compile 'org.ejml:all:0.29'
     compile 'org.apache.commons:commons-math3:3.6.1'
     compile 'com.cplex:cplex:12.6.3'
