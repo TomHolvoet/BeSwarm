@@ -11,8 +11,8 @@ import services.Velocity4dService;
 import java.util.concurrent.TimeUnit;
 
 /**
- * AbstractHover command for parrot drones.
- * TODO: change class name and explain the behavior
+ * AbstractHover command for parrot drones. TODO: change class name and explain the behavior
+ *
  * @author Hoang Tung Dinh
  */
 public abstract class AbstractParrotHover extends AbstractHover {

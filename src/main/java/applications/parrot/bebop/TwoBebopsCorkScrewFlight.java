@@ -6,7 +6,9 @@ import control.FiniteTrajectory4d;
 
 /**
  * First bebop starts at (0, 0), yaw -pi/2, second bebop starts at (
- * @author Hoang Tung Dinh */
+ *
+ * @author Hoang Tung Dinh
+ */
 public class TwoBebopsCorkScrewFlight extends AbstractTwoBebopFlight {
   protected TwoBebopsCorkScrewFlight() {
     super("TwoBebopsCorkScrewFlight");

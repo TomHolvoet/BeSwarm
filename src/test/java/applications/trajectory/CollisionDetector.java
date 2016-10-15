@@ -65,6 +65,7 @@ public class CollisionDetector {
       };
   private final List<FiniteTrajectory4d> trajectories;
   private final double minimumDistance;
+
   public CollisionDetector(List<FiniteTrajectory4d> trajectories) {
     this(trajectories, applications.trajectory.CollisionDetector.DEFAULT_MINIMUM_DISTANCE);
   }

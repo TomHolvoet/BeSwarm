@@ -43,6 +43,7 @@ public abstract class ParrotServiceFactory implements CommonServiceFactory {
 
   /**
    * Creates the reset service for a parrot drone.
+   *
    * @return a {@link ResetService}
    */
   public final ResetService createResetService() {

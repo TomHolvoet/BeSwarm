@@ -25,7 +25,8 @@ public class PrintPose extends AbstractNodeMain {
   public void onStart(final ConnectedNode connectedNode) {
     MessagesSubscriberService<PoseStamped> poseSubscriber =
         MessagesSubscriberService.<PoseStamped>create(
-            connectedNode.<PoseStamped>newSubscriber(POSE_TOPIC, PoseStamped._TYPE), RosTime.create(connectedNode));
+            connectedNode.<PoseStamped>newSubscriber(POSE_TOPIC, PoseStamped._TYPE),
+            RosTime.create(connectedNode));
 
     try {
       int i = 0;

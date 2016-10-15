@@ -20,7 +20,8 @@ public class LinearPidController1DTest {
             return 10;
           }
         };
-    final LinearPidController1d linearPidController1D = LinearPidController1d.create(pidParameters, trajectory1d);
+    final LinearPidController1d linearPidController1D =
+        LinearPidController1d.create(pidParameters, trajectory1d);
 
     assertThat(linearPidController1D.computeNextResponse(0, 0, 0)).isWithin(DELTA).of(0.5);
     assertThat(linearPidController1D.computeNextResponse(0.5, 0.5, 0)).isWithin(DELTA).of(-0.025);

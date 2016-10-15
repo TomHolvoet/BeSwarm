@@ -87,7 +87,8 @@ public final class CratesServiceFactory implements CommonServiceFactory {
     } catch (ServiceNotFoundException e) {
       logger.debug(SERVICE_NOT_FOUND, e);
       throw new IllegalStateException(
-          String.format("AbstractParrotLand service not found. Drone: %s. Model: %s", droneName, modelName));
+          String.format(
+              "AbstractParrotLand service not found. Drone: %s. Model: %s", droneName, modelName));
     }
   }
 
@@ -149,7 +150,8 @@ public final class CratesServiceFactory implements CommonServiceFactory {
     } catch (ServiceNotFoundException e) {
       logger.debug(SERVICE_NOT_FOUND, e);
       throw new IllegalStateException(
-          String.format("AbstractHover service not found. Drone: %s. Model: %s", droneName, modelName));
+          String.format(
+              "AbstractHover service not found. Drone: %s. Model: %s", droneName, modelName));
     }
   }
 }

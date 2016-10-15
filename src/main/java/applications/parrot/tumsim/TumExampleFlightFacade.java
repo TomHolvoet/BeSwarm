@@ -21,7 +21,6 @@ import gazebo_msgs.ModelStates;
 import localization.FakeStateEstimatorDecorator;
 import localization.GazeboModelStateEstimator;
 import localization.StateEstimator;
-import monitors.OutOfTrajectoryMonitor;
 import monitors.PoseOutdatedMonitor;
 import org.apache.commons.math3.random.GaussianRandomGenerator;
 import org.apache.commons.math3.random.MersenneTwister;

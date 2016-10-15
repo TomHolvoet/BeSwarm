@@ -9,8 +9,9 @@ import org.slf4j.MDC;
 
 /**
  * A decorator for logging the state of a {@link VelocityController4d}. This class is assumed to be
- * used with Logback's <a href="http://logback.qos.ch/manual/appenders.html#SiftingAppender">SiftingAppender</a> and
- * <a href="http://logback.qos.ch/manual/mdc.html">Mapped Diagnostic Contexts</a>.
+ * used with Logback's <a
+ * href="http://logback.qos.ch/manual/appenders.html#SiftingAppender">SiftingAppender</a> and <a
+ * href="http://logback.qos.ch/manual/mdc.html">Mapped Diagnostic Contexts</a>.
  *
  * @author Hoang Tung Dinh
  */

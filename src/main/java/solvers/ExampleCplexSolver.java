@@ -37,9 +37,9 @@ public final class ExampleCplexSolver {
         final IloCplex model = new IloCplex();
         final IloNumVar[][] decisionVars = new IloNumVar[3][4];
 
-        decisionVars[0] = createNumVarArray(new String[]{"ax", "bx", "cx", "dx"}, model);
-        decisionVars[1] = createNumVarArray(new String[]{"ay", "by", "cy", "dy"}, model);
-        decisionVars[2] = createNumVarArray(new String[]{"az", "bz", "cz", "dz"}, model);
+        decisionVars[0] = createNumVarArray(new String[] {"ax", "bx", "cx", "dx"}, model);
+        decisionVars[1] = createNumVarArray(new String[] {"ay", "by", "cy", "dy"}, model);
+        decisionVars[2] = createNumVarArray(new String[] {"az", "bz", "cz", "dz"}, model);
 
         final List<Double> discreteTimeInSecs = createDiscreteTime();
         addVelocityConstraints(decisionVars, model, discreteTimeInSecs);
