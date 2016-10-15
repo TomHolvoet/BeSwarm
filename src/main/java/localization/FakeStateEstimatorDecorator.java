@@ -1,6 +1,5 @@
 package localization;
 
-import com.google.common.base.Optional;
 import com.google.common.collect.EvictingQueue;
 import control.dto.DroneStateStamped;
 import control.dto.InertialFrameVelocity;
@@ -12,6 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
+import java.util.Optional;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
@@ -81,7 +81,7 @@ public final class FakeStateEstimatorDecorator implements StateEstimator {
   @Override
   public Optional<DroneStateStamped> getCurrentState() {
     if (currentState == null) {
-      return Optional.absent();
+      return Optional.empty();
     } else {
       return Optional.of(currentState);
     }

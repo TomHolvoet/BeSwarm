@@ -1,6 +1,5 @@
 package services.rossubscribers;
 
-import com.google.common.base.Optional;
 import com.google.common.collect.EvictingQueue;
 import com.google.common.collect.Queues;
 import org.ros.internal.message.Message;
@@ -14,6 +13,7 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.Optional;
 import java.util.Queue;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -155,7 +155,7 @@ public class MessagesSubscriberService<T extends Message> {
 
     Optional<K> getMostRecentMessage() {
       if (mostRecentMessage == null) {
-        return Optional.absent();
+        return Optional.empty();
       } else {
         return Optional.of(mostRecentMessage);
       }

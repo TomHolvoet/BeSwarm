@@ -1,6 +1,5 @@
 package localization;
 
-import com.google.common.base.Optional;
 import com.google.common.collect.EvictingQueue;
 import control.dto.DroneStateStamped;
 import control.dto.InertialFrameVelocity;
@@ -11,6 +10,7 @@ import services.rossubscribers.MessagesSubscriberService;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
+import java.util.Optional;
 
 /**
  * A localization that gets both pose and velocity from ArMarker.
@@ -40,13 +40,13 @@ public final class BebopStateEstimatorWithPoseStamped implements StateEstimator 
 
     // if there is no pose available yet
     if (!poseStamped.isPresent()) {
-      return Optional.absent();
+      return Optional.empty();
     }
 
     // if there is no pose stored yet
     if (lastPoseStamped == null) {
       lastPoseStamped = poseStamped.get();
-      return Optional.absent();
+      return Optional.empty();
     }
 
     // if there is at least one pose stored and the pose now is different from the most recent pose
@@ -72,7 +72,7 @@ public final class BebopStateEstimatorWithPoseStamped implements StateEstimator 
               currentVelocity,
               lastPoseStamped.getHeader().getStamp().toSeconds()));
     } else {
-      return Optional.absent();
+      return Optional.empty();
     }
   }
 

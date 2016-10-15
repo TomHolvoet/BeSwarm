@@ -1,6 +1,5 @@
 package localization;
 
-import com.google.common.base.Optional;
 import control.dto.BodyFrameVelocity;
 import control.dto.DroneStateStamped;
 import control.dto.InertialFrameVelocity;
@@ -15,7 +14,10 @@ import org.junit.runner.RunWith;
 import services.rossubscribers.MessagesSubscriberService;
 import utils.TestUtils;
 
+import java.util.Optional;
+
 import static com.google.common.truth.Truth.assertThat;
+import static com.google.common.truth.Truth8.assertThat;
 import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
 import static org.mockito.Mockito.RETURNS_MOCKS;
 import static org.mockito.Mockito.mock;
@@ -63,17 +65,17 @@ public class BebopStateEstimatorWithPoseStampedAndOdomTest {
 
   @Test
   public void testGetCurrentState_noPoseReceived() {
-    when(poseSubscriber.getMostRecentMessage()).thenReturn(Optional.<PoseStamped>absent());
+    when(poseSubscriber.getMostRecentMessage()).thenReturn(Optional.<PoseStamped>empty());
     when(odometrySubscriber.getMostRecentMessage()).thenReturn(Optional.of(mock(Odometry.class)));
-    assertThat(bebopStateEstimator.getCurrentState()).isAbsent();
+    assertThat(bebopStateEstimator.getCurrentState()).isEmpty();
   }
 
   @Test
   public void testGetCurrentState_noVelocityReceived() {
     when(poseSubscriber.getMostRecentMessage())
         .thenReturn(Optional.of(mock(PoseStamped.class, RETURNS_MOCKS)));
-    when(odometrySubscriber.getMostRecentMessage()).thenReturn(Optional.<Odometry>absent());
-    assertThat(bebopStateEstimator.getCurrentState()).isAbsent();
+    when(odometrySubscriber.getMostRecentMessage()).thenReturn(Optional.<Odometry>empty());
+    assertThat(bebopStateEstimator.getCurrentState()).isEmpty();
   }
 
   @Test

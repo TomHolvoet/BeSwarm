@@ -1,6 +1,5 @@
 package commands;
 
-import com.google.common.base.Optional;
 import commands.schedulers.PeriodicTaskRunner;
 import control.FiniteTrajectory4d;
 import control.Pid4dParameters;
@@ -19,6 +18,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import services.Velocity4dService;
 import solvers.RatsCPSolver;
+
+import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 

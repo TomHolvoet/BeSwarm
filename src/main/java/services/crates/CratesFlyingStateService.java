@@ -1,6 +1,5 @@
 package services.crates;
 
-import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableMap;
 import hal_quadrotor.State;
 import org.slf4j.Logger;
@@ -10,6 +9,7 @@ import services.rossubscribers.FlyingState;
 import services.rossubscribers.MessagesSubscriberService;
 
 import java.util.Map;
+import java.util.Optional;
 
 /** @author Hoang Tung Dinh */
 final class CratesFlyingStateService extends AbstractFlyingStateService<State> {

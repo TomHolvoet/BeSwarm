@@ -1,7 +1,8 @@
 package localization;
 
-import com.google.common.base.Optional;
 import control.dto.DroneStateStamped;
+
+import java.util.Optional;
 
 /** @author Hoang Tung Dinh */
 public interface StateEstimator {

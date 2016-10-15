@@ -1,13 +1,15 @@
 package localization;
 
-import com.google.common.base.Optional;
 import control.dto.DroneStateStamped;
 import geometry_msgs.PoseStamped;
 import geometry_msgs.Quaternion;
 import org.junit.Test;
 import services.rossubscribers.MessagesSubscriberService;
 
+import java.util.Optional;
+
 import static com.google.common.truth.Truth.assertThat;
+import static com.google.common.truth.Truth8.assertThat;
 import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -29,10 +31,10 @@ public class BebopStateEstimatorWithPoseStampedTest {
         BebopStateEstimatorWithPoseStamped.create(poseSubscriber, 1);
 
     // when there is no pose message yet
-    when(poseSubscriber.getMostRecentMessage()).thenReturn(Optional.<PoseStamped>absent());
-    assertThat(stateEstimator.getCurrentState()).isAbsent();
-    assertThat(stateEstimator.getCurrentState()).isAbsent();
-    assertThat(stateEstimator.getCurrentState()).isAbsent();
+    when(poseSubscriber.getMostRecentMessage()).thenReturn(Optional.<PoseStamped>empty());
+    assertThat(stateEstimator.getCurrentState()).isEmpty();
+    assertThat(stateEstimator.getCurrentState()).isEmpty();
+    assertThat(stateEstimator.getCurrentState()).isEmpty();
 
     // when there is only one pose message
     final PoseStamped firstPose = mock(PoseStamped.class, RETURNS_DEEP_STUBS);
@@ -44,9 +46,9 @@ public class BebopStateEstimatorWithPoseStampedTest {
         .thenReturn(mock(Quaternion.class, RETURNS_DEEP_STUBS));
 
     when(poseSubscriber.getMostRecentMessage()).thenReturn(Optional.of(firstPose));
-    assertThat(stateEstimator.getCurrentState()).isAbsent();
-    assertThat(stateEstimator.getCurrentState()).isAbsent();
-    assertThat(stateEstimator.getCurrentState()).isAbsent();
+    assertThat(stateEstimator.getCurrentState()).isEmpty();
+    assertThat(stateEstimator.getCurrentState()).isEmpty();
+    assertThat(stateEstimator.getCurrentState()).isEmpty();
 
     // when there are two pose messages
     final PoseStamped secondPose = mock(PoseStamped.class, RETURNS_DEEP_STUBS);

@@ -1,10 +1,10 @@
 package monitors;
 
-import com.google.common.base.Optional;
 import control.dto.DroneStateStamped;
 import localization.StateEstimator;
 import org.ros.time.TimeProvider;
 
+import java.util.Optional;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;

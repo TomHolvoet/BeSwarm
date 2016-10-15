@@ -1,10 +1,10 @@
 package services;
 
-import com.google.common.base.Optional;
 import org.ros.internal.message.Message;
 import services.rossubscribers.FlyingState;
 import services.rossubscribers.MessageObserver;
 
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
@@ -22,7 +22,7 @@ public abstract class AbstractFlyingStateService<T extends Message>
   public final Optional<FlyingState> getCurrentFlyingState() {
     final FlyingState flyingState = currentFlyingState.get();
     if (flyingState == null) {
-      return Optional.absent();
+      return Optional.empty();
     } else {
       return Optional.of(flyingState);
     }

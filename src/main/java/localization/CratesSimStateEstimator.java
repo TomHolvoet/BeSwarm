@@ -1,6 +1,5 @@
 package localization;
 
-import com.google.common.base.Optional;
 import control.dto.BodyFrameVelocity;
 import control.dto.DroneStateStamped;
 import control.dto.InertialFrameVelocity;
@@ -10,6 +9,8 @@ import hal_quadrotor.State;
 import org.ros.time.TimeProvider;
 import services.rossubscribers.MessagesSubscriberService;
 import utils.math.Transformations;
+
+import java.util.Optional;
 
 /** @author Hoang Tung Dinh */
 public final class CratesSimStateEstimator implements StateEstimator {
@@ -39,7 +40,7 @@ public final class CratesSimStateEstimator implements StateEstimator {
     final Optional<State> stateOptional = stateSubscriber.getMostRecentMessage();
 
     if (!stateOptional.isPresent()) {
-      return Optional.absent();
+      return Optional.empty();
     }
 
     final State state = stateOptional.get();

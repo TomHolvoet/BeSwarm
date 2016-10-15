@@ -2,7 +2,6 @@ package operationaltesting;
 
 import applications.trajectory.Trajectories;
 import applications.trajectory.geom.point.Point3D;
-import com.google.common.base.Optional;
 import commands.Command;
 import commands.bebopcommands.BebopFollowTrajectory;
 import control.DefaultPidParameters;
@@ -26,6 +25,7 @@ import time.RosTime;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Optional;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 

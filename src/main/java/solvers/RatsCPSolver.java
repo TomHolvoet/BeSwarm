@@ -1,6 +1,5 @@
 package solvers;
 
-import com.google.common.base.Optional;
 import control.Pid4dParameters;
 import control.dto.BodyFrameVelocity;
 import control.dto.InertialFrameVelocity;
@@ -12,6 +11,8 @@ import ilog.concert.IloNumExpr;
 import ilog.concert.IloNumVar;
 import ilog.cplex.IloCplex;
 import utils.math.EulerAngle;
+
+import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -75,7 +76,7 @@ public final class RatsCPSolver {
       return Optional.of(resultingVelocity);
     } else {
       model.end();
-      return Optional.absent();
+      return Optional.empty();
     }
   }
 

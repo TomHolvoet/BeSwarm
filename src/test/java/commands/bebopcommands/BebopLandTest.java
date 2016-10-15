@@ -1,6 +1,5 @@
 package commands.bebopcommands;
 
-import com.google.common.base.Optional;
 import commands.Command;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
@@ -12,6 +11,7 @@ import services.FlyingStateService;
 import services.LandService;
 import services.rossubscribers.FlyingState;
 
+import java.util.Optional;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -42,7 +42,7 @@ public class BebopLandTest {
     flyingStateService = mock(FlyingStateService.class);
     final Command landCommand = BebopLand.create(landService, flyingStateService);
 
-    when(flyingStateService.getCurrentFlyingState()).thenReturn(Optional.<FlyingState>absent());
+    when(flyingStateService.getCurrentFlyingState()).thenReturn(Optional.<FlyingState>empty());
 
     future =
         Executors.newSingleThreadExecutor()

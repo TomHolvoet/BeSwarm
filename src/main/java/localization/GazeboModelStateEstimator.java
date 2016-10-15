@@ -1,6 +1,5 @@
 package localization;
 
-import com.google.common.base.Optional;
 import control.dto.DroneStateStamped;
 import control.dto.InertialFrameVelocity;
 import control.dto.Pose;
@@ -12,6 +11,8 @@ import geometry_msgs.Twist;
 import org.ros.time.TimeProvider;
 import services.rossubscribers.MessagesSubscriberService;
 import utils.math.Transformations;
+
+import java.util.Optional;
 
 /**
  * A state estimator that gets drone state directly from gazebo's ground truth.
@@ -81,13 +82,13 @@ public final class GazeboModelStateEstimator implements StateEstimator {
   public Optional<DroneStateStamped> getCurrentState() {
     final Optional<ModelStates> modelStateOptional = modelStateSubscriber.getMostRecentMessage();
     if (!modelStateOptional.isPresent()) {
-      return Optional.absent();
+      return Optional.empty();
     }
 
     final ModelStates modelStates = modelStateOptional.get();
     final int index = modelStates.getName().indexOf(modelName);
     if (index == -1) {
-      return Optional.absent();
+      return Optional.empty();
     }
 
     final Pose pose = getDronePose(modelStates, index);

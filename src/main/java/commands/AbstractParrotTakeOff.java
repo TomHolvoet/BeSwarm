@@ -1,6 +1,5 @@
 package commands;
 
-import com.google.common.base.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import services.FlyingStateService;
@@ -8,6 +7,7 @@ import services.ResetService;
 import services.TakeOffService;
 import services.rossubscribers.FlyingState;
 
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 /**

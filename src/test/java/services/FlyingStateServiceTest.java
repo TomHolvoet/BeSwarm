@@ -12,7 +12,7 @@ import services.rossubscribers.MessagesSubscriberService;
 
 import java.util.Map;
 
-import static com.google.common.truth.Truth.assertThat;
+import static com.google.common.truth.Truth8.assertThat;
 import static org.mockito.Mockito.RETURNS_MOCKS;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -39,7 +39,7 @@ public abstract class FlyingStateServiceTest<T, U extends Message> {
     final MessageListener<U> messageListener = argumentCaptor.getValue();
 
     final FlyingStateService flyingStateService = createFlyingStateService(flyingStateSubscriber);
-    assertThat(flyingStateService.getCurrentFlyingState()).isAbsent();
+    assertThat(flyingStateService.getCurrentFlyingState()).isEmpty();
 
     final ImmutableMap<T, FlyingState> flyingStateMap = getFlyingStateMap();
 

@@ -1,12 +1,13 @@
 package commands;
 
-import com.google.common.base.Optional;
 import commands.schedulers.PeriodicTaskRunner;
 import control.dto.DroneStateStamped;
 import localization.StateEstimator;
 import org.ros.time.TimeProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Optional;
 
 /**
  * Follow trajectory command.

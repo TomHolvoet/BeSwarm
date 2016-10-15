@@ -1,6 +1,5 @@
 package localization;
 
-import com.google.common.base.Optional;
 import control.dto.BodyFrameVelocity;
 import control.dto.DroneStateStamped;
 import control.dto.InertialFrameVelocity;
@@ -12,6 +11,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import services.rossubscribers.MessagesSubscriberService;
 import utils.math.Transformations;
+
+import java.util.Optional;
 
 /**
  * A localization that gets the pose from ArMarker and the velocity from odometry.
@@ -52,14 +53,14 @@ public final class BebopStateEstimatorWithPoseStampedAndOdom implements StateEst
     final Optional<PoseStamped> poseStamped = poseSubscriber.getMostRecentMessage();
 
     if (!poseStamped.isPresent()) {
-      return Optional.absent();
+      return Optional.empty();
     }
 
     final Pose pose = Pose.create(poseStamped.get());
     final Optional<InertialFrameVelocity> inertialFrameVelocity = getVelocity(pose);
 
     if (!inertialFrameVelocity.isPresent()) {
-      return Optional.absent();
+      return Optional.empty();
     }
 
     final DroneStateStamped droneState =
@@ -80,7 +81,7 @@ public final class BebopStateEstimatorWithPoseStampedAndOdom implements StateEst
       return Optional.of(inertialFrameVelocity);
     } else {
       logger.debug("Cannot get Bebop odometry.");
-      return Optional.absent();
+      return Optional.empty();
     }
   }
 }

@@ -1,7 +1,6 @@
 package commands;
 
 import com.google.auto.value.AutoValue;
-import com.google.common.base.Optional;
 import control.VelocityController4d;
 import control.dto.DroneStateStamped;
 import control.dto.InertialFrameVelocity;
@@ -11,6 +10,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.ros.time.TimeProvider;
 import services.Velocity4dService;
+
+import java.util.Optional;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyDouble;

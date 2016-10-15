@@ -1,12 +1,12 @@
 package applications.offlinecheckers;
 
 import com.google.common.base.MoreObjects;
-import com.google.common.base.Optional;
 import control.FiniteTrajectory4d;
 import control.dto.Pose;
 
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.Optional;
 import java.util.Queue;
 
 /** @author Hoang Tung Dinh */
@@ -48,7 +48,7 @@ public final class OfflineMinimumDistanceCheckers {
       }
     }
 
-    return Optional.absent();
+    return Optional.empty();
   }
 
   /**
@@ -84,7 +84,7 @@ public final class OfflineMinimumDistanceCheckers {
       }
     }
 
-    return Optional.absent();
+    return Optional.empty();
   }
 
   public static final class Violation {

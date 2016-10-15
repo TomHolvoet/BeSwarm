@@ -1,7 +1,8 @@
 package services;
 
-import com.google.common.base.Optional;
 import services.rossubscribers.FlyingState;
+
+import java.util.Optional;
 
 /**
  * Represents the flying state service.

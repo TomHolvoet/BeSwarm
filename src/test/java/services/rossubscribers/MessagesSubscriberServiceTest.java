@@ -9,6 +9,7 @@ import org.ros.node.topic.Subscriber;
 import org.ros.time.TimeProvider;
 
 import static com.google.common.truth.Truth.assertThat;
+import static com.google.common.truth.Truth8.assertThat;
 import static org.mockito.Mockito.RETURNS_MOCKS;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -67,7 +68,7 @@ public abstract class MessagesSubscriberServiceTest<T extends Message> {
       MessagesSubscriberService<T> messagesSubscriberService,
       ArgumentCaptor<MessageListener> argumentCaptor) {
     verify(subscriber).addMessageListener(argumentCaptor.capture());
-    assertThat(messagesSubscriberService.getMostRecentMessage()).isAbsent();
+    assertThat(messagesSubscriberService.getMostRecentMessage()).isEmpty();
   }
 
   private ArgumentCaptor<MessageListener> getMessageListenerArgumentCaptor() {

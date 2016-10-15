@@ -1,10 +1,10 @@
 package commands;
 
-import com.google.common.base.Optional;
 import control.dto.DroneStateStamped;
 import localization.StateEstimator;
 import org.junit.Test;
 
+import java.util.Optional;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -26,7 +26,7 @@ public class WaitForLocalizationDecoratorTest {
     final Command waitForLocalization =
         WaitForLocalizationDecorator.create(stateEstimator, toBeExecutedCommand);
 
-    when(stateEstimator.getCurrentState()).thenReturn(Optional.<DroneStateStamped>absent());
+    when(stateEstimator.getCurrentState()).thenReturn(Optional.<DroneStateStamped>empty());
 
     final Future<?> future =
         Executors.newSingleThreadExecutor()

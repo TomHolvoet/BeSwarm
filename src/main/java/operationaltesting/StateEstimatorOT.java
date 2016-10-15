@@ -1,6 +1,5 @@
 package operationaltesting;
 
-import com.google.common.base.Optional;
 import control.dto.DroneStateStamped;
 import control.dto.InertialFrameVelocity;
 import geometry_msgs.PoseStamped;
@@ -18,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import services.rossubscribers.MessagesSubscriberService;
 import time.RosTime;
 
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 /**

@@ -3,13 +3,13 @@ package applications.trajectory;
 import applications.trajectory.geom.LineSegment;
 import applications.trajectory.geom.point.Point3D;
 import com.google.auto.value.AutoValue;
-import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 import control.FiniteTrajectory4d;
 import control.Trajectory4d;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 import static applications.trajectory.TrajectoryUtils.sampleTrajectory;
 import static applications.trajectory.geom.point.Point3D.dot;
@@ -35,7 +35,7 @@ public class CollisionDetector {
           if (actualDistance < minimumDistance - TestUtils.EPSILON) {
             return Optional.of(Collision.create(t, actualDistance, first, second));
           }
-          return Optional.absent();
+          return Optional.empty();
         }
       };
   private static final CollisionTester TWO_SAMPLE_LINE_DISTANCE_BASED_COLLISION =
@@ -60,14 +60,14 @@ public class CollisionDetector {
           if (distance < boundary) {
             return Optional.of(Collision.create(t, distance, first, second));
           }
-          return Optional.absent();
+          return Optional.empty();
         }
       };
   private final List<FiniteTrajectory4d> trajectories;
   private final double minimumDistance;
 
   public CollisionDetector(List<FiniteTrajectory4d> trajectories) {
-    this(trajectories, applications.trajectory.CollisionDetector.DEFAULT_MINIMUM_DISTANCE);
+    this(trajectories, CollisionDetector.DEFAULT_MINIMUM_DISTANCE);
   }
 
   public CollisionDetector(List<FiniteTrajectory4d> trajectories, double minimumDistance) {
@@ -142,11 +142,8 @@ public class CollisionDetector {
 
   private List<Collision> sampleForCollisions(CollisionTester tester) {
     List<Collision> collisions = Lists.newArrayList();
-    double finalTimePoint =
-        applications.trajectory.CollisionDetector.findLastTimePoint(trajectories);
-    for (double t = 0;
-        t < finalTimePoint;
-        t += applications.trajectory.CollisionDetector.DEFAULT_TIME_DELTA) {
+    double finalTimePoint = CollisionDetector.findLastTimePoint(trajectories);
+    for (double t = 0; t < finalTimePoint; t += CollisionDetector.DEFAULT_TIME_DELTA) {
       collisions.addAll(getCollisionsAtTime(t, tester));
     }
     return collisions;

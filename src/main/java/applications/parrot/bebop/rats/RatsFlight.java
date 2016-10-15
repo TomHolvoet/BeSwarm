@@ -2,7 +2,6 @@ package applications.parrot.bebop.rats;
 
 import applications.ExampleFlight;
 import com.google.auto.value.AutoValue;
-import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import commands.Command;
 import commands.bebopcommands.BebopFollowTrajectory;
@@ -37,6 +36,7 @@ import time.RosTime;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 /**

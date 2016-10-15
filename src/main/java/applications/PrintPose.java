@@ -1,6 +1,5 @@
 package applications;
 
-import com.google.common.base.Optional;
 import geometry_msgs.PoseStamped;
 import org.ros.namespace.GraphName;
 import org.ros.node.AbstractNodeMain;
@@ -9,6 +8,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import services.rossubscribers.MessagesSubscriberService;
 import time.RosTime;
+
+import java.util.Optional;
 
 /** Print the poses published to the {@code /arlocros/pose} topic. */
 public class PrintPose extends AbstractNodeMain {

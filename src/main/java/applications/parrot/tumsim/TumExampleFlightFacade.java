@@ -1,7 +1,6 @@
 package applications.parrot.tumsim;
 
 import applications.ExampleFlight;
-import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import commands.Command;
 import commands.ParrotFollowTrajectoryWithCP;
@@ -45,6 +44,7 @@ import time.RosTime;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 /** @author Hoang Tung Dinh */
