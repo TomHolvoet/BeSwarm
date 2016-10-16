@@ -23,6 +23,7 @@ import localization.StateEstimator;
 import monitors.PoseOutdatedMonitor;
 import org.apache.commons.math3.random.GaussianRandomGenerator;
 import org.apache.commons.math3.random.MersenneTwister;
+import org.ros.message.Time;
 import org.ros.node.ConnectedNode;
 import org.ros.node.parameter.ParameterTree;
 import org.slf4j.Logger;
@@ -113,6 +114,18 @@ final class TumExampleFlightFacade {
         TumSimHover.create(5, RosTime.create(connectedNode), velocity4dService, stateEstimator);
     commands.add(hoverFiveSecond);
 
+    Time currentTime = connectedNode.getCurrentTime();
+
+    while (currentTime == null) {
+      try {
+        TimeUnit.MILLISECONDS.sleep(50);
+      } catch (InterruptedException e) {
+        Thread.currentThread().interrupt();
+      }
+
+      currentTime = connectedNode.getCurrentTime();
+    }
+
     if (parameterTree.getBoolean(nodeName + "/cp_mode")) {
       final PoseOutdatedMonitor poseOutdatedMonitor =
           PoseOutdatedMonitor.create(stateEstimator, RosTime.create(connectedNode), 0.2);
@@ -121,7 +134,7 @@ final class TumExampleFlightFacade {
               .withStateEstimator(stateEstimator)
               .withPoseOutdatedMonitor(poseOutdatedMonitor)
               .withTrajectory(trajectory4d)
-              .withStartTimeInSecs(connectedNode.getCurrentTime().toSeconds() + 3)
+              .withStartTimeInSecs(currentTime.toSeconds() + 3)
               .withControlRateInSeconds(getControlRateInSeconds(nodeName, parameterTree))
               .withTimeProvider(RosTime.create(connectedNode))
               .withPidLinearX(pidLinearX)
@@ -170,13 +183,7 @@ final class TumExampleFlightFacade {
     final Command land = TumSimLand.create(landService, flyingStateService);
     commands.add(land);
 
-    final Command shutdownNode =
-        new Command() {
-          @Override
-          public void execute() {
-            connectedNode.shutdown();
-          }
-        };
+    final Command shutdownNode = connectedNode::shutdown;
     commands.add(shutdownNode);
 
     final Task flyTask = Task.create(ImmutableList.copyOf(commands), TaskType.NORMAL_TASK);
