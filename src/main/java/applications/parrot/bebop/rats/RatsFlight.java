@@ -4,19 +4,16 @@ import applications.FlightWithEmergencyTask;
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableList;
 import commands.Command;
+import commands.ParrotFollowTrajectoryWithCP;
 import commands.WaitUntilStartTimeDecorator;
-import commands.bebopcommands.BebopFollowTrajectory;
 import commands.bebopcommands.BebopHover;
-import commands.bebopcommands.BebopHoverUntil;
 import commands.bebopcommands.BebopLand;
 import commands.bebopcommands.BebopTakeOff;
-import control.DroneVelocityController;
 import control.FiniteTrajectory4d;
-import control.VelocityController4d;
-import control.VelocityController4dLogger;
 import geometry_msgs.PoseStamped;
 import localization.BebopStateEstimatorWithPoseStampedAndOdom;
 import localization.StateEstimator;
+import monitors.PoseOutdatedMonitor;
 import nav_msgs.Odometry;
 import org.ros.node.ConnectedNode;
 import org.ros.time.TimeProvider;
@@ -103,8 +100,10 @@ public final class RatsFlight {
     commands.add(
         createTakeOffCommand(ratsParameter, syncStartTimeInSecs, timeProvider, bebopServices));
     commands.add(
-        createHoverUntilCommand(bebopServices, ratsParameter, syncStartTimeInSecs, timeProvider));
-    commands.add(createFollowTrajectoryCommand(bebopServices, ratsParameter));
+        createFollowTrajectoryCommand(
+            bebopServices,
+            ratsParameter,
+            syncStartTimeInSecs + ratsParameter.absoluteStartFlyingTimeInSecs()));
     commands.add(createHoverThreeSecondsCommand(bebopServices));
     commands.add(BebopLand.create(bebopServices.landService(), bebopServices.flyingStateService()));
 
@@ -120,42 +119,24 @@ public final class RatsFlight {
   }
 
   private Command createFollowTrajectoryCommand(
-      BebopServices bebopServices, RatsParameter ratsParameter) {
-    VelocityController4d velocityController4d =
-        DroneVelocityController.pidBuilder()
-            .withTrajectory4d(trajectory)
-            .withLinearXParameters(ratsParameter.pidLinearX())
-            .withLinearYParameters(ratsParameter.pidLinearY())
-            .withLinearZParameters(ratsParameter.pidLinearZ())
-            .withAngularZParameters(ratsParameter.pidAngularZ())
-            .build();
+      BebopServices bebopServices, RatsParameter ratsParameter, double startTimeInSecs) {
+    final PoseOutdatedMonitor poseOutdatedMonitor =
+        PoseOutdatedMonitor.create(
+            bebopServices.stateEstimator(), RosTime.create(connectedNode), 0.2);
 
-    velocityController4d =
-        VelocityController4dLogger.create(
-            velocityController4d,
-            trajectory,
-            RosTime.create(connectedNode),
-            ratsParameter.loggerName());
-
-    return BebopFollowTrajectory.builder()
-        .withVelocity4dService(bebopServices.velocity4dService())
+    return ParrotFollowTrajectoryWithCP.builder()
         .withStateEstimator(bebopServices.stateEstimator())
-        .withTimeProvider(RosTime.create(connectedNode))
-        .withDurationInSeconds(trajectory.getTrajectoryDuration())
-        .withVelocityController4d(velocityController4d)
+        .withPoseOutdatedMonitor(poseOutdatedMonitor)
+        .withTrajectory(trajectory)
+        .withStartTimeInSecs(startTimeInSecs)
         .withControlRateInSeconds(1.0 / ratsParameter.controlFrequencyInHz())
+        .withTimeProvider(RosTime.create(connectedNode))
+        .withPidLinearX(ratsParameter.pidLinearX())
+        .withPidLinearY(ratsParameter.pidLinearY())
+        .withPidLinearZ(ratsParameter.pidLinearZ())
+        .withPidAngularZ(ratsParameter.pidAngularZ())
+        .withVelocity4dService(bebopServices.velocity4dService())
         .build();
-  }
-
-  private static Command createHoverUntilCommand(
-      BebopServices bebopServices,
-      RatsParameter ratsParameter,
-      double syncStartTimeInSecs,
-      TimeProvider timeProvider) {
-    final double realStartFlyingTime =
-        syncStartTimeInSecs + ratsParameter.absoluteStartFlyingTimeInSecs();
-    return BebopHoverUntil.create(
-        timeProvider, realStartFlyingTime, bebopServices.velocity4dService());
   }
 
   private static Command createTakeOffCommand(
