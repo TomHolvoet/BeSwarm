@@ -31,6 +31,7 @@ public final class ExampleRatsCP {
                 .withDesiredRefVelocity(Velocity.createZeroVelocity())
                 .withPoseValid(1)
                 .withOnTrajectory(1)
+                .withTimeStarted(1)
                 .withPid4dParameters(Pid4dParameters.createWithDefaultValues())
                 .build();
         logger.info(ratsCP.solve().toString());

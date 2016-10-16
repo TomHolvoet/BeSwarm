@@ -13,6 +13,8 @@ import ilog.concert.IloException;
 import localization.StateEstimator;
 import monitors.OutOfTrajectoryMonitor;
 import monitors.PoseOutdatedMonitor;
+import monitors.TimeStartedMonitor;
+import org.ros.message.Time;
 import org.ros.time.TimeProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,6 +33,7 @@ public final class ParrotFollowTrajectoryWithCP implements Command {
   private final StateEstimator stateEstimator;
   private final PoseOutdatedMonitor poseOutdatedMonitor;
   private final FiniteTrajectory4d trajectory;
+  private final double startTimeInSecs;
   private final double controlRateInSeconds;
   private final TimeProvider timeProvider;
   private final PidParameters pidLinearX;
@@ -43,6 +46,7 @@ public final class ParrotFollowTrajectoryWithCP implements Command {
     stateEstimator = builder.stateEstimator;
     poseOutdatedMonitor = builder.poseOutdatedMonitor;
     trajectory = builder.trajectory;
+    startTimeInSecs = builder.startTimeInSecs;
     controlRateInSeconds = builder.controlRateInSeconds;
     timeProvider = builder.timeProvider;
     pidLinearX = builder.pidLinearX;
@@ -65,14 +69,14 @@ public final class ParrotFollowTrajectoryWithCP implements Command {
 
   private final class ControlLoop implements Runnable {
 
-    private final double startTimeInSecs;
     private final OutOfTrajectoryMonitor outOfTrajectoryMonitor;
+    private final TimeStartedMonitor timeStartedMonitor;
 
     private ControlLoop() {
-      this.startTimeInSecs = timeProvider.getCurrentTime().toSeconds();
       this.outOfTrajectoryMonitor =
           OutOfTrajectoryMonitor.create(
               trajectory, timeProvider, stateEstimator, startTimeInSecs, 0.5);
+      this.timeStartedMonitor = TimeStartedMonitor.create(new Time(startTimeInSecs), timeProvider);
     }
 
     @Override
@@ -103,6 +107,8 @@ public final class ParrotFollowTrajectoryWithCP implements Command {
                               == OutOfTrajectoryMonitor.Status.WITH_IN_MINIMUM_DEVIATION
                           ? 1
                           : 0)
+                  .withTimeStarted(
+                      timeStartedMonitor.getStatus() == TimeStartedMonitor.Status.STARTED ? 1 : 0)
                   .withPid4dParameters(
                       Pid4dParameters.create(pidLinearX, pidLinearY, pidLinearZ, pidAngularZ))
                   .build();
@@ -125,6 +131,7 @@ public final class ParrotFollowTrajectoryWithCP implements Command {
     private StateEstimator stateEstimator;
     private PoseOutdatedMonitor poseOutdatedMonitor;
     private FiniteTrajectory4d trajectory;
+    private Double startTimeInSecs;
     private Double controlRateInSeconds;
     private TimeProvider timeProvider;
     private PidParameters pidLinearX;
@@ -168,6 +175,18 @@ public final class ParrotFollowTrajectoryWithCP implements Command {
      */
     public Builder withTrajectory(FiniteTrajectory4d val) {
       trajectory = val;
+      return this;
+    }
+
+    /**
+     * Sets the {@code startTimeInSecs} and returns a reference to this Builder so that the methods
+     * can be chained together.
+     *
+     * @param val the {@code startTimeInSecs} to set
+     * @return a reference to this Builder
+     */
+    public Builder withStartTimeInSecs(double val) {
+      startTimeInSecs = val;
       return this;
     }
 
@@ -265,6 +284,7 @@ public final class ParrotFollowTrajectoryWithCP implements Command {
       checkNotNull(stateEstimator);
       checkNotNull(poseOutdatedMonitor);
       checkNotNull(trajectory);
+      checkNotNull(startTimeInSecs);
       checkNotNull(controlRateInSeconds);
       checkNotNull(timeProvider);
       checkNotNull(pidLinearX);

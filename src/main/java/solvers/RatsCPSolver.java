@@ -26,6 +26,7 @@ public final class RatsCPSolver {
 
   private final int poseValidSC;
   private final int onTrajectorySC;
+  private final int timeStartedSC;
 
   private final IloCplex model;
 
@@ -37,6 +38,7 @@ public final class RatsCPSolver {
     final Pid4dParameters pid4dParameters = builder.pid4dParameters;
     this.poseValidSC = builder.poseValid;
     this.onTrajectorySC = builder.onTrajectory;
+    this.timeStartedSC = builder.timeStarted;
     this.model = new IloCplex();
     model.setOut(null);
 
@@ -83,7 +85,13 @@ public final class RatsCPSolver {
   private void buildModel() throws IloException {
     addHoverWhenPoseOutdatedConstraint();
     addHoverWhenOutOfTrajectoryConstraint();
+    addHoverBeforeStartTimeConstraint();
     addL1NormObjectiveFunction();
+  }
+
+  private void addHoverBeforeStartTimeConstraint() throws IloException {
+    Velocity4dCp.imposeBoundaryConstraint(
+        model, velBody, MIN_BODY_VEL * timeStartedSC, MAX_BODY_VEL * timeStartedSC);
   }
 
   private void addHoverWhenOutOfTrajectoryConstraint() throws IloException {
@@ -183,6 +191,7 @@ public final class RatsCPSolver {
     private InertialFrameVelocity desiredRefVelocity;
     private Integer poseValid;
     private Integer onTrajectory;
+    private Integer timeStarted;
     private Pid4dParameters pid4dParameters;
 
     private Builder() {}
@@ -260,6 +269,18 @@ public final class RatsCPSolver {
     }
 
     /**
+     * Sets the {@code timeStartedSC} and returns a reference to this Builder so that the methods
+     * can be chained together.
+     *
+     * @param val the {@code timeStartedSC} to set
+     * @return a reference to this Builder
+     */
+    public Builder withTimeStarted(int val) {
+      timeStarted = val;
+      return this;
+    }
+
+    /**
      * Sets the {@code pid4dParameters} and returns a reference to this Builder so that the methods
      * can be chained together.
      *
@@ -283,6 +304,7 @@ public final class RatsCPSolver {
       checkNotNull(desiredRefVelocity);
       checkNotNull(poseValid);
       checkNotNull(onTrajectory);
+      checkNotNull(timeStarted);
       checkNotNull(pid4dParameters);
       return new RatsCPSolver(this);
     }

@@ -8,11 +8,11 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
 /** @author Hoang Tung Dinh */
-public final class StartTimeMonitor {
+public final class TimeStartedMonitor {
 
   private final AtomicReference<Status> status;
 
-  private StartTimeMonitor(Time startTime, TimeProvider timeProvider) {
+  private TimeStartedMonitor(Time startTime, TimeProvider timeProvider) {
     this.status = new AtomicReference<>(Status.NOT_YET_STARTED);
 
     Executors.newSingleThreadExecutor()
@@ -35,8 +35,8 @@ public final class StartTimeMonitor {
             });
   }
 
-  public static StartTimeMonitor create(Time startTime, TimeProvider timeProvider) {
-    return new StartTimeMonitor(startTime, timeProvider);
+  public static TimeStartedMonitor create(Time startTime, TimeProvider timeProvider) {
+    return new TimeStartedMonitor(startTime, timeProvider);
   }
 
   public Status getStatus() {
