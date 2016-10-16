@@ -1,6 +1,6 @@
 package applications.parrot.bebop;
 
-import applications.ExampleFlight;
+import applications.FlightWithEmergencyTask;
 import com.google.common.collect.ImmutableList;
 import commands.Command;
 import commands.WaitForLocalizationDecorator;
@@ -40,14 +40,14 @@ import java.util.concurrent.TimeUnit;
 /** @author Hoang Tung Dinh */
 final class BebopFlight {
   private static final Logger logger = LoggerFactory.getLogger(BebopFlight.class);
-  private final ExampleFlight exampleFlight;
+  private final FlightWithEmergencyTask flightWithEmergencyTask;
 
   private BebopFlight(
       String droneName,
       FiniteTrajectory4d trajectory,
       ConnectedNode connectedNode,
       String poseTopic) {
-    exampleFlight = constructFlight(connectedNode, droneName, trajectory, poseTopic);
+    flightWithEmergencyTask = constructFlight(connectedNode, droneName, trajectory, poseTopic);
   }
 
   public static BebopFlight create(
@@ -87,7 +87,7 @@ final class BebopFlight {
         RosTime.create(connectedNode));
   }
 
-  private static ExampleFlight constructFlight(
+  private static FlightWithEmergencyTask constructFlight(
       ConnectedNode connectedNode,
       String droneName,
       FiniteTrajectory4d trajectory,
@@ -148,7 +148,9 @@ final class BebopFlight {
 
     final Task emergencyTask = createEmergencyTask(landService, flyingStateService);
 
-    final ExampleFlight exampleFlight = ExampleFlight.create(connectedNode, flyTask, emergencyTask);
+    final FlightWithEmergencyTask flightWithEmergencyTask = FlightWithEmergencyTask
+
+        .create(connectedNode, flyTask, emergencyTask);
 
     // without this code, the take off message cannot be sent properly (I don't understand why).
     try {
@@ -158,11 +160,11 @@ final class BebopFlight {
       Thread.currentThread().interrupt();
     }
 
-    return exampleFlight;
+    return flightWithEmergencyTask;
   }
 
   public void startFlying() {
-    exampleFlight.fly();
+    flightWithEmergencyTask.fly();
   }
 
   private static Task createEmergencyTask(

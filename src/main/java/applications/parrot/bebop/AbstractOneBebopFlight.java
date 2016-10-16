@@ -1,6 +1,6 @@
 package applications.parrot.bebop;
 
-import applications.ExampleFlight;
+import applications.FlightWithEmergencyTask;
 import applications.trajectory.TrajectoryServer;
 import com.google.common.collect.ImmutableList;
 import commands.Command;
@@ -139,7 +139,9 @@ public abstract class AbstractOneBebopFlight extends AbstractNodeMain implements
 
     final Task emergencyTask = createEmergencyTask(landService, flyingStateService);
 
-    final ExampleFlight exampleFlight = ExampleFlight.create(connectedNode, flyTask, emergencyTask);
+    final FlightWithEmergencyTask flightWithEmergencyTask = FlightWithEmergencyTask
+
+        .create(connectedNode, flyTask, emergencyTask);
 
     // without this code, the take off message cannot be sent properly (I don't understand why).
     try {
@@ -149,7 +151,7 @@ public abstract class AbstractOneBebopFlight extends AbstractNodeMain implements
       Thread.currentThread().interrupt();
     }
 
-    exampleFlight.fly();
+    flightWithEmergencyTask.fly();
   }
 
   private static Task createEmergencyTask(

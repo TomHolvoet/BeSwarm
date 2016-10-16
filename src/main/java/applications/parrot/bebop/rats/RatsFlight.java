@@ -1,6 +1,6 @@
 package applications.parrot.bebop.rats;
 
-import applications.ExampleFlight;
+import applications.FlightWithEmergencyTask;
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableList;
 import commands.Command;
@@ -65,15 +65,17 @@ public final class RatsFlight {
     final RatsParameter ratsParameter = RatsParameter.createFrom(connectedNode.getParameterTree());
     final double syncStartTimeInSecs =
         waitAndGetSynchronizedSystemTimeInSecs(ratsParameter.timeSyncTopic());
-    final ExampleFlight flight = constructFlight(ratsParameter, syncStartTimeInSecs);
+    final FlightWithEmergencyTask flight = constructFlight(ratsParameter, syncStartTimeInSecs);
     flight.fly();
   }
 
-  private ExampleFlight constructFlight(RatsParameter ratsParameter, double syncStartTimeInSecs) {
+  private FlightWithEmergencyTask constructFlight(RatsParameter ratsParameter, double syncStartTimeInSecs) {
     final BebopServices bebopServices = BebopServices.create(connectedNode, ratsParameter);
     final Task flyTask = createFlyTask(bebopServices, ratsParameter, syncStartTimeInSecs);
     final Task emergencyTask = createEmergencyTask(bebopServices);
-    final ExampleFlight exampleFlight = ExampleFlight.create(connectedNode, flyTask, emergencyTask);
+    final FlightWithEmergencyTask flightWithEmergencyTask = FlightWithEmergencyTask
+
+        .create(connectedNode, flyTask, emergencyTask);
 
     // without this code, the take off message cannot be sent properly (I don't understand why).
     try {
@@ -83,7 +85,7 @@ public final class RatsFlight {
       Thread.currentThread().interrupt();
     }
 
-    return exampleFlight;
+    return flightWithEmergencyTask;
   }
 
   private static Task createEmergencyTask(BebopServices bebopServices) {

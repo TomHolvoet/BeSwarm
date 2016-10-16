@@ -17,29 +17,29 @@ import time.RosTime;
  *
  * @author Hoang Tung Dinh
  */
-public final class ExampleFlight {
+public final class FlightWithEmergencyTask {
 
   private final ConnectedNode connectedNode;
   private final Task flyTask;
   private final Task emergencyTask;
 
-  private ExampleFlight(ConnectedNode connectedNode, Task flyTask, Task emergencyTask) {
+  private FlightWithEmergencyTask(ConnectedNode connectedNode, Task flyTask, Task emergencyTask) {
     this.connectedNode = connectedNode;
     this.flyTask = flyTask;
     this.emergencyTask = emergencyTask;
   }
 
   /**
-   * Creates an instance of {@link ExampleFlight}.
+   * Creates an instance of {@link FlightWithEmergencyTask}.
    *
    * @param connectedNode the connected node
    * @param flyTask the fly task
    * @param emergencyTask the emergency task
-   * @return an instance of {@link ExampleFlight}
+   * @return an instance of {@link FlightWithEmergencyTask}
    */
-  public static ExampleFlight create(
+  public static FlightWithEmergencyTask create(
       ConnectedNode connectedNode, Task flyTask, Task emergencyTask) {
-    return new ExampleFlight(connectedNode, flyTask, emergencyTask);
+    return new FlightWithEmergencyTask(connectedNode, flyTask, emergencyTask);
   }
 
   /** Starts flying. */

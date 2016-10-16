@@ -1,6 +1,6 @@
 package applications.parrot.tumsim;
 
-import applications.ExampleFlight;
+import applications.FlightWithEmergencyTask;
 import com.google.common.collect.ImmutableList;
 import commands.Command;
 import commands.ParrotFollowTrajectoryWithCP;
@@ -51,7 +51,7 @@ import java.util.concurrent.TimeUnit;
 final class TumExampleFlightFacade {
   private static final Logger logger = LoggerFactory.getLogger(TumExampleFlightFacade.class);
   private static final String MODEL_NAME = "quadrotor";
-  private final ExampleFlight exampleFlight;
+  private final FlightWithEmergencyTask flightWithEmergencyTask;
   private final StateEstimator stateEstimator;
 
   private TumExampleFlightFacade(
@@ -181,7 +181,7 @@ final class TumExampleFlightFacade {
     final Task flyTask = Task.create(ImmutableList.copyOf(commands), TaskType.NORMAL_TASK);
     final Task emergencyTask = createEmergencyTask(landService, flyingStateService);
 
-    exampleFlight = ExampleFlight.create(connectedNode, flyTask, emergencyTask);
+    flightWithEmergencyTask = FlightWithEmergencyTask.create(connectedNode, flyTask, emergencyTask);
   }
 
   private static double getControlRateInSeconds(String nodeName, ParameterTree parameterTree) {
@@ -272,7 +272,7 @@ final class TumExampleFlightFacade {
   /** Starts flying. */
   void fly() {
     waitUntilRecevingDroneState();
-    exampleFlight.fly();
+    flightWithEmergencyTask.fly();
   }
 
   private void waitUntilRecevingDroneState() {
