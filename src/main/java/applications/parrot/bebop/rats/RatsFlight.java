@@ -62,8 +62,7 @@ public final class RatsFlight {
   }
 
   public void startRatsShow() {
-    final RatsParameter ratsParameter =
-        RatsParameter.createFromParameterTree(connectedNode.getParameterTree());
+    final RatsParameter ratsParameter = RatsParameter.createFrom(connectedNode.getParameterTree());
     final double syncStartTimeInSecs =
         waitAndGetSynchronizedSystemTimeInSecs(ratsParameter.timeSyncTopic());
     final ExampleFlight flight = constructFlight(ratsParameter, syncStartTimeInSecs);

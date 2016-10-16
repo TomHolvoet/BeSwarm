@@ -9,7 +9,7 @@ import org.ros.node.parameter.ParameterTree;
 abstract class RatsParameter {
   RatsParameter() {}
 
-  static RatsParameter createFromParameterTree(ParameterTree parameterTree) {
+  static RatsParameter createFrom(ParameterTree parameterTree) {
     return builder()
         .absoluteTakeOffTimeInSecs(parameterTree.getDouble("/takeoff_time_in_secs"))
         .absoluteStartFlyingTimeInSecs(parameterTree.getDouble("/start_flying_time_in_secs"))
