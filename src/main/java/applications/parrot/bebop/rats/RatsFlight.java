@@ -69,13 +69,13 @@ public final class RatsFlight {
     flight.fly();
   }
 
-  private FlightWithEmergencyTask constructFlight(RatsParameter ratsParameter, double syncStartTimeInSecs) {
+  private FlightWithEmergencyTask constructFlight(
+      RatsParameter ratsParameter, double syncStartTimeInSecs) {
     final BebopServices bebopServices = BebopServices.create(connectedNode, ratsParameter);
     final Task flyTask = createFlyTask(bebopServices, ratsParameter, syncStartTimeInSecs);
     final Task emergencyTask = createEmergencyTask(bebopServices);
-    final FlightWithEmergencyTask flightWithEmergencyTask = FlightWithEmergencyTask
-
-        .create(connectedNode, flyTask, emergencyTask);
+    final FlightWithEmergencyTask flightWithEmergencyTask =
+        FlightWithEmergencyTask.create(connectedNode, flyTask, emergencyTask);
 
     // without this code, the take off message cannot be sent properly (I don't understand why).
     try {
