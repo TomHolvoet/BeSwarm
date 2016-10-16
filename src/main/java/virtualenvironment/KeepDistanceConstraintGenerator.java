@@ -95,8 +95,11 @@ public final class KeepDistanceConstraintGenerator implements ConstraintGenerato
 
   private static void addHoverWhenTooCloseConstraints(CpState cpState, int cDistance)
       throws IloException {
-    Velocity4dCp.setBoundary(
-        cpState.velBody(), cDistance * cpState.minVelocity(), cDistance * cpState.maxVelocity());
+    Velocity4dCp.imposeBoundaryConstraint(
+        cpState.model(),
+        cpState.velBody(),
+        cDistance * cpState.minVelocity(),
+        cDistance * cpState.maxVelocity());
   }
 
   private int computeCDistance(CpState cpState) {

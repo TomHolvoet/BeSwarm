@@ -32,16 +32,23 @@ public abstract class Velocity4dCp<T extends IloNumExpr> {
     return create(velX, velY, velZ, velYaw);
   }
 
-  public static void setBoundary(
-      Velocity4dCp<IloNumVar> velocity, double lowerBound, double upperBound) throws IloException {
-    velocity.x().setLB(lowerBound);
-    velocity.x().setUB(upperBound);
-    velocity.y().setLB(lowerBound);
-    velocity.y().setUB(upperBound);
-    velocity.z().setLB(lowerBound);
-    velocity.z().setUB(upperBound);
-    velocity.yaw().setLB(lowerBound);
-    velocity.yaw().setUB(upperBound);
+  public static void imposeBoundaryConstraint(
+      IloModeler model,
+      Velocity4dCp<? extends IloNumExpr> velocity,
+      double lowerBound,
+      double upperBound)
+      throws IloException {
+    addBoundaryConstraint(model, velocity.x(), lowerBound, upperBound);
+    addBoundaryConstraint(model, velocity.y(), lowerBound, upperBound);
+    addBoundaryConstraint(model, velocity.z(), lowerBound, upperBound);
+    addBoundaryConstraint(model, velocity.yaw(), lowerBound, upperBound);
+  }
+
+  private static void addBoundaryConstraint(
+      IloModeler model, IloNumExpr velocity, double lowerBound, double upperBound)
+      throws IloException {
+    model.addGe(velocity, lowerBound);
+    model.addLe(velocity, upperBound);
   }
 
   public abstract T x();

@@ -87,11 +87,13 @@ public final class RatsCPSolver {
   }
 
   private void addHoverWhenOutOfTrajectoryConstraint() throws IloException {
-    Velocity4dCp.setBoundary(velBody, MIN_BODY_VEL * onTrajectorySC, MAX_BODY_VEL * onTrajectorySC);
+    Velocity4dCp.imposeBoundaryConstraint(
+        model, velBody, MIN_BODY_VEL * onTrajectorySC, MAX_BODY_VEL * onTrajectorySC);
   }
 
   private void addHoverWhenPoseOutdatedConstraint() throws IloException {
-    Velocity4dCp.setBoundary(velBody, MIN_BODY_VEL * poseValidSC, MAX_BODY_VEL * poseValidSC);
+    Velocity4dCp.imposeBoundaryConstraint(
+        model, velBody, MIN_BODY_VEL * poseValidSC, MAX_BODY_VEL * poseValidSC);
   }
 
   private static Velocity4dCp<IloNumExpr> initializeReferenceVelocityExpressions(
