@@ -64,7 +64,11 @@ public final class ParrotFollowTrajectoryWithCP implements Command {
   public void execute() {
     logger.debug("Start executing ParrotFollowTrajectoryWithCP command.");
     final Runnable controlLoop = new ControlLoop();
-    PeriodicTaskRunner.run(controlLoop, controlRateInSeconds, trajectory.getTrajectoryDuration());
+    final double duration =
+        trajectory.getTrajectoryDuration()
+            + startTimeInSecs
+            - timeProvider.getCurrentTime().toSeconds();
+    PeriodicTaskRunner.run(controlLoop, controlRateInSeconds, duration);
   }
 
   private final class ControlLoop implements Runnable {
