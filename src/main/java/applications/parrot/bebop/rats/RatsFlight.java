@@ -4,12 +4,12 @@ import applications.ExampleFlight;
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableList;
 import commands.Command;
+import commands.WaitUntilStartTimeDecorator;
 import commands.bebopcommands.BebopFollowTrajectory;
 import commands.bebopcommands.BebopHover;
 import commands.bebopcommands.BebopHoverUntil;
 import commands.bebopcommands.BebopLand;
 import commands.bebopcommands.BebopTakeOff;
-import commands.bebopcommands.BebopWaitUntil;
 import control.DroneVelocityController;
 import control.FiniteTrajectory4d;
 import control.VelocityController4d;
@@ -98,8 +98,8 @@ public final class RatsFlight {
 
     final Collection<Command> commands = new ArrayList<>();
 
-    commands.add(createWaitUntilCommand(ratsParameter, syncStartTimeInSecs, timeProvider));
-    commands.add(createTakeOffCommand(bebopServices));
+    commands.add(
+        createTakeOffCommand(ratsParameter, syncStartTimeInSecs, timeProvider, bebopServices));
     commands.add(
         createHoverUntilCommand(bebopServices, ratsParameter, syncStartTimeInSecs, timeProvider));
     commands.add(createFollowTrajectoryCommand(bebopServices, ratsParameter));
@@ -156,17 +156,22 @@ public final class RatsFlight {
         timeProvider, realStartFlyingTime, bebopServices.velocity4dService());
   }
 
-  private static Command createTakeOffCommand(BebopServices bebopServices) {
-    return BebopTakeOff.create(
-        bebopServices.takeOffService(),
-        bebopServices.flyingStateService(),
-        bebopServices.resetService());
-  }
+  private static Command createTakeOffCommand(
+      RatsParameter ratsParameter,
+      double syncStartTimeInSecs,
+      TimeProvider timeProvider,
+      BebopServices bebopServices) {
 
-  private static Command createWaitUntilCommand(
-      RatsParameter ratsParameter, double syncStartTimeInSecs, TimeProvider timeProvider) {
+    final Command takeOff =
+        BebopTakeOff.create(
+            bebopServices.takeOffService(),
+            bebopServices.flyingStateService(),
+            bebopServices.resetService());
+
     final double realTakeOffTime = syncStartTimeInSecs + ratsParameter.absoluteTakeOffTimeInSecs();
-    return BebopWaitUntil.create(timeProvider, realTakeOffTime);
+
+    return WaitUntilStartTimeDecorator.create(
+        takeOff, new org.ros.message.Time(realTakeOffTime), timeProvider);
   }
 
   private double waitAndGetSynchronizedSystemTimeInSecs(String timeSyncTopic) {
