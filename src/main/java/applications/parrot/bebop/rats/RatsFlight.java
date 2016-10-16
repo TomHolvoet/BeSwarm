@@ -15,6 +15,7 @@ import localization.BebopStateEstimatorWithPoseStampedAndOdom;
 import localization.StateEstimator;
 import monitors.PoseOutdatedMonitor;
 import nav_msgs.Odometry;
+import org.ros.message.Duration;
 import org.ros.node.ConnectedNode;
 import org.ros.time.TimeProvider;
 import org.slf4j.Logger;
@@ -60,16 +61,16 @@ public final class RatsFlight {
 
   public void startRatsShow() {
     final RatsParameter ratsParameter = RatsParameter.createFrom(connectedNode.getParameterTree());
-    final double syncStartTimeInSecs =
-        waitAndGetSynchronizedSystemTimeInSecs(ratsParameter.timeSyncTopic());
-    final FlightWithEmergencyTask flight = constructFlight(ratsParameter, syncStartTimeInSecs);
+    final org.ros.message.Time syncStartTime =
+        waitAndGetSynchronizedSystemTime(ratsParameter.timeSyncTopic());
+    final FlightWithEmergencyTask flight = constructFlight(ratsParameter, syncStartTime);
     flight.fly();
   }
 
   private FlightWithEmergencyTask constructFlight(
-      RatsParameter ratsParameter, double syncStartTimeInSecs) {
+      RatsParameter ratsParameter, org.ros.message.Time syncStartTime) {
     final BebopServices bebopServices = BebopServices.create(connectedNode, ratsParameter);
-    final Task flyTask = createFlyTask(bebopServices, ratsParameter, syncStartTimeInSecs);
+    final Task flyTask = createFlyTask(bebopServices, ratsParameter, syncStartTime);
     final Task emergencyTask = createEmergencyTask(bebopServices);
     final FlightWithEmergencyTask flightWithEmergencyTask =
         FlightWithEmergencyTask.create(connectedNode, flyTask, emergencyTask);
@@ -92,18 +93,19 @@ public final class RatsFlight {
   }
 
   private Task createFlyTask(
-      BebopServices bebopServices, RatsParameter ratsParameter, double syncStartTimeInSecs) {
+      BebopServices bebopServices,
+      RatsParameter ratsParameter,
+      org.ros.message.Time syncStartTime) {
     final TimeProvider timeProvider = RosTime.create(connectedNode);
 
     final Collection<Command> commands = new ArrayList<>();
 
-    commands.add(
-        createTakeOffCommand(ratsParameter, syncStartTimeInSecs, timeProvider, bebopServices));
+    commands.add(createTakeOffCommand(ratsParameter, syncStartTime, timeProvider, bebopServices));
     commands.add(
         createFollowTrajectoryCommand(
             bebopServices,
             ratsParameter,
-            syncStartTimeInSecs + ratsParameter.absoluteStartFlyingTimeInSecs()));
+            syncStartTime.add(new Duration(ratsParameter.absoluteStartFlyingTimeInSecs()))));
     commands.add(createHoverThreeSecondsCommand(bebopServices));
     commands.add(BebopLand.create(bebopServices.landService(), bebopServices.flyingStateService()));
 
@@ -119,7 +121,7 @@ public final class RatsFlight {
   }
 
   private Command createFollowTrajectoryCommand(
-      BebopServices bebopServices, RatsParameter ratsParameter, double startTimeInSecs) {
+      BebopServices bebopServices, RatsParameter ratsParameter, org.ros.message.Time startTime) {
     final PoseOutdatedMonitor poseOutdatedMonitor =
         PoseOutdatedMonitor.create(
             bebopServices.stateEstimator(), RosTime.create(connectedNode), 0.2);
@@ -128,7 +130,7 @@ public final class RatsFlight {
         .withStateEstimator(bebopServices.stateEstimator())
         .withPoseOutdatedMonitor(poseOutdatedMonitor)
         .withTrajectory(trajectory)
-        .withStartTimeInSecs(startTimeInSecs)
+        .withStartTime(new org.ros.message.Time(startTime))
         .withControlRateInSeconds(1.0 / ratsParameter.controlFrequencyInHz())
         .withTimeProvider(RosTime.create(connectedNode))
         .withPidLinearX(ratsParameter.pidLinearX())
@@ -141,7 +143,7 @@ public final class RatsFlight {
 
   private static Command createTakeOffCommand(
       RatsParameter ratsParameter,
-      double syncStartTimeInSecs,
+      org.ros.message.Time syncStartTime,
       TimeProvider timeProvider,
       BebopServices bebopServices) {
 
@@ -151,13 +153,13 @@ public final class RatsFlight {
             bebopServices.flyingStateService(),
             bebopServices.resetService());
 
-    final double realTakeOffTime = syncStartTimeInSecs + ratsParameter.absoluteTakeOffTimeInSecs();
+    final org.ros.message.Time realTakeOffTime =
+        syncStartTime.add(new Duration(ratsParameter.absoluteTakeOffTimeInSecs()));
 
-    return WaitUntilStartTimeDecorator.create(
-        takeOff, new org.ros.message.Time(realTakeOffTime), timeProvider);
+    return WaitUntilStartTimeDecorator.create(takeOff, realTakeOffTime, timeProvider);
   }
 
-  private double waitAndGetSynchronizedSystemTimeInSecs(String timeSyncTopic) {
+  private org.ros.message.Time waitAndGetSynchronizedSystemTime(String timeSyncTopic) {
     final MessagesSubscriberService<Time> startTimeSubscriber =
         createStartTimeSubscriber(timeSyncTopic);
 
@@ -173,7 +175,7 @@ public final class RatsFlight {
       timeMsgs = startTimeSubscriber.getMostRecentMessage();
     }
 
-    return timeMsgs.get().getData().toSeconds();
+    return timeMsgs.get().getData();
   }
 
   private MessagesSubscriberService<Time> createStartTimeSubscriber(String timeSyncTopic) {

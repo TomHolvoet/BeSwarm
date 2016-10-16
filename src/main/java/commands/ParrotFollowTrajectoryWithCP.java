@@ -33,7 +33,7 @@ public final class ParrotFollowTrajectoryWithCP implements Command {
   private final StateEstimator stateEstimator;
   private final PoseOutdatedMonitor poseOutdatedMonitor;
   private final FiniteTrajectory4d trajectory;
-  private final double startTimeInSecs;
+  private final Time startTime;
   private final double controlRateInSeconds;
   private final TimeProvider timeProvider;
   private final PidParameters pidLinearX;
@@ -46,7 +46,7 @@ public final class ParrotFollowTrajectoryWithCP implements Command {
     stateEstimator = builder.stateEstimator;
     poseOutdatedMonitor = builder.poseOutdatedMonitor;
     trajectory = builder.trajectory;
-    startTimeInSecs = builder.startTimeInSecs;
+    startTime = builder.startTime;
     controlRateInSeconds = builder.controlRateInSeconds;
     timeProvider = builder.timeProvider;
     pidLinearX = builder.pidLinearX;
@@ -66,7 +66,7 @@ public final class ParrotFollowTrajectoryWithCP implements Command {
     final Runnable controlLoop = new ControlLoop();
     final double duration =
         trajectory.getTrajectoryDuration()
-            + startTimeInSecs
+            + startTime.toSeconds()
             - timeProvider.getCurrentTime().toSeconds();
     PeriodicTaskRunner.run(controlLoop, controlRateInSeconds, duration);
   }
@@ -79,8 +79,8 @@ public final class ParrotFollowTrajectoryWithCP implements Command {
     private ControlLoop() {
       this.outOfTrajectoryMonitor =
           OutOfTrajectoryMonitor.create(
-              trajectory, timeProvider, stateEstimator, startTimeInSecs, 0.5);
-      this.timeStartedMonitor = TimeStartedMonitor.create(new Time(startTimeInSecs), timeProvider);
+              trajectory, timeProvider, stateEstimator, startTime, 0.5);
+      this.timeStartedMonitor = TimeStartedMonitor.create(startTime, timeProvider);
     }
 
     @Override
@@ -89,7 +89,7 @@ public final class ParrotFollowTrajectoryWithCP implements Command {
       // TODO: fix the lagTimeInSeconds confusion
       final double time =
           timeProvider.getCurrentTime().toSeconds()
-              - startTimeInSecs
+              - startTime.toSeconds()
               + pidLinearX.lagTimeInSeconds();
       final Pose desiredPose = Pose.createFromTrajectory(trajectory, time);
       final InertialFrameVelocity desiredVelocity = Velocity.createFromTrajectory(trajectory, time);
@@ -135,7 +135,7 @@ public final class ParrotFollowTrajectoryWithCP implements Command {
     private StateEstimator stateEstimator;
     private PoseOutdatedMonitor poseOutdatedMonitor;
     private FiniteTrajectory4d trajectory;
-    private Double startTimeInSecs;
+    private Time startTime;
     private Double controlRateInSeconds;
     private TimeProvider timeProvider;
     private PidParameters pidLinearX;
@@ -183,14 +183,14 @@ public final class ParrotFollowTrajectoryWithCP implements Command {
     }
 
     /**
-     * Sets the {@code startTimeInSecs} and returns a reference to this Builder so that the methods
-     * can be chained together.
+     * Sets the {@code startTime} and returns a reference to this Builder so that the methods can be
+     * chained together.
      *
-     * @param val the {@code startTimeInSecs} to set
+     * @param val the {@code startTime} to set
      * @return a reference to this Builder
      */
-    public Builder withStartTimeInSecs(double val) {
-      startTimeInSecs = val;
+    public Builder withStartTime(Time val) {
+      startTime = val;
       return this;
     }
 
@@ -288,7 +288,7 @@ public final class ParrotFollowTrajectoryWithCP implements Command {
       checkNotNull(stateEstimator);
       checkNotNull(poseOutdatedMonitor);
       checkNotNull(trajectory);
-      checkNotNull(startTimeInSecs);
+      checkNotNull(startTime);
       checkNotNull(controlRateInSeconds);
       checkNotNull(timeProvider);
       checkNotNull(pidLinearX);

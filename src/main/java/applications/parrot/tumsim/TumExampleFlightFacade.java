@@ -23,6 +23,7 @@ import localization.StateEstimator;
 import monitors.PoseOutdatedMonitor;
 import org.apache.commons.math3.random.GaussianRandomGenerator;
 import org.apache.commons.math3.random.MersenneTwister;
+import org.ros.message.Duration;
 import org.ros.message.Time;
 import org.ros.node.ConnectedNode;
 import org.ros.node.parameter.ParameterTree;
@@ -134,7 +135,7 @@ final class TumExampleFlightFacade {
               .withStateEstimator(stateEstimator)
               .withPoseOutdatedMonitor(poseOutdatedMonitor)
               .withTrajectory(trajectory4d)
-              .withStartTimeInSecs(currentTime.toSeconds() + 30)
+              .withStartTime(currentTime.add(new Duration(30.0)))
               .withControlRateInSeconds(getControlRateInSeconds(nodeName, parameterTree))
               .withTimeProvider(RosTime.create(connectedNode))
               .withPidLinearX(pidLinearX)

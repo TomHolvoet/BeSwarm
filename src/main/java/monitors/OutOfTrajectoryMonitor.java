@@ -4,6 +4,7 @@ import control.FiniteTrajectory4d;
 import control.dto.DroneStateStamped;
 import control.dto.Pose;
 import localization.StateEstimator;
+import org.ros.message.Time;
 import org.ros.time.TimeProvider;
 
 import java.util.Optional;
@@ -16,7 +17,7 @@ public final class OutOfTrajectoryMonitor {
   private final FiniteTrajectory4d trajectory;
   private final TimeProvider timeProvider;
   private final StateEstimator stateEstimator;
-  private final double startTimeInSecs;
+  private final Time startTime;
   private final double minimumDeviationInMeters;
   private static final long MONITOR_RATE_IN_MILLIS = 50;
 
@@ -26,12 +27,12 @@ public final class OutOfTrajectoryMonitor {
       FiniteTrajectory4d trajectory,
       TimeProvider timeProvider,
       StateEstimator stateEstimator,
-      double startTimeInSecs,
+      Time startTime,
       double minimumDeviationInMeters) {
     this.trajectory = trajectory;
     this.timeProvider = timeProvider;
     this.stateEstimator = stateEstimator;
-    this.startTimeInSecs = startTimeInSecs;
+    this.startTime = startTime;
     this.minimumDeviationInMeters = minimumDeviationInMeters;
 
     Executors.newSingleThreadScheduledExecutor()
@@ -42,10 +43,10 @@ public final class OutOfTrajectoryMonitor {
       FiniteTrajectory4d trajectory,
       TimeProvider timeProvider,
       StateEstimator stateEstimator,
-      double startTimeInSecs,
+      Time startTime,
       double minimumDeviationInMeters) {
     return new OutOfTrajectoryMonitor(
-        trajectory, timeProvider, stateEstimator, startTimeInSecs, minimumDeviationInMeters);
+        trajectory, timeProvider, stateEstimator, startTime, minimumDeviationInMeters);
   }
 
   public Status getStatus() {
@@ -63,7 +64,7 @@ public final class OutOfTrajectoryMonitor {
     @Override
     public void run() {
       final double currentTrajectoryTime =
-          timeProvider.getCurrentTime().toSeconds() - startTimeInSecs;
+          timeProvider.getCurrentTime().toSeconds() - startTime.toSeconds();
       final Optional<DroneStateStamped> currentState = stateEstimator.getCurrentState();
       if (currentState.isPresent()) {
         final Pose desiredPose = Pose.createFromTrajectory(trajectory, currentTrajectoryTime);
